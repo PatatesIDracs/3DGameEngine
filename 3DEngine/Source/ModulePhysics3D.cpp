@@ -1,4 +1,4 @@
-#include "Globals.h"
+
 #include "Application.h"
 #include "ModulePhysics3D.h"
 #include "PhysBody3D.h"

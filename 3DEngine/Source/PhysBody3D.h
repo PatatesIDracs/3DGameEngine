@@ -1,7 +1,6 @@
 #ifndef __PhysBody3D_H__
 #define __PhysBody3D_H__
 
-#include "p2List.h"
 #include "ModuleSceneIntro.h"
 
 class btRigidBody;

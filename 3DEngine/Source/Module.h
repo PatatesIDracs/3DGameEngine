@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Globals.h"
 #include <vector>
 #include <list>
 

@@ -121,9 +121,6 @@
     <ClInclude Include="Timer.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="p2List.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Imgui\imconfig.h">
       <Filter>Imgui</Filter>
     </ClInclude>

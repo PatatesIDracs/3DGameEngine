@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Module.h"
-#include "Globals.h"
-#include "p2List.h"
 #include "Primitive.h"
 
 #include "Bullet/include/btBulletDynamicsCommon.h"
