@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <list>
+
 class Application;
 struct PhysBody3D;
 

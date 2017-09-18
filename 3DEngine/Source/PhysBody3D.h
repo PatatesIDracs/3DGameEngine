@@ -2,10 +2,10 @@
 #define __PhysBody3D_H__
 
 #include "p2List.h"
+#include "ModuleSceneIntro.h"
 
 class btRigidBody;
 class Module;
-#include"ModuleSceneIntro.h"
 
 // =================================================
 struct PhysBody3D
@@ -28,8 +28,8 @@ private:
 	bool is_sensor = false;
 
 public:
-	p2List<Module*> collision_listeners;
-	bool tokill;
+	std::list<Module*> collision_listeners;
+	bool tokill= false;
 	bool active=true;
 };
 

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Module.h"
 #include "Globals.h"
 #include "p2List.h"
@@ -11,8 +12,6 @@
 
 class DebugDrawer;
 struct PhysBody3D;
-struct PhysVehicle3D;
-struct VehicleInfo;
 
 class ModulePhysics3D : public Module
 {
@@ -30,7 +29,6 @@ public:
 	PhysBody3D* AddBody(const Sphere& sphere, float mass = 1.0f);
 	PhysBody3D* AddBody(const Cube& cube, float mass = 1.0f);
 	PhysBody3D* AddBody(const Cylinder& cylinder, float mass = 1.0f);
-	PhysVehicle3D* AddVehicle(const VehicleInfo& info);
 	btHingeConstraint* Add_Hinge_Constraint(btRigidBody& rbA, btRigidBody& rbB, const btVector3& pivotInA, const btVector3& pivotInB, btVector3& axisInA, btVector3& axisInB, bool disablecollision);
 	btPoint2PointConstraint* Add_P2P_Constraint(btRigidBody& rbA, btRigidBody& rbB, const btVector3& pivotInA, const btVector3& pivotInB, bool disablecollision);
 	void AddConstraintP2P(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB);
@@ -48,11 +46,10 @@ private:
 	btDefaultVehicleRaycaster*			vehicle_raycaster;
 	DebugDrawer*						debug_draw;
 
-	p2List<btCollisionShape*> shapes;
-	p2List<PhysBody3D*> bodies;
-	p2List<btDefaultMotionState*> motions;
-	p2List<btTypedConstraint*> constraints;
-	p2List<PhysVehicle3D*> vehicles;
+	std::list<btCollisionShape*> shapes;
+	std::list<PhysBody3D*> bodies;
+	std::list<btDefaultMotionState*> motions;
+	std::list<btTypedConstraint*> constraints;
 	
 };
 
