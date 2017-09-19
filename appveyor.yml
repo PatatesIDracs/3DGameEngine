@@ -18,5 +18,5 @@ deploy:
     secure: mLX1ZZcbTN10gMxZ9HEmdDSP+f1OFzSrKUmfH3IjlHSy1vUD3hSh+PU6+ZYOELCd
   prerelease: true
   force_update: true
-    on:
+  on:
     CONFIGURATION: Release
