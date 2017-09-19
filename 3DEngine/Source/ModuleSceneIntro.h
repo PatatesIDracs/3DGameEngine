@@ -2,11 +2,14 @@
 
 #include "Module.h"
 #include "Primitive.h"
+#include "Math.h"
 
 #define MAX_SNAKE 2
 
 struct PhysBody3D;
 struct PhysMotor3D;
+
+
 
 class ModuleSceneIntro : public Module
 {
@@ -23,6 +26,15 @@ public:
 public:
 
 
-	bool showtestwindow = false;
+	bool	showtestwindow = false;
+	bool	random_test = false;
+	bool	collision_test = false;
+
+	float	float_rand_test = 0.0f;
+	int		int_rand_test = 0;
+
+	Sphere* col_test_BodyA = nullptr;
+	Sphere* col_test_BodyB = nullptr;
+	Sphere* col_test_BodyC = nullptr;
 
 };
