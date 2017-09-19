@@ -8,6 +8,8 @@
 
 #include "Glew\include\glew.h"
 
+#include "Math.h"
+
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -18,7 +20,7 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
-	LOG("Loading Intro assets");
+	LOGC("Loading Intro assets");
 	bool ret = true;
 
 	glewInit();
@@ -34,7 +36,7 @@ bool ModuleSceneIntro::Start()
 // Load assets
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading Intro scene");
+	LOGC("Unloading Intro scene");
 
 	ImGui_ImplSdlGL3_Shutdown();
 
@@ -65,7 +67,7 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	//-----------------------------------
 
-	Plane p(0, 1, 0, 0);
+	oldPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 
@@ -74,6 +76,6 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
-	LOG("Hit!");
+	LOGC("Hit!");
 }
 

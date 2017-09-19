@@ -187,6 +187,7 @@
     <ClInclude Include="Imgui\stb_truetype.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="MathGeoLib\Algorithm\GJK.h" />
     <ClInclude Include="MathGeoLib\Algorithm\Random\LCG.h" />
     <ClInclude Include="MathGeoLib\Algorithm\SAT.h" />

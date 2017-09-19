@@ -454,6 +454,9 @@
     <ClInclude Include="MathGeoLib\Algorithm\SAT.h">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\Geometry\KDTree.inl">

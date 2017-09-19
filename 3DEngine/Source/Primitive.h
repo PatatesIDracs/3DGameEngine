@@ -27,43 +27,43 @@ public:
 	PrimitiveTypes	GetType() const;
 
 public:
-	
+
 	Color color;
 	mat4x4 transform;
-	bool axis,wire;
+	bool axis, wire;
 
 protected:
 	PrimitiveTypes type;
 };
 
 // ============================================
-class Cube : public Primitive
+class oldCube : public Primitive
 {
-public :
-	Cube();
-	Cube(float sizeX, float sizeY, float sizeZ);
+public:
+	oldCube();
+	oldCube(float sizeX, float sizeY, float sizeZ);
 	void InnerRender() const;
 public:
 	vec3 size;
 };
 
 // ============================================
-class Sphere : public Primitive
+class oldSphere : public Primitive
 {
 public:
-	Sphere();
-	Sphere(float radius);
+	oldSphere();
+	oldSphere(float radius);
 	void InnerRender() const;
 public:
 	float radius;
 };
 
 // ============================================
-class Cylinder : public Primitive
+class oldCylinder : public Primitive
 {
 public:
-	Cylinder();
-	Cylinder(float radius, float height);
+	oldCylinder();
+	oldCylinder(float radius, float height);
 	void InnerRender() const;
 public:
 	float radius;
@@ -71,11 +71,11 @@ public:
 };
 
 // ============================================
-class Line : public Primitive
+class oldLine : public Primitive
 {
 public:
-	Line();
-	Line(float x, float y, float z);
+	oldLine();
+	oldLine(float x, float y, float z);
 	void InnerRender() const;
 public:
 	vec3 origin;
@@ -83,11 +83,11 @@ public:
 };
 
 // ============================================
-class Plane : public Primitive
+class oldPlane : public Primitive
 {
 public:
-	Plane();
-	Plane(float x, float y, float z, float d);
+	oldPlane();
+	oldPlane(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
 	vec3 normal;
