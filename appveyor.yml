@@ -14,3 +14,13 @@ pull_requests:
   
 build:
   verbosity: normal
+
+  depoly:
+ - provider: GitHub
+   tag: test tag
+   release: test name
+   description: test release
+   auth_token:
+     secure: mLX1ZZcbTN10gMxZ9HEmdDSP+f1OFzSrKUmfH3IjlHSy1vUD3hSh+PU6+ZYOELCd
+   prerelease: false
+   force_update: false
