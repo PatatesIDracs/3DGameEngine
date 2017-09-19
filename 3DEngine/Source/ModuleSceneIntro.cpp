@@ -44,15 +44,30 @@ bool ModuleSceneIntro::CleanUp()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	
+	//Temp Imgui stuff-----------------
+
 	ImGui_ImplSdlGL3_NewFrame(App->window->window);
-	ImGui::ShowTestWindow();
+
+	//Open a Gui window
+	ImGui::Begin("Amazing menu to close the app"); 
+
+	//Buttons to close the app and show the test window
+	if (ImGui::Button("show test window")) showtestwindow = !showtestwindow;
+	if(ImGui::Button("close app")) return UPDATE_STOP;
+
+	if (showtestwindow) ImGui::ShowTestWindow();
+
+	ImGui::End();
+
+	//Rendre the UI
+	ImGui::Render();
+
+	//-----------------------------------
 
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-
-	ImGui::Render();
-
 
 	return UPDATE_CONTINUE;
 }
