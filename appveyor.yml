@@ -15,7 +15,7 @@ deploy:
   release: test name
   description: test release
   auth_token:
-    secure: mLX1ZZcbTN10gMxZ9HEmdDSP+f1OFzSrKUmfH3IjlHSy1vUD3hSh+PU6+ZYOELCd
+    secure: 6bf257a9fcd270a31315204436678b80f97d0d41
   prerelease: true
   force_update: true
   on:
