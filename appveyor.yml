@@ -1,26 +1,20 @@
 version: v0.0.test.{build}
 
-branches: 
-  only:
-    - master
-
-	
 only_commits:
   message: /build/
-  
-  
+    
 pull_requests:
   do_not_increment_build_number: true
   
 build:
   verbosity: normal
 
-  depoly:
- - provider: GitHub
-   tag: test tag
-   release: test name
-   description: test release
-   auth_token:
-     secure: mLX1ZZcbTN10gMxZ9HEmdDSP+f1OFzSrKUmfH3IjlHSy1vUD3hSh+PU6+ZYOELCd
-   prerelease: false
-   force_update: false
+deploy:
+  provider: GitHub
+  tag: test tag
+  release: test name
+  description: test release
+  auth_token:
+    secure: mLX1ZZcbTN10gMxZ9HEmdDSP+f1OFzSrKUmfH3IjlHSy1vUD3hSh+PU6+ZYOELCd
+  prerelease: false
+  force_update: false
