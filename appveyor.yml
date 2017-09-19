@@ -19,4 +19,4 @@ deploy:
   prerelease: true
   force_update: true
   on:
-    CONFIGURATION: Release
+    configuration: release
