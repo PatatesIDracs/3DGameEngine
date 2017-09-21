@@ -5,6 +5,8 @@
 
 #include "Glew\include\glew.h"
 
+#include "JSON\parson.h"
+
 Application::Application()
 {
 	window = new ModuleWindow(this);

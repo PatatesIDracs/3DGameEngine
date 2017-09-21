@@ -31,6 +31,9 @@
     <Filter Include="MathGeoLib\Clock">
       <UniqueIdentifier>{1403b49d-29e7-45d6-a633-497e9de6b2b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\JSon">
+      <UniqueIdentifier>{718a1cef-4fad-42cc-ad0f-f1f7888f5435}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp" />
@@ -198,6 +201,9 @@
     </ClCompile>
     <ClCompile Include="ModuleEditor.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\parson.c">
+      <Filter>Tools\JSon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -462,6 +468,9 @@
     </ClInclude>
     <ClInclude Include="ModuleEditor.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\parson.h">
+      <Filter>Tools\JSon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
