@@ -196,6 +196,9 @@
     <ClCompile Include="MathGeoLib\Algorithm\GJK.cpp">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -456,6 +459,9 @@
     </ClInclude>
     <ClInclude Include="Math.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEditor.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

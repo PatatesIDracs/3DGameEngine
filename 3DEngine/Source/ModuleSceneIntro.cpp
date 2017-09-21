@@ -72,12 +72,19 @@ update_status ModuleSceneIntro::Update(float dt)
 	//Buttons to close the app and show the test window
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
-	
-
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("close app")) return UPDATE_STOP;
+		ImGui::EndMenu();
+	}
 
+	//Help Menu
+
+	if (ImGui::BeginMenu("Help"))
+	{
+		//Show ImGui demo
+		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
+
+		if (ImGui::MenuItem("Documentation")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/wiki");
 
 		ImGui::EndMenu();
 	}

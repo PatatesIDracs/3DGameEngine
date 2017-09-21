@@ -10,6 +10,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModulePhysics3D.h"
+#include "ModuleEditor.h"
 
 #include <list>
 
@@ -23,6 +24,7 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	ModulePhysics3D* physics;
+	ModuleEditor* editor;
 
 private:
 
@@ -38,6 +40,8 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	void OpenBrowser(const char* url);
 
 private:
 

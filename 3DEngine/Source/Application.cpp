@@ -14,6 +14,7 @@ Application::Application()
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	physics = new ModulePhysics3D(this);
+	editor = new ModuleEditor(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,12 +26,14 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 	AddModule(physics);
-	
+
 	// Scenes
 	AddModule(scene_intro);
 
 	// Renderer last!
 	AddModule(renderer3D);
+	//Render UI last
+	AddModule(editor);
 }
 
 Application::~Application()
@@ -145,6 +148,11 @@ bool Application::CleanUp()
 		ret = item._Ptr->_Myval->CleanUp();
 	}
 	return ret;
+}
+
+void Application::OpenBrowser(const char* url)
+{
+	ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWMAXIMIZED);
 }
 
 void Application::AddModule(Module* mod)
