@@ -1,5 +1,10 @@
 #include "Application.h"
 
+#include "Imgui\imgui.h"
+#include "Imgui\imgui_impl_sdl_gl3.h"
+
+#include "Glew\include\glew.h"
+
 Application::Application()
 {
 	window = new ModuleWindow(this);
@@ -45,6 +50,12 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	//Imgui Init
+	//glewInit();
+	//ImGui_ImplSdlGL3_Init(window->window);
+	//ImGuiIO& io = ImGui::GetIO();
+
+
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
 
@@ -88,6 +99,11 @@ update_status Application::Update()
 	
 	std::list<Module*>::iterator item = list_modules.begin();
 
+	//Start ImGui Frame
+	//ImGui_ImplSdlGL3_NewFrame(window->window);
+
+
+
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
 		ret = item._Ptr->_Myval->PreUpdate(dt);
@@ -109,6 +125,10 @@ update_status Application::Update()
 		ret = item._Ptr->_Myval->PostUpdate(dt);
 		item++;
 	}
+
+
+	//Render all ImgGui from all modules
+	//ImGui::Render();
 
 	FinishUpdate();
 	return ret;

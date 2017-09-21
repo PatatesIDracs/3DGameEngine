@@ -67,15 +67,25 @@ update_status ModuleSceneIntro::Update(float dt)
 	ImGui_ImplSdlGL3_NewFrame(App->window->window);
 
 	//Open a Gui window
-	ImGui::Begin("Amazing menu to close the app"); 
+	ImGui::BeginMainMenuBar();
 
 	//Buttons to close the app and show the test window
-	if (ImGui::Button("show test window")) showtestwindow = !showtestwindow;
-	if(ImGui::Button("close app")) return UPDATE_STOP;
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
+	
+
+		//Interrupt update and close the app
+		if (ImGui::MenuItem("close app")) return UPDATE_STOP;
+
+
+		ImGui::EndMenu();
+	}
+
 
 	if (showtestwindow) ImGui::ShowTestWindow();
 
-	ImGui::End();
+	ImGui::EndMainMenuBar();
 
 	//Testing out some MathGeoLib Features
 	ImGui::Begin("MathGeoLib Tests Window");
