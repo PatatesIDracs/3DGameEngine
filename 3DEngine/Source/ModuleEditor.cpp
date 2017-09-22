@@ -38,6 +38,7 @@ update_status ModuleEditor::Update(float dt)
 	//-------------------
 	//-----MAIN MENU-----
 	//-------------------
+	//Since main menu may have a major impact on the application it's managed directly from the Update
 
 	//Open a Gui window
 	ImGui::BeginMainMenuBar();
@@ -53,6 +54,9 @@ update_status ModuleEditor::Update(float dt)
 	//Help Menu
 	if (ImGui::BeginMenu("Help"))
 	{
+		//Show about info 
+		if (ImGui::MenuItem("About")) showaboutwindow = !showaboutwindow;
+
 		//Show ImGui demo
 		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
 
@@ -62,11 +66,13 @@ update_status ModuleEditor::Update(float dt)
 
 		if (ImGui::MenuItem("Report a bug")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/issues");
 
+
+		//temp
+		if (ImGui::MenuItem("hardware")) showhardware = !showhardware;
+
+
 		ImGui::EndMenu();
 	}
-
-	//Show the ImGui test window fi requested
-	if (showtestwindow) ImGui::ShowTestWindow();
 
 	ImGui::EndMainMenuBar();
 	///--------------------------------------------------------------
@@ -98,10 +104,21 @@ update_status ModuleEditor::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status ModuleEditor::PostUpdate(float dt)
+
+//Except from the main menu the other Ui elements of ModuleEditor will be put here
+void ModuleEditor::DrawImGui()
 {
-	return UPDATE_CONTINUE;
+	//Show the ImGui test window if requested
+	if (showtestwindow) ImGui::ShowTestWindow();
+
+	//Draw about window when requested
+	if (showaboutwindow) DrawAboutWindow();
+
+	if (showhardware) HardwareDetection();
+
 }
+
+
 
 bool ModuleEditor::CleanUp()
 {
@@ -110,4 +127,44 @@ bool ModuleEditor::CleanUp()
 	ImGui_ImplSdlGL3_Shutdown();
 
 	return true;
+}
+
+
+
+//About Window 
+void ModuleEditor::DrawAboutWindow()
+{
+
+	ImGui::Begin("About JoPe");
+
+	ImGui::Text("JoPe Engine");
+	ImGui::Text("Very simple and limited game engine,\nmade for educational purposes");
+
+	ImGui::Text("\nMade by: Joan Pareja, Pere Rifa");
+
+	//Libraries: bullet, SDL, glew, glut, dear imgui, json(Parson), MathGeoLib
+	ImGui::Text("\nMade with: SDL, glew, glut, dear imgui, Parson, MathGeoLib");
+
+	ImGui::Text("\nLicensed under the MIT license");
+
+	ImGui::End();
+}
+
+void ModuleEditor::HardwareDetection()
+{
+
+	ImGui::Begin("Hardware");
+
+	ImGui::Text("CPU: "); ImGui::SameLine(); 
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
+ 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
+
+	ImGui::Text("System RAM: "); ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%0.1f Gb", ((float)SDL_GetSystemRAM()/1024.0f));
+
+	ImGui::Separator();
+
+	ImGui::Text((char*) glGetString(GL_VERSION));
+	
+	ImGui::End();
 }

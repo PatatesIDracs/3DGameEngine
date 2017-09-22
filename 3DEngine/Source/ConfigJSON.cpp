@@ -22,5 +22,12 @@ Config_Json::Config_Json(const char * filename)
 
 Config_Json::~Config_Json()
 {
-	
+	if (conf_value != nullptr)
+	{
+		delete conf_value;
+	}
+	if (conf_object != nullptr)
+	{
+		delete conf_object;
+	}
 }

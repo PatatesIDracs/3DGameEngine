@@ -13,14 +13,22 @@ public:
 
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
-	update_status PostUpdate(float dt);
+
+	void DrawImGui();
 
 	bool CleanUp();
 
 
+private:
+
+	void DrawAboutWindow();
+	void HardwareDetection();
+
 
 private:
-	bool	showtestwindow = false;
+	bool	showtestwindow	= false;
+	bool	showaboutwindow	= false;
+	bool	showhardware	= false;
 
 };
 
