@@ -1,4 +1,8 @@
-#pragma once
+#ifndef __MODULERENDERER_H__
+#define __MODULERENDERER_H__
+
+
+
 #include "Module.h"
 #include "glmath.h"
 #include "Light.h"
@@ -25,3 +29,5 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 };
+
+#endif // !__MODULERENDERER_H__

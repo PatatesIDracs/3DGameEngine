@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MODULEPHYSICS3D_H__
+#define __MODULEPHYSICS3D_H__
+
 
 #include "Module.h"
 #include "Primitive.h"
@@ -68,3 +70,5 @@ public:
 	oldLine line;
 	Primitive point;
 };
+
+#endif // !__MODULEPHYSICS3D_H__

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MODULESCENEINTRO_H__
+#define __MODULESCENEINTRO_H__
+
 
 #include "Module.h"
 #include "Primitive.h"
@@ -40,3 +42,5 @@ public:
 	Sphere* col_test_BodyC = nullptr;
 
 };
+
+#endif // !__MODULESCENEINTRO_H__

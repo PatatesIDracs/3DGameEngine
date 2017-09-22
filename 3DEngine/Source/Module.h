@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MODULE_H__
+#define __MODULE_H__
+
 
 #include "Globals.h"
 #include <vector>
@@ -61,3 +63,5 @@ public:
 	virtual void LoadConfig() {};
 	virtual void SaveConfig() {};
 };
+
+#endif // !__MODULE_H__
