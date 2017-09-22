@@ -157,6 +157,11 @@ void Application::OpenBrowser(const char* url)
 	ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWMAXIMIZED);
 }
 
+const std::list<Module*>* Application::GetModulesList()
+{
+	return &list_modules;
+}
+
 void Application::AddModule(Module* mod)
 {
 	list_modules.push_back(mod);

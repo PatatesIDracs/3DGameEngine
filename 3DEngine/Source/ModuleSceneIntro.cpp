@@ -23,9 +23,10 @@ bool ModuleSceneIntro::Start()
 	LOGC("Loading Intro assets");
 	bool ret = true;
 
-	glewInit();
+/*	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
 	ImGuiIO& io = ImGui::GetIO();
+	*/
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
@@ -53,46 +54,26 @@ bool ModuleSceneIntro::CleanUp()
 	delete col_test_BodyB;
 	delete col_test_BodyC;
 
-	ImGui_ImplSdlGL3_Shutdown();
+	//ImGui_ImplSdlGL3_Shutdown();
 
 	return true;
 }
+
 
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
 	
-	//Temp Imgui stuff-----------------
 
-	ImGui_ImplSdlGL3_NewFrame(App->window->window);
+	oldPlane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
 
-	//Open a Gui window
-	ImGui::BeginMainMenuBar();
+	return UPDATE_CONTINUE;
+}
 
-	//Buttons to close the app and show the test window
-	if (ImGui::BeginMenu("File"))
-	{
-		//Interrupt update and close the app
-		if (ImGui::MenuItem("close app")) return UPDATE_STOP;
-		ImGui::EndMenu();
-	}
-
-	//Help Menu
-
-	if (ImGui::BeginMenu("Help"))
-	{
-		//Show ImGui demo
-		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
-
-		if (ImGui::MenuItem("Documentation")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/wiki");
-
-		ImGui::EndMenu();
-	}
-
-
-	if (showtestwindow) ImGui::ShowTestWindow();
-
-	ImGui::EndMainMenuBar();
+void ModuleSceneIntro::DrawImGui()
+{
 
 	//Testing out some MathGeoLib Features
 	ImGui::Begin("MathGeoLib Tests Window");
@@ -121,7 +102,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		if (ImGui::TreeNode("Math Test"))
 		{
 			ImGui::Text("Calculate Matrix C = A*B\n A:\n1 2 1\n2,1,2\n1,2,1\n\n B:\n1 1 1\n2 2 2\n3 3 3");
-			
+
 			if (ImGui::Button("Test Matrix Multiplication"))
 			{
 				float3x3 mat_A(1, 2, 1, 2, 1, 2, 1, 2, 1);
@@ -141,11 +122,11 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::BulletText("Sphere 1:\nposition (0,0,0), rad = 1.0");
 			ImGui::BulletText("Sphere 2:\nposition (0,1,0), rad = 1.5");
 			ImGui::BulletText("Sphere 3:\nposition (2,2,0), rad = 1.0");
-			
+
 			if (ImGui::Button("Sphere 1 vs Sphere 2"))
 			{
 				collision_test = false;
-				if(col_test_BodyA->Intersects((const Sphere)*col_test_BodyB))
+				if (col_test_BodyA->Intersects((const Sphere)*col_test_BodyB))
 				{
 					collision_test = true;
 				}
@@ -165,28 +146,6 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	}
 	ImGui::End();
-
-	
-
-
-	//Matrix Multiplication
-	float3x3 mat_A(1, 2, 1, 2, 1, 2, 1, 2, 1);
-	float3x3 mat_B(1, 1, 1, 2, 2, 2, 3, 3, 3);
-
-	float3x3 mat_C = mat_A*mat_B;
-
-
-
-	//Rendre the UI
-	ImGui::Render();
-
-	//-----------------------------------
-
-	oldPlane p(0, 1, 0, 0);
-	p.axis = true;
-	p.Render();
-
-	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)

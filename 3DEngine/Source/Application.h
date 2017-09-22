@@ -43,6 +43,8 @@ public:
 
 	void OpenBrowser(const char* url);
 
+	const std::list<Module*>* GetModulesList();
+
 private:
 
 	void AddModule(Module* mod);
