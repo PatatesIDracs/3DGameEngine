@@ -260,6 +260,7 @@ static int is_decimal(const char *string, size_t length) {
     return 1;
 }
 
+
 static char * read_file(const char * filename) {
     FILE *fp = fopen(filename, "r");
     size_t file_size;

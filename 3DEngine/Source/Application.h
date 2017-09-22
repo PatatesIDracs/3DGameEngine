@@ -14,6 +14,8 @@
 
 #include <list>
 
+class Config_Json;
+
 class Application
 {
 public:
@@ -50,4 +52,9 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
+	// JSON Save/Load Configuration
+	void LoadConfig(Config_Json&);
+	void SaveConfig();
+	
 };

@@ -56,4 +56,8 @@ public:
 
 	virtual void OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	{}
+
+	// JSON Save and Load Configuration
+	virtual void LoadConfig() {};
+	virtual void SaveConfig() {};
 };

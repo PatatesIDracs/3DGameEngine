@@ -5,7 +5,8 @@
 
 #include "Glew\include\glew.h"
 
-#include "JSON\parson.h"
+#include "parson.h"
+#include "ConfigJSON.h"
 
 Application::Application()
 {
@@ -59,7 +60,8 @@ bool Application::Init()
 	//glewInit();
 	//ImGui_ImplSdlGL3_Init(window->window);
 	//ImGuiIO& io = ImGui::GetIO();
-
+	Config_Json config("../Game/config.json");
+	LoadConfig(config);
 
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
@@ -93,6 +95,16 @@ void Application::PrepareUpdate()
 
 // ---------------------------------------------
 void Application::FinishUpdate()
+{
+}
+
+// ---------------------------------------------
+void Application::LoadConfig(Config_Json& config)
+{
+	const char* test_parson = json_object_get_string(config.conf_object,"name");
+}
+
+void Application::SaveConfig()
 {
 }
 
