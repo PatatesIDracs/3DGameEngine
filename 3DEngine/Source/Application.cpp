@@ -97,7 +97,14 @@ void Application::FinishUpdate()
 // ---------------------------------------------
 void Application::LoadConfig(Config_Json& config)
 {
-	const char* test_parson = json_object_get_string(config.conf_object,"name");
+	
+	
+	int		test_int = config.GetInt("number", 0);
+	float	test_float = config.GetFloat("number", 0.0f);
+	std::string test_string = config.GetString("name", "Load String Failed");
+	bool    test_bool = config.GetBool("isTrue", false);
+
+	test_string.clear();
 }
 
 void Application::SaveConfig()

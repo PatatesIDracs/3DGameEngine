@@ -20,6 +20,12 @@ public:
 	Config_Json(const char* filename);
 	~Config_Json();
 
+	int			GetInt(const char* name, int default) const;
+	float		GetFloat(const char* name, float default) const;
+	const char* GetString(const char* name, const char* default) const;
+	bool		GetBool(const char* name, bool default) const;
+
+
 //private: no methods yet
 public:
 	JSON_Object* conf_object = nullptr;
