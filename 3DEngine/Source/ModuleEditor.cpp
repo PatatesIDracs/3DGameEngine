@@ -69,9 +69,6 @@ update_status ModuleEditor::Update(float dt)
 
 		if (ImGui::MenuItem("Report a bug")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/issues");
 		
-		//temp
-		if (ImGui::MenuItem("hardware")) showhardware = !showhardware;
-		
 		ImGui::EndMenu();
 	}
 
@@ -92,6 +89,8 @@ update_status ModuleEditor::Update(float dt)
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration");
+		
+		ApplicationConfig();
 
 		while (item != module_list->end())
 		{
@@ -155,7 +154,6 @@ bool ModuleEditor::CleanUp()
 }
 
 
-
 //About Window 
 void ModuleEditor::DrawAboutWindow()
 {
@@ -173,6 +171,21 @@ void ModuleEditor::DrawAboutWindow()
 	ImGui::Text("\nLicensed under the MIT license");
 
 	ImGui::End();
+}
+
+void ModuleEditor::ApplicationConfig()
+{
+	if (ImGui::CollapsingHeader("Application"))
+	{
+		static char str_name[150] = "JoPe Engine";
+		ImGui::InputText("App name", str_name, (int)sizeof(str_name));
+
+		static char str_org[150] = "Patates i Dracs";
+		ImGui::InputText("Organitzation", str_org, (int)sizeof(str_org));
+
+		static int fps = 0;
+		ImGui::SliderInt("Max FPS", &fps, 15, 120);
+	}
 }
 
 void ModuleEditor::HardwareDetection()
@@ -208,8 +221,9 @@ void ModuleEditor::HardwareDetection()
 		ImGui::Separator();
 		//---------------------
 		//GPU info-------------
-
+		//NOT DONE
 		ImGui::Text((char*)glGetString(GL_VERSION));
 	}
 	
 }
+

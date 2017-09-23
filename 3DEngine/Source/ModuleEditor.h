@@ -22,13 +22,13 @@ public:
 private:
 
 	void DrawAboutWindow();
+	void ApplicationConfig();
 	void HardwareDetection();
 
 
 private:
 	bool	showtestwindow	= false;
 	bool	showaboutwindow	= false;
-	bool	showhardware	= false;
 	bool	showconfig		= false;
 
 };

@@ -85,6 +85,9 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	total_frame_count++;
+	last_sec_frame_count++;
+
 	dt = (float)ms_timer.Read() / 1000.0f;
 	ms_timer.Start();
 }
@@ -92,7 +95,23 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
-}
+	///---------------------------
+	//----------------------------
+	//---FRAMERATE CALCULATIONS---
+	//----------------------------
+
+	//When a second has passed...
+	if (last_sec_timer.Read() > 1000)
+	{
+		last_sec_timer.Start();							//Reset the timer
+		last_sec_frame_count = curr_sec_frame_count;	//Pass the current sec frame count to the last sec frame count
+		curr_sec_frame_count = 0;						//Reset frame count
+	}
+
+	avg_fps = float (total_frame_count) / start_up_time.ReadSec();
+	last_frame_time = ms_timer.Read();
+	///---------------------------
+}	
 
 // ---------------------------------------------
 void Application::LoadConfig(Config_Json& config)

@@ -34,6 +34,15 @@ private:
 	float	dt;
 	std::list<Module*> list_modules;
 
+	int avg_fps = 0;					//Average fps
+	float last_frame_time = 0.0f;		//ms of the last frame
+	Timer start_up_time;				//Time since startup
+	Timer last_sec_timer;				//Timer to control the seconds between each drame
+	Uint64 total_frame_count = 0;		//Total frames from the application start
+	Uint32 curr_sec_frame_count = 0;	//Frames in the current second (we can't display them as they are constatnly increasing during the second)
+	Uint32 last_sec_frame_count = 0;	//Frames in the last second (can be displayed)
+
+
 public:
 
 	Application();
@@ -56,5 +65,5 @@ private:
 	// JSON Save/Load Configuration
 	void LoadConfig(Config_Json&);
 	void SaveConfig();
-	
+
 };
