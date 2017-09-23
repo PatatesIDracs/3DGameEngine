@@ -31,6 +31,7 @@ enum update_status
 };
 
 // Configuration -----------
+#define CONFIG_FILENAME "../Game/config.json"
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 1

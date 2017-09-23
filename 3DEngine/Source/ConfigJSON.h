@@ -20,17 +20,26 @@ public:
 	Config_Json(const char* filename);
 	~Config_Json();
 
-	int			GetInt(const char* name, int default) const;
-	float		GetFloat(const char* name, float default) const;
-	const char* GetString(const char* name, const char* default) const;
-	bool		GetBool(const char* name, bool default) const;
+	// Get Methods
+	int			GetInt(const char* name, int default = 0) const;
+	float		GetFloat(const char* name, float default = 0.0f) const;
+	const char* GetString(const char* name, const char* default = "") const;
+	bool		GetBool(const char* name, bool default = false) const;
 
+	// Set Methods
+	bool		SetInt(const char* name, int value);
+	bool		SetFloat(const char* name, float value);
+	bool		SetString(const char* name, const char* value);
+	bool		SetBool(const char* name, bool value);
+
+	// Serialize data to file and CleanUp
+	void		SaveToFile(const char* filename);
 
 //private: no methods yet
 public:
-	JSON_Object* conf_object = nullptr;
-	JSON_Array*  conf_array = nullptr;
-	JSON_Value*	 conf_value = nullptr;
+	JSON_Object* config_obj = nullptr;
+	JSON_Array*  config_array = nullptr;
+	JSON_Value*	 config_val = nullptr;
 
 };
 

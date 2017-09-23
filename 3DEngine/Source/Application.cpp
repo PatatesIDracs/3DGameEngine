@@ -56,8 +56,9 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	Config_Json config("../Game/config.json");
-	LoadConfig(config);
+	// Load Gloval Configuration
+	LoadConfig(CONFIG_FILENAME);
+
 
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
@@ -108,26 +109,37 @@ void Application::FinishUpdate()
 		curr_sec_frame_count = 0;						//Reset frame count
 	}
 
-	avg_fps = float (total_frame_count) / start_up_time.ReadSec();
-	last_frame_time = ms_timer.Read();
+	avg_fps = (float)total_frame_count / start_up_time.ReadSec();
+	last_frame_time = (float) ms_timer.Read();
 	///---------------------------
 }	
 
 // ---------------------------------------------
-void Application::LoadConfig(Config_Json& config)
+void Application::LoadConfig(const char* filename)
 {
-	
-	
+	Config_Json config(filename);
+
+	//tests
 	int		test_int = config.GetInt("number", 0);
 	float	test_float = config.GetFloat("number", 0.0f);
 	std::string test_string = config.GetString("name", "Load String Failed");
 	bool    test_bool = config.GetBool("isTrue", false);
 
+	json_object_clear(config.config_obj);
 	test_string.clear();
 }
 
-void Application::SaveConfig()
+void Application::SaveConfig(const char* filename)
 {
+	Config_Json config(filename);
+
+	//tests
+	config.SetString("Save Result?", "One Point to Grifindor");
+	config.SetBool("Realy?", true);
+	config.SetFloat("WoW", 0.0);
+	config.SetInt("can't believe it", 0);
+
+	config.SaveToFile(filename);
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -174,6 +186,10 @@ bool Application::CleanUp()
 		item--;
 		ret = item._Ptr->_Myval->CleanUp();
 	}
+
+	// Save Configuration to File
+	SaveConfig(CONFIG_FILENAME);
+
 	return ret;
 }
 

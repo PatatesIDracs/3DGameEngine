@@ -34,7 +34,7 @@ private:
 	float	dt;
 	std::list<Module*> list_modules;
 
-	int avg_fps = 0;					//Average fps
+	float avg_fps = 0;					//Average fps
 	float last_frame_time = 0.0f;		//ms of the last frame
 	Timer start_up_time;				//Time since startup
 	Timer last_sec_timer;				//Timer to control the seconds between each drame
@@ -63,7 +63,7 @@ private:
 	void FinishUpdate();
 
 	// JSON Save/Load Configuration
-	void LoadConfig(Config_Json&);
-	void SaveConfig();
+	void LoadConfig(const char* filename);
+	void SaveConfig(const char* filename);
 
 };
