@@ -56,6 +56,9 @@ public:
 	virtual void DrawImGui()
 	{}
 
+	virtual void DrawConfig()
+	{}
+
 	virtual void OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	{}
 

@@ -1,5 +1,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "Imgui\imgui.h"
+
 
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -92,4 +94,13 @@ bool ModuleWindow::CleanUp()
 void ModuleWindow::SetTitle(const char* title)
 {
 	SDL_SetWindowTitle(window, title);
+}
+
+void ModuleWindow::DrawConfig()
+{
+	if (ImGui::CollapsingHeader("Window"))
+	{
+
+
+	}
 }

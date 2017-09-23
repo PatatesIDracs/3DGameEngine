@@ -34,7 +34,7 @@ update_status ModuleEditor::PreUpdate(float dt)
 update_status ModuleEditor::Update(float dt)
 {
 	
-	///------------------
+	///--------------------------------------------------
 	//-------------------
 	//-----MAIN MENU-----
 	//-------------------
@@ -46,6 +46,9 @@ update_status ModuleEditor::Update(float dt)
 	//Buttons to close the app and show the test window
 	if (ImGui::BeginMenu("File"))
 	{
+		//Open Setting window
+		if (ImGui::MenuItem("Configuration")) showconfig = !showconfig;
+
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
 		ImGui::EndMenu();
@@ -65,12 +68,10 @@ update_status ModuleEditor::Update(float dt)
 		if (ImGui::MenuItem("Download lastest")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/releases");
 
 		if (ImGui::MenuItem("Report a bug")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/issues");
-
-
+		
 		//temp
 		if (ImGui::MenuItem("hardware")) showhardware = !showhardware;
-
-
+		
 		ImGui::EndMenu();
 	}
 
@@ -79,24 +80,51 @@ update_status ModuleEditor::Update(float dt)
 
 	///--------------------------------------------------------------
 	//-----------------------
+	//------CONFIG DRAW------
+	//-----------------------
+
+	//Get a const module list from app
+	//We'll do it regardless of the showconfig value since we may need the list for other Draw methods
+	const std::list<Module*>* module_list = App->GetModulesList();
+	std::list<Module*>::const_iterator item = module_list->begin();
+
+	//Check if we need to draw the UI
+	if (showconfig)
+	{
+		ImGui::Begin("Configuration");
+
+		while (item != module_list->end())
+		{
+			item._Ptr->_Myval->DrawConfig();
+			item++;
+		}
+		
+		HardwareDetection();
+
+		ImGui::End();
+	}
+	///--------------------------------------------------------------
+
+	///--------------------------------------------------------------
+	//-----------------------
 	//----MODULES UI DRAW----
 	//-----------------------
 	
-	//Get a const module list from app
-	const std::list<Module*>* module_list = App->GetModulesList();
-	std::list<Module*>::const_iterator item = module_list->begin();
+	//We'll reuse the module_list and item from the configdraw
+	//Make sure that the item is the start of the list
+	item = module_list->begin();
 		
 	//Iterate the list and call the DrawImGui from all modules
 	//ImGui::Begin() and ImGui::End() needs to be called in the DragImGui of each module
 	//This way we can decide more easily the name of the new UI window
 	while (item != module_list->end())
 	{
+
 		item._Ptr->_Myval->DrawImGui();
 		item++;
-	}
-	
+	}	
 	///--------------------------------------------------------------
-
+	
 
 	//Render all UI
 	ImGui::Render();
@@ -105,7 +133,7 @@ update_status ModuleEditor::Update(float dt)
 }
 
 
-//Except from the main menu the other Ui elements of ModuleEditor will be put here
+//Except from the main menu the other UI elements of ModuleEditor will be put here
 void ModuleEditor::DrawImGui()
 {
 	//Show the ImGui test window if requested
@@ -113,9 +141,6 @@ void ModuleEditor::DrawImGui()
 
 	//Draw about window when requested
 	if (showaboutwindow) DrawAboutWindow();
-
-	if (showhardware) HardwareDetection();
-
 }
 
 
@@ -153,18 +178,38 @@ void ModuleEditor::DrawAboutWindow()
 void ModuleEditor::HardwareDetection()
 {
 
-	ImGui::Begin("Hardware");
+	if (ImGui::CollapsingHeader("Hardware"))
+	{
+		ImVec4	cyan(0.0f, 1.0f, 1.0f, 1.0f);
 
-	ImGui::Text("CPU: "); ImGui::SameLine(); 
-	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
- 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
+		//----------------------
+		//CPU info--------------
+		ImGui::Text("CPU: "); ImGui::SameLine();
+		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
+		ImGui::TextColored(cyan, "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
 
-	ImGui::Text("System RAM: "); ImGui::SameLine();
-	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%0.1f Gb", ((float)SDL_GetSystemRAM()/1024.0f));
+		ImGui::Text("System RAM: "); ImGui::SameLine();
+		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
 
-	ImGui::Separator();
+		ImGui::Text("Caps: "); ImGui::SameLine();
+		if (SDL_Has3DNow() == SDL_TRUE)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
+		if (SDL_HasAVX() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
+	//	if (SDL_HasAVX2() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
+		if (SDL_HasAltiVec() == SDL_TRUE)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
+		if (SDL_HasMMX() == SDL_TRUE)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
+		if (SDL_HasRDTSC() == SDL_TRUE)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
+		if (SDL_HasSSE() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD, ");		ImGui::SameLine();
+		if (SDL_HasSSE2() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD2, ");		ImGui::SameLine();
+		if (SDL_HasSSE3() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD3, ");		ImGui::SameLine();
+		if (SDL_HasSSE41() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD41, ");	ImGui::SameLine();
+		if (SDL_HasSSE42() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD42, ");
 
-	ImGui::Text((char*) glGetString(GL_VERSION));
+
+		ImGui::Separator();
+		//---------------------
+		//GPU info-------------
+
+		ImGui::Text((char*)glGetString(GL_VERSION));
+	}
 	
-	ImGui::End();
 }

@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "SDL/include/SDL.h"
 
+
 class Application;
 
 class ModuleWindow : public Module
@@ -19,6 +20,8 @@ public:
 	bool CleanUp();
 
 	void SetTitle(const char* title);
+
+	void DrawConfig();
 
 public:
 	//The window we'll be rendering to

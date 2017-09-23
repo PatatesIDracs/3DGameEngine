@@ -1,14 +1,5 @@
 {
-  "name": "JoPe Engine 1 JSON 0",
+  "name": "JoPe Engine 2 JSON 0",
   "number": 1234,
-  "isTrue": true,
-  "version": "0.0.0",
-  "repo": "kgabis/parson",
-  "description": "Small json parser and reader",
-  "keywords": [ "json", "parser" ],
-  "license": "MIT",
-  "src": [
-    "parson.c",
-    "parson.h"
-  ]
+  "isTrue": true
 }

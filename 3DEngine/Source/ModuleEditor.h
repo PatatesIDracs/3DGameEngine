@@ -29,6 +29,7 @@ private:
 	bool	showtestwindow	= false;
 	bool	showaboutwindow	= false;
 	bool	showhardware	= false;
+	bool	showconfig		= false;
 
 };
 
