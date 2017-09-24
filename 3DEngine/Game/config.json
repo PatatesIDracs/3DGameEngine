@@ -1,6 +1,6 @@
 {
     "Application": {
-        "Name": "JoPe Engine",
+        "Name": "Jope Engine",
         "Is Active": true
     },
     "Audio": {
@@ -8,7 +8,8 @@
     },
     "Window": {
         "Width": 1280,
-        "Height": 720,
+        "Height": 1024,
+        "Resolution": 2,
         "Fullscreen": false,
         "Resizable": false,
         "Borderless": false,

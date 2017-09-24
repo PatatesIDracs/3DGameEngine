@@ -25,12 +25,14 @@ private:
 	void DrawAboutWindow();
 	void ApplicationConfig();
 	void HardwareDetection();
+	void DrawConsole();
 
 
 private:
 	bool	showtestwindow	= false;
 	bool	showaboutwindow	= false;
 	bool	showconfig		= false;
+	bool	showconsole		= false;
 
 
 };

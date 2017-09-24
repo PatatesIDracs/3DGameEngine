@@ -27,6 +27,9 @@ public:
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
+private:
+	void SetRes(int index);
+
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;
@@ -34,8 +37,11 @@ public:
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
 
+	const char* res_array[4] = { "1024x768" , "1280x720" , "1280x1024" , "1920x1080" };
+	
 	int		width = SCREEN_WIDTH;
 	int		height = SCREEN_HEIGHT;
+	int		resolution = 1;
 	bool	fullscreen = false;	
 	bool	resizable = false;
 	bool	borderless = false;

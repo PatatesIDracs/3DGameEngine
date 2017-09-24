@@ -98,6 +98,25 @@ void ModuleWindow::DrawConfig()
 {
 	if (ImGui::CollapsingHeader("Window"))
 	{
+		
+		if (ImGui::Combo("Resolution", &resolution, res_array, (int)(sizeof(res_array) / sizeof(*res_array))))
+		{
+			SetRes(resolution);
+		}
+
+		ImGui::Checkbox("Fullscren", &fullscreen);
+		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Restart to apply");
+		ImGui::SameLine();
+		ImGui::Checkbox("Full Desktop", &fullscreen_desktop);
+		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+
+		ImGui::Checkbox("Resizable", &resizable);
+		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+		ImGui::SameLine();
+		ImGui::Checkbox("Borderless", &borderless);
+		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+
+
 	}
 }
 
@@ -107,6 +126,7 @@ void ModuleWindow::LoadModuleConfig(Config_Json & config)
 	// Window Configuration
 	width = config.GetInt("Width", SCREEN_WIDTH);
 	height = config.GetInt("Height", SCREEN_HEIGHT);
+	resolution = config.GetInt("Resolution", 1);
 	fullscreen = config.GetBool("Fullscreen", false);
 	resizable = config.GetBool("Resizable", false);
 	borderless = config.GetBool("Borderless", false);
@@ -118,8 +138,34 @@ void ModuleWindow::SaveModuleConfig(Config_Json & config)
 	Config_Json window_config = config.AddJsonObject(this->GetName());
 	window_config.SetInt("Width", width);
 	window_config.SetInt("Height", height);
+	window_config.SetInt("Resolution", resolution);
 	window_config.SetBool("Fullscreen", fullscreen);
 	window_config.SetBool("Resizable", resizable);
 	window_config.SetBool("Borderless", borderless);
 	window_config.SetBool("Fullscreen Descktop", fullscreen_desktop);
+}
+
+void ModuleWindow::SetRes(int index)
+{
+	switch (index)
+	{
+	case 0:
+		width = 1024;
+		height = 768;
+		break;
+	case 1:
+		width = 1280;
+		height = 720;
+		break;
+	case 2:
+		width = 1280;
+		height = 1024;
+		break;
+	case 3:
+		width = 1920;
+		height = 1080;
+		break;
+	default:
+		break;
+	}
 }

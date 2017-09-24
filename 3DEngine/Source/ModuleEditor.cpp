@@ -20,13 +20,14 @@ bool ModuleEditor::Start()
 	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
 	ImGuiIO& io = ImGui::GetIO();
-	
+
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate(float dt)
 {
 	ImGui_ImplSdlGL3_NewFrame(App->window->window);
+
 
 	return UPDATE_CONTINUE;
 }
@@ -51,6 +52,15 @@ update_status ModuleEditor::Update(float dt)
 
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
+		ImGui::EndMenu();
+	}
+
+
+	if (ImGui::BeginMenu("Workspace"))
+	{
+		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
+
+
 		ImGui::EndMenu();
 	}
 
@@ -118,7 +128,6 @@ update_status ModuleEditor::Update(float dt)
 	//This way we can decide more easily the name of the new UI window
 	while (item != module_list->end())
 	{
-
 		item._Ptr->_Myval->DrawImGui();
 		item++;
 	}	
@@ -140,6 +149,8 @@ void ModuleEditor::DrawImGui()
 
 	//Draw about window when requested
 	if (showaboutwindow) DrawAboutWindow();
+
+	if (showconsole) DrawConsole();
 }
 
 
@@ -230,5 +241,13 @@ void ModuleEditor::HardwareDetection()
 		ImGui::Text((char*)glGetString(GL_VERSION));
 	}
 	
+}
+
+void ModuleEditor::DrawConsole()
+{
+	ImGui::Begin("Console");
+	
+	
+	ImGui::End();
 }
 
