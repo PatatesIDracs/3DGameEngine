@@ -240,6 +240,11 @@ bool Application::CleanUp()
 	return ret;
 }
 
+const char * Application::GetAppName() const
+{
+	return app_name.c_str();
+}
+
 void Application::OpenBrowser(const char* url)
 {
 	ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWMAXIMIZED);

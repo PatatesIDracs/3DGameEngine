@@ -60,6 +60,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	const char* GetAppName() const;
+
 	void OpenBrowser(const char* url);
 
 	const std::list<Module*>* GetModulesList();

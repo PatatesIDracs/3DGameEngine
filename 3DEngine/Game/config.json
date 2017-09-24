@@ -1,13 +1,18 @@
 {
     "Application": {
-        "Name": "Jope Engine",
+        "Name": "JoPe Engine",
         "Is Active": true
     },
     "Audio": {
         "Is Active": true
     },
     "Window": {
-        "Is Active": true
+        "Width": 1280,
+        "Height": 720,
+        "Fullscreen": false,
+        "Resizable": false,
+        "Borderless": false,
+        "Fullscreen Descktop": false
     },
     "Camera": {
         "Is Active": true

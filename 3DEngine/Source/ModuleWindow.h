@@ -33,6 +33,13 @@ public:
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
+
+	int		width = SCREEN_WIDTH;
+	int		height = SCREEN_HEIGHT;
+	bool	fullscreen = false;	
+	bool	resizable = false;
+	bool	borderless = false;
+	bool	fullscreen_desktop = false;
 };
 
 #endif // __MODULEWINDOW_H__
