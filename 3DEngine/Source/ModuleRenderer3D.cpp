@@ -7,7 +7,7 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
 {
 }
 
@@ -148,4 +148,13 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+// ----------------------------------------------
+void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
+{
+}
+
+void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
+{
 }

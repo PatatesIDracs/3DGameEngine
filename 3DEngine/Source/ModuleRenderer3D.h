@@ -22,6 +22,10 @@ public:
 
 	void OnResize(int width, int height);
 
+	// JSON Save/Load Configuration
+	void LoadModuleConfig(Config_Json& config);
+	void SaveModuleConfig(Config_Json& config);
+
 public:
 
 	Light lights[MAX_LIGHTS];

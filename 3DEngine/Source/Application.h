@@ -80,4 +80,8 @@ private:
 	void LoadConfig(const char* filename);
 	void SaveConfig(const char* filename);
 
+	void LoadModuleConfig(Config_Json& config);
+	void SaveModuleConfig(Config_Json& config);
+
+
 };

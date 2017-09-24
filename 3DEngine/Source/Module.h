@@ -6,19 +6,25 @@
 #include <vector>
 #include <list>
 
+#define NAME_LENGTH 30
+
 class Application;
 struct PhysBody3D;
+
+class Config_Json;
 
 class Module
 {
 private :
 	bool enabled;
-
+	char name[NAME_LENGTH];
 public:
 	Application* App;
 
-	Module(Application* parent, bool start_enabled = true) : App(parent)
-	{}
+	Module(Application* parent, const char* module_name = "", bool start_enabled = true) : App(parent)
+	{
+		strcpy_s(name, NAME_LENGTH, module_name);
+	}
 
 	virtual ~Module()
 	{}
@@ -63,8 +69,9 @@ public:
 	{}
 
 	// JSON Save and Load Configuration
-	virtual void LoadConfig() {};
-	virtual void SaveConfig() {};
+	virtual void LoadModuleConfig(Config_Json&) {};
+	virtual void SaveModuleConfig(Config_Json&) {};
+
 };
 
 #endif // !__MODULE_H__

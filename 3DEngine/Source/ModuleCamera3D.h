@@ -19,6 +19,10 @@ public:
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 
+	// JSON Save/Load Configuration
+	void LoadModuleConfig(Config_Json& config);
+	void SaveModuleConfig(Config_Json& config);
+
 private:
 
 	void CalculateViewMatrix();

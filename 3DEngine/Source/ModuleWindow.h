@@ -23,6 +23,10 @@ public:
 
 	void DrawConfig();
 
+	// JSON Save/Load Configuration
+	void LoadModuleConfig(Config_Json& config);
+	void SaveModuleConfig(Config_Json& config);
+
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;

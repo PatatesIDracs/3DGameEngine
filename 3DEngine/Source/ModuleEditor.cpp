@@ -6,7 +6,7 @@
 
 #include "Glew\include\glew.h"
 
-ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, start_enabled)
+ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
 }
 

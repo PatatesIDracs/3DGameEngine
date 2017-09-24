@@ -27,6 +27,11 @@ public:
 	bool StopMusic();
 	bool ResumeMusic();
 	void VolumeMusic(int volume);
+
+	// JSON Save/Load Configuration
+	void LoadModuleConfig(Config_Json& config);
+	void SaveModuleConfig(Config_Json& config);
+
 private:
 
 	Mix_Music*			music;

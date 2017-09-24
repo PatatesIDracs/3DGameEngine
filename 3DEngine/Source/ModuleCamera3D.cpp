@@ -2,7 +2,7 @@
 #include "PhysBody3D.h"
 #include "ModuleCamera3D.h"
 
-ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
 	CalculateViewMatrix();
 
@@ -147,6 +147,15 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 float* ModuleCamera3D::GetViewMatrix()
 {
 	return &ViewMatrix;
+}
+
+// ----------------------------------------------
+void ModuleCamera3D::LoadModuleConfig(Config_Json & config)
+{
+}
+
+void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
+{
 }
 
 // -----------------------------------------------------------------

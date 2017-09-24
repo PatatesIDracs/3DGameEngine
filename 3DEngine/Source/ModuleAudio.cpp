@@ -4,7 +4,7 @@
 
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
-ModuleAudio::ModuleAudio(Application* app, bool start_enabled) : Module(app, start_enabled), music(NULL)
+ModuleAudio::ModuleAudio(Application* app, bool start_enabled) : Module(app, "Audio", start_enabled), music(NULL)
 {}
 
 // Destructor
@@ -116,7 +116,16 @@ void ModuleAudio::VolumeMusic(int volume)
 	}
 }
 
+// ----------------------------------------------
+void ModuleAudio::LoadModuleConfig(Config_Json & config)
+{
+}
 
+void ModuleAudio::SaveModuleConfig(Config_Json & config)
+{
+}
+
+// ----------------------------------------------
 // Play a music file
 bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 {

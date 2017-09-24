@@ -59,54 +59,6 @@ bool Application::Init()
 	// Load Gloval Configuration
 	LoadConfig(CONFIG_FILENAME);
 
-	//Test
-	
-	ms_counter.push_back(1);
-	ms_counter.push_back(2);
-	ms_counter.push_back(3);
-	ms_counter.push_back(4);
-	ms_counter.push_back(5);
-	ms_counter.push_back(6);
-	ms_counter.push_back(7);
-	ms_counter.push_back(8);
-	ms_counter.push_back(9);
-	ms_counter.push_back(10);
-	ms_counter.push_back(11);
-	ms_counter.push_back(12);
-	ms_counter.push_back(13);
-	ms_counter.push_back(14);
-	ms_counter.push_back(15);
-	ms_counter.push_back(16);
-	ms_counter.push_back(17);
-	ms_counter.push_back(18);
-	ms_counter.push_back(19);
-	ms_counter.push_back(21);
-	ms_counter.push_back(22);
-	ms_counter.push_back(23);
-	ms_counter.push_back(24);
-	ms_counter.push_back(25);
-	ms_counter.push_back(26);
-	ms_counter.push_back(27);
-	ms_counter.push_back(28);
-	ms_counter.push_back(29);
-	ms_counter.push_back(30);
-	ms_counter.push_back(31);
-	ms_counter.push_back(32);
-	ms_counter.push_back(33);
-	ms_counter.push_back(34);
-	ms_counter.push_back(35);
-	ms_counter.push_back(36);
-	ms_counter.push_back(37);
-	ms_counter.push_back(38);
-	ms_counter.push_back(39);
-	ms_counter.push_back(40);
-	ms_counter.push_back(41);
-	ms_counter.push_back(42);
-	ms_counter.push_back(43);
-	ms_counter.push_back(44);
-	ms_counter.push_back(45);
-
-
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
 
@@ -137,27 +89,54 @@ void Application::LoadConfig(const char* filename)
 {
 	Config_Json config(filename);
 
-	//tests
-	int		test_int = config.GetInt("number", 0);
-	float	test_float = config.GetFloat("number", 0.0f);
-	std::string test_string = config.GetString("name", "Load String Failed");
-	bool    test_bool = config.GetBool("isTrue", false);
+	LoadModuleConfig(config);
 
-	json_object_clear(config.config_obj);
-	test_string.clear();
+	// Call LoadModuleConfig() in all modules
+	std::list<Module*>::iterator item = list_modules.begin();
+
+	while (item != list_modules.end())
+	{
+		item._Ptr->_Myval->LoadModuleConfig(config);
+		item++;
+	}
 }
 
 void Application::SaveConfig(const char* filename)
 {
 	Config_Json config(filename);
 
+	SaveModuleConfig(config);
+
+	// Call SaveModuleConfig() in all modules
+	std::list<Module*>::iterator item = list_modules.begin();
+
+	while (item != list_modules.end())
+	{
+		item._Ptr->_Myval->SaveModuleConfig(config);
+		item++;
+	}
+
+	// Serialize Data to file
+	config.SaveToFile(filename);
+}
+
+void Application::LoadModuleConfig(Config_Json & config)
+{
 	//tests
-	config.SetString("Save Result?", "One Point to Grifindor");
+	int		test_int = config.GetInt("number", 0);
+	float	test_float = config.GetFloat("number", 0.0f);
+	std::string test_string = config.GetString("name", "Load String Failed");
+	bool    test_bool = config.GetBool("isTrue", false);
+	test_string.clear();
+}
+
+void Application::SaveModuleConfig(Config_Json & config)
+{
+	//tests
+	config.SetString("Save Result?", "Two Point to Grifindor");
 	config.SetBool("Realy?", true);
 	config.SetFloat("WoW", 0.0);
 	config.SetInt("can't believe it", 0);
-
-	config.SaveToFile(filename);
 }
 
 // ---------------------------------------------
@@ -195,7 +174,7 @@ void Application::FinishUpdate()
 		}
 		fps_counter.pop_back();
 	}
-	fps_counter.push_back(last_sec_frame_count);
+	fps_counter.push_back((float)last_sec_frame_count);
 
 	//List of the las 50 frames time
 	if (ms_counter.size() > 50)
@@ -215,7 +194,7 @@ void Application::FinishUpdate()
 	//Frame limit TODO: read the capped_ms from config
 	if (capped_ms > 0 && last_frame_time < capped_ms)
 	{
-		SDL_Delay(capped_ms - last_frame_time);
+		SDL_Delay(capped_ms - (int)last_frame_time);
 	}
 
 }	
@@ -283,7 +262,7 @@ const std::list<Module*>* Application::GetModulesList()
 
 int Application::GetAvgFrameRate()
 {
-	return avg_fps;
+	return (int)avg_fps;
 }
 
 Uint32 Application::GetLastSecFrames()

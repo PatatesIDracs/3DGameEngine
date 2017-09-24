@@ -25,13 +25,23 @@ public:
 	float		GetFloat(const char* name, float default = 0.0f) const;
 	const char* GetString(const char* name, const char* default = "") const;
 	bool		GetBool(const char* name, bool default = false) const;
-
+	// Dot Get Methods
+	int			GetDotInt(const char* name, int default = 0) const;
+	float		GetDotFloat(const char* name, float default = 0.0f) const;
+	const char* GetDotString(const char* name, const char* default = "") const;
+	bool		GetDotBool(const char* name, bool default = false) const;
+	
 	// Set Methods
 	bool		SetInt(const char* name, int value);
 	bool		SetFloat(const char* name, float value);
 	bool		SetString(const char* name, const char* value);
 	bool		SetBool(const char* name, bool value);
-
+	// Dot Set Methods
+	bool		SetDotInt(const char* name, int value);
+	bool		SetDotFloat(const char* name, float value);
+	bool		SetDotString(const char* name, const char* value);
+	bool		SetDotBool(const char* name, bool value);
+	
 	// Serialize data to file and CleanUp
 	void		SaveToFile(const char* filename);
 
