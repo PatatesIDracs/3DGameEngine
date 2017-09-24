@@ -42,6 +42,9 @@ private:
 	Uint32 curr_sec_frame_count = 0;	//Frames in the current second (we can't display them as they are constatnly increasing during the second)
 	Uint32 last_sec_frame_count = 0;	//Frames in the last second (can be displayed)
 
+	//fps plot array
+	std::queue<float>	ms_counter;
+	std::queue<int>		fps_counter;
 
 public:
 
@@ -55,6 +58,14 @@ public:
 	void OpenBrowser(const char* url);
 
 	const std::list<Module*>* GetModulesList();
+
+	int		GetAvgFrameRate();
+	Uint32	GetLastSecFrames();
+	float	GetLastFrameTime();
+
+	std::queue<float>*	GetMs();
+	std::queue<int>*	GetFPS();
+
 
 private:
 

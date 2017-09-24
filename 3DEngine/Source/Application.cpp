@@ -83,36 +83,7 @@ bool Application::Init()
 	return ret;
 }
 
-// ---------------------------------------------
-void Application::PrepareUpdate()
-{
-	total_frame_count++;
-	last_sec_frame_count++;
 
-	dt = (float)ms_timer.Read() / 1000.0f;
-	ms_timer.Start();
-}
-
-// ---------------------------------------------
-void Application::FinishUpdate()
-{
-	///---------------------------
-	//----------------------------
-	//---FRAMERATE CALCULATIONS---
-	//----------------------------
-
-	//When a second has passed...
-	if (last_sec_timer.Read() > 1000)
-	{
-		last_sec_timer.Start();							//Reset the timer
-		last_sec_frame_count = curr_sec_frame_count;	//Pass the current sec frame count to the last sec frame count
-		curr_sec_frame_count = 0;						//Reset frame count
-	}
-
-	avg_fps = (float)total_frame_count / start_up_time.ReadSec();
-	last_frame_time = (float) ms_timer.Read();
-	///---------------------------
-}	
 
 // ---------------------------------------------
 void Application::LoadConfig(const char* filename)
@@ -141,6 +112,47 @@ void Application::SaveConfig(const char* filename)
 
 	config.SaveToFile(filename);
 }
+
+// ---------------------------------------------
+void Application::PrepareUpdate()
+{
+	total_frame_count++;
+	last_sec_frame_count++;
+
+	dt = (float)ms_timer.Read() / 1000.0f;
+	ms_timer.Start();
+}
+
+// ---------------------------------------------
+void Application::FinishUpdate()
+{
+
+	//---FRAMERATE CALCULATIONS---
+	//When a second has passed...
+	if (last_sec_timer.Read() > 1000)
+	{
+		last_sec_timer.Start();							//Reset the timer
+		last_sec_frame_count = curr_sec_frame_count;	//Pass the current sec frame count to the last sec frame count
+		curr_sec_frame_count = 0;						//Reset frame count
+	}
+
+	avg_fps = (float)total_frame_count / start_up_time.ReadSec();
+	last_frame_time = (float) ms_timer.Read();
+
+	ms_counter.push(last_frame_time);
+	fps_counter.push(last_sec_frame_count);
+
+	if (ms_counter.size() > 50)
+	{
+		ms_counter.pop();
+	}
+	if (fps_counter.size() > 50)
+	{
+		fps_counter.pop();
+	}
+
+
+}	
 
 // Call PreUpdate, Update and PostUpdate on all modules
 update_status Application::Update()
@@ -202,6 +214,32 @@ const std::list<Module*>* Application::GetModulesList()
 {
 	return &list_modules;
 }
+
+int Application::GetAvgFrameRate()
+{
+	return avg_fps;
+}
+
+Uint32 Application::GetLastSecFrames()
+{
+	return last_sec_frame_count;
+}
+
+float Application::GetLastFrameTime()
+{
+	return 0.0f;
+}
+
+std::queue<float>* Application::GetMs()
+{
+	return &ms_counter;
+}
+
+std::queue<int>* Application::GetFPS()
+{
+	return &fps_counter;
+}
+
 
 void Application::AddModule(Module* mod)
 {

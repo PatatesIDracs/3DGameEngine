@@ -2,6 +2,7 @@
 #define __MODULEEDITOR_H__
 
 #include "Module.h"
+#include <queue>
 
 class ModuleEditor : public Module
 {
@@ -30,6 +31,7 @@ private:
 	bool	showtestwindow	= false;
 	bool	showaboutwindow	= false;
 	bool	showconfig		= false;
+
 
 };
 
