@@ -13,6 +13,7 @@
 #include "ModuleEditor.h"
 
 #include <list>
+#include <array>
 
 class Config_Json;
 
@@ -43,8 +44,10 @@ private:
 	Uint32 last_sec_frame_count = 0;	//Frames in the last second (can be displayed)
 
 	//fps plot array
-	std::queue<float>	ms_counter;
-	std::queue<int>		fps_counter;
+	std::vector<float>	ms_counter;
+	std::vector<float>	fps_counter;
+
+	int capped_ms = 16;
 
 public:
 
@@ -63,8 +66,8 @@ public:
 	Uint32	GetLastSecFrames();
 	float	GetLastFrameTime();
 
-	std::queue<float>*	GetMs();
-	std::queue<int>*	GetFPS();
+	std::vector<float>*	GetMs();
+	std::vector<float>*	GetFPS();
 
 
 private:

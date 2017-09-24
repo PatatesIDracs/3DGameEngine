@@ -187,9 +187,8 @@ void ModuleEditor::ApplicationConfig()
 		ImGui::SliderInt("Max FPS", &fps, 15, 120);
 
 
-
-		
-		//ImGui::PlotHistogram("Framerate", App->GetFPS(), App->GetFPS()->size(), 0, NULL, 0.0f, 1.0f, ImVec2(0, 80));
+		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
+		ImGui::PlotHistogram("Miliseconds", &App->GetMs()->front(), App->GetMs()->size(), 0, NULL, 0.0f, 50.0f, ImVec2(0, 80));
 
 	}
 }
