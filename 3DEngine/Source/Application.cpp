@@ -130,8 +130,19 @@ void Application::LoadModuleConfig(Config_Json & config)
 void Application::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json app_config = config.AddJsonObject("Application");
-	app_config.SetString("Name", "Jope Engine");
+	app_config.SetString("Name", "JoPe Engine");
 	app_config.SetBool("Is Active", true);
+}
+
+void Application::SetFpsCap(int cap)
+{
+	if (cap > 14)
+	{
+		capped_ms = (1000 / cap);
+		capped = true;
+	}
+	else
+		capped = false;
 }
 
 // ---------------------------------------------
@@ -171,22 +182,28 @@ void Application::FinishUpdate()
 	}
 	fps_counter.push_back((float)last_sec_frame_count);
 
+
+
+	//Frame limit
+	if (capped)
+	{
+		if (capped_ms > 0 && last_frame_time < capped_ms)
+		{
+			SDL_Delay(capped_ms - (int)last_frame_time);
+		}
+	}
+
 	//List of the las 50 frames time
 	if (ms_counter.size() > 50)
 	{
 		for (int i = 0; i < ms_counter.size() - 1; i++)
 		{
-			ms_counter[i] = ms_counter[i+1];
+			ms_counter[i] = ms_counter[i + 1];
 		}
 		ms_counter.pop_back();
 	}
-	ms_counter.push_back(last_frame_time);
+	ms_counter.push_back(ms_timer.Read());
 
-	//Frame limit
-	if (capped_ms > 0 && last_frame_time < capped_ms)
-	{
-		SDL_Delay(capped_ms - (int)last_frame_time);
-	}
 }	
 
 // Call PreUpdate, Update and PostUpdate on all modules

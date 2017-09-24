@@ -194,8 +194,8 @@ void ModuleEditor::ApplicationConfig()
 		static char str_org[150] = "Patates i Dracs";
 		ImGui::InputText("Organitzation", str_org, (int)sizeof(str_org));
 
-		static int fps = 0;
-		ImGui::SliderInt("Max FPS", &fps, 15, 120);
+		static int fps = 60;
+		if (ImGui::SliderInt("Max FPS", &fps, 14, 120)) App->SetFpsCap(fps);
 
 
 		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));

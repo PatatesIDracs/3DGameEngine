@@ -50,6 +50,7 @@ private:
 	std::vector<float>	fps_counter;
 
 	int capped_ms = 16;
+	bool capped = true;
 
 public:
 
@@ -73,6 +74,7 @@ public:
 	std::vector<float>*	GetMs();
 	std::vector<float>*	GetFPS();
 
+	void SetFpsCap(int cap);
 
 private:
 
@@ -86,6 +88,5 @@ private:
 
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
-
-
+	
 };

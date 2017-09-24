@@ -39,7 +39,7 @@ enum update_status
 #define WIN_RESIZABLE true
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
-#define VSYNC true
+#define VSYNC true	
 #define TITLE "3D Physics Playground"
 
 #endif // !__GLOBALS_H__
