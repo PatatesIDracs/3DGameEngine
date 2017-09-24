@@ -3,6 +3,7 @@
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include "ConfigJSON.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -157,4 +158,6 @@ void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 
 void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json render_config = config.AddJsonObject(this->GetName());
+	render_config.SetBool("Is Active", true);
 }

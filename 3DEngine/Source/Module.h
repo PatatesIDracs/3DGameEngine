@@ -29,6 +29,11 @@ public:
 	virtual ~Module()
 	{}
 
+	const char* GetName() const
+	{
+		return name;
+	}
+
 	virtual bool Init() 
 	{
 		return true; 

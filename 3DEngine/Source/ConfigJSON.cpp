@@ -19,9 +19,24 @@ Config_Json::Config_Json(const char * filename)
 		config_obj = json_value_get_object(config_val);
 }
 
+Config_Json::Config_Json(JSON_Object* section) : config_obj(section)
+{}
+
 Config_Json::~Config_Json()
 {
 	json_value_free(config_val);
+}
+
+// Get and Set New Sections (Objects)
+Config_Json Config_Json::GetJsonObject(const char * name)
+{
+	return Config_Json(json_object_get_object(config_obj, name));
+}
+
+Config_Json Config_Json::AddJsonObject(const char * name)
+{
+	json_object_set_value(config_obj, name, json_value_init_object());
+	return GetJsonObject(name);
 }
 
 // Get Methods -----------------------------------

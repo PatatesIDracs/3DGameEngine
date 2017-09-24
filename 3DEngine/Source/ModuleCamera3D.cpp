@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "PhysBody3D.h"
 #include "ModuleCamera3D.h"
+#include "ConfigJSON.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
@@ -156,6 +157,8 @@ void ModuleCamera3D::LoadModuleConfig(Config_Json & config)
 
 void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json camera_config = config.AddJsonObject(this->GetName());
+	camera_config.SetBool("Is Active", true);
 }
 
 // -----------------------------------------------------------------

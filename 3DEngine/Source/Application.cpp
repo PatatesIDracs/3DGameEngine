@@ -41,6 +41,8 @@ Application::Application()
 
 Application::~Application()
 {
+	app_name.clear();
+
 	std::list<Module*>::iterator item = list_modules.begin();
 
 	while (item != list_modules.end())
@@ -89,14 +91,14 @@ void Application::LoadConfig(const char* filename)
 {
 	Config_Json config(filename);
 
-	LoadModuleConfig(config);
+	LoadModuleConfig(config.GetJsonObject("Application"));
 
 	// Call LoadModuleConfig() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
 
 	while (item != list_modules.end())
 	{
-		item._Ptr->_Myval->LoadModuleConfig(config);
+		item._Ptr->_Myval->LoadModuleConfig(config.GetJsonObject(item._Ptr->_Myval->GetName()));
 		item++;
 	}
 }
@@ -122,21 +124,14 @@ void Application::SaveConfig(const char* filename)
 
 void Application::LoadModuleConfig(Config_Json & config)
 {
-	//tests
-	int		test_int = config.GetInt("number", 0);
-	float	test_float = config.GetFloat("number", 0.0f);
-	std::string test_string = config.GetString("name", "Load String Failed");
-	bool    test_bool = config.GetBool("isTrue", false);
-	test_string.clear();
+	app_name = config.GetString("Name");
 }
 
 void Application::SaveModuleConfig(Config_Json & config)
 {
-	//tests
-	config.SetString("Save Result?", "Two Point to Grifindor");
-	config.SetBool("Realy?", true);
-	config.SetFloat("WoW", 0.0);
-	config.SetInt("can't believe it", 0);
+	Config_Json app_config = config.AddJsonObject("Application");
+	app_config.SetString("Name", "Jope Engine");
+	app_config.SetBool("Is Active", true);
 }
 
 // ---------------------------------------------
@@ -187,16 +182,11 @@ void Application::FinishUpdate()
 	}
 	ms_counter.push_back(last_frame_time);
 
-
-
-
-
-	//Frame limit TODO: read the capped_ms from config
+	//Frame limit
 	if (capped_ms > 0 && last_frame_time < capped_ms)
 	{
 		SDL_Delay(capped_ms - (int)last_frame_time);
 	}
-
 }	
 
 // Call PreUpdate, Update and PostUpdate on all modules

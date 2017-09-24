@@ -18,7 +18,12 @@ class Config_Json
 public:
 	Config_Json();
 	Config_Json(const char* filename);
+	Config_Json(JSON_Object* section);
 	~Config_Json();
+
+	// Add Object
+	Config_Json GetJsonObject(const char* name);
+	Config_Json	AddJsonObject(const char* name);
 
 	// Get Methods
 	int			GetInt(const char* name, int default = 0) const;

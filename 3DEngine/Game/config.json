@@ -1,9 +1,21 @@
 {
-    "name": "JoPe Engine 2 JSON 0",
-    "number": 1234,
-    "isTrue": true,
-    "Save Result?": "Two Point to Grifindor",
-    "Realy?": true,
-    "WoW": 0,
-    "can't believe it": 0
+    "Application": {
+        "Name": "Jope Engine",
+        "Is Active": true
+    },
+    "Audio": {
+        "Is Active": true
+    },
+    "Window": {
+        "Is Active": true
+    },
+    "Camera": {
+        "Is Active": true
+    },
+    "Physics": {
+        "Is Active": true
+    },
+    "Renderer": {
+        "Is Active": true
+    }
 }

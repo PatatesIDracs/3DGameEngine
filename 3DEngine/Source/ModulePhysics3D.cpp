@@ -3,6 +3,7 @@
 #include "ModulePhysics3D.h"
 #include "PhysBody3D.h"
 #include "Primitive.h"
+#include "ConfigJSON.h"
 
 #ifdef _DEBUG
 	#pragma comment (lib, "Bullet/libx86/BulletDynamics_debug.lib")
@@ -315,6 +316,8 @@ void ModulePhysics3D::LoadModuleConfig(Config_Json & config)
 
 void ModulePhysics3D::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json physics_config = config.AddJsonObject(this->GetName());
+	physics_config.SetBool("Is Active", true);
 }
 
 // =============================================

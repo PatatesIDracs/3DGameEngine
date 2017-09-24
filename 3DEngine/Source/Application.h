@@ -35,6 +35,8 @@ private:
 	float	dt;
 	std::list<Module*> list_modules;
 
+	std::string app_name;
+
 	float avg_fps = 0;					//Average fps
 	float last_frame_time = 0.0f;		//ms of the last frame
 	Timer start_up_time;				//Time since startup

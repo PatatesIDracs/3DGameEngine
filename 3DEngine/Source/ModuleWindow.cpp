@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "Imgui\imgui.h"
-
+#include "ConfigJSON.h"
 
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app,"Window",start_enabled)
 {
@@ -112,4 +112,6 @@ void ModuleWindow::LoadModuleConfig(Config_Json & config)
 
 void ModuleWindow::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json window_config = config.AddJsonObject(this->GetName());
+	window_config.SetBool("Is Active", true);
 }

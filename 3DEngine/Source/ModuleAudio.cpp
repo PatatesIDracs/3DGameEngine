@@ -1,6 +1,7 @@
 
 #include "Application.h"
 #include "ModuleAudio.h"
+#include "ConfigJSON.h"
 
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
@@ -119,10 +120,13 @@ void ModuleAudio::VolumeMusic(int volume)
 // ----------------------------------------------
 void ModuleAudio::LoadModuleConfig(Config_Json & config)
 {
+	int test = config.GetInt("NoNumber", 0);
 }
 
 void ModuleAudio::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json audio_config = config.AddJsonObject(this->GetName());
+	audio_config.SetBool("Is Active", true);
 }
 
 // ----------------------------------------------
