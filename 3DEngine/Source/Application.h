@@ -14,7 +14,9 @@
 #include <list>
 #include <array>
 
+
 class Config_Json;
+class Profiler;
 
 class Application
 {
@@ -47,6 +49,9 @@ private:
 	std::vector<float>	ms_counter;
 	std::vector<float>	fps_counter;
 
+	// Vector of Profilers (One for each Module)
+	std::vector<Profiler*> profiler;
+
 	int capped_ms = 16;
 	bool capped = true;
 
@@ -71,6 +76,7 @@ public:
 
 	std::vector<float>*	GetMs();
 	std::vector<float>*	GetFPS();
+
 
 	void SetFpsCap(int cap);
 

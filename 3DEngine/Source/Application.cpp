@@ -8,6 +8,8 @@
 #include "parson.h"
 #include "ConfigJSON.h"
 
+#include "Profiler.h"
+
 Application::Application()
 {
 	window = new ModuleWindow(this);
@@ -35,6 +37,7 @@ Application::Application()
 	AddModule(renderer3D);
 	//Render UI last
 	AddModule(editor);
+
 }
 
 Application::~Application()
@@ -76,6 +79,14 @@ bool Application::Init()
 	{
 		ret = item._Ptr->_Myval->Start();
 		item++;
+	}
+
+	// Create Profilers for Modules
+	profiler.reserve(list_modules.size());
+	for (int i = 0; i < list_modules.size(); i++)
+	{
+		// 60 should be changed for Frame Rate limitation (60 FPS)
+		profiler.push_back(new Profiler(60));
 	}
 
 	ms_timer.Start();
@@ -209,29 +220,41 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
-	
+
 	std::list<Module*>::iterator item = list_modules.begin();
 
+	int count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
+		profiler[count]->StartTimer();
 		ret = item._Ptr->_Myval->PreUpdate(dt);
+		profiler[count]->AddNewFrame();
 		item++;
+		count++;
 	}
 
 	item = list_modules.begin();
 
+	count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
+		profiler[count]->StartTimer();
 		ret = item._Ptr->_Myval->Update(dt);
+		profiler[count]->AddTimeToFrame();
 		item++;
+		count++;
 	}
 
 	item = list_modules.begin();
 
+	count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
+		profiler[count]->StartTimer();
 		ret = item._Ptr->_Myval->PostUpdate(dt);
+		profiler[count]->AddTimeToFrame();
 		item++;
+		count++;
 	}
 
 	FinishUpdate();
@@ -248,6 +271,13 @@ bool Application::CleanUp()
 		item--;
 		ret = item._Ptr->_Myval->CleanUp();
 	}
+
+	// Clear profile vector;
+	for (int i = 0; i < profiler.size(); i++)
+	{
+		delete profiler[i];
+	}
+	profiler.clear();
 
 	// Save Configuration to File
 	SaveConfig(CONFIG_FILENAME);
