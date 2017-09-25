@@ -98,8 +98,8 @@ update_status ModuleEditor::Update(float dt)
 	//Check if we need to draw the UI
 	if (showconfig)
 	{
-		ImGui::Begin("Configuration");
-		
+		ImGui::Begin("Configuration", &showconfig);
+
 		ApplicationConfig();
 
 		while (item != module_list->end())
@@ -107,10 +107,11 @@ update_status ModuleEditor::Update(float dt)
 			item._Ptr->_Myval->DrawConfig();
 			item++;
 		}
-		
+
 		HardwareDetection();
 
 		ImGui::End();
+		
 	}
 	///--------------------------------------------------------------
 
@@ -169,7 +170,7 @@ bool ModuleEditor::CleanUp()
 void ModuleEditor::DrawAboutWindow()
 {
 
-	ImGui::Begin("About JoPe");
+	ImGui::Begin("About JoPe", &showaboutwindow);
 
 	ImGui::Text("JoPe Engine");
 	ImGui::Text("Very simple and limited game engine,\nmade for educational purposes");
@@ -237,17 +238,27 @@ void ModuleEditor::HardwareDetection()
 		ImGui::Separator();
 		//---------------------
 		//GPU info-------------
-		//NOT DONE
-		ImGui::Text((char*)glGetString(GL_VERSION));
+		ImGui::Text("Vendor: "); ImGui::SameLine();
+		ImGui::Text((const char*)glGetString(GL_VENDOR));
+
+		ImGui::Text("Brand: "); ImGui::SameLine();
+		ImGui::Text((const char*)glGetString(GL_RENDERER));
+
+		ImGui::Text("OpenGL Supported: "); ImGui::SameLine();
+		ImGui::Text((const char*)glGetString(GL_VERSION));
 	}
 	
 }
 
 void ModuleEditor::DrawConsole()
 {
-	ImGui::Begin("Console");
+	ImGui::Begin("Console", &showconsole);
 	
 	
 	ImGui::End();
+}
+
+void ModuleEditor::DrawProfilerWindow()
+{
 }
 

@@ -22,10 +22,14 @@ public:
 
 private:
 
+	// Draw Configuration ------------------
 	void DrawAboutWindow();
 	void ApplicationConfig();
 	void HardwareDetection();
 	void DrawConsole();
+	
+	// Draw Profiler -----------------------
+	void DrawProfilerWindow();
 
 
 private:
@@ -33,7 +37,7 @@ private:
 	bool	showaboutwindow	= false;
 	bool	showconfig		= false;
 	bool	showconsole		= false;
-
+	bool	showprofiler	= false;
 
 };
 
