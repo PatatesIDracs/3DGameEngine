@@ -26,7 +26,7 @@
         "Depth Test": true,
         "Cull face": true,
         "Cull face mode": 0,
-        "Smooth": 0,
+        "Smooth": 1,
         "Lighting": true,
         "Color material": true,
         "Texture 2D": true,

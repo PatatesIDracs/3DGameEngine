@@ -4,37 +4,44 @@
 #include "Timer.h"
 #include <vector>
 
-#define RECORD_LIMIT 300
-
 class Profiler
 {
 public:
 	Profiler();
-	Profiler(int size);
 	~Profiler();
 
-	void StartTimer();
+	bool StartTimer();
 
 	// Add Time to a current frame;
-	void AddNewFrame();
 	void AddTimeToFrame();
 
-	void StartRecording(int size);
-	void StopRecording(int size);
+	void StartRecording(int seconds = 5, int framerate = 60);
+	
+	// Return true if Profiler is Recording 
+	bool CheckState();
 
+	// Set Up Functions
+	// Set new function to record
+	void SetTitle(const char* function_name);
+
+	// Get Timeline;
+	std::vector<int>* GetFunctionTimeline(const char* function_name);
+	
 
 private:
 	
 	Timer clock;
 
 	int	curren_frame = 0;
+	int curren_function = 0;
 	int	size = 0;
-	int increment_factor = 1;
+	int fnames_size = 0;
 
-	bool first_frame = true;
-	bool do_record = false;
+	bool is_recording = false;
+	bool loop_closed = false;
 	
-	std::vector<float> profiler_timeline;
+	std::vector<std::vector<int>> profiler_timeline;
+	std::vector<char*> function_names;
 };
 
 #endif // !__PROFILER_H__

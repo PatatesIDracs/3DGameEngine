@@ -85,8 +85,7 @@ bool Application::Init()
 	profiler.reserve(list_modules.size());
 	for (int i = 0; i < list_modules.size(); i++)
 	{
-		// 60 should be changed for Frame Rate limitation (60 FPS)
-		profiler.push_back(new Profiler(60));
+		profiler.push_back(new Profiler());
 	}
 
 	ms_timer.Start();
@@ -131,6 +130,42 @@ void Application::SaveConfig(const char* filename)
 	config.SaveToFile(filename);
 }
 
+void Application::DoRecord()
+{
+	init_record = true;
+}
+
+void Application::StartRecord(int seconds, int framerate)
+{
+	int p_size = profiler.size();
+	for (int count = 0; count < p_size; count++)
+		profiler[count]->StartRecording();
+}
+
+bool Application::CheckRecord() const
+{
+	return profiler.back()->CheckState();
+}
+
+Profiler * Application::GetProfiler(Module * module)
+{
+	int count = 0;
+	std::list<Module*>::iterator item = list_modules.begin();
+	
+	for(; item != list_modules.end(); item++)
+	{ 
+		if (module == item._Ptr->_Myval) return profiler[count];
+		count++;
+	}
+	
+	return nullptr;
+}
+
+const std::vector<Profiler*>* Application::GetProfilerVect()
+{
+	return &profiler;
+}
+
 void Application::LoadModuleConfig(Config_Json & config)
 {
 	app_name = config.GetString("Name");
@@ -160,6 +195,10 @@ void Application::PrepareUpdate()
 	total_frame_count++;
 	curr_sec_frame_count++;
 
+	if (init_record) {
+		StartRecord();
+		init_record = false;
+	}
 	dt = (float)ms_timer.Read() / 1000.0f;
 	ms_timer.Start();
 }
@@ -210,7 +249,7 @@ void Application::FinishUpdate()
 		}
 		ms_counter.pop_back();
 	}
-	ms_counter.push_back(ms_timer.Read());
+	ms_counter.push_back(last_frame_time);
 
 }	
 
@@ -225,9 +264,9 @@ update_status Application::Update()
 	int count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		profiler[count]->StartTimer();
+		if (profiler[count]->StartTimer()) profiler[count]->SetTitle("PreUpdate");
 		ret = item._Ptr->_Myval->PreUpdate(dt);
-		profiler[count]->AddNewFrame();
+		profiler[count]->AddTimeToFrame();
 		item++;
 		count++;
 	}
@@ -237,7 +276,7 @@ update_status Application::Update()
 	count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		profiler[count]->StartTimer();
+		if (profiler[count]->StartTimer()) profiler[count]->SetTitle("Update");
 		ret = item._Ptr->_Myval->Update(dt);
 		profiler[count]->AddTimeToFrame();
 		item++;
@@ -249,7 +288,7 @@ update_status Application::Update()
 	count = 0;
 	while (item != list_modules.end() && ret == UPDATE_CONTINUE)
 	{
-		profiler[count]->StartTimer();
+		if (profiler[count]->StartTimer()) profiler[count]->SetTitle("PostUpdate");
 		ret = item._Ptr->_Myval->PostUpdate(dt);
 		profiler[count]->AddTimeToFrame();
 		item++;

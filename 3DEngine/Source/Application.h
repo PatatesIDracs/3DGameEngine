@@ -51,6 +51,7 @@ private:
 
 	// Vector of Profilers (One for each Module)
 	std::vector<Profiler*> profiler;
+	bool init_record = false;
 
 	int capped_ms = 16;
 	bool capped = true;
@@ -77,6 +78,11 @@ public:
 	std::vector<float>*	GetMs();
 	std::vector<float>*	GetFPS();
 
+	void DoRecord();
+	void StartRecord(int seconds = 5, int framerate = 60);
+	bool CheckRecord() const;
+	Profiler* GetProfiler(Module* module);
+	const std::vector<Profiler*>* GetProfilerVect();
 
 	void SetFpsCap(int cap);
 

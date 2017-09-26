@@ -6,6 +6,8 @@
 
 #include "Glew\include\glew.h"
 
+#include "Profiler.h"
+
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
 }
@@ -21,6 +23,7 @@ bool ModuleEditor::Start()
 	ImGui_ImplSdlGL3_Init(App->window->window);
 	ImGuiIO& io = ImGui::GetIO();
 
+	app_profiler = App->GetProfilerVect();
 	return true;
 }
 
@@ -60,6 +63,13 @@ update_status ModuleEditor::Update(float dt)
 	{
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
 
+		ImGui::EndMenu();
+	}
+
+	//Tools Menu: Profiler
+	if (ImGui::BeginMenu("Tools"))
+	{
+		if (ImGui::MenuItem("Profiler")) showprofiler = !showprofiler;
 
 		ImGui::EndMenu();
 	}
@@ -123,6 +133,9 @@ update_status ModuleEditor::Update(float dt)
 	if (showaboutwindow) DrawAboutWindow();
 
 	if (showconsole) DrawConsole();
+
+	//Draw Profiler
+	if (showprofiler) DrawProfilerWindow();
 
 	
 	return UPDATE_CONTINUE;
@@ -247,5 +260,29 @@ void ModuleEditor::DrawConsole()
 
 void ModuleEditor::DrawProfilerWindow()
 {
+	ImGui::Begin("Profiler Test", &showprofiler);
+	{
+		if (recording) {
+			recording = App->CheckRecord();
+			if (!recording)
+				showrecord = true;
+
+		}
+		if (ImGui::Button("Start Record"))
+		{
+			App->DoRecord();
+			showrecord = false;
+			recording = true;
+		}
+		
+		ImGui::Separator();
+		if (showrecord)
+		{
+			//const std::vector<int>* item = app_profiler[0].
+		}
+	}
+	ImGui::End();
+
+
 }
 

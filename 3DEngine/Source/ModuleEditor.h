@@ -4,6 +4,8 @@
 #include "Module.h"
 #include <queue>
 
+class Profiler;
+
 class ModuleEditor : public Module
 {
 public:
@@ -37,8 +39,13 @@ private:
 	bool	showaboutwindow	= false;
 	bool	showconfig		= false;
 	bool	showconsole		= false;
-	bool	showprofiler	= false;
 
+	// Profiler
+	bool	showprofiler	= false;
+	bool	showrecord   	= false;
+	bool	recording		= false;
+
+	const std::vector<Profiler*>* app_profiler = nullptr;
 };
 
 #endif // !__MODULE_EDITOR_H__
