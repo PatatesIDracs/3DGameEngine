@@ -192,7 +192,6 @@ void Application::FinishUpdate()
 	fps_counter.push_back((float)last_sec_frame_count);
 
 
-
 	//Frame limit
 	if (capped)
 	{
