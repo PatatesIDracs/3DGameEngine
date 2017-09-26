@@ -71,6 +71,7 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::Draw()
 {
+	col_test_BodyA->wire = true;
 	col_test_BodyA->Render();
 }
 

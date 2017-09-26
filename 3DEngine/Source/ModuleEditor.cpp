@@ -104,7 +104,9 @@ update_status ModuleEditor::Update(float dt)
 
 		while (item != module_list->end())
 		{
-			item._Ptr->_Myval->DrawConfig();
+			if (ImGui::CollapsingHeader(item._Ptr->_Myval->GetName()))
+				item._Ptr->_Myval->DrawConfig();
+	
 			item++;
 		}
 
@@ -114,28 +116,14 @@ update_status ModuleEditor::Update(float dt)
 		
 	}
 
+	//Show the ImGui test window if requested
+	if (showtestwindow) ImGui::ShowTestWindow();
 
-	///--------------------------------------------------------------
-	//-----------------------
-	//----MODULES UI DRAW----
-	//-----------------------
-	
-	//We'll reuse the module_list and item from the configdraw
-	//Make sure that the item is the start of the list
-	item = module_list->begin();
-		
-	//Iterate the list and call the Draw from all modules
-	//ImGui::Begin() and ImGui::End() needs to be called in the DragImGui of each module
-	//This way we can decide more easily the name of the new UI window
-	while (item != module_list->end())
-	{
-		item._Ptr->_Myval->Draw();
-		item++;
-	}	
-	
+	//Draw about window when requested
+	if (showaboutwindow) DrawAboutWindow();
 
-	//Render all UI
-	ImGui::Render();
+	if (showconsole) DrawConsole();
+
 	
 	return UPDATE_CONTINUE;
 }
@@ -144,13 +132,13 @@ update_status ModuleEditor::Update(float dt)
 //Except from the main menu the other UI elements of ModuleEditor will be put here
 void ModuleEditor::Draw()
 {
-	//Show the ImGui test window if requested
-	if (showtestwindow) ImGui::ShowTestWindow();
 
-	//Draw about window when requested
-	if (showaboutwindow) DrawAboutWindow();
+	//Make sure that the UI is draw in fill mode not Wireframe
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	if (showconsole) DrawConsole();
+	//Render all UI
+	ImGui::Render();
+
 }
 
 

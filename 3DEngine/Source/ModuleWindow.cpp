@@ -96,28 +96,22 @@ void ModuleWindow::SetTitle(const char* title)
 
 void ModuleWindow::DrawConfig()
 {
-	if (ImGui::CollapsingHeader("Window"))
+
+	if (ImGui::Combo("Resolution", &resolution, res_array, (int)(sizeof(res_array) / sizeof(*res_array))))
 	{
-		
-		if (ImGui::Combo("Resolution", &resolution, res_array, (int)(sizeof(res_array) / sizeof(*res_array))))
-		{
-			SetRes(resolution);
-		}
-
-		ImGui::Checkbox("Fullscren", &fullscreen);
-		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Restart to apply");
-		ImGui::SameLine();
-		ImGui::Checkbox("Full Desktop", &fullscreen_desktop);
-		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
-
-		ImGui::Checkbox("Resizable", &resizable);
-		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
-		ImGui::SameLine();
-		ImGui::Checkbox("Borderless", &borderless);
-		if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
-
-
+		SetRes(resolution);
 	}
+	ImGui::Checkbox("Fullscren", &fullscreen);
+	if (ImGui::IsItemHovered()) ImGui::SetTooltip("Restart to apply");
+	ImGui::SameLine();
+	ImGui::Checkbox("Full Desktop", &fullscreen_desktop);
+	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+
+	ImGui::Checkbox("Resizable", &resizable);
+	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+	ImGui::SameLine();
+	ImGui::Checkbox("Borderless", &borderless);
+	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
 }
 
 // ----------------------------------------------
