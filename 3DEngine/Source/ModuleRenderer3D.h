@@ -9,6 +9,13 @@
 
 #define MAX_LIGHTS 8
 
+enum RENDER_MODE
+{
+	FILL = 0,
+	WIREFRAME,
+	VERTEX
+};
+
 class ModuleRenderer3D : public Module
 {
 public:
@@ -49,9 +56,12 @@ private:
 	bool lighting = false;
 	bool color_material = false;
 	bool texture_2d = false;
-	bool wireframe = false;
+	bool smooth = true;
+
+	RENDER_MODE render_mode = RENDER_MODE::FILL;
 
 	float LightModelAmbient[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	
 
 
 };

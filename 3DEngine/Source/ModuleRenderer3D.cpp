@@ -77,10 +77,6 @@ bool ModuleRenderer3D::Init()
 			ret = false;
 		}
 		
-		LightModelAmbient[0] = 0.0f;
-		LightModelAmbient[1] = 0.0f;
-		LightModelAmbient[2] = 0.0f;
-		LightModelAmbient[3] = 1.0f;
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
 		lights[0].ref = GL_LIGHT0;
@@ -98,7 +94,6 @@ bool ModuleRenderer3D::Init()
 
 		lights[0].Active(true);
 		CheckConfig();
-
 		
 	}
 
@@ -131,10 +126,20 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
+	switch (render_mode)
+	{
+	case FILL:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	case WIREFRAME:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case VERTEX:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		break;
+	default:
+		break;
+	}
 
 	App->scene_intro->Draw();
 
@@ -175,10 +180,15 @@ void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 	depth_test = config.GetBool("Depth Test", true);
 	cull_face = config.GetBool("Cull face", true);
 	cull_face_mode = config.GetInt("Cull face mode", 0);
+	smooth = config.GetBool("Smooth", 1);
 	lighting = config.GetBool("Lighting", true);
 	color_material = config.GetBool("Color material", true);
 	texture_2d = config.GetBool("Texture 2D", true);
-	wireframe = config.GetBool("Wireframe", false);
+	LightModelAmbient[0] = config.GetFloat("Red", 0.0f);
+	LightModelAmbient[1] = config.GetFloat("Green", 0.0f);
+	LightModelAmbient[2] = config.GetFloat("Blue", 0.0f);
+	LightModelAmbient[3] = config.GetFloat("Alpha", 1.0f);
+
 }
 
 void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
@@ -188,16 +198,25 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 	render_config.SetBool("Depth Test", depth_test);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
+	render_config.SetInt("Smooth", smooth);
 	render_config.SetBool("Lighting", lighting);
 	render_config.SetBool("Color material", color_material);
 	render_config.SetBool("Texture 2D", texture_2d);
-	render_config.SetBool("Wireframe", wireframe);
+	render_config.SetFloat("Red", LightModelAmbient[0]);
+	render_config.SetFloat("Green", LightModelAmbient[1]);
+	render_config.SetFloat("Blue", LightModelAmbient[2]);
+	render_config.SetFloat("Alpha", LightModelAmbient[3]);
 
 }
 
 void ModuleRenderer3D::DrawConfig()
 {
-	
+	ImGui::Text("Render mode: ");
+	ImGui::RadioButton("Fill", (int*)&render_mode, (int)RENDER_MODE::FILL); ImGui::SameLine();
+	ImGui::RadioButton("Wireframe", (int*)&render_mode, (int)RENDER_MODE::WIREFRAME); ImGui::SameLine();
+	ImGui::RadioButton("Vertex", (int*)&render_mode, (int)RENDER_MODE::VERTEX); ImGui::Separator();
+
+
 	if (ImGui::Checkbox("Depth test", &depth_test)) CheckConfig();
 
 	if (ImGui::Checkbox("Face culling", &cull_face)) CheckConfig();
@@ -206,18 +225,15 @@ void ModuleRenderer3D::DrawConfig()
 	if (ImGui::RadioButton("GL_CW", &cull_face_mode, 1)) CheckConfig();
 
 
-	if (ImGui::Checkbox("Lighting", &lighting)) CheckConfig();
+	if (ImGui::Checkbox("Smooth", &smooth) || 
+		ImGui::Checkbox("Lighting", &lighting)) CheckConfig();
 
-//	if (ImGui::SliderFloat("Red", &LightModelAmbient[0], 0.0f, 1.0f, "ratio = %.2f")) CheckConfig;
+	if (ImGui::ColorEdit4("Light color", LightModelAmbient)) CheckConfig();
 
 	if	(ImGui::Checkbox("Color material", &color_material) ||
-		ImGui::Checkbox("2D texture", &texture_2d) ||
-		ImGui::Checkbox("Wireframe", &wireframe))
+		ImGui::Checkbox("2D texture", &texture_2d))
+		
 		CheckConfig();
-
-
-
-
 }
 
 void ModuleRenderer3D::CheckConfig()
@@ -242,4 +258,8 @@ void ModuleRenderer3D::CheckConfig()
 	if (cull_face_mode)glFrontFace(GL_CW);
 	else glFrontFace(GL_CCW);
 
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
+
+	if (smooth)glShadeModel(GL_SMOOTH);
+	else glShadeModel(GL_FLAT);
 }
