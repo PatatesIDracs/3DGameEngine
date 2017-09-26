@@ -5,6 +5,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "ConfigJSON.h"
+#include "Imgui\imgui.h"
 
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
@@ -76,7 +77,10 @@ bool ModuleRenderer3D::Init()
 			ret = false;
 		}
 		
-		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
+		LightModelAmbient[0] = 0.0f;
+		LightModelAmbient[1] = 0.0f;
+		LightModelAmbient[2] = 0.0f;
+		LightModelAmbient[3] = 1.0f;
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
 		lights[0].ref = GL_LIGHT0;
@@ -91,11 +95,10 @@ bool ModuleRenderer3D::Init()
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+
 		lights[0].Active(true);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
+		CheckConfig();
+
 		
 	}
 
@@ -114,6 +117,8 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(App->camera->GetViewMatrix());
 
+
+
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
@@ -126,6 +131,11 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	App->scene_intro->Draw();
 
 	App->editor->Draw();
@@ -161,10 +171,75 @@ void ModuleRenderer3D::OnResize(int width, int height)
 // ----------------------------------------------
 void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 {
+
+	depth_test = config.GetBool("Depth Test", true);
+	cull_face = config.GetBool("Cull face", true);
+	cull_face_mode = config.GetInt("Cull face mode", 0);
+	lighting = config.GetBool("Lighting", true);
+	color_material = config.GetBool("Color material", true);
+	texture_2d = config.GetBool("Texture 2D", true);
+	wireframe = config.GetBool("Wireframe", false);
 }
 
 void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json render_config = config.AddJsonObject(this->GetName());
 	render_config.SetBool("Is Active", true);
+	render_config.SetBool("Depth Test", depth_test);
+	render_config.SetBool("Cull face", cull_face);
+	render_config.SetInt("Cull face mode", cull_face_mode);
+	render_config.SetBool("Lighting", lighting);
+	render_config.SetBool("Color material", color_material);
+	render_config.SetBool("Texture 2D", texture_2d);
+	render_config.SetBool("Wireframe", wireframe);
+
+}
+
+void ModuleRenderer3D::DrawConfig()
+{
+	
+	if (ImGui::Checkbox("Depth test", &depth_test)) CheckConfig();
+
+	if (ImGui::Checkbox("Face culling", &cull_face)) CheckConfig();
+	ImGui::SameLine();
+	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) CheckConfig(); ImGui::SameLine();
+	if (ImGui::RadioButton("GL_CW", &cull_face_mode, 1)) CheckConfig();
+
+
+	if (ImGui::Checkbox("Lighting", &lighting)) CheckConfig();
+
+//	if (ImGui::SliderFloat("Red", &LightModelAmbient[0], 0.0f, 1.0f, "ratio = %.2f")) CheckConfig;
+
+	if	(ImGui::Checkbox("Color material", &color_material) ||
+		ImGui::Checkbox("2D texture", &texture_2d) ||
+		ImGui::Checkbox("Wireframe", &wireframe))
+		CheckConfig();
+
+
+
+
+}
+
+void ModuleRenderer3D::CheckConfig()
+{
+
+	if (depth_test)glEnable(GL_DEPTH_TEST);
+	else glDisable(GL_DEPTH_TEST);
+
+	if (cull_face)glEnable(GL_CULL_FACE);
+	else glDisable(GL_CULL_FACE);
+
+	if (lighting)glEnable(GL_LIGHTING);
+	else glDisable(GL_LIGHTING);
+
+	if (color_material)glEnable(GL_COLOR_MATERIAL);
+	else glDisable(GL_COLOR_MATERIAL);
+
+	if (texture_2d) glEnable(GL_TEXTURE_2D);
+	else glDisable(GL_TEXTURE_2D);
+
+
+	if (cull_face_mode)glFrontFace(GL_CW);
+	else glFrontFace(GL_CCW);
+
 }
