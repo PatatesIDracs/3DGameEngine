@@ -64,7 +64,7 @@ public:
 		return true; 
 	}
 
-	virtual void DrawImGui()
+	virtual void Draw()
 	{}
 
 	virtual void DrawConfig()

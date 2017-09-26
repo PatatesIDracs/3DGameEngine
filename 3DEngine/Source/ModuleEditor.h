@@ -15,7 +15,7 @@ public:
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 
-	void DrawImGui();
+	void Draw();
 
 	bool CleanUp();
 

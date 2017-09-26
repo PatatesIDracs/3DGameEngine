@@ -23,7 +23,7 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void DrawImGui();
+	void Draw();
 
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
 
@@ -37,7 +37,7 @@ public:
 	float	float_rand_test = 0.0f;
 	int		int_rand_test = 0;
 
-	Sphere* col_test_BodyA = nullptr;
+	oldSphere* col_test_BodyA = nullptr;
 	Sphere* col_test_BodyB = nullptr;
 	Sphere* col_test_BodyC = nullptr;
 

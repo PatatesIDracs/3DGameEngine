@@ -124,12 +124,12 @@ update_status ModuleEditor::Update(float dt)
 	//Make sure that the item is the start of the list
 	item = module_list->begin();
 		
-	//Iterate the list and call the DrawImGui from all modules
+	//Iterate the list and call the Draw from all modules
 	//ImGui::Begin() and ImGui::End() needs to be called in the DragImGui of each module
 	//This way we can decide more easily the name of the new UI window
 	while (item != module_list->end())
 	{
-		item._Ptr->_Myval->DrawImGui();
+		item._Ptr->_Myval->Draw();
 		item++;
 	}	
 	
@@ -142,7 +142,7 @@ update_status ModuleEditor::Update(float dt)
 
 
 //Except from the main menu the other UI elements of ModuleEditor will be put here
-void ModuleEditor::DrawImGui()
+void ModuleEditor::Draw()
 {
 	//Show the ImGui test window if requested
 	if (showtestwindow) ImGui::ShowTestWindow();
