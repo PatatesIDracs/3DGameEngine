@@ -72,7 +72,60 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::Draw()
 {
-	glBegin(GL_TRIANGLES);
+	GLfloat vertices[] = { -1.f, 2.f, 1.f,		-1.f, 0.f, 1.f,		1.f, 0.f, 1.f,
+							-1.f, 2.f, 1.f,		1.f, 0.f, 1.f,		1.f, 2.f, 1.f,
+							1.f, 2.f, 1.f,		1.f, 0.f, 1.f,		1.f, 0.f, -1.f,
+							1.f, 2.f, 1.f,		1.f, 0.f, -1.f,		1.f, 2.f, -1.f,
+							1.f, 2.f, -1.f,		1.f, 0.f, -1.f,		-1.f, 0.f, -1.f,
+							1.f, 2.f, -1.f,		-1.f, 0.f, -1.f,	-1.f, 2.f, -1.f,
+							-1.f, 2.f, -1.f,	-1.f, 0.f, -1.f,	-1.f, 0.f, 1.f,
+							-1.f, 2.f, -1.f,	-1.f, 0.f, 1.f,		-1.f, 2.f, 1.f,
+							-1.f, 2.f, 1.f,		1.f, 2.f, 1.f,		1.f, 2.f, -1.f,
+							-1.f, 2.f, 1.f,		1.f, 2.f, -1.f,		-1.f, 2.f, -1.f,
+							-1.f, 0.f, 1.f,		-1.f, 0.f, -1.f,	1.f, 0.f, -1.f,
+							-1.f, 0.f, 1.f,		1.f, 0.f, -1.f,		1.f, 0.f, 1.f };
+
+	GLfloat uniquevertices[] = {0,0,0,
+								0,1,0,
+								1,0,0,
+								1,1,0,
+								1,1,-1,
+								1,0,-1,
+								0,1,-1,
+								0,0,-1};
+
+	GLubyte indices[] = {0,2,1,		1,2,3,		//Front
+						3,2,5,		3,5,4,		//Right	
+						1,3,4,		1,4,6,		//Top
+						4,5,7,		4,7,6,		//Back
+						7,0,1,		7,1,6,		//Left	
+						7,2,0,		7,6,3};		//Bottom
+
+
+	/*
+	glGenBuffers(1, (GLuint*)&cube_id);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36 * 3);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	*/
+
+	/*
+	glGenBuffers(1, (GLuint*)&indices_id);
+	glBindBuffer(GL_ARRAY_BUFFER, indices_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint)*12 , indices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, indices_id);
+	glDrawElements(GL_TRIANGLES, indices_id, GL_UNSIGNED_INT, NULL);
+	*/
+
+
+	/*
 	glVertex3f(-1.f, 2.f, 1.f);
 	glVertex3f(-1.f, 0.f, 1.f);
 	glVertex3f(1.f, 0.f, 1.f);
@@ -107,7 +160,7 @@ void ModuleSceneIntro::Draw()
 
 	glVertex3f(-1.f, 2.f, 1.f);
 	glVertex3f(1.f, 2.f, 1.f);
-	glVertex3f(1.f, 2.f, -1.f);
+	glVertex3f(1.f, 2.f, -1.f);/
 
 	glVertex3f(-1.f, 2.f, 1.f);
 	glVertex3f(1.f, 2.f, -1.f);
@@ -120,9 +173,10 @@ void ModuleSceneIntro::Draw()
 	glVertex3f(-1.f, 0.f, 1.f);
 	glVertex3f(1.f, 0.f, -1.f);
 	glVertex3f(1.f, 0.f, 1.f);
-	glEnd();
-	
-	//col_test_BodyA->Render();
+	*/
+
+
+	col_test_BodyA->Render();
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)

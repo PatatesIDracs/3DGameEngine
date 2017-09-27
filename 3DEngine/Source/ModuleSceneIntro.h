@@ -5,6 +5,7 @@
 #include "Module.h"
 #include "Primitive.h"
 #include "Math.h"
+#include "SDL\include\SDL.h"
 
 #define MAX_SNAKE 2
 
@@ -40,9 +41,9 @@ public:
 	oldSphere* col_test_BodyA = nullptr;
 	Sphere* col_test_BodyB = nullptr;
 	Sphere* col_test_BodyC = nullptr;
-
-
-
+	
+	uint cube_id = 0;
+	uint indices_id = 0;
 };
 
 #endif // !__MODULESCENEINTRO_H__

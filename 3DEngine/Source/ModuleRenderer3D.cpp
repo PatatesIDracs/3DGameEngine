@@ -176,7 +176,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 // ----------------------------------------------
 void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 {
-
+	render_mode = (RENDER_MODE)config.GetInt("Render mode", RENDER_MODE::FILL);
 	depth_test = config.GetBool("Depth Test", true);
 	cull_face = config.GetBool("Cull face", true);
 	cull_face_mode = config.GetInt("Cull face mode", 0);
@@ -195,6 +195,7 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json render_config = config.AddJsonObject(this->GetName());
 	render_config.SetBool("Is Active", true);
+	render_config.SetInt("Render mode", render_mode);
 	render_config.SetBool("Depth Test", depth_test);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
