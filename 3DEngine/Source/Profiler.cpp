@@ -103,3 +103,8 @@ std::vector<float>* Profiler::GetFunctionTimeline(const char * function_name)
 	}
 	return &profiler_timeline[0];
 }
+
+std::vector<char*>* Profiler::GetFunctionNames()
+{
+	return &function_names;
+}

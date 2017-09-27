@@ -275,11 +275,31 @@ void ModuleEditor::DrawProfilerWindow()
 			recording = true;
 		}
 		
+		//Show Ms from Recorded functions
 		ImGui::Separator();
 		if (showrecord)
 		{
-			std::vector<float>* item = app_profiler->begin()[2]->GetFunctionTimeline("Update");
-			ImGui::PlotHistogram("Miliseconds", &item->front(), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
+			ImGui::Text("Modules: ");
+			const std::list<Module*>* app = App->GetModulesList();
+			std::list<Module*>::const_iterator app_modules = app->begin();
+			
+			int count = 0;
+			for (; app_modules != app->end(); app_modules++)
+			{
+				ImGui::RadioButton(app_modules._Ptr->_Myval->GetName(), (int*)&current_module, count);
+				count++;
+			}
+			ImGui::Separator();
+
+			std::vector<char*>* fnames = app_profiler->begin()[current_module]->GetFunctionNames();
+			std::vector<float>* item = nullptr;
+			static int fps = 0;
+			ImGui::SliderInt("", &fps, 0, 240, "Record TimeLine");
+			for (int i = 0; i < fnames->size(); i++)
+			{
+				item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
+				ImGui::PlotHistogram(fnames->at(i), &item->at(fps), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
+			}	
 		}
 	}
 	ImGui::End();

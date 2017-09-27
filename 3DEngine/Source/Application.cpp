@@ -249,7 +249,7 @@ void Application::FinishUpdate()
 		}
 		ms_counter.pop_back();
 	}
-	ms_counter.push_back(last_frame_time);
+	ms_counter.push_back(ms_timer.Read());
 
 }	
 

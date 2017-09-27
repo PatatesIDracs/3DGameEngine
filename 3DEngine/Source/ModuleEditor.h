@@ -45,6 +45,7 @@ private:
 	bool	showrecord   	= false;
 	bool	recording		= false;
 
+	int		current_module  = 0;
 	const std::vector<Profiler*>* app_profiler = nullptr;
 };
 

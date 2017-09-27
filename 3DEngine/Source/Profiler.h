@@ -26,7 +26,9 @@ public:
 
 	// Get Timeline;
 	std::vector<float>* GetFunctionTimeline(const char* function_name);
-	
+
+	// Get List of Functions const char*
+	std::vector<char*>* GetFunctionNames();
 
 private:
 	
