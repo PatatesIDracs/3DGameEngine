@@ -278,7 +278,8 @@ void ModuleEditor::DrawProfilerWindow()
 		ImGui::Separator();
 		if (showrecord)
 		{
-			//const std::vector<int>* item = app_profiler[0].
+			std::vector<float>* item = app_profiler->begin()[2]->GetFunctionTimeline("Update");
+			ImGui::PlotHistogram("Miliseconds", &item->front(), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
 		}
 	}
 	ImGui::End();

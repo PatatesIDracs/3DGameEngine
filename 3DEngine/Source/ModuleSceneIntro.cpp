@@ -65,13 +65,64 @@ update_status ModuleSceneIntro::Update(float dt)
 	oldPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+	
 
 	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::Draw()
 {
-	col_test_BodyA->Render();
+	glBegin(GL_TRIANGLES);
+	glVertex3f(-1.f, 2.f, 1.f);
+	glVertex3f(-1.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+
+	glVertex3f(-1.f, 2.f, 1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+	glVertex3f(1.f, 2.f, 1.f);
+
+	glVertex3f(1.f, 2.f, 1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+
+	glVertex3f(1.f, 2.f, 1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(1.f, 2.f, -1.f);
+
+	glVertex3f(1.f, 2.f, -1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(-1.f, 0.f, -1.f);
+
+	glVertex3f(1.f, 2.f, -1.f);
+	glVertex3f(-1.f, 0.f, -1.f);
+	glVertex3f(-1.f, 2.f, -1.f);
+
+	glVertex3f(-1.f, 2.f, -1.f);
+	glVertex3f(-1.f, 0.f, -1.f);
+	glVertex3f(-1.f, 0.f, 1.f);
+
+	glVertex3f(-1.f, 2.f, -1.f);
+	glVertex3f(-1.f, 0.f, 1.f);
+	glVertex3f(-1.f, 2.f, 1.f);
+
+	glVertex3f(-1.f, 2.f, 1.f);
+	glVertex3f(1.f, 2.f, 1.f);
+	glVertex3f(1.f, 2.f, -1.f);
+
+	glVertex3f(-1.f, 2.f, 1.f);
+	glVertex3f(1.f, 2.f, -1.f);
+	glVertex3f(-1.f, 2.f, -1.f);
+
+	glVertex3f(-1.f, 0.f, 1.f);
+	glVertex3f(-1.f, 0.f, -1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+
+	glVertex3f(-1.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+	glEnd();
+	
+	//col_test_BodyA->Render();
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)

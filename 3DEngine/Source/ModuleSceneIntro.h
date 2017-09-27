@@ -41,6 +41,8 @@ public:
 	Sphere* col_test_BodyB = nullptr;
 	Sphere* col_test_BodyC = nullptr;
 
+
+
 };
 
 #endif // !__MODULESCENEINTRO_H__

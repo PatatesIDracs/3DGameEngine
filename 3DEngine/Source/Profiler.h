@@ -25,7 +25,7 @@ public:
 	void SetTitle(const char* function_name);
 
 	// Get Timeline;
-	std::vector<int>* GetFunctionTimeline(const char* function_name);
+	std::vector<float>* GetFunctionTimeline(const char* function_name);
 	
 
 private:
@@ -40,7 +40,7 @@ private:
 	bool is_recording = false;
 	bool loop_closed = false;
 	
-	std::vector<std::vector<int>> profiler_timeline;
+	std::vector<std::vector<float>> profiler_timeline;
 	std::vector<char*> function_names;
 };
 

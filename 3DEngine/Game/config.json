@@ -26,13 +26,13 @@
         "Depth Test": true,
         "Cull face": true,
         "Cull face mode": 0,
-        "Smooth": 1,
+        "Smooth": 0,
         "Lighting": true,
         "Color material": true,
         "Texture 2D": true,
-        "Red": 0.40784314274787903,
+        "Red": 0,
         "Green": 0,
-        "Blue": 0.47058823704719543,
-        "Alpha": 1
+        "Blue": 1,
+        "Alpha": 0.75686275959014893
     }
 }

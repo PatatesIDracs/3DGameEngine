@@ -2,7 +2,7 @@
 
 Profiler::Profiler()
 {
-	std::vector<int> newvect(60);
+	std::vector<float> newvect(60);
 	profiler_timeline.push_back(newvect);
 }
 
@@ -43,7 +43,7 @@ void Profiler::AddTimeToFrame()
 		return;
 	}	
 
-	int value = clock.Read();
+	float value = clock.Read();
 	profiler_timeline[curren_function][curren_frame] = value;
 }
 
@@ -86,19 +86,19 @@ void Profiler::SetTitle(const char * function_name)
 			return;
 		}
 	}
-	std::vector<int> newvector(size);
+	std::vector<float> newvector(size);
 	profiler_timeline.push_back(newvector);
 	function_names.push_back((char*)function_name);
 	fnames_size++;
 }
 
-std::vector<int>* Profiler::GetFunctionTimeline(const char * function_name)
+std::vector<float>* Profiler::GetFunctionTimeline(const char * function_name)
 {
 	for (int count = 0; count < fnames_size; count++)
 	{
 		if (strcmp(function_names[count], function_name) == 0)
 		{
-			return &profiler_timeline[count];
+			return &(profiler_timeline[count]);
 		}
 	}
 	return &profiler_timeline[0];
