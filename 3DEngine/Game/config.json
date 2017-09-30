@@ -23,10 +23,11 @@
     },
     "Renderer": {
         "Is Active": true,
+        "Render mode": 0,
         "Depth Test": true,
         "Cull face": true,
         "Cull face mode": 0,
-        "Smooth": 0,
+        "Smooth": false,
         "Lighting": true,
         "Color material": true,
         "Texture 2D": true,

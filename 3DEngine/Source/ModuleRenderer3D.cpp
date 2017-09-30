@@ -199,7 +199,7 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 	render_config.SetBool("Depth Test", depth_test);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
-	render_config.SetInt("Smooth", smooth);
+	render_config.SetBool("Smooth", smooth);
 	render_config.SetBool("Lighting", lighting);
 	render_config.SetBool("Color material", color_material);
 	render_config.SetBool("Texture 2D", texture_2d);
