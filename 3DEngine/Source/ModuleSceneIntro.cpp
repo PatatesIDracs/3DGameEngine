@@ -105,13 +105,13 @@ void ModuleSceneIntro::Draw()
 	
 	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, &vertices[0], GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36 * 3);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
