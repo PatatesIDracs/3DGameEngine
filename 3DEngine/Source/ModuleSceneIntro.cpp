@@ -29,11 +29,11 @@ bool ModuleSceneIntro::Start()
 
 	vec origin = { 0, 1, 0 };
 	col_test_BodyA = new oldSphere(1.0f);
-	col_test_BodyA->SetPos(0,1,0);
+	col_test_BodyA->SetPos(-5,1,0);
 
-	origin = { 0,2,0 };
+	origin = { -5,2,0 };
 	col_test_BodyB = new Sphere(origin, 1.5f);
-	origin = { 2,2,0 };
+	origin = { -7,2,0 };
 	col_test_BodyC = new Sphere(origin, 1.0f);
 
 	random_test = false;
@@ -137,6 +137,8 @@ void ModuleSceneIntro::Draw()
 
 	glDeleteBuffers(1, &cube_id);
 	glDeleteBuffers(1, &indices_id);
+
+	col_test_BodyA->Render();
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)

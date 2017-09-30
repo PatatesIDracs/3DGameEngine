@@ -1,11 +1,11 @@
-
+#include "Glew\include\glew.h"
 #include "Globals.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Primitive.h"
-#include "glut/glut.h"
 
-#pragma comment (lib, "glut/glut32.lib")
+
+
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
@@ -166,11 +166,47 @@ oldSphere::oldSphere() : Primitive(), radius(1.0f)
 oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
+	geo_sphere = Sphere(math::vec(-5.f,0.f,0.f),radius);
+	vertices3 = new float3[24 * 4 * 60];
+	geo_sphere.Triangulate(vertices3, nullptr, nullptr, 24 * 4 *60, false);
+
+}
+
+oldSphere::~oldSphere()
+{
+	delete vertices3;
 }
 
 void oldSphere::InnerRender() const
 {
-	glutSolidSphere(radius, 25, 25);
+
+	GLuint sphere_id = 0;
+	
+
+	GLfloat magic_vertices[24 * 4 *60 * 3];
+
+	for (int i = 0; i < 24 * 4 * 60; i++)
+	{
+		magic_vertices[i * 3] = vertices3[i].x;
+		magic_vertices[i * 3 + 1] = vertices3[i].y;
+		magic_vertices[i * 3 + 2] = vertices3[i].z;
+	}
+
+	glGenBuffers(1, (GLuint*)&sphere_id);
+	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 4 * 60 * 3, &magic_vertices[0], GL_STATIC_DRAW);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawArrays(GL_TRIANGLES, 0, 24 * 4 * 60);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	
 }
 
 

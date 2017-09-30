@@ -178,7 +178,7 @@ void ModuleEditor::DrawAboutWindow()
 	ImGui::Text("\nMade by: Joan Pareja, Pere Rifa");
 
 	//Libraries: bullet, SDL, glew, glut, dear imgui, json(Parson), MathGeoLib
-	ImGui::Text("\nMade with: SDL, glew, glut, dear imgui, Parson, MathGeoLib");
+	ImGui::Text("\nMade with: SDL, glew, dear imgui, Parson, MathGeoLib");
 
 	ImGui::Text("\nLicensed under the MIT license");
 

@@ -3,6 +3,8 @@
 
 #include "glmath.h"
 #include "Color.h"
+#include "Math.h"
+
 
 enum PrimitiveTypes
 {
@@ -54,9 +56,16 @@ class oldSphere : public Primitive
 public:
 	oldSphere();
 	oldSphere(float radius);
+	~oldSphere();
 	void InnerRender() const;
 public:
 	float radius;
+
+private:
+	math::Sphere geo_sphere;
+
+	mutable float3*	vertices3 = nullptr;
+	mutable float2* vertices3_uv = nullptr;
 };
 
 // ============================================
