@@ -99,7 +99,7 @@ void ModuleSceneIntro::Draw()
 						1,3,4,		1,4,6,		//Top
 						4,5,7,		4,7,6,		//Back
 						7,0,1,		7,1,6,		//Left	
-						7,2,0,		7,6,3};		//Bottom
+						7,2,0,		7,5,2};		//Bottom
 
 
 	
@@ -135,8 +135,8 @@ void ModuleSceneIntro::Draw()
 	glDrawElements(GL_TRIANGLES, indices_id, GL_UNSIGNED_INT, NULL);
 	*/
 
-
-
+	glDeleteBuffers(1, &cube_id);
+	glDeleteBuffers(1, &indices_id);
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
