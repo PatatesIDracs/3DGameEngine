@@ -73,6 +73,8 @@ private:
 	
 	mutable std::list<vec3> mesh;
 	mutable std::vector<float> vertex_array;
+
+	
 };
 
 // ============================================

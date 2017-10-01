@@ -167,11 +167,110 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 	geo_sphere = Sphere(math::vec(-5.f,0.f,0.f),radius);
-	vertices3 = new float3[344];
-	geo_sphere.Triangulate(vertices3, nullptr, nullptr, 344, false);
+	vertices3 = new float3[36];
+	//geo_sphere.Triangulate(vertices3, nullptr, nullptr, 344, false);
 
-	stacks = 4;
-	slices = 4;
+	stacks = 10;
+	slices = 10;
+
+
+
+
+	for (int t = 0; t < stacks; t++)
+	{
+		float theta1 = ((float)t / stacks)*2*pi;
+		float theta2 = ((float)(t + 1) / stacks)*2*pi;
+
+		for (int p = 0; p < slices; p++)
+		{
+			float phi1 = ((float)p / slices)* pi;
+			float phi2 = ((float)(p + 1) / slices) * pi;
+
+			vec3 vertex1;
+			vec3 vertex2;
+			vec3 vertex3;
+			vec3 vertex4;
+
+			vertex1.z = radius * Sin(theta1) * Cos(phi1);
+			vertex1.x = radius * Sin(theta1) * Sin(phi1);
+			vertex1.y = radius * Cos(theta1);
+
+			vertex2.z = radius * Sin(theta1) * Cos(phi2);
+			vertex2.x = radius * Sin(theta1) * Sin(phi2);
+			vertex2.y = radius * Cos(theta1);
+
+
+			vertex3.z = radius * Sin(theta2) * Cos(phi2);
+			vertex3.x = radius * Sin(theta2) * Sin(phi2);
+			vertex3.y = radius * Cos(theta2);
+
+
+			vertex4.z = radius * Sin(theta2) * Cos(phi1);
+			vertex4.x = radius * Sin(theta2) * Sin(phi1);
+			vertex4.y = radius * Cos(theta2);
+
+
+			if (t == 0)
+			{
+				vertex_array.push_back(vertex1.x);
+				vertex_array.push_back(vertex1.y);
+				vertex_array.push_back(vertex1.z);
+
+				vertex_array.push_back(vertex4.x);
+				vertex_array.push_back(vertex4.y);
+				vertex_array.push_back(vertex4.z);
+
+
+				vertex_array.push_back(vertex3.x);
+				vertex_array.push_back(vertex3.y);
+				vertex_array.push_back(vertex3.z);
+			}
+			else if (t + 1 == stacks)
+			{
+				vertex_array.push_back(vertex1.x);
+				vertex_array.push_back(vertex1.y);
+				vertex_array.push_back(vertex1.z);
+
+				vertex_array.push_back(vertex3.x);
+				vertex_array.push_back(vertex3.y);
+				vertex_array.push_back(vertex3.z);
+
+				vertex_array.push_back(vertex2.x);
+				vertex_array.push_back(vertex2.y);
+				vertex_array.push_back(vertex2.z);
+			}
+			else
+			{
+				vertex_array.push_back(vertex1.x);
+				vertex_array.push_back(vertex1.y);
+				vertex_array.push_back(vertex1.z);
+
+				vertex_array.push_back(vertex4.x);
+				vertex_array.push_back(vertex4.y);
+				vertex_array.push_back(vertex4.z);
+
+				vertex_array.push_back(vertex2.x);
+				vertex_array.push_back(vertex2.y);
+				vertex_array.push_back(vertex2.z);
+
+
+				vertex_array.push_back(vertex2.x);
+				vertex_array.push_back(vertex2.y);
+				vertex_array.push_back(vertex2.z);
+
+				vertex_array.push_back(vertex4.x);
+				vertex_array.push_back(vertex4.y);
+				vertex_array.push_back(vertex4.z);
+
+				vertex_array.push_back(vertex3.x);
+				vertex_array.push_back(vertex3.y);
+				vertex_array.push_back(vertex3.z);
+			}
+		}
+	}
+
+
+
 
 }
 
@@ -185,110 +284,18 @@ void oldSphere::InnerRender() const
 	GLuint sphere_id = 0;
 	GLfloat magic_vertices[344 * 3];
 
-	for (int t = 0; t < stacks; t++)
-	{
-		float theta1 = ((float)t / stacks)*pi;
-		float theta2 = ((float)(t + 1) / stacks)*pi;
 
-		for (int p = 0; p < slices; p++)
-		{
-			float phi1 = ((float)p / slices)*2*pi;
-			float phi2 = ((float)(p+1) / slices)*2*pi;
-
-			vec3 vertex1;
-			vec3 vertex2;
-			vec3 vertex3;
-			vec3 vertex4;
-
-
-			vertex1.x = radius * Sin(phi1) * Cos(theta1);
-			vertex1.y = radius * Sin(phi1) * Sin(theta1);
-			vertex1.z = radius * Cos(phi1);
-
-			vertex2.x = radius * Sin(phi2) * Cos(theta1);
-			vertex2.y = radius * Sin(phi2) * Sin(theta1);
-			vertex2.z = radius * Cos(phi2);
-
-
-			vertex3.x = radius * Sin(phi2) * Cos(theta2);
-			vertex3.y = radius * Sin(phi2) * Sin(theta2);
-			vertex3.z = radius * Cos(phi2);
-
-
-			vertex4.x = radius * Sin(phi1) * Cos(theta2);
-			vertex4.y = radius * Sin(phi1) * Sin(theta2);
-			vertex4.z = radius * Cos(phi1);
-
-			
-			if (t == 0)
-			{
-				vertex_array.push_back(vertex1.x);
-				vertex_array.push_back(vertex1.y);
-				vertex_array.push_back(vertex1.z);
-
-				vertex_array.push_back(vertex3.x);
-				vertex_array.push_back(vertex3.y);
-				vertex_array.push_back(vertex3.z);
-
-
-				vertex_array.push_back(vertex4.x);
-				vertex_array.push_back(vertex4.y);
-				vertex_array.push_back(vertex4.z);
-			}
-			else if (t + 1 == stacks)
-			{
-				vertex_array.push_back(vertex3.x);
-				vertex_array.push_back(vertex3.x);
-				vertex_array.push_back(vertex3.x);
-
-				vertex_array.push_back(vertex1.x);
-				vertex_array.push_back(vertex1.x);
-				vertex_array.push_back(vertex1.x);
-
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-			}
-			else
-			{
-				vertex_array.push_back(vertex1.x);
-				vertex_array.push_back(vertex1.x);
-				vertex_array.push_back(vertex1.x);
-
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-
-				vertex_array.push_back(vertex4.x);
-				vertex_array.push_back(vertex4.x);
-				vertex_array.push_back(vertex4.x);
-
-
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-				vertex_array.push_back(vertex2.x);
-
-				vertex_array.push_back(vertex3.x);
-				vertex_array.push_back(vertex3.x);
-				vertex_array.push_back(vertex3.x);
-
-				vertex_array.push_back(vertex4.x);
-				vertex_array.push_back(vertex4.x);
-				vertex_array.push_back(vertex4.x);
-			}
-		}
-	}
 
 
 	glGenBuffers(1, (GLuint*)&sphere_id);
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
-	glBufferData(GL_ARRAY_BUFFER, vertex_array.size(), &vertex_array[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertex_array.size() * sizeof(float), &vertex_array[0], GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawArrays(GL_TRIANGLES, 0, vertex_array.size());
+	glDrawArrays(GL_TRIANGLES, 0, vertex_array.size()/3);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
