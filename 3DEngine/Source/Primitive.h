@@ -4,7 +4,8 @@
 #include "glmath.h"
 #include "Color.h"
 #include "Math.h"
-
+#include <list>
+#include <vector>
 
 enum PrimitiveTypes
 {
@@ -66,6 +67,12 @@ private:
 
 	mutable float3*	vertices3 = nullptr;
 	mutable float2* vertices3_uv = nullptr;
+
+	int stacks = 0;
+	int slices = 0;
+	
+	mutable std::list<vec3> mesh;
+	mutable std::vector<float> vertex_array;
 };
 
 // ============================================
