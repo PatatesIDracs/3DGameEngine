@@ -44,6 +44,7 @@ public:
 	
 	uint cube_id = 0;
 	uint indices_id = 0;
+	uint unique_cube_id = 0;
 };
 
 #endif // !__MODULESCENEINTRO_H__

@@ -170,8 +170,8 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 	vertices3 = new float3[36];
 	//geo_sphere.Triangulate(vertices3, nullptr, nullptr, 344, false);
 
-	stacks = 11;
-	slices = 22;
+	stacks = 50;
+	slices = 50;
 
 
 

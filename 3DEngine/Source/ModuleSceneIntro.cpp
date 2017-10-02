@@ -116,11 +116,22 @@ void ModuleSceneIntro::Draw()
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+	glGenBuffers(1, (GLuint*)&unique_cube_id);
+	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uniquevertices[0], GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*)&indices_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, &indices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, uniquevertices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	// draw a cube
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, NULL);
 
 	// deactivate vertex arrays after drawing
 	glDisableClientState(GL_VERTEX_ARRAY);
