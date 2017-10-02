@@ -170,21 +170,21 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 	vertices3 = new float3[36];
 	//geo_sphere.Triangulate(vertices3, nullptr, nullptr, 344, false);
 
-	stacks = 10;
-	slices = 10;
+	stacks = 11;
+	slices = 22;
 
 
 
 
 	for (int t = 0; t < stacks; t++)
 	{
-		float theta1 = ((float)t / stacks)*2*pi;
-		float theta2 = ((float)(t + 1) / stacks)*2*pi;
+		float theta1 = ((float)t / stacks)*1*pi;
+		float theta2 = ((float)(t + 1) / stacks)*1*pi;
 
 		for (int p = 0; p < slices; p++)
 		{
-			float phi1 = ((float)p / slices)* pi;
-			float phi2 = ((float)(p + 1) / slices) * pi;
+			float phi1 = ((float)p / slices)*2*pi;
+			float phi2 = ((float)(p + 1) / slices) *2* pi;
 
 			vec3 vertex1;
 			vec3 vertex2;
