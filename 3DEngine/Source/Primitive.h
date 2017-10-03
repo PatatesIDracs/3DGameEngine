@@ -17,6 +17,18 @@ enum PrimitiveTypes
 	Primitive_Cylinder
 };
 
+struct Primitive_Data
+{
+	uint id_indices = 0; // id in VRAM
+	uint num_indices = 0;
+	uint* indices = nullptr;
+
+	uint id_vertices = 0; // id in VRAM
+	uint num_vertices = 0;
+	float* vertices = nullptr;
+};
+
+// -------------------------------
 class Primitive
 {
 public:
@@ -38,6 +50,8 @@ public:
 
 protected:
 	PrimitiveTypes type;
+
+	Primitive_Data render_data;
 };
 
 // ============================================
