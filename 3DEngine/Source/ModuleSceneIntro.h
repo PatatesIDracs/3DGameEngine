@@ -12,7 +12,7 @@
 struct PhysBody3D;
 struct PhysMotor3D;
 
-class Mesh_data;
+struct Mesh_data;
 
 class ModuleSceneIntro : public Module
 {

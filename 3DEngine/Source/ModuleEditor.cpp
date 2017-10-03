@@ -295,7 +295,7 @@ void ModuleEditor::DrawProfilerWindow()
 			std::vector<float>* item = nullptr;
 			static int fps = 0;
 			ImGui::SliderInt("", &fps, 0, 240, "Record TimeLine");
-			for (int i = 0; i < fnames->size(); i++)
+			for (uint i = 0; i < fnames->size(); i++)
 			{
 				item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
 				ImGui::PlotHistogram(fnames->at(i), &item->at(fps), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));

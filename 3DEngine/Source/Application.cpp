@@ -85,7 +85,7 @@ bool Application::Init()
 
 	// Create Profilers for Modules
 	profiler.reserve(list_modules.size());
-	for (int i = 0; i < list_modules.size(); i++)
+	for (uint i = 0; i < list_modules.size(); i++)
 	{
 		profiler.push_back(new Profiler());
 	}
@@ -224,7 +224,7 @@ void Application::FinishUpdate()
 	//List of the last 
 	if (fps_counter.size() > 50)
 	{
-		for (int i = 0; i < fps_counter.size() - 1; i++)
+		for (uint i = 0; i < fps_counter.size() - 1; i++)
 		{
 			fps_counter[i] = fps_counter[i + 1];
 		}
@@ -245,13 +245,13 @@ void Application::FinishUpdate()
 	//List of the las 50 frames time
 	if (ms_counter.size() > 50)
 	{
-		for (int i = 0; i < ms_counter.size() - 1; i++)
+		for (uint i = 0; i < ms_counter.size() - 1; i++)
 		{
 			ms_counter[i] = ms_counter[i + 1];
 		}
 		ms_counter.pop_back();
 	}
-	ms_counter.push_back(ms_timer.Read());
+	ms_counter.push_back((float)ms_timer.Read());
 
 }	
 
@@ -313,7 +313,7 @@ bool Application::CleanUp()
 	}
 
 	// Clear profile vector;
-	for (int i = 0; i < profiler.size(); i++)
+	for (uint i = 0; i < profiler.size(); i++)
 	{
 		delete profiler[i];
 	}

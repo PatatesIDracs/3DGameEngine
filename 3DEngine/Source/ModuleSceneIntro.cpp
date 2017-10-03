@@ -141,17 +141,20 @@ void ModuleSceneIntro::Draw()
 	glDeleteBuffers(1, &cube_id);
 	glDeleteBuffers(1, &indices_id);
 	glDeleteBuffers(1, &unique_cube_id);
-	
-	for (int i = 0; i < meshes.size(); i++)
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	for (uint i = 0; i < meshes.size(); i++)
 	{
-		// Draw Robot
+		// Draw Robot With Indices
 		glBindBuffer(GL_ARRAY_BUFFER, meshes[i].id_vertices);
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 		// draw a cube
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].id_indices);
-		glDrawElements(GL_TRIANGLES, meshes[i].num_indices, GL_UNSIGNED_BYTE, NULL);
+		glDrawElements(GL_TRIANGLES, meshes[i].num_indices, GL_UNSIGNED_INT, NULL);
 
 		// deactivate vertex arrays after drawing
 		glDisableClientState(GL_VERTEX_ARRAY);

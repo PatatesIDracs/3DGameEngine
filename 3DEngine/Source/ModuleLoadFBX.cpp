@@ -71,7 +71,7 @@ bool ModuleLoadFBX::LoadFile()
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		
 		uint n_meshes = scene->mNumMeshes;
-		for (int count = 0; count < n_meshes; count++)
+		for (uint count = 0; count < n_meshes; count++)
 		{
 			Mesh_data mesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
@@ -79,7 +79,7 @@ bool ModuleLoadFBX::LoadFile()
 			mesh.vertices = new float[new_mesh->mNumVertices * 3];
 			memcpy(mesh.vertices, new_mesh->mVertices, sizeof(float) * mesh.num_vertices * 3);
 			LOGC("New mesh with %d vertices", mesh.num_vertices);
-
+		
 			if (new_mesh->HasFaces())
 			{
 				mesh.num_indices = new_mesh->mNumFaces * 3;
@@ -88,20 +88,20 @@ bool ModuleLoadFBX::LoadFile()
 				{
 					if (new_mesh->mFaces[i].mNumIndices != 3)
 					{
-						LOGC("WARNING, geometry face with != 3 indices!");
+						LOGC("WARNING, geometry face with != 3 indices! %d", 0);
 					}
-					else memcpy(&mesh.indices[i * 3], new_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+					else {
+						memcpy(&mesh.indices[i * 3], new_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+					}
 				}			}
 
-			uint size = sizeof(mesh.vertices);
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
-			glBufferData(GL_ARRAY_BUFFER, size, &mesh.vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, mesh.num_vertices*3*sizeof(float), &mesh.vertices[0], GL_STATIC_DRAW);
 
-			size = sizeof(mesh.indices);
 			glGenBuffers(1, (GLuint*)&mesh.id_indices);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
 
 			App->scene_intro->meshes.push_back(mesh);
 		}

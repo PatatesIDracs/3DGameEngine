@@ -3,6 +3,8 @@
 
 #include "Module.h"
 
+struct Mesh_data;
+
 class ModuleLoadFBX : public Module
 {
 public:
@@ -25,8 +27,6 @@ public:
 	bool LoadFile();
 
 private:
-
-	bool		file_detected = false;
 	std::string file_name;
 
 
