@@ -217,6 +217,7 @@ void ModuleRenderer3D::DrawConfig()
 	ImGui::RadioButton("Wireframe", (int*)&render_mode, (int)RENDER_MODE::WIREFRAME); ImGui::SameLine();
 	ImGui::RadioButton("Vertex", (int*)&render_mode, (int)RENDER_MODE::VERTEX); ImGui::Separator();
 
+	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) CheckConfig();
 

@@ -93,7 +93,17 @@ bool ModuleLoadFBX::LoadFile()
 					else {
 						memcpy(&mesh.indices[i * 3], new_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
 					}
-				}			}
+				}
+			}
+			
+			if (new_mesh->HasNormals())
+			{
+				mesh.num_normals = new_mesh->mNumVertices;
+				mesh.normals = new float[mesh.num_normals * 3];
+				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 3);
+				LOGC("New mesh with %d normals", mesh.num_normals);
+
+			}
 
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);

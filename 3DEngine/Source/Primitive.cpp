@@ -166,12 +166,9 @@ oldSphere::oldSphere() : Primitive(), radius(1.0f)
 oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
-	geo_sphere = Sphere(math::vec(-5.f,0.f,0.f),radius);
-	vertices3 = new float3[36];
-	//geo_sphere.Triangulate(vertices3, nullptr, nullptr, 344, false);
 
-	stacks = 50;
-	slices = 50;
+	stacks = 20;
+	slices = 20;
 
 
 
@@ -210,6 +207,8 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 			vertex4.y = radius * Cos(theta2);
 
 
+			
+
 			if (t == 0)
 			{
 				vertex_array.push_back(vertex1.x);
@@ -224,6 +223,18 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 				vertex_array.push_back(vertex3.x);
 				vertex_array.push_back(vertex3.y);
 				vertex_array.push_back(vertex3.z);
+
+				float3 normal;
+				float3 u = float3(vertex4.x, vertex4.y, vertex4.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				float3 v = float3(vertex3.x, vertex3.y, vertex3.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				normal = math::Cross(u, v);
+
+				face_normals.push_back(normal.Normalized() * 0.25);
+
+				vec3 f_center = (vertex1 + vertex4 + vertex3) / 3;
+				face_center.push_back(f_center.x);
+				face_center.push_back(f_center.y);
+				face_center.push_back(f_center.z);				
 			}
 			else if (t + 1 == stacks)
 			{
@@ -238,6 +249,19 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 				vertex_array.push_back(vertex2.x);
 				vertex_array.push_back(vertex2.y);
 				vertex_array.push_back(vertex2.z);
+
+
+				float3 normal;
+				float3 u = float3(vertex3.x, vertex3.y, vertex3.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				float3 v = float3(vertex2.x, vertex2.y, vertex2.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				normal = math::Cross(u, v);
+
+				face_normals.push_back(normal.Normalized() * 0.25);
+
+				vec3 f_center = (vertex1 + vertex3 + vertex2) / 3;
+				face_center.push_back(f_center.x);
+				face_center.push_back(f_center.y);
+				face_center.push_back(f_center.z);
 			}
 			else
 			{
@@ -253,6 +277,19 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 				vertex_array.push_back(vertex2.y);
 				vertex_array.push_back(vertex2.z);
 
+				float3 normal;
+				float3 u = float3(vertex4.x, vertex4.y, vertex4.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				float3 v = float3(vertex2.x, vertex2.y, vertex2.z) - float3(vertex1.x, vertex1.y, vertex1.z);
+				normal = math::Cross(u, v);
+
+				face_normals.push_back(normal.Normalized() * 0.25);
+
+				vec3 f_center = (vertex1 + vertex4 + vertex2) / 3;
+				face_center.push_back(f_center.x);
+				face_center.push_back(f_center.y);
+				face_center.push_back(f_center.z);
+
+
 
 				vertex_array.push_back(vertex2.x);
 				vertex_array.push_back(vertex2.y);
@@ -265,15 +302,33 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 				vertex_array.push_back(vertex3.x);
 				vertex_array.push_back(vertex3.y);
 				vertex_array.push_back(vertex3.z);
+
+				u = float3(vertex4.x, vertex4.y, vertex4.z) - float3(vertex2.x, vertex2.y, vertex2.z);
+				v = float3(vertex3.x, vertex3.y, vertex3.z) - float3(vertex2.x, vertex2.y, vertex2.z);
+				normal = math::Cross(u, v);
+
+				face_normals.push_back(normal.Normalized() * 0.25);
+
+				f_center = (vertex2 + vertex4 + vertex3) / 3;
+				face_center.push_back(f_center.x);
+				face_center.push_back(f_center.y);
+				face_center.push_back(f_center.z);
 			}
 		}
 	}
+
+	for (int i = 0; i < face_normals.size(); i++)
+	{
+		normal_array.push_back(face_normals[i].x);
+		normal_array.push_back(face_normals[i].y);
+		normal_array.push_back(face_normals[i].z);
+	}
+
 
 }
 
 oldSphere::~oldSphere()
 {
-	delete vertices3;
 }
 
 void oldSphere::InnerRender() const
@@ -294,6 +349,24 @@ void oldSphere::InnerRender() const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glDeleteBuffers(1, &sphere_id);
+
+
+
+/*	glEnableClientState(GL_NORMAL_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, &normal_array[0]);
+
+	glDrawArrays(GL_TRIANGLE_FAN, 0, normal_array.size()/3);
+	glDisableClientState(GL_NORMAL_ARRAY);*/
+
+	glBegin(GL_LINES);
+	for (int i = 0; i < normal_array.size()/3; i++)
+	{
+		glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+		glVertex3f(face_center[3 * i], face_center[3 * i + 1], face_center[3 * i + 2]);
+		glVertex3f(face_center[3 * i] + normal_array[3 * i], face_center[3 * i + 1] + normal_array[3 * i + 1], face_center[3 * i + 2] + normal_array[3 * i + 2]);
+	}
+	glEnd();
+
 	/*
 	for (int i = 0; i < 344; i++)
 	{

@@ -77,18 +77,14 @@ public:
 	float radius;
 
 private:
-	math::Sphere geo_sphere;
-
-	mutable float3*	vertices3 = nullptr;
-	mutable float2* vertices3_uv = nullptr;
-
 	int stacks = 0;
 	int slices = 0;
-	
+
 	mutable std::list<vec3> mesh;
 	mutable std::vector<float> vertex_array;
-
-	
+	mutable std::vector<float3> face_normals;
+	mutable std::vector<float>	normal_array;
+	mutable std::vector<float>	face_center;
 };
 
 // ============================================

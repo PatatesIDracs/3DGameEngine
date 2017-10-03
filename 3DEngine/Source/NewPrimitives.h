@@ -14,6 +14,10 @@ struct Mesh_data
 	uint id_vertices = 0; // id in VRAM
 	uint num_vertices = 0;
 	float* vertices = nullptr;
+
+	uint id_normals = 0;
+	uint num_normals = 0;
+	float* normals = nullptr;
 };
 
 
