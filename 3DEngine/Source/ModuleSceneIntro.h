@@ -12,7 +12,7 @@
 struct PhysBody3D;
 struct PhysMotor3D;
 
-
+class Mesh_data;
 
 class ModuleSceneIntro : public Module
 {
@@ -45,6 +45,8 @@ public:
 	uint cube_id = 0;
 	uint indices_id = 0;
 	uint unique_cube_id = 0;
+
+	std::vector<Mesh_data> meshes;
 };
 
 #endif // !__MODULESCENEINTRO_H__

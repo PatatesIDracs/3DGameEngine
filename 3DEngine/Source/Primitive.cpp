@@ -269,9 +269,6 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 		}
 	}
 
-
-
-
 }
 
 oldSphere::~oldSphere()
@@ -282,11 +279,7 @@ oldSphere::~oldSphere()
 void oldSphere::InnerRender() const
 {
 	GLuint sphere_id = 0;
-	GLfloat magic_vertices[344 * 3];
-
-
-
-
+	
 	glGenBuffers(1, (GLuint*)&sphere_id);
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
 	glBufferData(GL_ARRAY_BUFFER, vertex_array.size() * sizeof(float), &vertex_array[0], GL_STATIC_DRAW);
@@ -299,7 +292,8 @@ void oldSphere::InnerRender() const
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	
+	glDeleteBuffers(1, &sphere_id);
 	/*
 	for (int i = 0; i < 344; i++)
 	{

@@ -21,7 +21,14 @@ public:
 
 	bool CleanUp();
 
+	void SetUpFile(const char* file_name);
+	bool LoadFile();
+
 private:
+
+	bool		file_detected = false;
+	std::string file_name;
+
 
 };
 

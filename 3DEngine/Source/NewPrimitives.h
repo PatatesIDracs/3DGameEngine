@@ -1,29 +1,38 @@
 #ifndef __PRIMITIVES_H__
 #define __PRIMITIVES_H__
-/*
-class mathgeo_sphere;
 
-class NPrimitive
+#include "glmath.h"
+#include "Color.h"
+#include "Globals.h"
+
+struct Mesh_data
 {
-public:
-	NPrimitive();
-	~NPrimitive();
+	uint id_indices = 0; // id in VRAM
+	uint num_indices = 0;
+	uint* indices = nullptr;
 
-private:
-
-
+	uint id_vertices = 0; // id in VRAM
+	uint num_vertices = 0;
+	float* vertices = nullptr;
 };
 
-class NSphere : public NPrimitive
-{ 
+
+class nMesh
+{
 public:
-	NSphere();
-	NSphere(float rad, float3 origin);
-	~NSphere();
+	nMesh();
+	nMesh(Mesh_data data);
+	~nMesh();
 
+	int GetIndicesBufferID() const;
+	int GetVertexBufferID() const;
+	int GetNumberOfIndices() const;
+	
 private:
+	int buffer_id;
 
-	math::Sphere mathgeo_sphere;
-};*/
+	Mesh_data own_mesh;
+
+};
 
 #endif // !__PRIMITIVES_H__

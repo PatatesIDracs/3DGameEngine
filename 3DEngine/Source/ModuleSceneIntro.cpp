@@ -9,6 +9,7 @@
 #include "Glew\include\glew.h"
 
 //#include "Math.h"
+#include "NewPrimitives.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app,"Scene", start_enabled)
 {
@@ -72,6 +73,7 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::Draw()
 {
+	
 	GLfloat vertices[] = { -1.f, 2.f, 1.f,		-1.f, 0.f, 1.f,		1.f, 0.f, 1.f,
 							-1.f, 2.f, 1.f,		1.f, 0.f, 1.f,		1.f, 2.f, 1.f,
 							1.f, 2.f, 1.f,		1.f, 0.f, 1.f,		1.f, 0.f, -1.f,
@@ -120,11 +122,11 @@ void ModuleSceneIntro::Draw()
 	glGenBuffers(1, (GLuint*)&unique_cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uniquevertices[0], GL_STATIC_DRAW);
-
+	
 	glGenBuffers(1, (GLuint*)&indices_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, &indices[0], GL_STATIC_DRAW);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -135,20 +137,26 @@ void ModuleSceneIntro::Draw()
 
 	// deactivate vertex arrays after drawing
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-
-	/*
-	glGenBuffers(1, (GLuint*)&indices_id);
-	glBindBuffer(GL_ARRAY_BUFFER, indices_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint)*12 , indices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, indices_id);
-	glDrawElements(GL_TRIANGLES, indices_id, GL_UNSIGNED_INT, NULL);
-	*/
-
+	
 	glDeleteBuffers(1, &cube_id);
 	glDeleteBuffers(1, &indices_id);
+	glDeleteBuffers(1, &unique_cube_id);
+	
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		// Draw Robot
+		glBindBuffer(GL_ARRAY_BUFFER, meshes[i].id_vertices);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
 
+		// draw a cube
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].id_indices);
+		glDrawElements(GL_TRIANGLES, meshes[i].num_indices, GL_UNSIGNED_BYTE, NULL);
+
+		// deactivate vertex arrays after drawing
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+	
 	col_test_BodyA->Render();
 }
 

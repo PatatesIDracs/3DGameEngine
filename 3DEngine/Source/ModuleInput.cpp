@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleLoadFBX.h"
 
 #define MAX_KEYS 300
 
@@ -104,12 +105,19 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_QUIT:
 			quit = true;
 			break;
-
+			
+			case SDL_DROPFILE:
+			{      
+				// In case if dropped file
+				App->assimp->SetUpFile(e.drop.file);
+				break;
+			}
+			
 			case SDL_WINDOWEVENT:
 			{
 				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
 					App->renderer3D->OnResize(e.window.data1, e.window.data2);
-			}
+			}		
 		}
 	}
 

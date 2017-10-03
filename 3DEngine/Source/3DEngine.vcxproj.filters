@@ -208,9 +208,11 @@
     <ClCompile Include="Profiler.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="NewPrimitives.cpp" />
     <ClCompile Include="ModuleLoadFBX.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="NewPrimitives.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
