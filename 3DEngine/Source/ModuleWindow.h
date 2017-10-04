@@ -5,7 +5,7 @@
 #include "SDL/include/SDL.h"
 
 
-class Application;
+//class Application;
 
 class ModuleWindow : public Module
 {

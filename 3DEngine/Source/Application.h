@@ -1,5 +1,8 @@
 #pragma once
 
+
+#include <cstdlib>
+
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
@@ -11,9 +14,6 @@
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
 #include "ModuleLoadFBX.h"
-
-#include <list>
-#include <array>
 
 
 class Config_Json;
@@ -102,3 +102,5 @@ private:
 	void SaveModuleConfig(Config_Json& config);
 	
 };
+
+extern Application* App;

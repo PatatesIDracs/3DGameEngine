@@ -16,18 +16,23 @@ class Config_Json;
 class Module
 {
 private :
-	bool enabled;
+	bool enabled = false;
 	char name[NAME_LENGTH];
 public:
-	Application* App;
+	//Application* App;
 
-	Module(Application* parent, const char* module_name = "", bool start_enabled = true) : App(parent)
+	Module(Application* parent, const char* module_name = "", bool start_enabled = true)
 	{
 		strcpy_s(name, NAME_LENGTH, module_name);
 	}
 
 	virtual ~Module()
 	{}
+
+	bool IsEnabled()
+	{
+		return enabled;
+	}
 
 	const char* GetName() const
 	{

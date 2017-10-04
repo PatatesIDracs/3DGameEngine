@@ -3,6 +3,8 @@
 
 #include "Module.h"
 #include <queue>
+#include <list>	
+#include <string>
 
 class Profiler;
 
@@ -20,6 +22,8 @@ public:
 	void Draw();
 
 	bool CleanUp();
+
+	void LogToConsole(std::string* log_string);
 
 
 private:
@@ -47,6 +51,8 @@ private:
 
 	int		current_module  = 0;
 	const std::vector<Profiler*>* app_profiler = nullptr;
+
+	std::list<std::string>	console_string;
 };
 
 #endif // !__MODULE_EDITOR_H__

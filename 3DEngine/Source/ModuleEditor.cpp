@@ -165,6 +165,11 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
+void ModuleEditor::LogToConsole(std::string * log_string)
+{
+	console_string.push_back(*log_string);
+}
+
 
 //About Window 
 void ModuleEditor::DrawAboutWindow()
@@ -254,6 +259,10 @@ void ModuleEditor::DrawConsole()
 {
 	ImGui::Begin("Console", &showconsole);
 	
+	for (std::list<std::string>::iterator item = console_string.begin(); item != console_string.end(); ++item)
+	{
+		ImGui::Text(item._Ptr->_Myval.c_str());
+	}
 	
 	ImGui::End();
 }
