@@ -26,6 +26,10 @@ struct Primitive_Data
 	uint id_vertices = 0; // id in VRAM
 	uint num_vertices = 0;
 	float* vertices = nullptr;
+
+	uint id_face_normals = 0;
+	uint num_face_normals = 0;
+	std::vector<float> face_normals;
 };
 
 // -------------------------------
@@ -37,6 +41,7 @@ public:
 
 	virtual void	Render() const;
 	virtual void	InnerRender() const;
+	virtual void	PrepareToRender();
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
@@ -52,6 +57,8 @@ protected:
 	PrimitiveTypes type;
 
 	Primitive_Data render_data;
+
+	void CalculateFaceNormals(std::vector<float> vertices);
 };
 
 // ============================================
