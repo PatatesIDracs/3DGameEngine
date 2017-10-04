@@ -15,17 +15,14 @@ public:
 	// Add Time to a current frame;
 	void AddTimeToFrame();
 
-	void StartRecording(int seconds = 5, int framerate = 60);
-	
-	// Return true if Profiler is Recording 
-	bool CheckState();
+	void PauseRecord();
 
 	// Set Up Functions
 	// Set new function to record
 	void SetTitle(const char* function_name);
 
 	// Get Timeline;
-	std::vector<float>* GetFunctionTimeline(const char* function_name);
+	std::vector<float>* GetFunctionTimeline(const char * function_name);
 
 	// Get List of Functions const char*
 	std::vector<char*>* GetFunctionNames();
@@ -36,10 +33,10 @@ private:
 
 	int	curren_frame = 0;
 	int curren_function = 0;
-	int	size = 0;
+	int	size = 60;
 	int fnames_size = 0;
 
-	bool is_recording = false;
+	bool is_paused = true;
 	bool loop_closed = false;
 	
 	std::vector<std::vector<float>> profiler_timeline;

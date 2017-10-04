@@ -45,6 +45,7 @@ public:
 	uint cube_id = 0;
 	uint indices_id = 0;
 	uint unique_cube_id = 0;
+	uint ImageName = 0;
 
 	std::vector<Mesh_data> meshes;
 };

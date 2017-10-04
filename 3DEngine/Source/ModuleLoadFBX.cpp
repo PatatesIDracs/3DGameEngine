@@ -17,40 +17,14 @@
 #include "NewPrimitives.h"
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
-{
-}
+{}
 
-ModuleLoadFBX::~ModuleLoadFBX()
-{
-}
+ModuleLoadFBX::~ModuleLoadFBX(){}
 
-bool ModuleLoadFBX::Init()
-{
-	return true;
-}
-
-bool ModuleLoadFBX::Start()
-{
-	return true;
-}
-
-update_status ModuleLoadFBX::PreUpdate(float dt)
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleLoadFBX::Update(float dt)
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleLoadFBX::PostUpdate(float dt)
-{
-	return UPDATE_CONTINUE;
-}
 
 bool ModuleLoadFBX::CleanUp()
 {
+	file_name.clear();
 	return true;
 }
 

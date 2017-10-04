@@ -137,16 +137,11 @@ void Application::DoRecord()
 	init_record = true;
 }
 
-void Application::StartRecord(int seconds, int framerate)
+void Application::SwitchProfilerState()
 {
 	int p_size = profiler.size();
 	for (int count = 0; count < p_size; count++)
-		profiler[count]->StartRecording();
-}
-
-bool Application::CheckRecord() const
-{
-	return profiler.back()->CheckState();
+		profiler[count]->PauseRecord();
 }
 
 Profiler * Application::GetProfiler(Module * module)
@@ -198,7 +193,7 @@ void Application::PrepareUpdate()
 	curr_sec_frame_count++;
 
 	if (init_record) {
-		StartRecord();
+		SwitchProfilerState();
 		init_record = false;
 	}
 	dt = (float)ms_timer.Read() / 1000.0f;

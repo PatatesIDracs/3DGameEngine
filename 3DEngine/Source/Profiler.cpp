@@ -2,7 +2,7 @@
 
 Profiler::Profiler()
 {
-	std::vector<float> newvect(60);
+	std::vector<float> newvect(size);
 	profiler_timeline.push_back(newvect);
 }
 
@@ -20,7 +20,7 @@ Profiler::~Profiler()
 
 bool Profiler::StartTimer()
 {
-	if (!is_recording)return false;
+	if (is_paused)return false;
 	
 	clock.Start();
 	return true;
@@ -28,50 +28,31 @@ bool Profiler::StartTimer()
 
 void Profiler::AddTimeToFrame()
 {
-	if (!is_recording)return;
+	if (is_paused)return;
 	
-	curren_function++;
 	if (curren_function == fnames_size)
 	{
-		curren_frame++;
 		curren_function = 0;
-	}
-
-	if (curren_frame == size)
-	{
-		is_recording = false;
-		return;
+		profiler_timeline[curren_function][59] = clock.Read();
+		for (int function = 0; function < fnames_size; function++)
+		{
+			for (int count = 0; count < size - 1; count++)
+			{
+				profiler_timeline[function][count] = profiler_timeline[function][count + 1];
+			}
+		}
+	
 	}	
+	else profiler_timeline[curren_function][59] = clock.Read();
 
-	float value = clock.Read();
-	profiler_timeline[curren_function][curren_frame] = value;
+	curren_function++;
 }
 
-/*Passar String*/
-// Record Frames Up to 300 Frames ---------------
-void Profiler::StartRecording(int seconds, int framerate)
+void Profiler::PauseRecord()
 {
-	size = seconds*framerate;
-	curren_frame = 0;
+	is_paused = !is_paused;
 	curren_function = 0;
-	fnames_size = 0;
-	loop_closed = false;
-	is_recording = true;
-
-	for (int i = 0; i < profiler_timeline.size(); i++)
-	{
-		profiler_timeline[i].clear();
-	}
-	profiler_timeline.clear();
-	function_names.clear();
-
 }
-
-bool Profiler::CheckState()
-{
-	return is_recording;
-}
-
 
 void Profiler::SetTitle(const char * function_name)
 {

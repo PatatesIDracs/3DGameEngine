@@ -81,8 +81,7 @@ public:
 	std::vector<float>*	GetFPS();
 
 	void DoRecord();
-	void StartRecord(int seconds = 5, int framerate = 60);
-	bool CheckRecord() const;
+	void SwitchProfilerState();
 	Profiler* GetProfiler(Module* module);
 	const std::vector<Profiler*>* GetProfilerVect();
 

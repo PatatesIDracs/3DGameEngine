@@ -40,7 +40,26 @@ bool ModuleSceneIntro::Start()
 	random_test = false;
 	collision_test = false;
 
+	GLubyte checkImage[128][128][4];
+	for (int i = 0; i < 128; i++) {
+		for (int j = 0; j < 128; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
+		}
+	}
 
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &ImageName);
+	glBindTexture(GL_TEXTURE_2D, ImageName);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128,	0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+	
 	return ret;
 }
 
@@ -103,7 +122,30 @@ void ModuleSceneIntro::Draw()
 						7,0,1,		7,1,6,		//Left	
 						7,2,0,		7,5,2};		//Bottom
 
-
+	GLubyte uv[] = {0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0,
+					0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0,
+					0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0,
+					0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0,
+					0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0,
+					0,0,	0,1,	1,1,
+					0,0,	1,1,	1,0 };
+	
+	glEnable(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, ImageName);
+	glBegin(GL_TRIANGLES);
+	for (int i = 0, j = 0; i < 36*3; j+=2, i += 3)
+	{
+		glTexCoord2f(uv[j], uv[j + 1]);
+		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+	}
+	glEnd();
+	glDisable(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
@@ -141,11 +183,12 @@ void ModuleSceneIntro::Draw()
 	glDeleteBuffers(1, &cube_id);
 	glDeleteBuffers(1, &indices_id);
 	glDeleteBuffers(1, &unique_cube_id);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	for (uint i = 0; i < meshes.size(); i++)
 	{
+		
 		// Draw Robot With Indices
 		glBindBuffer(GL_ARRAY_BUFFER, meshes[i].id_vertices);
 
@@ -166,7 +209,7 @@ void ModuleSceneIntro::Draw()
 			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 			glLineWidth(5.0f);
 
-			for (int j = 0; j < meshes[i].num_normals * 3; j += 3)
+			for (uint j = 0; j < meshes[i].num_normals * 3; j += 3)
 			{
 				glVertex3f(meshes[i].vertices[j], meshes[i].vertices[j + 1], meshes[i].vertices[j + 2]);
 				glVertex3f(meshes[i].vertices[j] + meshes[i].normals[j], meshes[i].vertices[j + 1] + meshes[i].normals[j + 1], meshes[i].vertices[j + 2]+ meshes[i].normals[j + 2]);
@@ -175,7 +218,6 @@ void ModuleSceneIntro::Draw()
 
 		}
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 
 	}
 	

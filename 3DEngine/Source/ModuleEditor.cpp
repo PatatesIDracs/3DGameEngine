@@ -271,23 +271,24 @@ void ModuleEditor::DrawProfilerWindow()
 {
 	ImGui::Begin("Profiler Test", &showprofiler);
 	{
-		if (recording) {
-			recording = App->CheckRecord();
-			if (!recording)
-				showrecord = true;
-
+		if (ImGui::Button("Start Profiler")) {
+			if (recordpaused)
+			{
+				recordpaused = false;
+				App->DoRecord();
+			}
 		}
-		if (ImGui::Button("Start Record"))
+		ImGui::SameLine();
+		if (ImGui::Button("Pause Profiler"))
 		{
-			App->DoRecord();
-			showrecord = false;
-			recording = true;
+			if (!recordpaused) App->DoRecord();
+			recordpaused = true;
+			
 		}
 		
 		//Show Ms from Recorded functions
 		ImGui::Separator();
-		if (showrecord)
-		{
+		
 			ImGui::Text("Modules: ");
 			const std::list<Module*>* app = App->GetModulesList();
 			std::list<Module*>::const_iterator app_modules = app->begin();
@@ -302,14 +303,13 @@ void ModuleEditor::DrawProfilerWindow()
 
 			std::vector<char*>* fnames = app_profiler->begin()[current_module]->GetFunctionNames();
 			std::vector<float>* item = nullptr;
-			static int fps = 0;
-			ImGui::SliderInt("", &fps, 0, 240, "Record TimeLine");
+
 			for (uint i = 0; i < fnames->size(); i++)
 			{
 				item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
-				ImGui::PlotHistogram(fnames->at(i), &item->at(fps), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
+				ImGui::PlotHistogram(fnames->at(i), &item->at(0), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
 			}	
-		}
+		
 	}
 	ImGui::End();
 
