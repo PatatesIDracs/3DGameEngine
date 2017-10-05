@@ -11,6 +11,8 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
+#include "NewPrimitives.h"
+
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
 {
 }
@@ -140,6 +142,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	default:
 		break;
 	}
+	
+	DrawMesh();
 
 	App->scene_intro->Draw();
 
@@ -153,6 +157,12 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	LOGC("Destroying 3D Renderer");
+
+	for (uint count = 0; count < mesh.size(); count++)
+	{
+		mesh[count].CleanUp();
+	}
+	mesh.clear();
 
 	SDL_GL_DeleteContext(context);
 
@@ -198,7 +208,7 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 	render_config.SetBool("Is Active", true);
 	render_config.SetInt("Render mode", render_mode);
 	render_config.SetBool("Depth Test", depth_test);
-	render_config.SetBool("Face Normals", &face_normals);
+	render_config.SetBool("Face Normals", face_normals);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
 	render_config.SetBool("Smooth", smooth);
@@ -240,6 +250,44 @@ void ModuleRenderer3D::DrawConfig()
 		ImGui::Checkbox("2D texture", &texture_2d))
 		
 		CheckConfig();
+}
+
+void ModuleRenderer3D::AddMesh(Mesh_data new_mesh)
+{
+	for (uint count = 0; count < mesh.size(); count++)
+	{
+		mesh[count].CleanUp();
+	}
+	mesh.clear();
+
+	mesh.push_back(new_mesh);
+}
+
+void ModuleRenderer3D::DrawMesh()
+{
+	for (uint i = 0; i < mesh.size(); i++)
+	{
+
+		// Draw Robot With Indices
+		glBindBuffer(GL_ARRAY_BUFFER, mesh[i].id_vertices);
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+		// draw a cube
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh[i].id_indices);
+		glDrawElements(GL_TRIANGLES, mesh[i].num_indices, GL_UNSIGNED_INT, NULL);
+
+		// deactivate vertex arrays after drawing
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		if (mesh[i].normals != nullptr && vertex_normals)
+		{
+			//Draw normals using buffers
+
+		}
+	}
 }
 
 void ModuleRenderer3D::CheckConfig()

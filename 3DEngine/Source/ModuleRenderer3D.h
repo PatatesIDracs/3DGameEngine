@@ -33,6 +33,10 @@ public:
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
+	// Add Mesh to Render
+	void AddMesh(Mesh_data new_mesh);
+	void DrawMesh();
+
 	void DrawConfig();
 
 private:
@@ -64,7 +68,7 @@ private:
 
 	float LightModelAmbient[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	
-
+	std::vector<Mesh_data> mesh;
 
 };
 

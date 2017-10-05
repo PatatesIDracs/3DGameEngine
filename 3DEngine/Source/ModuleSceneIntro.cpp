@@ -185,41 +185,6 @@ void ModuleSceneIntro::Draw()
 	glDeleteBuffers(1, &unique_cube_id);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	for (uint i = 0; i < meshes.size(); i++)
-	{
-		
-		// Draw Robot With Indices
-		glBindBuffer(GL_ARRAY_BUFFER, meshes[i].id_vertices);
-
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-		// draw a cube
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].id_indices);
-		glDrawElements(GL_TRIANGLES, meshes[i].num_indices, GL_UNSIGNED_INT, NULL);
-
-		// deactivate vertex arrays after drawing
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		if (meshes[i].normals != nullptr && App->renderer3D->vertex_normals)
-		{
-			glBegin(GL_LINES);
-			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-			glLineWidth(5.0f);
-
-			for (uint j = 0; j < meshes[i].num_normals * 3; j += 3)
-			{
-				glVertex3f(meshes[i].vertices[j], meshes[i].vertices[j + 1], meshes[i].vertices[j + 2]);
-				glVertex3f(meshes[i].vertices[j] + meshes[i].normals[j], meshes[i].vertices[j + 1] + meshes[i].normals[j + 1], meshes[i].vertices[j + 2]+ meshes[i].normals[j + 2]);
-			}
-			glEnd();
-
-		}
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	}
 	
 	col_test_BodyA->Render(App->renderer3D->face_normals);
 }

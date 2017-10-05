@@ -4,11 +4,12 @@ Profiler::Profiler()
 {
 	std::vector<float> newvect(size);
 	profiler_timeline.push_back(newvect);
+	curren_frame = size - 1;
 }
 
 Profiler::~Profiler()
 {
-	for (int i = 0; i < profiler_timeline.size(); i++)
+	for (uint i = 0; i < profiler_timeline.size(); i++)
 	{
 		profiler_timeline[i].clear();
 	}
@@ -33,7 +34,7 @@ void Profiler::AddTimeToFrame()
 	if (curren_function == fnames_size)
 	{
 		curren_function = 0;
-		profiler_timeline[curren_function][59] = clock.Read();
+		profiler_timeline[curren_function][curren_frame] = (float)clock.Read();
 		for (int function = 0; function < fnames_size; function++)
 		{
 			for (int count = 0; count < size - 1; count++)
@@ -43,7 +44,7 @@ void Profiler::AddTimeToFrame()
 		}
 	
 	}	
-	else profiler_timeline[curren_function][59] = clock.Read();
+	else profiler_timeline[curren_function][curren_frame] = (float)clock.Read();
 
 	curren_function++;
 }

@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "ModuleLoadFBX.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleRenderer3D.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -87,7 +87,7 @@ bool ModuleLoadFBX::LoadFile()
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
 
-			App->scene_intro->meshes.push_back(mesh);
+			App->renderer3D->AddMesh(mesh);
 		}
 
 		aiReleaseImport(scene);

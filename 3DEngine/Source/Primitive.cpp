@@ -26,7 +26,7 @@ void Primitive::CalculateFaceNormals(float* vertices)
 	render_data.face_normals_pointer = new float[2*render_data.num_vertices];
 
 	//We are calculating face normals
-	for (int i = 0; i < render_data.num_vertices/3; i++) //divided by 3 since each face has 3 vertices
+	for (uint i = 0; i < render_data.num_vertices/3; i++) //divided by 3 since each face has 3 vertices
 	{
 		float3 vertex_1(vertices[9 * i], vertices[9 * i + 1], vertices[9 * i + 2]);
 		float3 vertex_2(vertices[9 * i + 3], vertices[9 * i + 4], vertices[9 * i + 5]);
@@ -400,7 +400,7 @@ void oldCylinder::InnerRender() const
 	
 	for(int i = 360; i >= 0; i -= (360 / n))
 	{
-		float a = i * M_PI / 180; // degrees to radians
+		float a = (float)(i * M_PI / 180); // degrees to radians
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a));
 	}
 	glEnd();
@@ -410,7 +410,7 @@ void oldCylinder::InnerRender() const
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	for(int i = 0; i <= 360; i += (360 / n))
 	{
-		float a = i * M_PI / 180; // degrees to radians
+		float a =(float) (i * M_PI / 180); // degrees to radians
 		glVertex3f(height * 0.5f, radius * cos(a), radius * sin(a));
 	}
 	glEnd();
@@ -419,7 +419,7 @@ void oldCylinder::InnerRender() const
 	glBegin(GL_QUAD_STRIP);
 	for(int i = 0; i < 480; i += (360 / n))
 	{
-		float a = i * M_PI / 180; // degrees to radians
+		float a = (float)(i * M_PI / 180); // degrees to radians
 
 		glVertex3f(height*0.5f,  radius * cos(a), radius * sin(a) );
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a) );

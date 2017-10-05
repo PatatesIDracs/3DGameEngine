@@ -70,6 +70,7 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Tools"))
 	{
 		if (ImGui::MenuItem("Profiler")) showprofiler = !showprofiler;
+	
 
 		ImGui::EndMenu();
 	}
@@ -267,6 +268,8 @@ void ModuleEditor::DrawConsole()
 	ImGui::End();
 }
 
+// Profiler Interface ==============================
+
 void ModuleEditor::DrawProfilerWindow()
 {
 	ImGui::Begin("Profiler Test", &showprofiler);
@@ -286,7 +289,7 @@ void ModuleEditor::DrawProfilerWindow()
 			
 		}
 		
-		//Show Ms from Recorded functions
+		//Show Ms from functions Real Time
 		ImGui::Separator();
 		
 			ImGui::Text("Modules: ");
@@ -313,6 +316,12 @@ void ModuleEditor::DrawProfilerWindow()
 	}
 	ImGui::End();
 
+	// When Closing DrawProfilerWindow Stops Profiler
+	if (!showprofiler && !recordpaused)
+	{
+		recordpaused = !recordpaused;
+		App->DoRecord();
+	}
 
 }
 

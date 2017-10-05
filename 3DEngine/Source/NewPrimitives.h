@@ -18,6 +18,26 @@ struct Mesh_data
 	uint id_normals = 0;
 	uint num_normals = 0;
 	float* normals = nullptr;
+
+	void CleanUp()
+	{
+		DeleteBuffers();
+		DeleteAllPointers();
+	}
+
+	void DeleteBuffers() 
+	{
+		glDeleteBuffers(1, &id_indices);
+		glDeleteBuffers(1, &id_vertices);
+		glDeleteBuffers(1, &id_normals);
+	}
+
+	void DeleteAllPointers()
+	{
+		delete indices;
+		delete vertices;
+		delete normals;
+	}
 };
 
 

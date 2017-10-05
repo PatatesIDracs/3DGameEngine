@@ -47,7 +47,6 @@ public:
 	uint unique_cube_id = 0;
 	uint ImageName = 0;
 
-	std::vector<Mesh_data> meshes;
 };
 
 #endif // !__MODULESCENEINTRO_H__
