@@ -29,7 +29,7 @@ struct Primitive_Data
 
 	uint id_face_normals = 0;
 	uint num_face_normals = 0;
-	std::vector<float> face_normals;
+	float*	face_normals_pointer;
 };
 
 // -------------------------------
@@ -39,8 +39,9 @@ public:
 
 	Primitive();
 
-	virtual void	Render() const;
+	virtual void	Render(bool face_normals = false) const;
 	virtual void	InnerRender() const;
+	virtual void	FaceNormalsRender() const;
 	virtual void	PrepareToRender();
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
@@ -58,7 +59,7 @@ protected:
 
 	Primitive_Data render_data;
 
-	void CalculateFaceNormals(std::vector<float> vertices);
+	void CalculateFaceNormals(float* vertices);
 };
 
 // ============================================
@@ -80,6 +81,7 @@ public:
 	oldSphere(float radius);
 	~oldSphere();
 	void InnerRender() const;
+	void FaceNormalsRender() const;
 public:
 	float radius;
 

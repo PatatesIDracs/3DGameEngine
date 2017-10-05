@@ -47,6 +47,7 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	bool vertex_normals;
+	bool face_normals = false;
 
 private:
 

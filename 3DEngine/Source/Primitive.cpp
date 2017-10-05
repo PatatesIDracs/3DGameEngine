@@ -17,14 +17,16 @@ PrimitiveTypes Primitive::GetType() const
 	return type;
 }
 
-void Primitive::CalculateFaceNormals(std::vector<float> vertices)
+void Primitive::CalculateFaceNormals(float* vertices)
 {
 	float3 normal_temp;
 	float3 u_temp;
 	float3 v_temp;
 
+	render_data.face_normals_pointer = new float[2*render_data.num_vertices];
+
 	//We are calculating face normals
-	for (int i = 0; i < vertices.size()/9; i++) //divided by 9 since each face has 3 vertices * 3 floats for each veritce
+	for (int i = 0; i < render_data.num_vertices/3; i++) //divided by 3 since each face has 3 vertices
 	{
 		float3 vertex_1(vertices[9 * i], vertices[9 * i + 1], vertices[9 * i + 2]);
 		float3 vertex_2(vertices[9 * i + 3], vertices[9 * i + 4], vertices[9 * i + 5]);
@@ -43,24 +45,27 @@ void Primitive::CalculateFaceNormals(std::vector<float> vertices)
 		//Push booth face render and the normal dir vector to the array
 		//Makes the drawing part easier to have both values in the same array
 
+
+
 		//First push the face_center data
-		render_data.face_normals.push_back(face_center.x);
-		render_data.face_normals.push_back(face_center.y);
-		render_data.face_normals.push_back(face_center.z);
+		render_data.face_normals_pointer[6 * i] = face_center.x;
+		render_data.face_normals_pointer[6 * i + 1] = face_center.y;
+		render_data.face_normals_pointer[6 * i + 2] = face_center.z;
 
 		//Push the face_center + normal dir vector to the array
-		render_data.face_normals.push_back(face_center.x + normal_temp.x);
-		render_data.face_normals.push_back(face_center.y + normal_temp.y);
-		render_data.face_normals.push_back(face_center.z + normal_temp.z);
+		render_data.face_normals_pointer[6 * i + 3] = (face_center.x + normal_temp.x);
+		render_data.face_normals_pointer[6 * i + 4] = (face_center.y + normal_temp.y);
+		render_data.face_normals_pointer[6 * i + 5] = (face_center.z + normal_temp.z);
+	
 	}
 
 	//Bind the data to the buffer
 	
-	render_data.num_face_normals = render_data.face_normals.size()/3;
+	render_data.num_face_normals = render_data.num_vertices/3;
 }
 
 // ------------------------------------------------------------
-void Primitive::Render() const
+void Primitive::Render(bool face_normals) const
 {
 	glPushMatrix();
 	glMultMatrixf(transform.M);
@@ -99,12 +104,10 @@ void Primitive::Render() const
 
 	glColor3f(color.r, color.g, color.b);
 
-	/*if(wire)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);*/
-
 	InnerRender();
+
+	if (face_normals)
+		FaceNormalsRender();
 
 	glPopMatrix();
 }
@@ -121,6 +124,10 @@ void Primitive::InnerRender() const
 	glEnd();
 
 	glPointSize(1.0f);
+}
+
+void Primitive::FaceNormalsRender() const
+{
 }
 
 void Primitive::PrepareToRender()
@@ -314,7 +321,9 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 			}
 		}
 	}
-	CalculateFaceNormals(vertex_array);
+	render_data.num_vertices = vertex_array.size()/3;
+
+	CalculateFaceNormals(&vertex_array[0]);
 }
 
 oldSphere::~oldSphere()
@@ -325,6 +334,7 @@ void oldSphere::InnerRender() const
 {
 	GLuint sphere_id = 0;
 	
+	//Face render
 	glGenBuffers(1, (GLuint*)&sphere_id);
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
 	glBufferData(GL_ARRAY_BUFFER, vertex_array.size() * sizeof(float), &vertex_array[0], GL_STATIC_DRAW);
@@ -342,15 +352,15 @@ void oldSphere::InnerRender() const
 
 
 
-/*	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, &normal_array[0]);
 
-	glDrawArrays(GL_TRIANGLE_FAN, 0, normal_array.size()/3);
-	glDisableClientState(GL_NORMAL_ARRAY);*/
+}
 
+void oldSphere::FaceNormalsRender() const
+{
+	//Face normal render
 	glGenBuffers(1, (GLuint*)&render_data.id_face_normals);
 	glBindBuffer(GL_ARRAY_BUFFER, render_data.id_face_normals);
-	glBufferData(GL_ARRAY_BUFFER, render_data.num_face_normals * 3 * sizeof(float), &render_data.face_normals[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, render_data.num_face_normals * 6 * sizeof(float), &render_data.face_normals_pointer[0], GL_STATIC_DRAW);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -358,7 +368,7 @@ void oldSphere::InnerRender() const
 	glBindBuffer(GL_ARRAY_BUFFER, render_data.id_face_normals);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawArrays(GL_LINES, 0, vertex_array.size() / 3);
+	glDrawArrays(GL_LINES, 0, render_data.num_face_normals * 2);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -367,32 +377,6 @@ void oldSphere::InnerRender() const
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-/*	glBegin(GL_LINES);
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	for (int i = 0; i < render_data.face_normals.size() / 3; i++)
-	{
-		glVertex3f(render_data.face_normals[3 * i], render_data.face_normals[3 * i + 1], render_data.face_normals[3 * i + 2]);
-	}
-
-	glEnd();*/
-
-
-	/*
-	glGenBuffers(1, (GLuint*)&sphere_id);
-	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 344 * 3, &magic_vertices[0], GL_STATIC_DRAW);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, sphere_id);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glDrawArrays(GL_TRIANGLES, 0, 344);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	*/
-
-	
 }
 
 

@@ -221,7 +221,7 @@ void ModuleSceneIntro::Draw()
 
 	}
 	
-	col_test_BodyA->Render();
+	col_test_BodyA->Render(App->renderer3D->face_normals);
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)

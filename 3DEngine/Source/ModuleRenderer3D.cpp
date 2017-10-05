@@ -178,6 +178,7 @@ void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 {
 	render_mode = (RENDER_MODE)config.GetInt("Render mode", RENDER_MODE::FILL);
 	depth_test = config.GetBool("Depth Test", true);
+	face_normals = config.GetBool("Face Normals", false);
 	cull_face = config.GetBool("Cull face", true);
 	cull_face_mode = config.GetInt("Cull face mode", 0);
 	smooth = config.GetBool("Smooth", 1);
@@ -197,6 +198,7 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 	render_config.SetBool("Is Active", true);
 	render_config.SetInt("Render mode", render_mode);
 	render_config.SetBool("Depth Test", depth_test);
+	render_config.SetBool("Face Normals", &face_normals);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
 	render_config.SetBool("Smooth", smooth);
@@ -220,6 +222,8 @@ void ModuleRenderer3D::DrawConfig()
 	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) CheckConfig();
+
+	ImGui::Checkbox("Face Normals", &face_normals);
 
 	if (ImGui::Checkbox("Face culling", &cull_face)) CheckConfig();
 	ImGui::SameLine();
