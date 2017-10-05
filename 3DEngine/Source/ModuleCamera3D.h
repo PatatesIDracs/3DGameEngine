@@ -30,9 +30,10 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference;
+	float angle = 0;
 
 private:
-	mat3x3 R;
+	//mat3x3 R;
 	mat4x4 ViewMatrix, ViewMatrixInverse;
 };
 

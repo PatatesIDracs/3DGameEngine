@@ -23,7 +23,7 @@ bool ModuleCamera3D::Start()
 {
 	LOGC("Setting up the camera");
 	bool ret = true;
-
+	
 	return ret;
 }
 
@@ -95,6 +95,31 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 		Position = Reference + Z * length(Position);
+
+		// Set Angle	
+	    angle = math::RadToDeg(math::Atan2(Z.y, Z.z));
+	}
+
+	// Left Click and drag to Move
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	{
+		int dx = -App->input->GetMouseXMotion();
+		int dy = -App->input->GetMouseYMotion();
+
+		if(dx != 0)
+			Position += X*dx/75;
+		if (dy != 0)
+		{
+			vec3 dist = rotate(Z, angle, X)/75;
+			Position += dist*dy;
+		}
+	}
+
+	// Zoom in and out
+	int wheelmotion = App->input->GetMouseZ();
+	if (wheelmotion != 0)
+	{
+		Position -= Z*wheelmotion;
 	}
 
 	// Recalculate matrix -------------
