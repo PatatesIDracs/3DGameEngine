@@ -95,9 +95,6 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 		Position = Reference + Z * length(Position);
-
-		// Set Angle	
-	    angle = math::RadToDeg(math::Atan2(Z.y, Z.z));
 	}
 
 	// Left Click and drag to Move
@@ -106,12 +103,16 @@ update_status ModuleCamera3D::Update(float dt)
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
 
-		if(dx != 0)
-			Position += X*dx/75;
+		if (dx != 0)
+		{
+			Position += X*dx / 75;
+			Reference += X*dx / 75;
+		}
 		if (dy != 0)
 		{
-			vec3 dist = rotate(Z, angle, X)/75;
-			Position += dist*dy;
+			//vec3 dist = rotate(Z, angle, X)/75;
+			Position -= Y*dy/75;
+			Reference -= Y*dy / 75;
 		}
 	}
 
@@ -120,6 +121,7 @@ update_status ModuleCamera3D::Update(float dt)
 	if (wheelmotion != 0)
 	{
 		Position -= Z*wheelmotion;
+		//Reference += Z*wheelmotion;
 	}
 
 	// Recalculate matrix -------------
