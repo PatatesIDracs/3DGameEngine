@@ -17,7 +17,13 @@ struct body_mesh
 
 	uint id_normals = 0;
 	uint num_normals = 0;
-	float*	normals;
+	float*	normals = nullptr;
+
+	uint id_tex_vertices = 0;
+	uint num_tex_vertices = 0;
+	float* tex_vertices = nullptr;
+
+	uint id_texture = 0;
 };
 
 class Body3D

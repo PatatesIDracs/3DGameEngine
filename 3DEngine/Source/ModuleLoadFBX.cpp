@@ -14,6 +14,10 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+#include "Devil\include\il.h"
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
 #include "3DModel.h"
 
 
@@ -44,10 +48,29 @@ bool ModuleLoadFBX::LoadFile()
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		App->renderer3D->ClearBody3DArray();
+
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 		
+		// Loat Textures
+		aiString path;
+		int texIndex = 0;
+		std::vector<int> textures;
+		std::string directory = "../Game/";
+		std::string fullpath = "";
+		for (int i = 0; i < scene->mNumMaterials; i++)
+		{
+			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
+			{
+				fullpath = directory + path.data;
+				textures.push_back(ilutGLLoadImage((char *)fullpath.c_str()));
+			}
+		}
+		directory.clear();
+		fullpath.clear();
+		path.Clear();
+
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
@@ -78,10 +101,21 @@ bool ModuleLoadFBX::LoadFile()
 			if (new_mesh->HasNormals())
 			{
 				mesh.num_normals = new_mesh->mNumVertices;
-				mesh.normals = new float[mesh.num_normals * 3];
-				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 3);
+				mesh.normals = new float[mesh.num_normals * 2];
+				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 2);
 				LOGC("New mesh with %d normals", mesh.num_normals);
 
+			}
+
+			// Load Textures
+			if (new_mesh->mTextureCoords[0] != NULL)
+			{
+				mesh.num_tex_vertices = new_mesh->mNumVertices;
+				mesh.tex_vertices = new float[mesh.num_tex_vertices*3];
+				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
+				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
+
+				mesh.id_texture = textures[new_mesh->mMaterialIndex];
 			}
 
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
@@ -92,10 +126,17 @@ bool ModuleLoadFBX::LoadFile()
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
 
+			//Load texture coords buffer
+			glGenBuffers(1, (GLuint*)&mesh.id_tex_vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
+			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 			App->renderer3D->AddBody3D(new Body3D(mesh, transform));
 		}
 
 		aiReleaseImport(scene);
+		textures.clear();
 	}
 	else
 		LOGC("Error loading scene %s", file_name.c_str());

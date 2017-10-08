@@ -268,7 +268,6 @@ void ModuleRenderer3D::ClearBody3DArray()
 		delete objects_3d[count];
 	}
 	objects_3d.clear();
-
 }
 
 void ModuleRenderer3D::DrawBody3D() const

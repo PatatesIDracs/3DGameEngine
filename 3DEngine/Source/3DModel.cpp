@@ -22,6 +22,8 @@ Body3D::~Body3D()
 	if (mesh.num_indices > 0)glDeleteBuffers(1, &mesh.id_indices);
 	if (mesh.num_vertices > 0)glDeleteBuffers(1, &mesh.id_vertices);
 	if (mesh.num_normals > 0)glDeleteBuffers(1, &mesh.id_normals);
+	if (mesh.num_tex_vertices > 0)	glDeleteBuffers(1, &mesh.id_tex_vertices);
+	if (glIsTexture(mesh.id_texture) == GL_TRUE)	glDeleteTextures(1, &mesh.id_texture);
 }
 
 body_mesh Body3D::GetMesh() const
@@ -46,19 +48,29 @@ void Body3D::Render() const
 	glPushMatrix();
 	glMultMatrixf(transform.M);
 
-	// Draw Robot With Indices
+	// Draw buffer With Indices
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindTexture(GL_TEXTURE_2D, mesh.id_texture);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
+	glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	// draw a cube
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
 	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, NULL);
 
-	// deactivate vertex arrays after drawing
+	// deactivate arrays after drawing
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	// Clear Bind buffers
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 	glPopMatrix();
 }
