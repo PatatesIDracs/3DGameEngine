@@ -135,6 +135,8 @@ void ModuleSceneIntro::Draw()
 					0,0,	0,1,	1,1,
 					0,0,	1,1,	1,0 };
 	
+
+	//Direct mode cube -- For texture testing
 	glEnable(GL_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, ImageName);
 	glBegin(GL_TRIANGLES);
@@ -147,7 +149,9 @@ void ModuleSceneIntro::Draw()
 	glDisable(GL_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
-	glGenBuffers(1, (GLuint*)&cube_id);
+
+
+/*	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, &vertices[0], GL_STATIC_DRAW);
 
@@ -158,7 +162,7 @@ void ModuleSceneIntro::Draw()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 
 
 	glGenBuffers(1, (GLuint*)&unique_cube_id);
