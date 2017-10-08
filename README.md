@@ -1,6 +1,15 @@
 # 3DGameEngine
 Simple 3D Engine made for learning purposes
 
+## Instalation
+Drag the JoPe engine folder inside the .rar file to somewhere in your computer.
+Open the 3DEngine.exe file inside the data folder.
+
+## Usage 
+Use left click to move the camera
+Use right click to rotate the camera
+Drag and drop any .fbx file in the screen to load it, if the .fbx has a texture atached put the texture inside the Game folder.
+
 
 ## Changelog
 ### v0.1 - Mesh viewer
