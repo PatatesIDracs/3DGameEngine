@@ -8,8 +8,20 @@
 
 #include "Glew\include\glew.h"
 
+#include "Devil\include\il.h"
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
+
 //#include "Math.h"
 #include "NewPrimitives.h"
+
+
+
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app,"Scene", start_enabled)
 {
@@ -24,6 +36,10 @@ bool ModuleSceneIntro::Start()
 	LOGC("Loading Intro assets");
 	bool ret = true;
 
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
@@ -51,6 +67,8 @@ bool ModuleSceneIntro::Start()
 		}
 	}
 
+	lennaTest = ilutGLLoadImage("../Game/Lenna.png");
+	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &ImageName);
 	glBindTexture(GL_TEXTURE_2D, ImageName);
@@ -59,6 +77,7 @@ bool ModuleSceneIntro::Start()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128,	0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	return ret;
 }
@@ -73,6 +92,7 @@ bool ModuleSceneIntro::CleanUp()
 	delete col_test_BodyC;
 
 	//ImGui_ImplSdlGL3_Shutdown();
+	ilShutDown();
 
 	return true;
 }
@@ -122,7 +142,7 @@ void ModuleSceneIntro::Draw()
 						7,0,1,		7,1,6,		//Left	
 						7,2,0,		7,5,2};		//Bottom
 
-	GLubyte uv[] = {0,0,	0,1,	1,1,
+	GLubyte uv[] = { 0,0,	0,1,	1,1,
 					0,0,	1,1,	1,0,
 					0,0,	0,1,	1,1,
 					0,0,	1,1,	1,0,
@@ -136,9 +156,10 @@ void ModuleSceneIntro::Draw()
 					0,0,	1,1,	1,0 };
 	
 
+
 	//Direct mode cube -- For texture testing
-	glEnable(GL_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, ImageName);
+	/*glEnable(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, lennaTest);
 	glBegin(GL_TRIANGLES);
 	for (int i = 0, j = 0; i < 36*3; j+=2, i += 3)
 	{
@@ -147,22 +168,30 @@ void ModuleSceneIntro::Draw()
 	}
 	glEnd();
 	glDisable(GL_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 	
 
 
-/*	glGenBuffers(1, (GLuint*)&cube_id);
+	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, &vertices[0], GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glBindTexture(GL_TEXTURE_2D, lennaTest);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+
 	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 
 
 	glGenBuffers(1, (GLuint*)&unique_cube_id);

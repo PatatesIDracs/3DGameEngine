@@ -34,6 +34,9 @@
     <Filter Include="Assimp">
       <UniqueIdentifier>{5c46a9ab-7374-4d69-9348-b2a77a15b170}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Devil">
+      <UniqueIdentifier>{7bd3a844-9ec0-4a9c-abab-a49e79537462}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp" />
@@ -597,6 +600,30 @@
     </ClInclude>
     <ClInclude Include="Assimp\include\version.h">
       <Filter>Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\config.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\devil_internal_exports.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\il.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\il_wrap.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\ilu.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\ilu_region.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\ilut.h">
+      <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="Devil\include\ilut_config.h">
+      <Filter>Devil</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

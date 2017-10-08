@@ -28,6 +28,7 @@ public:
 
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
 
+
 public:
 
 
@@ -46,6 +47,8 @@ public:
 	uint indices_id = 0;
 	uint unique_cube_id = 0;
 	uint ImageName = 0;
+
+	uint lennaTest = 0;
 
 };
 
