@@ -50,7 +50,7 @@ public:
 
 	uint lennaTest = 0;
 	uint uv_id = 0;
-	uint uv2_id = 0;
+	uint uv_indices_id = 0;
 
 
 };

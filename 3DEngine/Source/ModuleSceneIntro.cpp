@@ -150,19 +150,13 @@ void ModuleSceneIntro::Draw()
 						16,17,18,		16,18,19,		//Left	
 						20,21,22,		20,22,23};		//Bottom
 
-	GLfloat uv2[] = {	0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f,
-						0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f,
-						0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f,
-						0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f,
-						0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f,
-						0.f,1.f,	0.f,0.f,	1.f,0.f,
-						0.f,1.f,	1.f,0.f,	1.f,1.f };
-
+	GLfloat uv_indices[] = {	0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f,		//Front face vertices
+								0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f,		//Right face vertices
+								0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f,		//Top face vertices
+								0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f,		//Back face vertices
+								0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f,		//Left face vertices
+								0.f,1.f,	0.f,0.f,	1.f,0.f,	1.f,1.f };		//Bottom face vertices
+	
 
 	GLfloat uv[] = {0.f,1.f,	0.f,0.f,	1.f,0.f,
 					0.f,1.f,	1.f,0.f,	1.f,1.f,
@@ -221,9 +215,9 @@ void ModuleSceneIntro::Draw()
 
 
 	//Indices drawing=================
-	glGenBuffers(1, (GLuint*)&uv2_id);
-	glBindBuffer(GL_ARRAY_BUFFER, uv2_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv2[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&uv_indices_id);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_indices_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv_indices[0], GL_STATIC_DRAW);
 
 	glGenBuffers(1, (GLuint*)&unique_cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
@@ -237,7 +231,7 @@ void ModuleSceneIntro::Draw()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D, lennaTest);
-	glBindBuffer(GL_ARRAY_BUFFER, uv2_id);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_indices_id);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
@@ -259,6 +253,7 @@ void ModuleSceneIntro::Draw()
 	glDeleteBuffers(1, &indices_id);
 	glDeleteBuffers(1, &unique_cube_id);
 	glDeleteBuffers(1, &uv_id);
+	glDeleteBuffers(1, &uv_indices_id);
 
 	
 	col_test_BodyA->Render(App->renderer3D->face_normals);
