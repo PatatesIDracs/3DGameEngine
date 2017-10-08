@@ -49,6 +49,7 @@ public:
 	uint ImageName = 0;
 
 	uint lennaTest = 0;
+	uint uv_id = 0;
 
 };
 

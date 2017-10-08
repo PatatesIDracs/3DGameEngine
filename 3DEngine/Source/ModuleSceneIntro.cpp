@@ -142,18 +142,18 @@ void ModuleSceneIntro::Draw()
 						7,0,1,		7,1,6,		//Left	
 						7,2,0,		7,5,2};		//Bottom
 
-	GLubyte uv[] = { 0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0,
-					0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0,
-					0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0,
-					0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0,
-					0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0,
-					0,0,	0,1,	1,1,
-					0,0,	1,1,	1,0 };
+	GLfloat uv[] = {0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f,
+					0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f,
+					0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f,
+					0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f,
+					0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f,
+					0.f,1.f,	0.f,0.f,	1.f,0.f,
+					0.f,1.f,	1.f,0.f,	1.f,1.f};
 	
 
 
@@ -170,15 +170,22 @@ void ModuleSceneIntro::Draw()
 	glDisable(GL_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, 0);*/
 	
+	//Load textures
+	glGenBuffers(1, (GLuint*)&uv_id);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv[0], GL_STATIC_DRAW);
 
 
+
+	
 	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, &vertices[0], GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, lennaTest);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
@@ -186,7 +193,7 @@ void ModuleSceneIntro::Draw()
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
