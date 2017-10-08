@@ -226,8 +226,8 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 
-	stacks = 4;
-	slices = 8;
+	stacks = 20;
+	slices = 20;
 
 
 

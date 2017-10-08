@@ -75,7 +75,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Left Click and drag to Move
-/*	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
@@ -90,7 +90,7 @@ update_status ModuleCamera3D::Update(float dt)
 			Position -= Y*dy/75;
 			Reference -= Y*dy / 75;
 		}
-	}*/
+	}
 
 	// Zoom in and out
 	int wheelmotion = App->input->GetMouseZ();

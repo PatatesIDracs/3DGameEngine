@@ -187,7 +187,7 @@ void ModuleSceneIntro::Draw()
 	glBindTexture(GL_TEXTURE_2D, 0);*/
 	
 	//Load textures
-	glGenBuffers(1, (GLuint*)&uv_id);
+/*	glGenBuffers(1, (GLuint*)&uv_id);
 	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv[0], GL_STATIC_DRAW);
 	
@@ -210,7 +210,7 @@ void ModuleSceneIntro::Draw()
 
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 
 
