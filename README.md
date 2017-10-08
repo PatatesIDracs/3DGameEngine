@@ -3,6 +3,16 @@ Simple 3D Engine made for learning purposes
 
 
 ## Changelog
+### v0.1 - Mesh viewer
+* Removed glut dependecy
+* Render redone (WIP), direct mode rendering is been replaced with indices and vertex arrays, some old primitives are still using direct mode, they can't be used in the release but are on the source code, they will change in future releases.
+* Camera controls redone(WIP), right click to rotate the camera and left click to move it.
+* The software is now able to render .fbx files, drag and drop them in the screen to visualize it. (Right now only one at a time)
+* Added face normals render (only at the sphere), will be added to all figures in the future.
+* Profiler updated, now it displays each module separately. It also plots the information in realtime and has a button to stop the recodring.
+* Fixed a small bug that made the program unable to read the config.json file.
+* Console is working and displays debug messages
+
 ### v0.0.2
 * Renderer configuration options
 * Hardware shows some GPU details
