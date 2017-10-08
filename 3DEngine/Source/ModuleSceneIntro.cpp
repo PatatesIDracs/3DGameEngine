@@ -126,8 +126,8 @@ void ModuleSceneIntro::Draw()
 							-1.f, 0.f, 1.f,		-1.f, 0.f, -1.f,	1.f, 0.f, -1.f,
 							-1.f, 0.f, 1.f,		1.f, 0.f, -1.f,		1.f, 0.f, 1.f };
 
-	GLfloat uniquevertices[] = {5,0,0,
-								5,1,0,
+	GLfloat uniquevertices2[] = {5,1,0,
+								5,0,0,
 								6,0,0,
 								6,1,0,
 								6,1,-1,
@@ -135,12 +135,34 @@ void ModuleSceneIntro::Draw()
 								5,1,-1,
 								5,0,-1};
 
-	GLubyte indices[] = {0,2,1,		1,2,3,		//Front
-						3,2,5,		3,5,4,		//Right	
-						1,3,4,		1,4,6,		//Top
-						4,5,7,		4,7,6,		//Back
-						7,0,1,		7,1,6,		//Left	
-						7,2,0,		7,5,2};		//Bottom
+	GLfloat uniquevertices[] = {5.f,1.f,0.f,		5.f,0.f,0.f,		6.f,0.f,0.f,		6.f,1.f,0.f,		//Front face vertices
+								6.f,1.f,0.f,		6.f,0.f,0.f,		6.f,0.f,-1.f,		6.f,1.f,-1.f,		//Right face vertices
+								5.f,1.f,-1.f,		5.f,1.f,0.f,		6.f,1.f,0.f,		6.f,1.f,-1.f,		//Top face vertices
+								6.f,1.f,-1.f,		6.f,0.f,-1.f,		5.f,0.f,-1.f,		5.f,1.f,-1.f,		//Back face vertices
+								5.f,1.f,-1.f,		5.f,0.f,-1.f,		5.f,0.f,0.f,		5.f,1.f,0.f,		//Left face vertices
+								5.f,0.f,0.f,		5.f,0.f,-1.f,		6.f,0.f,-1.f,		6.f,0.f,0.f};		//Bottom face vertices
+			
+
+	GLubyte indices[] = {0,1,2,			0,2,3,			//Front
+						4,5,6,			4,6,7,			//Right	
+						8,9,10,			8,10,11,		//Top
+						12,13,14,		12,14,15,		//Back
+						16,17,18,		16,18,19,		//Left	
+						20,21,22,		20,22,23};		//Bottom
+
+	GLfloat uv2[] = {	0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f,
+						0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f,
+						0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f,
+						0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f,
+						0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f,
+						0.f,1.f,	0.f,0.f,	1.f,0.f,
+						0.f,1.f,	1.f,0.f,	1.f,1.f };
+
 
 	GLfloat uv[] = {0.f,1.f,	0.f,0.f,	1.f,0.f,
 					0.f,1.f,	1.f,0.f,	1.f,1.f,
@@ -174,9 +196,6 @@ void ModuleSceneIntro::Draw()
 	glGenBuffers(1, (GLuint*)&uv_id);
 	glBindBuffer(GL_ARRAY_BUFFER, uv_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv[0], GL_STATIC_DRAW);
-
-
-
 	
 	glGenBuffers(1, (GLuint*)&cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_id);
@@ -201,6 +220,11 @@ void ModuleSceneIntro::Draw()
 
 
 
+	//Indices drawing=================
+	glGenBuffers(1, (GLuint*)&uv2_id);
+	glBindBuffer(GL_ARRAY_BUFFER, uv2_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uv2[0], GL_STATIC_DRAW);
+
 	glGenBuffers(1, (GLuint*)&unique_cube_id);
 	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 3, &uniquevertices[0], GL_STATIC_DRAW);
@@ -209,8 +233,14 @@ void ModuleSceneIntro::Draw()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, &indices[0], GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindTexture(GL_TEXTURE_2D, lennaTest);
+	glBindBuffer(GL_ARRAY_BUFFER, uv2_id);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, unique_cube_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	// draw a cube
@@ -219,12 +249,17 @@ void ModuleSceneIntro::Draw()
 
 	// deactivate vertex arrays after drawing
 	glDisableClientState(GL_VERTEX_ARRAY);
-	
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//=================================
+
+
 	glDeleteBuffers(1, &cube_id);
 	glDeleteBuffers(1, &indices_id);
 	glDeleteBuffers(1, &unique_cube_id);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &uv_id);
+
 	
 	col_test_BodyA->Render(App->renderer3D->face_normals);
 }
