@@ -17,6 +17,7 @@ public:
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
+	void MoveTo(const vec3 &Movement, float distance);
 	float* GetViewMatrix();
 
 	// JSON Save/Load Configuration
@@ -30,6 +31,7 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference;
+	float distance = 0;
 
 private:
 	//mat3x3 R;

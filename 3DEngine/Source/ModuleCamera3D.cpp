@@ -38,30 +38,7 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-	// Implement a debug camera with keys and mouse
-	// Now we can make this movememnt frame rate independant!
-
-	vec3 newPos(0,0,0);
-	float speed = 3.0f * dt;
-	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 8.0f * dt;
-
-	if(App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	if(App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
-
-
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
-
-	Position += newPos;
-	Reference += newPos;
-
-
 	// Mouse motion ----------------
-
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
@@ -98,7 +75,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Left Click and drag to Move
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+/*	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
@@ -110,18 +87,17 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 		if (dy != 0)
 		{
-			//vec3 dist = rotate(Z, angle, X)/75;
 			Position -= Y*dy/75;
 			Reference -= Y*dy / 75;
 		}
-	}
+	}*/
 
 	// Zoom in and out
 	int wheelmotion = App->input->GetMouseZ();
 	if (wheelmotion != 0)
 	{
-		Position -= Z*wheelmotion;
-		//Reference += Z*wheelmotion;
+		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
+		else Position -= Z*wheelmotion;
 	}
 
 	// Recalculate matrix -------------
@@ -171,6 +147,17 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 	CalculateViewMatrix();
 }
 
+void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
+{
+	Position -= Reference;
+	Reference = Movement;
+
+	this->distance = 1.2*distance;
+	Position = Reference + Z*distance*2;
+
+	CalculateViewMatrix();
+}
+
 // -----------------------------------------------------------------
 float* ModuleCamera3D::GetViewMatrix()
 {
@@ -192,6 +179,5 @@ void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
 void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	//ViewMatrix = mat4x4(R[0], R[1] , R[2], 0.0f, R[3], R[4], R[5], 0.0f, R[6], R[7], R[8], 0.0f, -dot(vec3(R[0],R[3],R[6]), Position), -dot(vec3(R[1], R[4], R[7]), Position), -dot(vec3(R[2], R[5], R[8]), Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
 }

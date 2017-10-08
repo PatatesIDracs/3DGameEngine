@@ -14,7 +14,8 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-#include "NewPrimitives.h"
+#include "3DModel.h"
+
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
 {}
@@ -42,18 +43,22 @@ bool ModuleLoadFBX::LoadFile()
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
+		App->renderer3D->ClearBody3DArray();
+		// Set Scene Transform
+		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
+		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 		
+		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
-			Mesh_data mesh;
+			body_mesh mesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
 			mesh.num_vertices = new_mesh->mNumVertices;
 			mesh.vertices = new float[new_mesh->mNumVertices * 3];
 			memcpy(mesh.vertices, new_mesh->mVertices, sizeof(float) * mesh.num_vertices * 3);
 			LOGC("New mesh with %d vertices", mesh.num_vertices);
-		
+			
 			if (new_mesh->HasFaces())
 			{
 				mesh.num_indices = new_mesh->mNumFaces * 3;
@@ -87,7 +92,7 @@ bool ModuleLoadFBX::LoadFile()
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
 
-			App->renderer3D->AddMesh(mesh);
+			App->renderer3D->AddBody3D(new Body3D(mesh, transform));
 		}
 
 		aiReleaseImport(scene);

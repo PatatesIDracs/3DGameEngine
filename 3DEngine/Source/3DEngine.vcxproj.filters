@@ -217,6 +217,9 @@
     <ClCompile Include="NewPrimitives.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="3DModel.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -624,6 +627,9 @@
     </ClInclude>
     <ClInclude Include="Devil\include\ilut_config.h">
       <Filter>Devil</Filter>
+    </ClInclude>
+    <ClInclude Include="3DModel.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@
 
 #define MAX_LIGHTS 8
 
+class Body3D;
+
 enum RENDER_MODE
 {
 	FILL = 0,
@@ -34,8 +36,9 @@ public:
 	void SaveModuleConfig(Config_Json& config);
 
 	// Add Mesh to Render
-	void AddMesh(Mesh_data new_mesh);
-	void DrawMesh();
+	void AddBody3D(Body3D* new_mesh);
+	void ClearBody3DArray();
+	void DrawBody3D() const;
 
 	void DrawConfig();
 
@@ -68,7 +71,7 @@ private:
 
 	float LightModelAmbient[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	
-	std::vector<Mesh_data> mesh;
+	std::vector<Body3D*> objects_3d;
 
 };
 

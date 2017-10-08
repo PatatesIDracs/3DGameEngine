@@ -17,6 +17,12 @@ PrimitiveTypes Primitive::GetType() const
 	return type;
 }
 
+vec3 Primitive::GetPosition() const
+{
+	float3 box_pos = bounding_box.CenterPoint();
+	return vec3(transform.M[12] + box_pos.x, transform.M[13] + box_pos.y, transform.M[14] + box_pos.z);
+}
+
 void Primitive::CalculateFaceNormals(float* vertices)
 {
 	float3 normal_temp;
@@ -220,8 +226,8 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 
-	stacks = 20;
-	slices = 20;
+	stacks = 4;
+	slices = 8;
 
 
 
@@ -259,8 +265,11 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 			vertex4.x = radius * Sin(theta2) * Sin(phi1);
 			vertex4.y = radius * Cos(theta2);
 
+			bounding_box.Enclose(vec(vertex1.x, vertex1.y, vertex1.z));
+			bounding_box.Enclose(vec(vertex2.x, vertex2.y, vertex2.z));
+			bounding_box.Enclose(vec(vertex3.x, vertex3.y, vertex3.z));
+			bounding_box.Enclose(vec(vertex4.x, vertex4.y, vertex4.z));
 
-			
 
 			if (t == 0)
 			{
@@ -322,7 +331,7 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 		}
 	}
 	render_data.num_vertices = vertex_array.size()/3;
-
+	
 	CalculateFaceNormals(&vertex_array[0]);
 }
 

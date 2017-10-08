@@ -12,6 +12,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 #include "NewPrimitives.h"
+#include "3DModel.h"
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
 {
@@ -143,7 +144,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		break;
 	}
 	
-	DrawMesh();
+	DrawBody3D();
 
 	App->scene_intro->Draw();
 
@@ -158,11 +159,11 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOGC("Destroying 3D Renderer");
 
-	for (uint count = 0; count < mesh.size(); count++)
+	for (uint count = 0; count < objects_3d.size(); count++)
 	{
-		mesh[count].CleanUp();
+		delete objects_3d[count];
 	}
-	mesh.clear();
+	objects_3d.clear();
 
 	SDL_GL_DeleteContext(context);
 
@@ -252,41 +253,29 @@ void ModuleRenderer3D::DrawConfig()
 		CheckConfig();
 }
 
-void ModuleRenderer3D::AddMesh(Mesh_data new_mesh)
+void ModuleRenderer3D::AddBody3D(Body3D* new_mesh)
 {
-	for (uint count = 0; count < mesh.size(); count++)
-	{
-		mesh[count].CleanUp();
-	}
-	mesh.clear();
+	// Get Camera Focus
+	App->camera->MoveTo(new_mesh->GetPosition(), new_mesh->GetBodySize());
 
-	mesh.push_back(new_mesh);
+	objects_3d.push_back(new_mesh);
 }
 
-void ModuleRenderer3D::DrawMesh()
+void ModuleRenderer3D::ClearBody3DArray()
 {
-	for (uint i = 0; i < mesh.size(); i++)
+	for (uint count = 0; count < objects_3d.size(); count++)
 	{
+		delete objects_3d[count];
+	}
+	objects_3d.clear();
 
-		// Draw Robot With Indices
-		glBindBuffer(GL_ARRAY_BUFFER, mesh[i].id_vertices);
+}
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-		// draw a cube
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh[i].id_indices);
-		glDrawElements(GL_TRIANGLES, mesh[i].num_indices, GL_UNSIGNED_INT, NULL);
-
-		// deactivate vertex arrays after drawing
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		if (mesh[i].normals != nullptr && vertex_normals)
-		{
-			//Draw normals using buffers
-
-		}
+void ModuleRenderer3D::DrawBody3D() const
+{
+	for (uint i = 0; i < objects_3d.size(); i++)
+	{
+		objects_3d[i]->Render();
 	}
 }
 
