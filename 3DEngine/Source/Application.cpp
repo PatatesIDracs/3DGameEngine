@@ -62,7 +62,7 @@ bool Application::Init()
 	bool ret = true;
 
 	// Load Gloval Configuration
-	LoadConfig(CONFIG_FILENAME);
+	LoadConfig(JOPE_DATA_DIRECTORY JOPE_CONFIG_FILENAME);
 
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
@@ -315,7 +315,7 @@ bool Application::CleanUp()
 	profiler.clear();
 
 	// Save Configuration to File
-	SaveConfig(CONFIG_FILENAME);
+	SaveConfig(JOPE_DATA_DIRECTORY JOPE_CONFIG_FILENAME);
 
 	return ret;
 }

@@ -27,7 +27,7 @@ struct Primitive_Data
 	uint num_vertices = 0;
 	float* vertices = nullptr;
 
-	uint id_face_normals = 0;
+	uint id_face_normals = 0; //id in VRAM
 	uint num_face_normals = 0;
 	float*	face_normals_pointer;
 };

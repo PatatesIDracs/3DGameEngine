@@ -12,9 +12,6 @@
 #include "Devil\include\ilu.h"
 #include "Devil\include\ilut.h"
 
-#pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#pragma comment( lib, "Devil/libx86/ILU.lib" )
-#pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 
 //#include "Math.h"
@@ -67,7 +64,7 @@ bool ModuleSceneIntro::Start()
 		}
 	}
 
-	lennaTest = ilutGLLoadImage("../Game/Lenna.png");
+	lennaTest = ilutGLLoadImage("../Data/Textures/Lenna.png");
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &ImageName);

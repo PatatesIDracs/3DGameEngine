@@ -57,7 +57,7 @@ bool ModuleLoadFBX::LoadFile()
 		aiString path;
 		int texIndex = 0;
 		std::vector<int> textures;
-		std::string directory = "../Game/";
+		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
 		for (int i = 0; i < scene->mNumMaterials; i++)
 		{

@@ -2,13 +2,34 @@
 #define __GLOBALS_H__
 
 
-
 // Warning disabled ---
 #pragma warning( disable : 4577 ) // Warning that exceptions are disabled
 #pragma warning( disable : 4530 )
 
 #include <windows.h>
 #include <stdio.h>
+
+
+//Define the directory paths of debug and release
+
+//Base directory for debug
+#ifdef _DEBUG
+
+#define JOPE_DATA_DIRECTORY "../Data/"
+
+#endif // _DEBUG
+
+//Base directory for release
+#ifndef _DEBUG
+
+#define JOPE_DATA_DIRECTORY "./Data/"
+
+#endif // _RELEASE
+
+//Subfolders or files 
+#define JOPE_CONFIG_FILENAME "config.json"
+#define JOPE_TEXTURE_FOLDER "Textures/"
+
 
 #define LOGC(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
@@ -30,8 +51,10 @@ enum update_status
 	UPDATE_ERROR
 };
 
+
 // Configuration -----------
-#define CONFIG_FILENAME "../Game/config.json"
+
+
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 1
