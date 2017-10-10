@@ -7,6 +7,7 @@ class Material : public Component
 {
 public:
 	Material();
+	Material(GameObject* parent, bool isactive = true);
 	~Material();
 
 };

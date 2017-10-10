@@ -51,8 +51,14 @@ bool ModuleLoadFBX::LoadFile()
 
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
+		aiVector3D scale;
+		aiQuaternion q;
+		aiVector3D angle;
+		aiVector3D position;
+		rot.Decompose(scale, q, position);
+		angle = q.GetEuler();
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
-		
+
 		// Loat Textures
 		aiString path;
 		int texIndex = 0;

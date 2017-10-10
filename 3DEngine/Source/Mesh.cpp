@@ -5,7 +5,7 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(RenderData nrender_data) : render_data(nrender_data)
+Mesh::Mesh(GameObject* parent, RenderData render_data, bool isactive = true) : Component(parent, COMP_MESH, isactive), render_data(render_data)
 {
 	for (uint i = 0; i < render_data.num_vertices * 3; i += 3)
 	{
