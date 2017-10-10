@@ -1,7 +1,6 @@
 #include "Application.h"
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
-#include "PhysBody3D.h"
 
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
