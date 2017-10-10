@@ -1,10 +1,12 @@
 #include "GameObject.h"
 #include "Component.h"
+#include "Transform.h"
 
 
-GameObject::GameObject()
+GameObject::GameObject(GameObject* parent) : parent(parent)
 {
-
+	if (parent != nullptr)
+		parent->AddChildren(this);
 }
 
 GameObject::~GameObject()
@@ -29,6 +31,11 @@ void GameObject::Update()
 
 
 
+}
+
+void GameObject::AddChildren(GameObject * new_child)
+{
+	children.push_back(new_child);
 }
 
 void GameObject::AddComponent(Component * new_component)

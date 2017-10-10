@@ -9,10 +9,9 @@
 
 #define MAX_SNAKE 2
 
-struct PhysBody3D;
-struct PhysMotor3D;
+class GameObject;
+class Transform;
 
-struct Mesh_data;
 
 class ModuleSceneIntro : public Module
 {
@@ -28,6 +27,7 @@ public:
 
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
 
+	GameObject* CreateNewGameObject();
 
 public:
 
@@ -51,7 +51,7 @@ public:
 	uint lennaTest = 0;
 	uint uv_id = 0;
 	uint uv_indices_id = 0;
-
+	GameObject* root = nullptr;
 
 };
 

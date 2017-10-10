@@ -12,9 +12,8 @@
 #include "Devil\include\ilut.h"
 
 
-
-//#include "Math.h"
-
+#include "GameObject.h"
+#include "Transform.h"
 
 
 
@@ -73,6 +72,9 @@ bool ModuleSceneIntro::Start()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128,	0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Create the root GameObject
+	root = new GameObject(nullptr);
 	
 	return ret;
 }
@@ -100,7 +102,12 @@ update_status ModuleSceneIntro::Update(float dt)
 	oldPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-	
+
+	Draw();
+
+	//Root should never be nullptr but check it just in case
+	if(root != nullptr)
+		root->Update();
 
 	return UPDATE_CONTINUE;
 }
@@ -257,5 +264,11 @@ void ModuleSceneIntro::Draw()
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
 	LOGC("Hit!");
+}
+
+GameObject * ModuleSceneIntro::CreateNewGameObject()
+{
+	GameObject* ret = new GameObject(root);
+	return ret;
 }
 

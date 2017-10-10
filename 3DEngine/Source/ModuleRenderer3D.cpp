@@ -130,12 +130,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	return UPDATE_CONTINUE;
-}
-
-// PostUpdate present buffer to screen
-update_status ModuleRenderer3D::PostUpdate(float dt)
-{
+	//Set render mode for the current frame
 	switch (render_mode)
 	{
 	case FILL:
@@ -150,10 +145,17 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	default:
 		break;
 	}
+
+	return UPDATE_CONTINUE;
+}
+
+// PostUpdate present buffer to screen
+update_status ModuleRenderer3D::PostUpdate(float dt)
+{
+	
 	
 	DrawBody3D();
 
-	App->scene_intro->Draw();
 
 	App->editor->Draw();
 

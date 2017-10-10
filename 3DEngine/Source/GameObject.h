@@ -4,16 +4,18 @@
 #include <vector>
 
 class Component;
+class Transform;
 enum COMP_TYPE;
 
 class GameObject
 {
 public:
-	GameObject();
+	GameObject(GameObject* parent);
 	~GameObject();
 
 	void Update();
 
+	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
 
 	Component* FindComponent(COMP_TYPE type);

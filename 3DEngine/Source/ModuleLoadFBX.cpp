@@ -52,7 +52,7 @@ bool ModuleLoadFBX::LoadFile()
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		App->renderer3D->ClearBody3DArray();
-		GameObject* object = new GameObject();
+		GameObject* object = App->scene_intro->CreateNewGameObject();
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		aiVector3D scale;
