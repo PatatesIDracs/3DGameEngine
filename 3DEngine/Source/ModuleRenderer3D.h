@@ -46,6 +46,16 @@ private:
 
 	void CheckConfig();
 
+	void SetDepthTest();
+	void SetFaceCulling();
+	void SetSmooth();
+	void SetLight();
+	void SetLightColor();
+	void SetColorMaterial();
+	void Set2DTexture();
+
+
+
 public:
 
 	Light lights[MAX_LIGHTS];

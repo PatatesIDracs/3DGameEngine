@@ -105,6 +105,9 @@ bool ModuleRenderer3D::Init()
 		
 	}
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
 	// Projection matrix for
 	OnResize(App->window->width, App->window->height);
 
@@ -237,23 +240,22 @@ void ModuleRenderer3D::DrawConfig()
 
 //	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
-	if (ImGui::Checkbox("Depth test", &depth_test)) CheckConfig();
+	if (ImGui::Checkbox("Depth test", &depth_test)) SetDepthTest();
 
 	ImGui::Checkbox("Face Normals", &face_normals);
 
-	if (ImGui::Checkbox("Face culling", &cull_face)) CheckConfig();
-	ImGui::SameLine();
-	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) CheckConfig(); ImGui::SameLine();
-	if (ImGui::RadioButton("GL_CW", &cull_face_mode, 1)) CheckConfig();
+	if (ImGui::Checkbox("Face culling", &cull_face)) SetFaceCulling(); ImGui::SameLine();
+	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) SetFaceCulling(); ImGui::SameLine();
+	if (ImGui::RadioButton("GL_CW", &cull_face_mode, 1)) SetFaceCulling();
 
 
-	if (ImGui::Checkbox("Smooth", &smooth) || 
-		ImGui::Checkbox("Lighting", &lighting)) CheckConfig();
+	if (ImGui::Checkbox("Smooth", &smooth)) SetSmooth();
+	if (ImGui::Checkbox("Lighting", &lighting)) SetLight();
 
-	if (ImGui::ColorEdit4("Light color", LightModelAmbient)) CheckConfig();
+	if (ImGui::ColorEdit4("Light color", LightModelAmbient)) SetLightColor();
 
-	if	(ImGui::Checkbox("Color material", &color_material) ||
-		ImGui::Checkbox("2D texture", &texture_2d))
+	if (ImGui::Checkbox("Color material", &color_material)) SetColorMaterial();
+	if (ImGui::Checkbox("2D texture", &texture_2d)) Set2DTexture();
 		
 		CheckConfig();
 }
@@ -283,30 +285,59 @@ void ModuleRenderer3D::DrawBody3D() const
 	}
 }
 
+//Check all variables form config and set it right
+//Should only be called once at the start of the program
 void ModuleRenderer3D::CheckConfig()
 {
+	SetDepthTest();
+	SetFaceCulling();
+	SetSmooth();
+	SetLight();
+	SetLightColor();
+	SetColorMaterial();
+	Set2DTexture();
+}
 
+void ModuleRenderer3D::SetDepthTest()
+{
 	if (depth_test)glEnable(GL_DEPTH_TEST);
 	else glDisable(GL_DEPTH_TEST);
+}
 
+void ModuleRenderer3D::SetFaceCulling()
+{
 	if (cull_face)glEnable(GL_CULL_FACE);
 	else glDisable(GL_CULL_FACE);
 
-	if (lighting)glEnable(GL_LIGHTING);
-	else glDisable(GL_LIGHTING);
-
-	if (color_material)glEnable(GL_COLOR_MATERIAL);
-	else glDisable(GL_COLOR_MATERIAL);
-
-	if (texture_2d) glEnable(GL_TEXTURE_2D);
-	else glDisable(GL_TEXTURE_2D);
-
-
 	if (cull_face_mode)glFrontFace(GL_CW);
 	else glFrontFace(GL_CCW);
+}
 
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-
+void ModuleRenderer3D::SetSmooth()
+{
 	if (smooth)glShadeModel(GL_SMOOTH);
 	else glShadeModel(GL_FLAT);
+}
+
+void ModuleRenderer3D::SetLight()
+{
+	if (lighting)glEnable(GL_LIGHTING);
+	else glDisable(GL_LIGHTING);
+}
+
+void ModuleRenderer3D::SetLightColor()
+{
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
+}
+
+void ModuleRenderer3D::SetColorMaterial()
+{
+	if (color_material)glEnable(GL_COLOR_MATERIAL);
+	else glDisable(GL_COLOR_MATERIAL);
+}
+
+void ModuleRenderer3D::Set2DTexture()
+{
+	if (texture_2d) glEnable(GL_TEXTURE_2D);
+	else glDisable(GL_TEXTURE_2D);
 }
