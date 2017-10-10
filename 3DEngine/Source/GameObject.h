@@ -14,6 +14,8 @@ public:
 
 	void Update();
 
+	void AddComponent(Component* new_component);
+
 	Component* FindComponent(COMP_TYPE type);
 
 public:
