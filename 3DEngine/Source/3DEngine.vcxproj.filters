@@ -214,9 +214,6 @@
     <ClCompile Include="ModuleLoadFBX.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="NewPrimitives.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="3DModel.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
@@ -488,9 +485,6 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Profiler.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="NewPrimitives.h">
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="ModuleLoadFBX.h">

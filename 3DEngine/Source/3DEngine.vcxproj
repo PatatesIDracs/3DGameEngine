@@ -176,7 +176,6 @@
     <ClCompile Include="ModuleRenderer3D.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
-    <ClCompile Include="NewPrimitives.cpp" />
     <ClCompile Include="parson.c" />
     <ClCompile Include="PhysBody3D.cpp" />
     <ClCompile Include="Primitive.cpp" />
@@ -316,7 +315,6 @@
     <ClInclude Include="ModuleRenderer3D.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="NewPrimitives.h" />
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="parson.h" />
     <ClInclude Include="PhysBody3D.h" />

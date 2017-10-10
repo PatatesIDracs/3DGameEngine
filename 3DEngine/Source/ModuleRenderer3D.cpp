@@ -16,7 +16,6 @@
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 
-#include "NewPrimitives.h"
 #include "3DModel.h"
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
