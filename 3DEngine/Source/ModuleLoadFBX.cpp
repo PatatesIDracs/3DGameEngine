@@ -21,6 +21,10 @@
 #include "3DModel.h"
 #include "Math.h"
 
+#include "GameObject.h"
+#include "Component.h"
+#include "Transform.h"
+
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
 {}
 
@@ -48,16 +52,21 @@ bool ModuleLoadFBX::LoadFile()
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		App->renderer3D->ClearBody3DArray();
-
+		GameObject* object = new GameObject();
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		aiVector3D scale;
-		aiQuaternion q;
+		aiQuaternion quad;
 		aiVector3D angle;
 		aiVector3D position;
-		rot.Decompose(scale, q, position);
-		//angle = q.GetEuler();
+		rot.Decompose(scale, quad, position);
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
+
+		// Create Transform Component from Current Scene Root Node
+		Transform* rot_transform = new Transform(object, transform, vec3(position.x, position.y, position.z), vec3(0.0f,0.0f,0.0f),vec3(scale.x,scale.y,scale.z));
+		rot_transform->SetAngleFromQuat(Quat(quad.w, quad.x, quad.y, quad.z));
+
+		object->AddComponent(rot_transform);
 
 		// Loat Textures
 		aiString path;

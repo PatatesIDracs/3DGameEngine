@@ -2,8 +2,7 @@
 #define __TRANSFORM_H__
 
 #include "Component.h"
-
-#include "glmath.h"
+#include "Math.h"
 
 class Transform : public Component
 {
@@ -11,6 +10,8 @@ public:
 	Transform();
 	Transform(GameObject* parent, mat4x4 transf, vec3 pos, vec3 eu_angles, vec3 scale, bool isactive = true);
 	~Transform();
+
+	void SetAngleFromQuat(Quat& q);
 
 private:
 
