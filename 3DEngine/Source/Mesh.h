@@ -30,7 +30,7 @@ class Mesh : public Component
 {
 public:
 	Mesh();
-	Mesh(RenderData render_data);
+	Mesh(GameObject* parent, RenderData render_data, bool isactive = true);
 	~Mesh();
 
 	const RenderData* GetRenderData();

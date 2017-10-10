@@ -19,7 +19,7 @@
 #include "Devil\include\ilut.h"
 
 #include "3DModel.h"
-
+#include "Math.h"
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
 {}
@@ -56,7 +56,7 @@ bool ModuleLoadFBX::LoadFile()
 		aiVector3D angle;
 		aiVector3D position;
 		rot.Decompose(scale, q, position);
-		angle = q.GetEuler();
+		//angle = q.GetEuler();
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
 		// Loat Textures
@@ -65,7 +65,7 @@ bool ModuleLoadFBX::LoadFile()
 		std::vector<int> textures;
 		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
-		for (int i = 0; i < scene->mNumMaterials; i++)
+		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
 			{
