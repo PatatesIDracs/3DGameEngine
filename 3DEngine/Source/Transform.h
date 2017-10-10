@@ -8,10 +8,11 @@ class Transform : public Component
 {
 public:
 	Transform();
-	Transform(GameObject* parent, mat4x4 transf, vec3 pos, vec3 eu_angles, vec3 scale, bool isactive = true);
+	Transform(GameObject* parent, mat4x4 transf, vec3 pos, vec3 scale, bool isactive = true);
 	~Transform();
 
-	void SetAngleFromQuat(Quat& q);
+	const mat4x4 GetRotMat() const;
+	void GetEAnglesFromMat();
 
 private:
 

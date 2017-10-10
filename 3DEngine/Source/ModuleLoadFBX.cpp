@@ -52,20 +52,17 @@ bool ModuleLoadFBX::LoadFile()
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		App->renderer3D->ClearBody3DArray();
 		GameObject* object = App->scene_intro->CreateNewGameObject();
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		aiVector3D scale;
 		aiQuaternion quad;
-		aiVector3D angle;
 		aiVector3D position;
 		rot.Decompose(scale, quad, position);
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
 		// Create Transform Component from Current Scene Root Node
-		Transform* rot_transform = new Transform(object, transform, vec3(position.x, position.y, position.z), vec3(0.0f,0.0f,0.0f),vec3(scale.x,scale.y,scale.z));
-		rot_transform->SetAngleFromQuat(Quat(quad.w, quad.x, quad.y, quad.z));
+		Transform* rot_transform = new Transform(object, transform, vec3(position.x, position.y, position.z), vec3(scale.x,scale.y,scale.z));
 
 		object->AddComponent(rot_transform);
 
@@ -167,8 +164,6 @@ bool ModuleLoadFBX::LoadFile()
 			go_mesh.tex_vertices = mesh.tex_vertices;
 
 			object->AddComponent(new Mesh(object, go_mesh));
-
-			App->renderer3D->AddBody3D(new Body3D(mesh, transform));
 		}
 
 		aiReleaseImport(scene);
