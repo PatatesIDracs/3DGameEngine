@@ -24,6 +24,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
+#include "Mesh.h"
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
 {}
@@ -90,6 +91,8 @@ bool ModuleLoadFBX::LoadFile()
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
+			RenderData	go_mesh;
+
 			body_mesh mesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
 			mesh.num_vertices = new_mesh->mNumVertices;
@@ -146,6 +149,24 @@ bool ModuleLoadFBX::LoadFile()
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
 			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			go_mesh.id_indices = mesh.id_indices;
+			go_mesh.num_indices = mesh.num_indices;
+			go_mesh.indices = mesh.indices;
+
+			go_mesh.id_vertices = mesh.id_vertices;
+			go_mesh.num_vertices = mesh.num_vertices;
+			go_mesh.vertices = mesh.vertices;
+
+			go_mesh.id_normals = mesh.id_normals;
+			go_mesh.num_normals = mesh.num_normals;
+			go_mesh.normals = mesh.normals;
+
+			go_mesh.id_tex_vertices = mesh.id_tex_vertices;
+			go_mesh.num_tex_vertices = mesh.num_tex_vertices;
+			go_mesh.tex_vertices = mesh.tex_vertices;
+
+			object->AddComponent(new Mesh(object, go_mesh));
 
 			App->renderer3D->AddBody3D(new Body3D(mesh, transform));
 		}

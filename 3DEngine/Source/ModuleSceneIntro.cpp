@@ -103,7 +103,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.axis = true;
 	p.Render();
 
-	Draw();
+	//Draw();
 
 	//Root should never be nullptr but check it just in case
 	if(root != nullptr)

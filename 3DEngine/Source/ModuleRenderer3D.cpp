@@ -154,7 +154,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 	
 	
-	DrawBody3D();
+	//DrawBody3D();
 
 
 	App->editor->Draw();
