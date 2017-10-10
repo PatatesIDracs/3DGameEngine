@@ -13,6 +13,9 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	Position = vec3(3.0f, 3.0f, 3.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
+
+	// Set Angle	
+	angle = 45;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -23,7 +26,7 @@ bool ModuleCamera3D::Start()
 {
 	LOGC("Setting up the camera");
 	bool ret = true;
-	
+
 	return ret;
 }
 
@@ -39,7 +42,7 @@ bool ModuleCamera3D::CleanUp()
 update_status ModuleCamera3D::Update(float dt)
 {
 	// Mouse motion ----------------
-	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
@@ -72,23 +75,32 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 		Position = Reference + Z * length(Position);
+
+		// Set Angle	
+		angle = math::RadToDeg(math::Atan2(Z.y, Z.z));
 	}
 
-	// Left Click and drag to Move
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	// Right Click + WASD to Move like FPS 
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
+		int speed = 8;
+		int dx = 0;
+		int dy = 0;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 
 		if (dx != 0)
 		{
-			Position += X*dx / 75;
-			Reference += X*dx / 75;
+			Position += X*dx*dt;
+			Reference += X*dx*dt;
 		}
 		if (dy != 0)
 		{
-			Position -= Y*dy/75;
-			Reference -= Y*dy / 75;
+			vec3 dist = rotate(Z, angle, X);
+			Position += dist*dy*dt;
+			Reference += dist*dy*dt;
 		}
 	}
 

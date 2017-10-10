@@ -31,7 +31,9 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference;
-	float distance = 0;
+	float distance = 0.5f;
+
+	float angle = 0.0f;
 
 private:
 	//mat3x3 R;
