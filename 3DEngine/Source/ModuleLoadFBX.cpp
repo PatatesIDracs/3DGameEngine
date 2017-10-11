@@ -7,8 +7,6 @@
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
 
-#pragma comment (lib, "Assimp/libx86/assimp.lib")
-
 #include "Glew\include\glew.h"
 #include "Globals.h"
 #include <gl/GL.h>
@@ -19,6 +17,14 @@
 #include "Devil\include\ilut.h"
 
 #include "3DModel.h"
+
+#pragma comment (lib, "Assimp/libx86/assimp.lib")
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
+
 
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
@@ -154,4 +160,8 @@ bool ModuleLoadFBX::LoadFile()
 	file_name.clear();
 	return true;
 }
-	
+
+int ModuleLoadFBX::GetDevilVersion()
+{
+	return IL_VERSION;
+}

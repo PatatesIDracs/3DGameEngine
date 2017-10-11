@@ -24,6 +24,8 @@ bool ModuleEditor::Start()
 	ImGuiIO& io = ImGui::GetIO();
 
 	app_profiler = App->GetProfilerVect();
+
+	LoadHardwareSoftwareInfo();
 	return true;
 }
 
@@ -211,14 +213,41 @@ void ModuleEditor::ApplicationConfig()
 	}
 }
 
+//Small function just to make the code cleaner
+void ModuleEditor::LoadHardwareSoftwareInfo()
+{
+	devil_version = App->assimp->GetDevilVersion();
+
+	cpu_cores = SDL_GetCPUCount();
+	cpu_cache_size = SDL_GetCPUCacheLineSize();
+	ram = ((float)SDL_GetSystemRAM() / 1024.0f);
+	has_3Dnow = SDL_Has3DNow();
+	has_AVX = SDL_HasAVX();
+	has_AVX2 = SDL_HasAVX2();
+	has_AltiVec = SDL_HasAltiVec();
+	has_MMX = SDL_HasMMX();
+	has_RDTSC = SDL_HasRDTSC();
+	has_SSE = SDL_HasSSE();
+	has_SSE2 = SDL_HasSSE2();
+	has_SSE3 = SDL_HasSSE3();
+	has_SSE41 = SDL_HasSSE41();
+	has_SSE42 = SDL_HasSSE42();
+}
+
 void ModuleEditor::HardwareDetection()
 {
 
-	if (ImGui::CollapsingHeader("Hardware"))
+	if (ImGui::CollapsingHeader("Hardware & software"))
 	{
 		ImVec4	cyan(0.0f, 1.0f, 1.0f, 1.0f);
 
-		//----------------------
+		//SDL info--------------
+		ImGui::Text("SDL version: %i.%i.%i", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+		
+		//Devil info
+		ImGui::Text("Devil version: %i", devil_version);
+
+		ImGui::Separator();
 		//CPU info--------------
 		ImGui::Text("CPU: "); ImGui::SameLine();
 		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
@@ -228,17 +257,17 @@ void ModuleEditor::HardwareDetection()
 		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
 
 		ImGui::Text("Caps: "); ImGui::SameLine();
-		if (SDL_Has3DNow() == SDL_TRUE)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
-		if (SDL_HasAVX() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
-	//	if (SDL_HasAVX2() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
-		if (SDL_HasAltiVec() == SDL_TRUE)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
-		if (SDL_HasMMX() == SDL_TRUE)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
-		if (SDL_HasRDTSC() == SDL_TRUE)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
-		if (SDL_HasSSE() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD, ");		ImGui::SameLine();
-		if (SDL_HasSSE2() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD2, ");		ImGui::SameLine();
-		if (SDL_HasSSE3() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD3, ");		ImGui::SameLine();
-		if (SDL_HasSSE41() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD41, ");	ImGui::SameLine();
-		if (SDL_HasSSE42() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD42, ");
+		if (has_3Dnow)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
+		if (has_AVX)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
+		if (has_AVX2)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
+		if (has_AltiVec)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
+		if (has_MMX)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
+		if (has_RDTSC)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
+		if (has_SSE)		ImGui::TextColored(cyan, "SSE, ");		ImGui::SameLine();
+		if (has_SSE2)		ImGui::TextColored(cyan, "SSE2, ");		ImGui::SameLine();
+		if (has_SSE3)		ImGui::TextColored(cyan, "SSE3, ");		ImGui::SameLine();
+		if (has_SSE41)		ImGui::TextColored(cyan, "SSE41, ");	ImGui::SameLine();
+		if (has_SSE42)		ImGui::TextColored(cyan, "SSE42, ");
 
 
 		ImGui::Separator();
@@ -250,7 +279,7 @@ void ModuleEditor::HardwareDetection()
 		ImGui::Text("Brand: "); ImGui::SameLine();
 		ImGui::Text((const char*)glGetString(GL_RENDERER));
 
-		ImGui::Text("OpenGL Supported: "); ImGui::SameLine();
+		ImGui::Text("OpenGL Version: "); ImGui::SameLine();
 		ImGui::Text((const char*)glGetString(GL_VERSION));
 	}
 	
@@ -324,4 +353,6 @@ void ModuleEditor::DrawProfilerWindow()
 	}
 
 }
+
+
 

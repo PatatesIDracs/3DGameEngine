@@ -17,6 +17,8 @@ public:
 	void SetUpFile(const char* file_name);
 	bool LoadFile();
 
+	int GetDevilVersion();
+
 private:
 	std::string file_name;
 

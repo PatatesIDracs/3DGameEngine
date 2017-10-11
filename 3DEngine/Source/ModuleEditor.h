@@ -5,6 +5,7 @@
 #include <queue>
 #include <list>	
 #include <string>
+#include "SDL\include\SDL.h"
 
 class Profiler;
 
@@ -25,6 +26,7 @@ public:
 
 	void LogToConsole(std::string* log_string);
 
+	void LoadHardwareSoftwareInfo();
 
 private:
 
@@ -52,6 +54,28 @@ private:
 	const std::vector<Profiler*>* app_profiler = nullptr;
 
 	std::list<std::string>	console_string;
+
+	//Hardware and software info (so we don't have to use the functions every update)
+	//Devil version
+	int devil_version = 0;
+
+	//CPU info
+	int		cpu_cores = 0;
+	int		cpu_cache_size = 0;
+	float	ram = 0;
+	bool	has_3Dnow = false;
+	bool	has_AVX = false;
+	bool	has_AVX2 = false;
+	bool	has_AltiVec = false;
+	bool	has_MMX = false;
+	bool	has_RDTSC = false;
+	bool	has_SSE = false;
+	bool	has_SSE2 = false;
+	bool	has_SSE3 = false;
+	bool	has_SSE41 = false;
+	bool	has_SSE42 = false;
+
+
 };
 
 #endif // !__MODULE_EDITOR_H__
