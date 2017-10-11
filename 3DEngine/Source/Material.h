@@ -7,8 +7,12 @@ class Material : public Component
 {
 public:
 	Material();
-	Material(GameObject* parent, bool isactive = true);
+	Material(GameObject* parent, int ntexture_id = -1, bool isactive = true);
 	~Material();
+
+	int GetTextureID() const;
+private:
+	int id_texture = 0;
 
 };
 

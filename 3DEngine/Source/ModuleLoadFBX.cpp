@@ -24,6 +24,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
+#include "Material.h"
 #include "Mesh.h"
 
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
@@ -65,7 +66,11 @@ bool ModuleLoadFBX::LoadFile()
 		Transform* rot_transform = new Transform(object, transform, vec3(position.x, position.y, position.z), vec3(scale.x,scale.y,scale.z));
 
 		object->AddComponent(rot_transform);
-
+		
+		/*while ( != "\\")
+		{
+			file_name.pop_back();
+		}*/
 		// Loat Textures
 		aiString path;
 		int texIndex = 0;
@@ -78,6 +83,7 @@ bool ModuleLoadFBX::LoadFile()
 			{
 				fullpath = directory + path.data;
 				textures.push_back(ilutGLLoadImage((char *)fullpath.c_str()));
+			
 			}
 		}
 		directory.clear();
@@ -88,9 +94,8 @@ bool ModuleLoadFBX::LoadFile()
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
-			RenderData	go_mesh;
+			RenderData	mesh;
 
-			body_mesh mesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
 			mesh.num_vertices = new_mesh->mNumVertices;
 			mesh.vertices = new float[new_mesh->mNumVertices * 3];
@@ -130,7 +135,8 @@ bool ModuleLoadFBX::LoadFile()
 				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
 				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
 
-				mesh.id_texture = textures[new_mesh->mMaterialIndex];
+				Material* texture = new Material(object, textures[new_mesh->mMaterialIndex]);
+				object->AddComponent(texture);
 			}
 
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
@@ -147,23 +153,7 @@ bool ModuleLoadFBX::LoadFile()
 			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			go_mesh.id_indices = mesh.id_indices;
-			go_mesh.num_indices = mesh.num_indices;
-			go_mesh.indices = mesh.indices;
-
-			go_mesh.id_vertices = mesh.id_vertices;
-			go_mesh.num_vertices = mesh.num_vertices;
-			go_mesh.vertices = mesh.vertices;
-
-			go_mesh.id_normals = mesh.id_normals;
-			go_mesh.num_normals = mesh.num_normals;
-			go_mesh.normals = mesh.normals;
-
-			go_mesh.id_tex_vertices = mesh.id_tex_vertices;
-			go_mesh.num_tex_vertices = mesh.num_tex_vertices;
-			go_mesh.tex_vertices = mesh.tex_vertices;
-
-			object->AddComponent(new Mesh(object, go_mesh));
+			object->AddComponent(new Mesh(object, mesh));
 		}
 
 		aiReleaseImport(scene);
