@@ -18,6 +18,9 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	void MoveTo(const vec3 &Movement, float distance);
+	void RotateCamera(bool onpoint = true);
+	void MoveCamera(float dt);
+
 	float* GetViewMatrix();
 
 	// JSON Save/Load Configuration
