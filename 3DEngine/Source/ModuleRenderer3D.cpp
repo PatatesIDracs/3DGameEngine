@@ -7,16 +7,8 @@
 #include "ConfigJSON.h"
 #include "Imgui\imgui.h"
 
-
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
-
-#pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#pragma comment( lib, "Devil/libx86/ILU.lib" )
-#pragma comment( lib, "Devil/libx86/ILUT.lib" )
-
-
-#include "3DModel.h"
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
 {
@@ -151,8 +143,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		break;
 	}
 	
-	DrawBody3D();
-
 	App->scene_intro->Draw();
 
 	App->editor->Draw();
@@ -165,12 +155,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	LOGC("Destroying 3D Renderer");
-
-	for (uint count = 0; count < objects_3d.size(); count++)
-	{
-		delete objects_3d[count];
-	}
-	objects_3d.clear();
 
 	SDL_GL_DeleteContext(context);
 
@@ -257,31 +241,6 @@ void ModuleRenderer3D::DrawConfig()
 	if (ImGui::Checkbox("2D texture", &texture_2d)) Set2DTexture();
 		
 		CheckConfig();
-}
-
-void ModuleRenderer3D::AddBody3D(Body3D* new_mesh)
-{
-	// Get Camera Focus
-	App->camera->MoveTo(new_mesh->GetPosition(), new_mesh->GetBodySize());
-
-	objects_3d.push_back(new_mesh);
-}
-
-void ModuleRenderer3D::ClearBody3DArray()
-{
-	for (uint count = 0; count < objects_3d.size(); count++)
-	{
-		delete objects_3d[count];
-	}
-	objects_3d.clear();
-}
-
-void ModuleRenderer3D::DrawBody3D() const
-{
-	for (uint i = 0; i < objects_3d.size(); i++)
-	{
-		objects_3d[i]->Render();
-	}
 }
 
 //Check all variables form config and set it right

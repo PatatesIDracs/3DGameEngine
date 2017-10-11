@@ -9,10 +9,7 @@
 
 #define MAX_SNAKE 2
 
-struct PhysBody3D;
-struct PhysMotor3D;
-
-struct Mesh_data;
+class Body3D;
 
 class ModuleSceneIntro : public Module
 {
@@ -23,32 +20,19 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+	void Draw();
 
-	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
+	// Add Mesh to Render
+	void AddBody3D(Body3D* new_mesh);
+	void ClearBody3DArray();
+	void DrawBody3D() const;
 
 public:
 
-
-	bool	showtestwindow = false;
-	bool	random_test = false;
-	bool	collision_test = false;
-
-	float	float_rand_test = 0.0f;
-	int		int_rand_test = 0;
-
-	oldSphere* col_test_BodyA = nullptr;
-	Sphere* col_test_BodyB = nullptr;
-	Sphere* col_test_BodyC = nullptr;
-	
-	uint cube_id = 0;
-	uint indices_id = 0;
-	uint unique_cube_id = 0;
-	uint ImageName = 0;
-
-	uint lennaTest = 0;
-	uint uv_id = 0;
-	uint uv_indices_id = 0;
-
+	std::vector<Body3D*> objects_3d;
+	AABB* scene_bound_box = nullptr;
+	vec3 bound_box_center;
+	float dist = 0;
 
 };
 

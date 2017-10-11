@@ -59,7 +59,7 @@ update_status ModuleCamera3D::Update(float dt)
 	if (wheelmotion != 0)
 	{
 		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
-		else Position -= Z*wheelmotion;
+		else Position -= Z*(float)wheelmotion;
 	}
 
 	// Recalculate matrix -------------
@@ -114,7 +114,7 @@ void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
 	Position -= Reference;
 	Reference = Movement;
 
-	this->distance = 1.2*distance;
+	this->distance = (float)1.2*distance;
 	Position = Reference + Z*distance*2;
 
 	CalculateViewMatrix();
@@ -160,9 +160,9 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 
 void ModuleCamera3D::MoveCamera(float dt)
 {
-	int speed = 8;
-	int dx = 0;
-	int dy = 0;
+	float speed = 8;
+	float dx = 0;
+	float dy = 0;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;

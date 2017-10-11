@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "ModuleLoadFBX.h"
-#include "ModuleRenderer3D.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -63,7 +62,7 @@ bool ModuleLoadFBX::LoadFile()
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		App->renderer3D->ClearBody3DArray();
+		App->scene_intro->ClearBody3DArray();
 
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
@@ -75,7 +74,7 @@ bool ModuleLoadFBX::LoadFile()
 		std::vector<int> textures;
 		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
-		for (int i = 0; i < scene->mNumMaterials; i++)
+		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
 			{
@@ -148,7 +147,7 @@ bool ModuleLoadFBX::LoadFile()
 			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			App->renderer3D->AddBody3D(new Body3D(mesh, transform));
+			App->scene_intro->AddBody3D(new Body3D(mesh, transform));
 		}
 
 		aiReleaseImport(scene);
