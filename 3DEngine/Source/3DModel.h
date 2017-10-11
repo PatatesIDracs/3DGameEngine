@@ -5,7 +5,7 @@
 #include "Math.h"
 #include "glmath.h"
 
-struct body_mesh
+struct BodyMesh
 {
 	uint id_indices = 0; // id in VRAM
 	uint num_indices = 0;
@@ -30,10 +30,10 @@ class Body3D
 {
 public:
 	Body3D();
-	Body3D(body_mesh nmesh, mat4x4 ntransform);
+	Body3D(BodyMesh nmesh, mat4x4 ntransform);
 	~Body3D();
 
-	body_mesh GetMesh() const;
+	BodyMesh GetMesh() const;
 	vec3      GetPosition() const;
 	float	  GetBodySize() const;
 
@@ -41,7 +41,7 @@ public:
 
 private:
 
-	body_mesh mesh; 
+	BodyMesh mesh; 
 	AABB bounding_box;
 
 	mat4x4 transform;

@@ -11,6 +11,7 @@ public:
 	ModuleLoadFBX(Application* app, bool start_enabled = true);
 	~ModuleLoadFBX();
 
+	bool Init();
 	bool CleanUp();
 
 	void SetUpFile(const char* file_name);

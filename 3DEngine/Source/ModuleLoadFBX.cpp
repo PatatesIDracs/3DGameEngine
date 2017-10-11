@@ -27,9 +27,19 @@ ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app,
 ModuleLoadFBX::~ModuleLoadFBX(){}
 
 
+bool ModuleLoadFBX::Init()
+{
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+	return true;
+}
+
 bool ModuleLoadFBX::CleanUp()
 {
 	file_name.clear();
+	ilShutDown();
 	return true;
 }
 
@@ -75,7 +85,7 @@ bool ModuleLoadFBX::LoadFile()
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
-			body_mesh mesh;
+			BodyMesh mesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
 			mesh.num_vertices = new_mesh->mNumVertices;
 			mesh.vertices = new float[new_mesh->mNumVertices * 3];

@@ -8,7 +8,7 @@ Body3D::Body3D()
 {
 }
 
-Body3D::Body3D(body_mesh nmesh, mat4x4 ntransform) : mesh(nmesh), transform(ntransform)
+Body3D::Body3D(BodyMesh nmesh, mat4x4 ntransform) : mesh(nmesh), transform(ntransform)
 {
 	for (uint i = 0; i < mesh.num_vertices * 3; i += 3)
 	{
@@ -24,9 +24,14 @@ Body3D::~Body3D()
 	if (mesh.num_normals > 0)glDeleteBuffers(1, &mesh.id_normals);
 	if (mesh.num_tex_vertices > 0)	glDeleteBuffers(1, &mesh.id_tex_vertices);
 	if (glIsTexture(mesh.id_texture) == GL_TRUE)	glDeleteTextures(1, &mesh.id_texture);
+
+	delete mesh.indices;
+	delete mesh.vertices;
+	delete mesh.normals;
+	delete mesh.tex_vertices;	
 }
 
-body_mesh Body3D::GetMesh() const
+BodyMesh Body3D::GetMesh() const
 {
 	return mesh;
 }

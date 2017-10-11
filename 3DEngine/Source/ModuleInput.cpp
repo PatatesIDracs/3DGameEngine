@@ -110,6 +110,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			{      
 				// In case if dropped file
 				App->assimp->SetUpFile(e.drop.file);
+				SDL_free(e.drop.file);
 				break;
 			}
 			
