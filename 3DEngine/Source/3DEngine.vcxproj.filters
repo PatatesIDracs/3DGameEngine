@@ -37,6 +37,9 @@
     <Filter Include="Devil">
       <UniqueIdentifier>{7bd3a844-9ec0-4a9c-abab-a49e79537462}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mmgr">
+      <UniqueIdentifier>{a118d712-ace8-4197-8ef0-c16448d839f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp" />
@@ -216,6 +219,9 @@
     </ClCompile>
     <ClCompile Include="3DModel.cpp">
       <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Fluid_Studios_Memory_Manager\mmgr.cpp">
+      <Filter>mmgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -624,6 +630,12 @@
     </ClInclude>
     <ClInclude Include="3DModel.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Fluid_Studios_Memory_Manager\mmgr.h">
+      <Filter>mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Fluid_Studios_Memory_Manager\nommgr.h">
+      <Filter>mmgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

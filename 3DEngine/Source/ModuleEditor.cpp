@@ -1,12 +1,11 @@
 #include "ModuleEditor.h"
 #include "Application.h"
-
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
-
 #include "Glew\include\glew.h"
-
 #include "Profiler.h"
+#include "Fluid_Studios_Memory_Manager\mmgr.h"
+#include "Fluid_Studios_Memory_Manager\nommgr.h"
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
@@ -41,9 +40,7 @@ update_status ModuleEditor::Update(float dt)
 {
 	
 	///--------------------------------------------------
-	//-------------------
 	//-----MAIN MENU-----
-	//-------------------
 	//Since main menu may have a major impact on the application it's managed directly from the Update
 
 	//Open a Gui window
@@ -99,9 +96,7 @@ update_status ModuleEditor::Update(float dt)
 
 
 	///--------------------------------------------------------------
-	//-----------------------
 	//------CONFIG DRAW------
-	//-----------------------
 
 	//Get a const module list from app
 	//We'll do it regardless of the showconfig value since we may need the list for other Draw methods
@@ -209,6 +204,18 @@ void ModuleEditor::ApplicationConfig()
 
 		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
 		ImGui::PlotHistogram("Miliseconds", &App->GetMs()->front(), App->GetMs()->size(), 0, NULL, 0.0f, 50.0f, ImVec2(0, 80));
+
+		sMStats mem_stats = m_getMemoryStatistics();
+
+		ImGui::Text("Total Reported Mem: %u", mem_stats.totalReportedMemory);
+		ImGui::Text("Total Actual Mem: %u", mem_stats.totalActualMemory);
+		ImGui::Text("Peak Reported Mem: %u", mem_stats.peakReportedMemory);
+		ImGui::Text("Peak Actual Mem: %u", mem_stats.peakActualMemory);
+		ImGui::Text("Accumulated Reported Mem: %u", mem_stats.accumulatedReportedMemory);
+		ImGui::Text("Accumulated Actual Mem: %u", mem_stats.accumulatedActualMemory);
+		ImGui::Text("Accumulated Alloc Unit Count: %u", mem_stats.accumulatedAllocUnitCount);
+		ImGui::Text("Total Alloc Unit Count: %u", mem_stats.totalAllocUnitCount);
+		ImGui::Text("Peak Alloc Unit Count: %u", mem_stats.peakAllocUnitCount);
 
 	}
 }
