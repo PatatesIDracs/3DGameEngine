@@ -14,14 +14,9 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	void SetUpFile(const char* file_name);
-	bool LoadFile();
+	void LoadFile(const char* file_name);
 
 	int GetDevilVersion();
-
-private:
-	std::string file_name;
-
 
 };
 

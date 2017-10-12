@@ -127,4 +127,6 @@ void ModuleSceneIntro::ChangeTexture(uint new_texture_id)
 	{
 		objects_3d[i]->SetTexture(new_texture_id);
 	}
+	if (objects_3d.size() == 0)
+		glDeleteTextures(1, &new_texture_id);
 }

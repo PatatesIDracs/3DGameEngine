@@ -43,22 +43,16 @@ bool ModuleLoadFBX::Init()
 
 bool ModuleLoadFBX::CleanUp()
 {
-	file_name.clear();
 	ilShutDown();
 	return true;
 }
 
-void ModuleLoadFBX::SetUpFile(const char * file_name)
+void ModuleLoadFBX::LoadFile(const char* file)
 {
-	if (file_name != nullptr)
-	{
-		this->file_name = file_name;
-		LoadFile();
-	}
-}
+	if (file == nullptr) return;
 
-bool ModuleLoadFBX::LoadFile()
-{
+	std::string	file_name = file;
+		
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -68,41 +62,46 @@ bool ModuleLoadFBX::LoadFile()
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
+		// Search Absolute Path 
 		std::string temp = "\\";
 		while (file_name[file_name.size()-1] != temp[temp.size()-1] || temp.size() == 0)
 		{
 			file_name.pop_back();
 		}
+		temp.clear();
 
 		// Loat Textures
 		aiString path;
-		int texIndex = 0;
 		std::vector<int> textures;
 		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
 		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
-			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
+			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				int tex_id = 0;
-				file_name = file_name + path.data;
-				tex_id = ilutGLLoadImage((char *)file_name.c_str());
+				fullpath = file_name + path.data;
+				tex_id = ilutGLLoadImage((char *)fullpath.c_str());
 				if (tex_id == 0)
 				{
-					LOGC("Texture %s not found", file_name.c_str())
+					LOGC("Error: %s texture not found, search directory: %s", path.data, fullpath.c_str());
 					fullpath = directory + path.data;
 					tex_id = ilutGLLoadImage((char *)fullpath.c_str());
+					if (tex_id == 0) 
+						LOGC("Error: %s texture not found, search directory: %s", path.data, fullpath.c_str());
 				}
-				if (tex_id != 0)
-					textures.push_back(tex_id);
-				else LOGC("Texture %s not found", fullpath.c_str());
+				
+				if (tex_id != 0) LOGC("Loaded %s texture from path: %s", path.data, fullpath.c_str())
+				else LOGC("Unable to load %s texture", path.data);
+
+				textures.push_back(tex_id);	
 			}
 		}
 		directory.clear();
 		fullpath.clear();
 		path.Clear();
 
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
+		// Iterate Meshes array
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
@@ -129,13 +128,13 @@ bool ModuleLoadFBX::LoadFile()
 				}
 			}
 			
+			// Load Vertex Normals
 			if (new_mesh->HasNormals())
 			{
 				mesh.num_normals = new_mesh->mNumVertices;
 				mesh.normals = new float[mesh.num_normals * 2];
 				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 2);
 				LOGC("New mesh with %d normals", mesh.num_normals);
-
 			}
 
 			// Load Textures
@@ -146,10 +145,11 @@ bool ModuleLoadFBX::LoadFile()
 				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
 				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
 
-				if(new_mesh->mMaterialIndex < textures.size())
-					mesh.id_texture = textures[new_mesh->mMaterialIndex];
+				// Set Texture ID
+				mesh.id_texture = textures[new_mesh->mMaterialIndex];
 			}
 
+			// Load Vertices and Indices To Buffer and Set ID
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
 			glBufferData(GL_ARRAY_BUFFER, mesh.num_vertices*3*sizeof(float), &mesh.vertices[0], GL_STATIC_DRAW);
@@ -158,12 +158,13 @@ bool ModuleLoadFBX::LoadFile()
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
 
-			//Load texture coords buffer
+			// Load texture coords buffer
 			glGenBuffers(1, (GLuint*)&mesh.id_tex_vertices);
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
 			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+			// Add new Body to Scene
 			App->scene_intro->AddBody3D(new Body3D(mesh, transform));
 		}
 
@@ -172,16 +173,16 @@ bool ModuleLoadFBX::LoadFile()
 	}
 	else
 	{
+		// Try to Load Droped file as Image
 		int tex_id = ilutGLLoadImage((char*)file_name.c_str());
-		if (tex_id > 0)
+		if (tex_id != 0)
 		{
 			App->scene_intro->ChangeTexture(tex_id);
 		}
-		else LOGC("Error loading scene %s", file_name.c_str());
+		else LOGC("Error loading file %s", file_name.c_str());
 	}
 
 	file_name.clear();
-	return true;
 }
 
 int ModuleLoadFBX::GetDevilVersion()

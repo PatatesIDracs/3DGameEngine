@@ -111,7 +111,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_DROPFILE:
 			{      
 				// In case if dropped file
-				App->assimp->SetUpFile(e.drop.file);
+				App->assimp->LoadFile(e.drop.file);
 				SDL_free(e.drop.file);
 				break;
 			}
