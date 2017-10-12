@@ -25,10 +25,10 @@ Body3D::~Body3D()
 	if (mesh.num_tex_vertices > 0)	glDeleteBuffers(1, &mesh.id_tex_vertices);
 	if (glIsTexture(mesh.id_texture) == GL_TRUE)	glDeleteTextures(1, &mesh.id_texture);
 
-	delete mesh.indices;
-	delete mesh.vertices;
-	delete mesh.normals;
-	delete mesh.tex_vertices;	
+	delete[] mesh.indices;
+	delete[] mesh.vertices;
+	delete[] mesh.normals;
+	delete[] mesh.tex_vertices;	
 }
 
 BodyMesh Body3D::GetMesh() const

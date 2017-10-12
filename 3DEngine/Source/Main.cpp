@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "Application.h"
 #include "Globals.h"
 

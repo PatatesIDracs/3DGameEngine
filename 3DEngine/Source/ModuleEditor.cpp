@@ -205,6 +205,7 @@ void ModuleEditor::ApplicationConfig()
 		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
 		ImGui::PlotHistogram("Miliseconds", &App->GetMs()->front(), App->GetMs()->size(), 0, NULL, 0.0f, 50.0f, ImVec2(0, 80));
 
+		
 		sMStats mem_stats = m_getMemoryStatistics();
 
 		ImGui::Text("Total Reported Mem: %u", mem_stats.totalReportedMemory);
