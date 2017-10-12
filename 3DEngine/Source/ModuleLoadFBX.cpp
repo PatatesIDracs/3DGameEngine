@@ -67,7 +67,13 @@ bool ModuleLoadFBX::LoadFile()
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
-		
+
+		std::string temp = "\\";
+		while (file_name[file_name.size()-1] != temp[temp.size()-1] || temp.size() == 0)
+		{
+			file_name.pop_back();
+		}
+
 		// Loat Textures
 		aiString path;
 		int texIndex = 0;
@@ -78,8 +84,18 @@ bool ModuleLoadFBX::LoadFile()
 		{
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
 			{
-				fullpath = directory + path.data;
-				textures.push_back(ilutGLLoadImage((char *)fullpath.c_str()));
+				int tex_id = 0;
+				file_name = file_name + path.data;
+				tex_id = ilutGLLoadImage((char *)file_name.c_str());
+				if (tex_id == 0)
+				{
+					LOGC("Texture %s not found", file_name.c_str())
+					fullpath = directory + path.data;
+					tex_id = ilutGLLoadImage((char *)fullpath.c_str());
+				}
+				if (tex_id != 0)
+					textures.push_back(tex_id);
+				else LOGC("Texture %s not found", fullpath.c_str());
 			}
 		}
 		directory.clear();
@@ -130,7 +146,8 @@ bool ModuleLoadFBX::LoadFile()
 				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
 				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
 
-				mesh.id_texture = textures[new_mesh->mMaterialIndex];
+				if(new_mesh->mMaterialIndex < textures.size())
+					mesh.id_texture = textures[new_mesh->mMaterialIndex];
 			}
 
 			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
