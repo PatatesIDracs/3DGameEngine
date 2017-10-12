@@ -8,30 +8,31 @@ Body3D::Body3D()
 {
 }
 
-Body3D::Body3D(BodyMesh nmesh, mat4x4 ntransform) : mesh(nmesh), transform(ntransform)
+Body3D::Body3D(BodyMesh* nmesh, mat4x4 ntransform) : mesh(nmesh), transform(ntransform)
 {
-	for (uint i = 0; i < mesh.num_vertices * 3; i += 3)
+	for (uint i = 0; i < mesh->num_vertices * 3; i += 3)
 	{
-		bounding_box.Enclose(vec(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]));
+		bounding_box.Enclose(vec(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]));
 		if (i == 0) bounding_box.minPoint = bounding_box.maxPoint;
 	}
 }
 
 Body3D::~Body3D()
 {
-	if (mesh.num_indices > 0)glDeleteBuffers(1, &mesh.id_indices);
-	if (mesh.num_vertices > 0)glDeleteBuffers(1, &mesh.id_vertices);
-	if (mesh.num_normals > 0)glDeleteBuffers(1, &mesh.id_normals);
-	if (mesh.num_tex_vertices > 0)	glDeleteBuffers(1, &mesh.id_tex_vertices);
-	if (glIsTexture(mesh.id_texture) == GL_TRUE)	glDeleteTextures(1, &mesh.id_texture);
+	if (mesh->num_indices > 0)glDeleteBuffers(1, &mesh->id_indices);
+	if (mesh->num_vertices > 0)glDeleteBuffers(1, &mesh->id_vertices);
+	if (mesh->num_normals > 0)glDeleteBuffers(1, &mesh->id_normals);
+	if (mesh->num_tex_vertices > 0)	glDeleteBuffers(1, &mesh->id_tex_vertices);
+	if (glIsTexture(mesh->id_texture) == GL_TRUE)	glDeleteTextures(1, &mesh->id_texture);
 
-	delete[] mesh.indices;
-	delete[] mesh.vertices;
-	delete[] mesh.normals;
-	delete[] mesh.tex_vertices;	
+	delete[] mesh->indices;
+	delete[] mesh->vertices;
+	delete[] mesh->normals;
+	delete[] mesh->tex_vertices;	
+	delete mesh;
 }
 
-BodyMesh Body3D::GetMesh() const
+BodyMesh* Body3D::GetMesh() const
 {
 	return mesh;
 }
@@ -50,8 +51,8 @@ float Body3D::GetBodySize() const
 
 void Body3D::SetTexture(uint new_texture)
 {
-	if (mesh.id_texture != 0) glDeleteTextures(1, &mesh.id_texture);
-	mesh.id_texture = new_texture;
+	if (mesh->id_texture != 0) glDeleteTextures(1, &mesh->id_texture);
+	mesh->id_texture = new_texture;
 }
 
 void Body3D::Render() const
@@ -60,20 +61,20 @@ void Body3D::Render() const
 	glMultMatrixf(transform.M);
 
 	// Draw buffer With Indices
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBindTexture(GL_TEXTURE_2D, mesh.id_texture);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
+	glBindTexture(GL_TEXTURE_2D, mesh->id_texture);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
 	glTexCoordPointer(3, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
-	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
+	glDrawElements(GL_TRIANGLES, mesh->num_indices, GL_UNSIGNED_INT, NULL);
 
 	// deactivate arrays after drawing
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

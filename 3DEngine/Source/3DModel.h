@@ -30,10 +30,10 @@ class Body3D
 {
 public:
 	Body3D();
-	Body3D(BodyMesh nmesh, mat4x4 ntransform);
+	Body3D(BodyMesh *nmesh, mat4x4 ntransform);
 	~Body3D();
 
-	BodyMesh GetMesh() const;
+	BodyMesh* GetMesh() const;
 	vec3     GetPosition() const;
 	float	 GetBodySize() const;
 	
@@ -43,7 +43,7 @@ public:
 
 private:
 
-	BodyMesh mesh; 
+	BodyMesh* mesh; 
 	AABB bounding_box;
 
 	mat4x4 transform;

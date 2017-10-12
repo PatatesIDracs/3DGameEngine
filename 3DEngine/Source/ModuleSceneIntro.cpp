@@ -65,7 +65,8 @@ bool ModuleSceneIntro::CleanUp()
 		delete objects_3d[count];
 	}
 	objects_3d.clear();
-
+	
+	delete scene_bound_box;
 	return true;
 }
 
@@ -79,10 +80,10 @@ void ModuleSceneIntro::AddBody3D(Body3D * gameobject)
 	// Fit new mesh inside the Scene Boundary Box 
 	// We don't use GameObjects yet but Scene_boundary_Box will be the "Parent Boundary Box"
 	// which enclose all it's childrens
-	const BodyMesh mesh = gameobject->GetMesh();
-	for (uint i = 0; i < mesh.num_vertices * 3; i += 3)
+	const BodyMesh* mesh = gameobject->GetMesh();
+	for (uint i = 0; i < mesh->num_vertices * 3; i += 3)
 	{
-		scene_bound_box->Enclose(vec(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]));
+		scene_bound_box->Enclose(vec(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]));
 		if (i == 0) scene_bound_box->minPoint = scene_bound_box->maxPoint;
 	}
 

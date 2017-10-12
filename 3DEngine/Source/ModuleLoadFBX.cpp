@@ -57,11 +57,11 @@ void ModuleLoadFBX::LoadFile(const char* file)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		App->scene_intro->ClearBody3DArray();
-
+		
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
-
+	
 		// Search Absolute Path 
 		std::string temp = "\\";
 		while (file_name[file_name.size()-1] != temp[temp.size()-1] || temp.size() == 0)
@@ -69,6 +69,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			file_name.pop_back();
 		}
 		temp.clear();
+
 
 		// Loat Textures
 		aiString path;
@@ -100,22 +101,23 @@ void ModuleLoadFBX::LoadFile(const char* file)
 		directory.clear();
 		fullpath.clear();
 		path.Clear();
-
+		
+		
 		// Iterate Meshes array
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
-			BodyMesh mesh;
+			BodyMesh* mesh = new BodyMesh;
 			const aiMesh* new_mesh = scene->mMeshes[count];
-			mesh.num_vertices = new_mesh->mNumVertices;
-			mesh.vertices = new float[new_mesh->mNumVertices * 3];
-			memcpy(mesh.vertices, new_mesh->mVertices, sizeof(float) * mesh.num_vertices * 3);
-			LOGC("New mesh with %d vertices", mesh.num_vertices);
+			mesh->num_vertices = new_mesh->mNumVertices;
+			mesh->vertices = new float[new_mesh->mNumVertices * 3];
+			memcpy(mesh->vertices, new_mesh->mVertices, sizeof(float) * mesh->num_vertices * 3);
+			LOGC("New mesh with %d vertices", mesh->num_vertices);
 			
 			if (new_mesh->HasFaces())
 			{
-				mesh.num_indices = new_mesh->mNumFaces * 3;
-				mesh.indices = new uint[mesh.num_indices]; // assume each face is a triangle
+				mesh->num_indices = new_mesh->mNumFaces * 3;
+				mesh->indices = new uint[mesh->num_indices]; // assume each face is a triangle
 				for (uint i = 0; i < new_mesh->mNumFaces; ++i)
 				{
 					if (new_mesh->mFaces[i].mNumIndices != 3)
@@ -123,7 +125,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 						LOGC("WARNING, geometry face with != 3 indices! %d", 0);
 					}
 					else {
-						memcpy(&mesh.indices[i * 3], new_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+						memcpy(&mesh->indices[i * 3], new_mesh->mFaces[i].mIndices, 3 * sizeof(uint));
 					}
 				}
 			}
@@ -131,45 +133,46 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			// Load Vertex Normals
 			if (new_mesh->HasNormals())
 			{
-				mesh.num_normals = new_mesh->mNumVertices;
-				mesh.normals = new float[mesh.num_normals * 2];
-				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 2);
-				LOGC("New mesh with %d normals", mesh.num_normals);
+				mesh->num_normals = new_mesh->mNumVertices;
+				mesh->normals = new float[mesh->num_normals * 2];
+				memcpy(mesh->normals, new_mesh->mNormals, sizeof(float) * mesh->num_vertices * 2);
+				LOGC("New mesh with %d normals", mesh->num_normals);
 			}
 
 			// Load Textures
 			if (new_mesh->mTextureCoords[0] != NULL)
 			{
-				mesh.num_tex_vertices = new_mesh->mNumVertices;
-				mesh.tex_vertices = new float[mesh.num_tex_vertices*3];
-				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
-				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
+				mesh->num_tex_vertices = new_mesh->mNumVertices;
+				mesh->tex_vertices = new float[mesh->num_tex_vertices*3];
+				memcpy(mesh->tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh->num_tex_vertices*3);
+				LOGC("Texture Coord loaded: %d texture coords", mesh->num_tex_vertices);
 
 				// Set Texture ID
-				mesh.id_texture = textures[new_mesh->mMaterialIndex];
+				mesh->id_texture = textures[new_mesh->mMaterialIndex];
 			}
 
 			// Load Vertices and Indices To Buffer and Set ID
-			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh.num_vertices*3*sizeof(float), &mesh.vertices[0], GL_STATIC_DRAW);
+			glGenBuffers(1, (GLuint*)&mesh->id_vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
+			glBufferData(GL_ARRAY_BUFFER, mesh->num_vertices*3*sizeof(float), &mesh->vertices[0], GL_STATIC_DRAW);
 
-			glGenBuffers(1, (GLuint*)&mesh.id_indices);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
+			glGenBuffers(1, (GLuint*)&mesh->id_indices);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->num_indices*sizeof(uint), &mesh->indices[0], GL_STATIC_DRAW);
 
 			// Load texture coords buffer
-			glGenBuffers(1, (GLuint*)&mesh.id_tex_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
+			glGenBuffers(1, (GLuint*)&mesh->id_tex_vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
+			glBufferData(GL_ARRAY_BUFFER, mesh->num_tex_vertices*3 * sizeof(float), &mesh->tex_vertices[0], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			// Add new Body to Scene
 			App->scene_intro->AddBody3D(new Body3D(mesh, transform));
 		}
-
+		
 		aiReleaseImport(scene);
 		textures.clear();
+		
 	}
 	else
 	{
