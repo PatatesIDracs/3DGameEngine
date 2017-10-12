@@ -92,7 +92,11 @@ void ModuleLoadFBX::LoadFile(const char* file)
 						LOGC("Error: %s texture not found, search directory: %s", path.data, fullpath.c_str());
 				}
 				
-				if (tex_id != 0) LOGC("Loaded %s texture from path: %s", path.data, fullpath.c_str())
+				if (tex_id != 0)
+				{
+					LOGC("Loaded %s texture from path: %s", path.data, fullpath.c_str());
+					App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+				}
 				else LOGC("Unable to load %s texture", path.data);
 
 				textures.push_back(tex_id);	
@@ -181,6 +185,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 		if (tex_id != 0)
 		{
 			App->scene_intro->ChangeTexture(tex_id);
+			App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT));
 		}
 		else LOGC("Error loading file %s", file_name.c_str());
 	}

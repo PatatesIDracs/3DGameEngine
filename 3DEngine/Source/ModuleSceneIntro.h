@@ -27,6 +27,21 @@ public:
 	void ClearBody3DArray();
 	void DrawBody3D() const;
 
+	// Get Scene Data 
+	// Transform Data:
+	float3 GetAngles() const;
+	vec3 GetScale() const;
+	vec3 GetPosition() const;
+
+	// Geometry Data
+	uint GetVertex() const;
+	uint GetFaces() const;
+
+	// Texture Data
+	uint GetWidth() const;
+	uint GetHeight() const;
+	void SetTexSize(uint width, uint height);
+
 	// Change Current Texture
 	void ChangeTexture(uint new_texture_id);
 
@@ -36,6 +51,10 @@ public:
 	AABB* scene_bound_box = nullptr;
 	vec3 bound_box_center;
 	float dist = 0;
+
+	// Texture data
+	int texture_width = 0;
+	int texture_height = 0;
 
 };
 

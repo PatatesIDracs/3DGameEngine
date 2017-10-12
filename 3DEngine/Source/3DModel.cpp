@@ -49,6 +49,47 @@ float Body3D::GetBodySize() const
 	return sqrt(ret.x*ret.x + ret.y*ret.y + ret.z*ret.z);
 }
 
+float3 Body3D::GetTransfAngles() const
+{
+	float3 angle = {0.0f,0.0f,0.0f};
+		// Euler Angles
+	if (transform.M[2] != 1 && transform.M[2] != -1)
+	{
+		angle.y = -asin(transform.M[2]);
+		angle.z = atan2(transform.M[6] / math::Cos(angle.y), transform.M[10] / math::Cos(angle.y));
+		angle.x = atan2(transform.M[1] / math::Cos(angle.y), transform.M[0] / math::Cos(angle.y));
+		angle.y = RadToDeg(angle.y);
+	}
+	else
+	{
+		angle.z = 0;
+		if (transform.M[2] == -1)
+		{
+			angle.y = 90;
+			angle.x = atan2(transform.M[4], transform.M[8]);
+		}
+		else
+		{
+			angle.y = -90;
+			angle.x = atan2(-transform.M[4], -transform.M[8]);
+		}
+	}
+	angle.z = RadToDeg(angle.z);
+	angle.x = RadToDeg(angle.x);
+	
+	return angle;
+}
+
+vec3 Body3D::GetTransfScale() const
+{
+	return vec3(transform.M[0], transform.M[5], transform.M[10]);
+}
+
+vec3 Body3D::GetTransfPosition() const
+{
+	return vec3(transform.M[12], transform.M[13], transform.M[14]);
+}
+
 void Body3D::SetTexture(uint new_texture)
 {
 	if (mesh->id_texture != 0) glDeleteTextures(1, &mesh->id_texture);

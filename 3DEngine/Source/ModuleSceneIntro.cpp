@@ -122,6 +122,78 @@ void ModuleSceneIntro::DrawBody3D() const
 	}
 }
 
+// This methods are here for the assignment, will be included inside Game Object Components;
+//-------------------------------------------------
+
+// Transform Data ---------------------------------
+float3 ModuleSceneIntro::GetAngles() const
+{
+	float3 ret = {0.0f,0.0f,0.0f};
+	if (objects_3d.size() > 0)
+	{
+		ret = objects_3d[0]->GetTransfAngles();
+	}
+	return ret;
+}
+
+vec3 ModuleSceneIntro::GetScale() const
+{
+	vec3 ret = { 0.0f,0.0f,0.0f };
+	if (objects_3d.size() > 0)
+	{
+		ret = objects_3d[0]->GetTransfScale();
+	}
+	return ret;
+}
+
+vec3 ModuleSceneIntro::GetPosition() const
+{
+	vec3 ret = { 0.0f,0.0f,0.0f };
+	if (objects_3d.size() > 0)
+	{
+		ret = objects_3d[0]->GetTransfPosition();
+	}
+	return ret;
+}
+
+// Geometry Data -------------------------------------
+uint ModuleSceneIntro::GetVertex() const
+{
+	uint ret = 0;
+	for (uint i = 0; i < objects_3d.size(); i++)
+	{
+		ret += (objects_3d[i]->GetMesh().num_vertices);
+	}
+	return ret;
+}
+
+uint ModuleSceneIntro::GetFaces() const
+{
+	uint ret = 0;
+	for (uint i = 0; i < objects_3d.size(); i++)
+	{
+		ret += (objects_3d[i]->GetMesh().num_indices / 3);
+	}
+	return ret;
+}
+
+// Texture Data ---------------------------------------
+uint ModuleSceneIntro::GetWidth() const
+{
+	return texture_width;
+}
+
+uint ModuleSceneIntro::GetHeight() const
+{
+	return texture_height;
+}
+
+void ModuleSceneIntro::SetTexSize(uint width, uint height)
+{
+	texture_width = width;
+	texture_height = height;
+}
+
 void ModuleSceneIntro::ChangeTexture(uint new_texture_id)
 {
 	for (uint i = 0; i < objects_3d.size(); i++)

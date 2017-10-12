@@ -37,6 +37,11 @@ public:
 	vec3     GetPosition() const;
 	float	 GetBodySize() const;
 	
+	// transform
+	float3	 GetTransfAngles() const;
+	vec3	 GetTransfScale() const;
+	vec3	 GetTransfPosition() const;
+	
 	void	 SetTexture(uint new_texture);
 
 	void Render() const;
@@ -47,6 +52,7 @@ private:
 	AABB bounding_box;
 
 	mat4x4 transform;
+
 };
 
 #endif // !__3D_MODEL__
