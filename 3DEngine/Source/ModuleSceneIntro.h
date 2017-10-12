@@ -29,7 +29,7 @@ public:
 
 	// Get Scene Data 
 	// Transform Data:
-	float3 GetAngles() const;
+	vec3 GetAngles() const;
 	vec3 GetScale() const;
 	vec3 GetPosition() const;
 
@@ -38,8 +38,8 @@ public:
 	uint GetFaces() const;
 
 	// Texture Data
-	uint GetWidth() const;
-	uint GetHeight() const;
+	uint GetTextureWidth() const;
+	uint GetTextureHeight() const;
 	void SetTexSize(uint width, uint height);
 
 	// Change Current Texture

@@ -38,7 +38,7 @@ public:
 	float	 GetBodySize() const;
 	
 	// transform
-	float3	 GetTransfAngles() const;
+	vec3	 GetTransfAngles() const;
 	vec3	 GetTransfScale() const;
 	vec3	 GetTransfPosition() const;
 	

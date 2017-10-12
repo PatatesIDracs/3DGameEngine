@@ -29,6 +29,11 @@ bool ModuleEditor::Start()
 	uncapped_fps = !App->AreFpsCapped();
 
 	LoadHardwareSoftwareInfo();
+
+	showconfig = true;
+	showconsole = true;
+	showpropertieswindow = true;
+
 	return true;
 }
 
@@ -320,26 +325,21 @@ void ModuleEditor::DrawPropertiesWindow()
 	
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
-		static vec3 test(1, 2, 3);
-		ImGui::InputFloat3("Position",&test.x, ImGuiInputTextFlags_ReadOnly);
-
-		static vec3 test2(4, 5, 6);
-		ImGui::InputFloat3("Rotation", &test2.x, ImGuiInputTextFlags_ReadOnly);
-
-		static vec3 test3(7, 8, 9);
-		ImGui::InputFloat3("Scale", &test3.x);
+		ImGui::InputFloat3("Position", &App->scene_intro->GetPosition(), -1, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Rotation", &App->scene_intro->GetAngles(), -1, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Scale", &App->scene_intro->GetScale(), -1, ImGuiInputTextFlags_ReadOnly);
 	}
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
-		static float vertixes = 45;
-		ImGui::InputFloat("Vertices:", &vertixes);
+		int vertices = (float)App->scene_intro->GetVertex();
+		ImGui::InputInt("Vertices", &vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 	if (ImGui::CollapsingHeader("Texture"))
 	{
-		static float texture = 45;
-		static float texture2 = 455;
-		ImGui::InputFloat("Width:", &texture, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat("Height:", &texture2);
+		int texture_w = App->scene_intro->GetTextureWidth();
+		int texture_h = App->scene_intro->GetTextureHeight();
+		ImGui::InputInt("Texture Width", &texture_w, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Texture Height", &texture_h, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 
 	ImGui::End();

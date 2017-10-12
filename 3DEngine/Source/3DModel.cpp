@@ -49,9 +49,9 @@ float Body3D::GetBodySize() const
 	return sqrt(ret.x*ret.x + ret.y*ret.y + ret.z*ret.z);
 }
 
-float3 Body3D::GetTransfAngles() const
+vec3 Body3D::GetTransfAngles() const
 {
-	float3 angle = {0.0f,0.0f,0.0f};
+	vec3 angle = {0.0f,0.0f,0.0f};
 		// Euler Angles
 	if (transform.M[2] != 1 && transform.M[2] != -1)
 	{

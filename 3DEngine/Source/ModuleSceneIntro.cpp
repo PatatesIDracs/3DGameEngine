@@ -126,9 +126,9 @@ void ModuleSceneIntro::DrawBody3D() const
 //-------------------------------------------------
 
 // Transform Data ---------------------------------
-float3 ModuleSceneIntro::GetAngles() const
+vec3 ModuleSceneIntro::GetAngles() const
 {
-	float3 ret = {0.0f,0.0f,0.0f};
+	vec3 ret = {0.0f,0.0f,0.0f};
 	if (objects_3d.size() > 0)
 	{
 		ret = objects_3d[0]->GetTransfAngles();
@@ -162,7 +162,7 @@ uint ModuleSceneIntro::GetVertex() const
 	uint ret = 0;
 	for (uint i = 0; i < objects_3d.size(); i++)
 	{
-		ret += (objects_3d[i]->GetMesh().num_vertices);
+		ret += (objects_3d[i]->GetMesh()->num_vertices);
 	}
 	return ret;
 }
@@ -172,18 +172,18 @@ uint ModuleSceneIntro::GetFaces() const
 	uint ret = 0;
 	for (uint i = 0; i < objects_3d.size(); i++)
 	{
-		ret += (objects_3d[i]->GetMesh().num_indices / 3);
+		ret += (objects_3d[i]->GetMesh()->num_indices / 3);
 	}
 	return ret;
 }
 
 // Texture Data ---------------------------------------
-uint ModuleSceneIntro::GetWidth() const
+uint ModuleSceneIntro::GetTextureWidth() const
 {
 	return texture_width;
 }
 
-uint ModuleSceneIntro::GetHeight() const
+uint ModuleSceneIntro::GetTextureHeight() const
 {
 	return texture_height;
 }
