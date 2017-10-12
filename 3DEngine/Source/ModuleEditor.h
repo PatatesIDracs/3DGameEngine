@@ -36,16 +36,18 @@ private:
 	void ApplicationConfig();
 	void HardwareDetection();
 	void DrawConsole();
+	void DrawPropertiesWindow();
 	
 	// Draw Profiler -----------------------
 	void DrawProfilerWindow();
 
 
 private:
-	bool	showtestwindow	= false;
-	bool	showaboutwindow	= false;
-	bool	showconfig		= false;
-	bool	showconsole		= false;
+	bool	showtestwindow			= false;
+	bool	showaboutwindow			= false;
+	bool	showconfig				= false;
+	bool	showconsole				= false;
+	bool	showpropertieswindow	= false;
 
 	// Profiler
 	bool	showprofiler	= false;

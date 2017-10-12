@@ -65,6 +65,7 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Workspace"))
 	{
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
+		if (ImGui::MenuItem("Properties")) showpropertieswindow = !showpropertieswindow;
 
 		ImGui::EndMenu();
 	}
@@ -110,7 +111,7 @@ update_status ModuleEditor::Update(float dt)
 	//Check if we need to draw the UI
 	if (showconfig)
 	{
-		ImGui::Begin("Configuration", &showconfig);
+		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
 
 		ApplicationConfig();
 
@@ -139,7 +140,9 @@ update_status ModuleEditor::Update(float dt)
 	//Draw Profiler
 	if (showprofiler) DrawProfilerWindow();
 
-	
+	//Show mesh and texture properties
+	if (showpropertieswindow) DrawPropertiesWindow();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -167,9 +170,10 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
-void ModuleEditor::LogToConsole(std::string * log_string)
+void ModuleEditor::LogToConsole(std::string* log_string)
 {
 	console_string.push_back(*log_string);
+
 }
 
 
@@ -307,6 +311,37 @@ void ModuleEditor::DrawConsole()
 		ImGui::Text(item._Ptr->_Myval.c_str());
 	}
 	
+	ImGui::End();
+}
+
+void ModuleEditor::DrawPropertiesWindow()
+{
+	ImGui::Begin("Properties");
+	
+	if (ImGui::CollapsingHeader("Transformation"))
+	{
+		static vec3 test(1, 2, 3);
+		ImGui::InputFloat3("Position",&test.x, ImGuiInputTextFlags_ReadOnly);
+
+		static vec3 test2(4, 5, 6);
+		ImGui::InputFloat3("Rotation", &test2.x, ImGuiInputTextFlags_ReadOnly);
+
+		static vec3 test3(7, 8, 9);
+		ImGui::InputFloat3("Scale", &test3.x);
+	}
+	if (ImGui::CollapsingHeader("Geometry"))
+	{
+		static float vertixes = 45;
+		ImGui::InputFloat("Vertices:", &vertixes);
+	}
+	if (ImGui::CollapsingHeader("Texture"))
+	{
+		static float texture = 45;
+		static float texture2 = 455;
+		ImGui::InputFloat("Width:", &texture, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat("Height:", &texture2);
+	}
+
 	ImGui::End();
 }
 
