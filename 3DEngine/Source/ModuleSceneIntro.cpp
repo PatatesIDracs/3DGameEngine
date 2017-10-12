@@ -120,3 +120,11 @@ void ModuleSceneIntro::DrawBody3D() const
 		objects_3d[i]->Render();
 	}
 }
+
+void ModuleSceneIntro::ChangeTexture(uint new_texture_id)
+{
+	for (uint i = 0; i < objects_3d.size(); i++)
+	{
+		objects_3d[i]->SetTexture(new_texture_id);
+	}
+}

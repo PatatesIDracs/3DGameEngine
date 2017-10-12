@@ -27,6 +27,9 @@ public:
 	void ClearBody3DArray();
 	void DrawBody3D() const;
 
+	// Change Current Texture
+	void ChangeTexture(uint new_texture_id);
+
 public:
 
 	std::vector<Body3D*> objects_3d;

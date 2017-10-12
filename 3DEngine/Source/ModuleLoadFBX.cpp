@@ -154,7 +154,14 @@ bool ModuleLoadFBX::LoadFile()
 		textures.clear();
 	}
 	else
-		LOGC("Error loading scene %s", file_name.c_str());
+	{
+		int tex_id = ilutGLLoadImage((char*)file_name.c_str());
+		if (tex_id > 0)
+		{
+			App->scene_intro->ChangeTexture(tex_id);
+		}
+		else LOGC("Error loading scene %s", file_name.c_str());
+	}
 
 	file_name.clear();
 	return true;

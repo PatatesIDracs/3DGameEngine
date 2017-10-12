@@ -48,6 +48,12 @@ float Body3D::GetBodySize() const
 	return sqrt(ret.x*ret.x + ret.y*ret.y + ret.z*ret.z);
 }
 
+void Body3D::SetTexture(uint new_texture)
+{
+	if (mesh.id_texture != 0) glDeleteTextures(1, &mesh.id_texture);
+	mesh.id_texture = new_texture;
+}
+
 void Body3D::Render() const
 {
 	glPushMatrix();

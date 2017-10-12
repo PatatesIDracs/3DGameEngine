@@ -34,8 +34,10 @@ public:
 	~Body3D();
 
 	BodyMesh GetMesh() const;
-	vec3      GetPosition() const;
-	float	  GetBodySize() const;
+	vec3     GetPosition() const;
+	float	 GetBodySize() const;
+	
+	void	 SetTexture(uint new_texture);
 
 	void Render() const;
 
