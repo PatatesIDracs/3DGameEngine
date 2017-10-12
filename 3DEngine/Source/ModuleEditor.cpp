@@ -24,6 +24,10 @@ bool ModuleEditor::Start()
 
 	app_profiler = App->GetProfilerVect();
 
+	strcpy(str_name, App->GetAppName());
+	strcpy(str_org, "Patates i Dracs");
+	uncapped_fps = !App->AreFpsCapped();
+
 	LoadHardwareSoftwareInfo();
 	return true;
 }
@@ -192,14 +196,14 @@ void ModuleEditor::ApplicationConfig()
 {
 	if (ImGui::CollapsingHeader("Application"))
 	{
-		static char str_name[150] = "JoPe Engine";
-		ImGui::InputText("App name", str_name, (int)sizeof(str_name));
+		if (ImGui::InputText("App name", str_name, (int)sizeof(str_name)))
+			App->window->SetTitle(str_name);
 
-		static char str_org[150] = "Patates i Dracs";
 		ImGui::InputText("Organitzation", str_org, (int)sizeof(str_org));
 
-		static int fps = 60;
-		if (ImGui::SliderInt("Max FPS", &fps, 14, 120)) App->SetFpsCap(fps);
+		if (ImGui::Checkbox("Unlimited", &uncapped_fps)) App->SetFpsCap(uncapped_fps);
+		if (ImGui::SliderInt("Max FPS", &App->fps, 15, 120)) App->SetFpsCap(uncapped_fps);
+	
 
 
 		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
@@ -241,6 +245,7 @@ void ModuleEditor::LoadHardwareSoftwareInfo()
 	has_SSE41 = SDL_HasSSE41();
 	has_SSE42 = SDL_HasSSE42();
 }
+
 
 void ModuleEditor::HardwareDetection()
 {

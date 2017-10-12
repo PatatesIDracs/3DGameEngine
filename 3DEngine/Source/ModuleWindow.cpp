@@ -139,6 +139,11 @@ void ModuleWindow::SaveModuleConfig(Config_Json & config)
 	window_config.SetBool("Fullscreen Descktop", fullscreen_desktop);
 }
 
+void ModuleWindow::SetTitle(char* new_title)
+{
+	SDL_SetWindowTitle(window, new_title);
+}
+
 void ModuleWindow::SetRes(int index)
 {
 	switch (index)

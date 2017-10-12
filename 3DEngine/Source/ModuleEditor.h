@@ -28,6 +28,7 @@ public:
 
 	void LoadHardwareSoftwareInfo();
 
+
 private:
 
 	// Draw Configuration ------------------
@@ -54,6 +55,11 @@ private:
 	const std::vector<Profiler*>* app_profiler = nullptr;
 
 	std::list<std::string>	console_string;
+
+	//App names
+	char str_name[512];
+	char str_org[512];
+	bool uncapped_fps = true;
 
 	//Hardware and software info (so we don't have to use the functions every update)
 	//Devil version

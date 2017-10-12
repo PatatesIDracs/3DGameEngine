@@ -11,7 +11,7 @@
 
 
 //Define the directory paths of debug and release
-
+//The diference in direcotries is to make Releases easier
 //Base directory for debug
 #ifdef _DEBUG
 
@@ -53,8 +53,8 @@ enum update_status
 
 
 // Configuration -----------
-
-
+//Those variables are loaded with config.json
+//The values here are only used in case the config.json is deleted from the Data directory
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 1
@@ -63,6 +63,6 @@ enum update_status
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC false	
-#define TITLE "3D Physics Playground"
+#define TITLE "JoPe Engine"
 
 #endif // !__GLOBALS_H__

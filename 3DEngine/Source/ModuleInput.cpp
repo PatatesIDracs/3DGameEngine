@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleLoadFBX.h"
+#include "Imgui\imgui.h"
+#include "Imgui\imgui_impl_sdl_gl3.h"
 
 #define MAX_KEYS 300
 
@@ -121,6 +123,8 @@ update_status ModuleInput::PreUpdate(float dt)
 			}		
 		}
 	}
+	ImGui_ImplSdlGL3_ProcessEvent(&e);
+
 
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
 		return UPDATE_STOP;

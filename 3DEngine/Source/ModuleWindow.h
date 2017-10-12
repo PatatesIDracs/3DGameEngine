@@ -27,6 +27,8 @@ public:
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
+	void SetTitle(char* new_title);
+
 private:
 	void SetRes(int index);
 

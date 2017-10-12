@@ -166,24 +166,30 @@ const std::vector<Profiler*>* Application::GetProfilerVect()
 void Application::LoadModuleConfig(Config_Json & config)
 {
 	app_name = config.GetString("Name");
+	capped = config.GetBool("Is Capped", true);
+	fps = config.GetInt("Capped FPS", 60);
 }
 
 void Application::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json app_config = config.AddJsonObject("Application");
 	app_config.SetString("Name", "JoPe Engine");
+	app_config.SetBool("Is Capped", capped);
+	app_config.SetInt("Capped FPS", fps);
 	app_config.SetBool("Is Active", true);
 }
 
-void Application::SetFpsCap(int cap)
+
+bool Application::AreFpsCapped()
 {
-	if (cap > 14)
-	{
-		capped_ms = (1000 / cap);
-		capped = true;
-	}
-	else
-		capped = false;
+	return capped;
+}
+
+void Application::SetFpsCap(bool fps_uncapped)
+{
+	capped = !fps_uncapped;
+	if (capped)
+		capped_ms = (1000 / fps);
 }
 
 // ---------------------------------------------
