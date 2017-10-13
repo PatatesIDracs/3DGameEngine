@@ -357,7 +357,7 @@ void ModuleEditor::DrawPropertiesWindow()
 
 void ModuleEditor::DrawProfilerWindow()
 {
-	ImGui::Begin("Profiler Test", &showprofiler);
+	ImGui::Begin("Profiler Test", &showprofiler, ImGuiWindowFlags_NoMove);
 	{
 		if (ImGui::Button("Start Profiler")) {
 			if (recordpaused)

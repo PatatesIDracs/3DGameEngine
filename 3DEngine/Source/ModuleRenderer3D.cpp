@@ -225,7 +225,7 @@ void ModuleRenderer3D::DrawConfig()
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) SetDepthTest();
 
-	ImGui::Checkbox("Face Normals", &face_normals);
+//	ImGui::Checkbox("Face Normals", &face_normals);
 
 	if (ImGui::Checkbox("Face culling", &cull_face)) SetFaceCulling(); ImGui::SameLine();
 	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) SetFaceCulling(); ImGui::SameLine();

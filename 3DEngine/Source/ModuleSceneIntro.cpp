@@ -84,7 +84,7 @@ void ModuleSceneIntro::AddBody3D(Body3D * gameobject)
 	for (uint i = 0; i < mesh->num_vertices * 3; i += 3)
 	{
 		scene_bound_box->Enclose(vec(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]));
-		if (i == 0) scene_bound_box->minPoint = scene_bound_box->maxPoint;
+		if (i == 0 && objects_3d.size() == 0) scene_bound_box->minPoint = scene_bound_box->maxPoint;
 	}
 
 	// Calculate Center of the Boundary Box and distance from center to vertex;
