@@ -38,6 +38,8 @@ public:
 	float	 GetBodySize() const;
 	
 	// transform
+	void	 SetTransfAngles();
+
 	vec3	 GetTransfAngles() const;
 	vec3	 GetTransfScale() const;
 	vec3	 GetTransfPosition() const;
@@ -52,6 +54,7 @@ private:
 	AABB bounding_box;
 
 	mat4x4 transform;
+	vec3 angle;
 
 };
 

@@ -79,7 +79,6 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Tools"))
 	{
 		if (ImGui::MenuItem("Profiler")) showprofiler = !showprofiler;
-	
 
 		ImGui::EndMenu();
 	}
@@ -177,8 +176,14 @@ bool ModuleEditor::CleanUp()
 
 void ModuleEditor::LogToConsole(std::string* log_string)
 {
+	if (console_string.size() >= CONSOLE_LIMIT)
+	{
+		for (uint count = 0; count < console_string.size() - 1; count++)
+		{
+			console_string[count] = console_string[count + 1];
+		}
+	}
 	console_string.push_back(*log_string);
-
 }
 
 
@@ -311,9 +316,9 @@ void ModuleEditor::DrawConsole()
 {
 	ImGui::Begin("Console", &showconsole);
 	
-	for (std::list<std::string>::iterator item = console_string.begin(); item != console_string.end(); ++item)
+	for (uint count = 0; count < console_string.size(); count++)
 	{
-		ImGui::Text(item._Ptr->_Myval.c_str());
+		ImGui::Text(console_string[count].c_str());
 	}
 	
 	ImGui::End();
@@ -331,15 +336,17 @@ void ModuleEditor::DrawPropertiesWindow()
 	}
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
-		int vertices = (float)App->scene_intro->GetVertex();
+		int vertices = App->scene_intro->GetVertex();
+		int faces = App->scene_intro->GetFaces();
 		ImGui::InputInt("Vertices", &vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Faces", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		int texture_w = App->scene_intro->GetTextureWidth();
 		int texture_h = App->scene_intro->GetTextureHeight();
-		ImGui::InputInt("Texture Width", &texture_w, 0, 100, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputInt("Texture Height", &texture_h, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Width", &texture_w, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Height", &texture_h, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 
 	ImGui::End();
@@ -369,27 +376,25 @@ void ModuleEditor::DrawProfilerWindow()
 		//Show Ms from functions Real Time
 		ImGui::Separator();
 		
-			ImGui::Text("Modules: ");
-			const std::list<Module*>* app = App->GetModulesList();
-			std::list<Module*>::const_iterator app_modules = app->begin();
+		ImGui::Text("Modules: ");
+		const std::list<Module*>* app = App->GetModulesList();
+		std::list<Module*>::const_iterator app_modules = app->begin();
 			
-			int count = 0;
-			for (; app_modules != app->end(); app_modules++)
-			{
-				ImGui::RadioButton(app_modules._Ptr->_Myval->GetName(), (int*)&current_module, count);
-				count++;
-			}
-			ImGui::Separator();
+		for (int count = 0; app_modules != app->end(); app_modules++)
+		{
+			ImGui::RadioButton(app_modules._Ptr->_Myval->GetName(), (int*)&current_module, count);
+			count++;
+		}
+		ImGui::Separator();
 
-			std::vector<char*>* fnames = app_profiler->begin()[current_module]->GetFunctionNames();
-			std::vector<float>* item = nullptr;
+		std::vector<char*>* fnames = app_profiler->begin()[current_module]->GetFunctionNames();
+		std::vector<float>* item = nullptr;
 
-			for (uint i = 0; i < fnames->size(); i++)
-			{
-				item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
-				ImGui::PlotHistogram(fnames->at(i), &item->at(0), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
-			}	
-		
+		for (uint i = 0; i < fnames->size(); i++)
+		{
+			item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
+			ImGui::PlotHistogram(fnames->at(i), &item->at(0), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
+		}
 	}
 	ImGui::End();
 
@@ -401,6 +406,3 @@ void ModuleEditor::DrawProfilerWindow()
 	}
 
 }
-
-
-

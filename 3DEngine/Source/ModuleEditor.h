@@ -7,6 +7,8 @@
 #include <string>
 #include "SDL\include\SDL.h"
 
+#define CONSOLE_LIMIT 50
+
 class Profiler;
 
 class ModuleEditor : public Module
@@ -56,7 +58,7 @@ private:
 	int		current_module  = 0;
 	const std::vector<Profiler*>* app_profiler = nullptr;
 
-	std::list<std::string>	console_string;
+	std::vector<std::string>	console_string;
 
 	//App names
 	char str_name[512];

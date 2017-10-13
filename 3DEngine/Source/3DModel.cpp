@@ -15,6 +15,8 @@ Body3D::Body3D(BodyMesh* nmesh, mat4x4 ntransform) : mesh(nmesh), transform(ntra
 		bounding_box.Enclose(vec(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]));
 		if (i == 0) bounding_box.minPoint = bounding_box.maxPoint;
 	}
+
+	SetTransfAngles();
 }
 
 Body3D::~Body3D()
@@ -49,10 +51,9 @@ float Body3D::GetBodySize() const
 	return sqrt(ret.x*ret.x + ret.y*ret.y + ret.z*ret.z);
 }
 
-vec3 Body3D::GetTransfAngles() const
+void Body3D::SetTransfAngles()
 {
-	vec3 angle = {0.0f,0.0f,0.0f};
-		// Euler Angles
+	// Euler Angles
 	if (transform.M[2] != 1 && transform.M[2] != -1)
 	{
 		angle.y = -asin(transform.M[2]);
@@ -76,7 +77,10 @@ vec3 Body3D::GetTransfAngles() const
 	}
 	angle.z = RadToDeg(angle.z);
 	angle.x = RadToDeg(angle.x);
-	
+}
+
+vec3 Body3D::GetTransfAngles() const
+{
 	return angle;
 }
 
