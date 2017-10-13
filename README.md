@@ -12,6 +12,15 @@ Drag and drop any .fbx file in the screen to load it, if the .fbx has a texture 
 
 
 ## Changelog
+### v0.1.1 - Mesh viewer
+* Removed non used primitives for release
+* Camera controls imporved
+* Loaded .fbx will search for a .png texture in the .fbx path
+* UI is able to receive input
+* "F" key added to center the camera onto the fbx
+* Properties window added, showing info about the loaded geometry and texture
+
+
 ### v0.1 - Mesh viewer
 * Removed glut dependecy
 * Render redone (WIP), direct mode rendering is been replaced with indices and vertex arrays, some old primitives are still using direct mode, they can't be used in the release but are on the source code, they will change in future releases.
