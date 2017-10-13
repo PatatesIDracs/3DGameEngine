@@ -116,6 +116,8 @@ update_status ModuleEditor::Update(float dt)
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
+		ImGui::SetWindowPos(ImVec2(App->window->width - 285,18 + App->window->height * 2 / 5), 0);
+		ImGui::SetWindowSize(ImVec2(285, App->window->height * 3 / 5), 0);
 
 		ApplicationConfig();
 
@@ -327,7 +329,10 @@ void ModuleEditor::DrawConsole()
 
 void ModuleEditor::DrawPropertiesWindow()
 {
-	ImGui::Begin("Properties");
+	ImGui::Begin("Properties", &showpropertieswindow,ImGuiWindowFlags_NoMove);
+
+	ImGui::SetWindowPos(ImVec2(App->window->width - 285, 18), 0);
+	ImGui::SetWindowSize(ImVec2(285, App->window->height*2 /5), 0);
 	
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
@@ -349,6 +354,8 @@ void ModuleEditor::DrawPropertiesWindow()
 		ImGui::InputInt("Width", &texture_w, 0, 100, ImGuiInputTextFlags_ReadOnly);
 		ImGui::InputInt("Height", &texture_h, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
+
+
 
 	ImGui::End();
 }
