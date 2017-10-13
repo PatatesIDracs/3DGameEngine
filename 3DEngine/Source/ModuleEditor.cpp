@@ -182,6 +182,7 @@ void ModuleEditor::LogToConsole(std::string* log_string)
 		{
 			console_string[count] = console_string[count + 1];
 		}
+		console_string.pop_back();
 	}
 	console_string.push_back(*log_string);
 }

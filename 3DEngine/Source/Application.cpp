@@ -235,6 +235,7 @@ void Application::FinishUpdate()
 
 
 	//Frame limit
+	//Delay each frame when the frames are capped
 	if (capped)
 	{
 		if (capped_ms > 0 && last_frame_time < capped_ms)

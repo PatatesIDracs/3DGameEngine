@@ -10,11 +10,7 @@
 enum PrimitiveTypes
 {
 	Primitive_Point,
-	Primitive_Line,
 	Primitive_Plane,
-	Primitive_Cube,
-	Primitive_Sphere,
-	Primitive_Cylinder
 };
 
 struct Primitive_Data
@@ -65,63 +61,6 @@ protected:
 	void CalculateFaceNormals(float* vertices);
 };
 
-// ============================================
-class oldCube : public Primitive
-{
-public:
-	oldCube();
-	oldCube(float sizeX, float sizeY, float sizeZ);
-	void InnerRender() const;
-public:
-	vec3 size;
-};
-
-// ============================================
-class oldSphere : public Primitive
-{
-public:
-	oldSphere();
-	oldSphere(float radius);
-	~oldSphere();
-	void InnerRender() const;
-	void FaceNormalsRender() const;
-public:
-	float radius;
-
-private:
-	int stacks = 0;
-	int slices = 0;
-
-	mutable std::list<vec3> mesh;
-	mutable std::vector<float> vertex_array;
-	mutable std::vector<float3> face_normals;
-	mutable std::vector<float>	normal_array;
-	mutable std::vector<float>	face_center;
-};
-
-// ============================================
-class oldCylinder : public Primitive
-{
-public:
-	oldCylinder();
-	oldCylinder(float radius, float height);
-	void InnerRender() const;
-public:
-	float radius;
-	float height;
-};
-
-// ============================================
-class oldLine : public Primitive
-{
-public:
-	oldLine();
-	oldLine(float x, float y, float z);
-	void InnerRender() const;
-public:
-	vec3 origin;
-	vec3 destination;
-};
 
 // ============================================
 class oldPlane : public Primitive
