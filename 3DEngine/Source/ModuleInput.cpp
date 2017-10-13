@@ -139,3 +139,14 @@ bool ModuleInput::CleanUp()
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
 }
+
+bool ModuleInput::IsImGuiUsingInput()
+{
+	ImGuiIO& io = ImGui::GetIO();
+	bool ret = false;
+
+	if (io.WantCaptureKeyboard) ret = true;
+	if (io.WantCaptureMouse) ret = true;
+	if (io.WantTextInput) ret = true;
+	return ret;
+}

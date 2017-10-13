@@ -41,6 +41,9 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	//If ImGui is using inputs don't use the camera
+	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
+
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
