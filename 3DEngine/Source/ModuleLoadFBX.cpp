@@ -138,8 +138,8 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			if (new_mesh->HasNormals())
 			{
 				mesh->num_normals = new_mesh->mNumVertices;
-				mesh->normals = new float[mesh->num_normals * 2];
-				memcpy(mesh->normals, new_mesh->mNormals, sizeof(float) * mesh->num_vertices * 2);
+				mesh->normals = new float[mesh->num_normals * 3];
+				memcpy(mesh->normals, new_mesh->mNormals, sizeof(float) * mesh->num_vertices * 3);
 				LOGC("New mesh with %d normals", mesh->num_normals);
 			}
 
@@ -156,18 +156,35 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			}
 
 			// Load Vertices and Indices To Buffer and Set ID
-			glGenBuffers(1, (GLuint*)&mesh->id_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh->num_vertices*3*sizeof(float), &mesh->vertices[0], GL_STATIC_DRAW);
+			if (mesh->vertices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh->id_vertices);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
+				glBufferData(GL_ARRAY_BUFFER, mesh->num_vertices * 3 * sizeof(float), &mesh->vertices[0], GL_STATIC_DRAW);
+			}
 
-			glGenBuffers(1, (GLuint*)&mesh->id_indices);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->num_indices*sizeof(uint), &mesh->indices[0], GL_STATIC_DRAW);
+			if (mesh->normals != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh->id_normals);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
+				glBufferData(GL_ARRAY_BUFFER, mesh->num_normals * 3 * sizeof(float), &mesh->normals[0], GL_STATIC_DRAW);
+			}
+
+			if (mesh->indices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh->id_indices);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->num_indices * sizeof(uint), &mesh->indices[0], GL_STATIC_DRAW);
+			}
 
 			// Load texture coords buffer
-			glGenBuffers(1, (GLuint*)&mesh->id_tex_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh->num_tex_vertices*3 * sizeof(float), &mesh->tex_vertices[0], GL_STATIC_DRAW);
+			if (mesh->tex_vertices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh->id_tex_vertices);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
+				glBufferData(GL_ARRAY_BUFFER, mesh->num_tex_vertices * 3 * sizeof(float), &mesh->tex_vertices[0], GL_STATIC_DRAW);
+			}
+			//Clean Buffer bind
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			// Add new Body to Scene

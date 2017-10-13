@@ -1,5 +1,7 @@
 #include "3DModel.h"
 #include "Glew\include\glew.h"
+#include "Application.h"
+#include "ModuleRenderer3D.h"
 #include "Globals.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -105,23 +107,51 @@ void Body3D::Render() const
 	glPushMatrix();
 	glMultMatrixf(transform.M);
 
+	if (mesh->normals != nullptr && App->renderer3D->vertex_normals)
+	{
+		glBegin(GL_LINES);
+		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		glLineWidth(5.0f);
+
+		for (int j = 0; j < mesh->num_normals * 3; j += 3)
+		{
+			glVertex3f(mesh->vertices[j], mesh->vertices[j + 1], mesh->vertices[j + 2]);
+			glVertex3f(mesh->vertices[j] + mesh->normals[j], mesh->vertices[j + 1] + mesh->normals[j + 1], mesh->vertices[j + 2] + mesh->normals[j + 2]);
+		}
+		glEnd();
+
+	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	// Draw buffer With Indices
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	if (mesh->tex_vertices != nullptr)
+	{
+		//Must be inside the if, when enabling a client state and not using its functionality program crashes
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBindTexture(GL_TEXTURE_2D, mesh->id_texture);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
-	glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+		glBindTexture(GL_TEXTURE_2D, mesh->id_texture);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex_vertices);
+		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+/*	if (mesh->normals != nullptr)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
+
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+	}*/
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
 	glDrawElements(GL_TRIANGLES, mesh->num_indices, GL_UNSIGNED_INT, NULL);
 
 	// deactivate arrays after drawing
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 

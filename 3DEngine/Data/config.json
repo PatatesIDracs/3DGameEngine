@@ -27,7 +27,6 @@
         "Is Active": true,
         "Render mode": 0,
         "Depth Test": true,
-        "Face Normals": false,
         "Cull face": true,
         "Cull face mode": 0,
         "Smooth": true,

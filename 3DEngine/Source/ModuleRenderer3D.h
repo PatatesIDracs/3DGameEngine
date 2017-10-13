@@ -59,8 +59,7 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	bool vertex_normals;
-	bool face_normals = false;
+	bool vertex_normals = false;
 
 private:
 
