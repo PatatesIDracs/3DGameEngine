@@ -52,6 +52,12 @@ update_status ModuleSceneIntro::Update(float dt)
 		else App->camera->MoveTo(vec3(0.0f, 0.0f, 0.0f), 2);
 	}
 
+	// Set Focus To Origin
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+	{
+		//Set Focus To GameObject or Origin if there's non
+		App->camera->MoveTo(vec3(0.0f, 0.0f, 0.0f), 2);
+	}
 	return UPDATE_CONTINUE;
 }
 
