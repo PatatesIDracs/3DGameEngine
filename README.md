@@ -11,6 +11,22 @@ Use right click to rotate the camera
 Drag and drop any .fbx file in the screen to load it, if the .fbx has a texture atached put the texture inside the Game folder.
 
 
+## Credits 
+This software was made by Pere Rifà and Joan Pareja and is licensed under the MIT license.
+
+**Libraires**    
+This software was developed thanks to the opensource libraries listed below, we do not take credit for any functionality provided by these libraries.   
+This software was made using [SDL](https://www.libsdl.org/) libraries.  
+We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.net/) for our 3D render.
+[Assimp](http://assimp.sourceforge.net/) was used to load .fbx data.   
+[Devil](http://openil.sourceforge.net/) was used to read texture files.
+[MMGR](http://www.paulnettle.com/) memory manager was used to monitor memory usage in runtime.
+
+  
+**Tools**    
+[Deleaker](http://www.deleaker.com/) is used to control all memory leaks.
+
+
 ## Changelog
 ### v0.1.1 - Mesh viewer
 * Removed non used primitives for release
@@ -18,7 +34,10 @@ Drag and drop any .fbx file in the screen to load it, if the .fbx has a texture 
 * Loaded .fbx will search for a .png texture in the .fbx path
 * UI is able to receive input
 * "F" key added to center the camera onto the fbx
-* Properties window added, showing info about the loaded geometry and texture
+* Properties window added, showing info about the loaded geometry and texture (if the fbx has more than one mesh the information show is the combination of all the meshes)
+* UI windows blocked and rearanged
+* Application now displays memory usage
+* Software versions are now displayed
 
 
 ### v0.1 - Mesh viewer
