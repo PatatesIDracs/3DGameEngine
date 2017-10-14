@@ -22,7 +22,7 @@ However if your model is made of diferent meshes and each one has a diferent tex
 Some sample geometry is provided to test the viewer, below you can find the original sources.    
 [Sci-fi Spacechip](https://www.cgtrader.com/free-3d-models/space/spaceship/sf-imperial-corvette-f3)     
 [Troll](https://www.cgtrader.com/free-3d-models/character/fantasy/earthborn-troll)   
-
+[Megalodon](https://free3d.com/3d-model/megalodon-battlefield-4-67390.html)
 
 ## Credits 
 This software was made by Pere Rifà and Joan Pareja and is licensed under the MIT license.    
