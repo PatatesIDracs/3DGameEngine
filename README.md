@@ -14,6 +14,16 @@ Drag and drop any .fbx or .obj file in the screen to load it, if the .fbx has a 
 In some cases the object might be too big for the viewer to render, the viewer will try to rescale the object so it's visible, this process will be written in the console, we recommend checking both console and scale in properties to chack that the file has not been resized.
 
 
+**Multiple texture**   
+Right now the viewer doesn't support multiple texture CHANNELS, this means that you can't load normal or specular maps.   
+However if your model is made of diferent meshes and each one has a diferent texture, the textures will be applied to the correct mesh, note that in this case the path to the texture must be defined correctly, if it isn't you won't be able to load textures correctly since the drag & drop PNG functionality doesn't support this method and the same texture will be loaded to all the meshes.   
+
+**Sample Geometry**    
+Some sample geometry is provided to test the viewer, below you can find the original sources.    
+[Sci-fi Spacechip](https://www.cgtrader.com/free-3d-models/space/spaceship/sf-imperial-corvette-f3)     
+[Troll](https://www.cgtrader.com/free-3d-models/character/fantasy/earthborn-troll)   
+
+
 ## Credits 
 This software was made by Pere Rifà and Joan Pareja and is licensed under the MIT license.    
 You can check our github page [here](https://github.com/PatatesIDracs/3DGameEngine).
