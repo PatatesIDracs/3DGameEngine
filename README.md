@@ -36,12 +36,12 @@ This software was made by Pere Rifà and Joan Pareja and is licensed under the M
 You can check our github page [here](https://github.com/PatatesIDracs/3DGameEngine).
 
 **Libraires**    
-This software was developed thanks to the opensource libraries listed below, we do not take credit for any functionality provided by these libraries.   
-This software was made using [SDL](https://www.libsdl.org/) libraries.  
-We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.net/) for our 3D render.
-[Assimp](http://assimp.sourceforge.net/) was used to load .fbx data.   
-[Devil](http://openil.sourceforge.net/) was used to read texture files.
-[MMGR](http://www.paulnettle.com/) memory manager was used to monitor memory usage in runtime.
+This software was developed thanks to the opensource libraries listed below, we do not take credit for any functionality provided by these libraries.     
+This software was made using [SDL](https://www.libsdl.org/) libraries.      
+We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.net/) for our 3D render.     
+[Assimp](http://assimp.sourceforge.net/) was used to load .fbx data.      
+[Devil](http://openil.sourceforge.net/) was used to read texture files.     
+[MMGR](http://www.paulnettle.com/) memory manager was used to monitor memory usage in runtime.    
 
   
 **Tools**    
