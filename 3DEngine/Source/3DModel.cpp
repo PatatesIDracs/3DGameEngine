@@ -139,13 +139,6 @@ void Body3D::Render() const
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-/*	if (mesh->normals != nullptr)
-	{
-		glEnableClientState(GL_NORMAL_ARRAY);
-
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
-		glNormalPointer(GL_FLOAT, 0, NULL);
-	}*/
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_indices);
 	glDrawElements(GL_TRIANGLES, mesh->num_indices, GL_UNSIGNED_INT, NULL);

@@ -101,6 +101,11 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 				textures.push_back(tex_id);	
 			}
+			else
+			{
+				LOGC("This mesh doesn't have a diffuse texture");
+				textures.push_back(0);
+			}
 		}
 		directory.clear();
 		fullpath.clear();
@@ -152,7 +157,10 @@ void ModuleLoadFBX::LoadFile(const char* file)
 				LOGC("Texture Coord loaded: %d texture coords", mesh->num_tex_vertices);
 
 				// Set Texture ID
-				mesh->id_texture = textures[new_mesh->mMaterialIndex];
+				if (textures.size() != 0)
+					mesh->id_texture = textures[new_mesh->mMaterialIndex];
+				else
+					mesh->id_texture = 0;
 			}
 
 			// Load Vertices and Indices To Buffer and Set ID
