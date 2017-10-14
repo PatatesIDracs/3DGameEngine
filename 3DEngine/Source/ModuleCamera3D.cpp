@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 #include "ConfigJSON.h"
+#include "Imgui\imgui.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
@@ -162,7 +163,6 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 
 void ModuleCamera3D::MoveCamera(float dt)
 {
-	float speed = 8;
 	float dx = 0;
 	float dy = 0;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
@@ -191,12 +191,19 @@ float* ModuleCamera3D::GetViewMatrix()
 // ----------------------------------------------
 void ModuleCamera3D::LoadModuleConfig(Config_Json & config)
 {
+	speed = config.GetFloat("Speed", 10.0f);
 }
 
 void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json camera_config = config.AddJsonObject(this->GetName());
 	camera_config.SetBool("Is Active", true);
+	camera_config.SetInt("Speed", speed);
+}
+
+void ModuleCamera3D::DrawConfig()
+{
+	ImGui::SliderFloat("Speed", &speed, 8.0f, 30.0f);
 }
 
 // -----------------------------------------------------------------

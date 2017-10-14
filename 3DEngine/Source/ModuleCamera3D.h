@@ -27,6 +27,8 @@ public:
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
+	void DrawConfig();
+
 private:
 
 	void CalculateViewMatrix();
@@ -34,6 +36,8 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference;
+	
+	float speed = 10.0f;
 	float distance = 0.5f;
 
 	float angle = 0.0f;

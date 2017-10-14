@@ -239,7 +239,6 @@ void ModuleRenderer3D::DrawConfig()
 	if (ImGui::Checkbox("Color material", &color_material)) SetColorMaterial();
 	if (ImGui::Checkbox("2D texture", &texture_2d)) Set2DTexture();
 		
-		CheckConfig();
 }
 
 //Check all variables form config and set it right

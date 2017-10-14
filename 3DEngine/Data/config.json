@@ -18,7 +18,8 @@
         "Fullscreen Descktop": false
     },
     "Camera": {
-        "Is Active": true
+        "Is Active": true,
+        "Camera Speed": 30
     },
     "Physics": {
         "Is Active": true
