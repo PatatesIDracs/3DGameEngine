@@ -35,9 +35,8 @@ public:
 
 	Primitive();
 
-	virtual void	Render(bool face_normals = false) const;
+	virtual void	Render() const;
 	virtual void	InnerRender() const;
-	virtual void	FaceNormalsRender() const;
 	virtual void	PrepareToRender();
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
@@ -58,7 +57,6 @@ protected:
 	Primitive_Data render_data;
 	AABB bounding_box;
 
-	void CalculateFaceNormals(float* vertices);
 };
 
 

@@ -46,7 +46,6 @@ update_status ModuleSceneIntro::Update(float dt)
 		//Set Focus To GameObject or Origin if there's non
 		if (objects_3d.size() > 0)
 		{
-		
 			App->camera->MoveTo(bound_box_center, dist);
 		}
 		else App->camera->MoveTo(vec3(0.0f, 0.0f, 0.0f), 2);
@@ -166,12 +165,14 @@ void ModuleSceneIntro::ReScale()
 {
 	if (dist > MAX_DISTANCE)
 	{
-		LOGC("Game Object Loaded exceeds max size, proceding to reduce the scale");
-		int new_scale = 1 / ((int)(dist / MAX_DISTANCE));
+		LOGC("Warning: Game Object Loaded exceeds max size, trying to reduce the scale so it can be rendered...");
+		float new_scale = 1.f / ((float)(dist / MAX_DISTANCE));
 		for (uint i = 0; i < objects_3d.size(); i++)
 		{
 			objects_3d[i]->SetScale(new_scale);
 		}
+		dist *= new_scale;
+		App->camera->MoveTo(bound_box_center, dist);
 	}
 }
 
