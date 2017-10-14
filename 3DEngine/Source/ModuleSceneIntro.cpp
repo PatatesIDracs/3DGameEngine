@@ -36,9 +36,13 @@ bool ModuleSceneIntro::Start()
 update_status ModuleSceneIntro::Update(float dt)
 {
 
+	
+	Primitive a;
+	a.axis = true;
+	a.Render();
+	//p.axis = true;
 	oldPlane p(0, 1, 0, 0);
-	p.axis = true;
-	p.Render();
+	if(App->renderer3D->show_grid)p.Render();
 
 	// Get Camera Focus
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)

@@ -60,6 +60,7 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	bool vertex_normals = false;
+	bool show_grid = true;
 
 private:
 
