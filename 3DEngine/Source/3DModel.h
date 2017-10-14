@@ -39,6 +39,7 @@ public:
 	
 	// transform
 	void	 SetTransfAngles();
+	void	 SetScale(int new_size);
 
 	vec3	 GetTransfAngles() const;
 	vec3	 GetTransfScale() const;

@@ -197,8 +197,11 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 			// Add new Body to Scene
 			App->scene_intro->AddBody3D(new Body3D(mesh, transform));
+			
 		}
-		
+		// ReScale Scene if needed;
+		App->scene_intro->ReScale();
+
 		aiReleaseImport(scene);
 		textures.clear();
 		

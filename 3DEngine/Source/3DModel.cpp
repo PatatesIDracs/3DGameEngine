@@ -81,6 +81,11 @@ void Body3D::SetTransfAngles()
 	angle.x = RadToDeg(angle.x);
 }
 
+void Body3D::SetScale(int new_size)
+{
+	transform.M[0] = transform.M[5] = transform.M[10] = new_size;
+}
+
 vec3 Body3D::GetTransfAngles() const
 {
 	return angle;

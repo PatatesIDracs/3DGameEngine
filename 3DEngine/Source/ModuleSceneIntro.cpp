@@ -162,6 +162,19 @@ vec3 ModuleSceneIntro::GetPosition() const
 	return ret;
 }
 
+void ModuleSceneIntro::ReScale()
+{
+	if (dist > MAX_DISTANCE)
+	{
+		LOGC("Game Object Loaded exceeds max size, proceding to reduce the scale");
+		int new_scale = 1 / ((int)(dist / MAX_DISTANCE));
+		for (uint i = 0; i < objects_3d.size(); i++)
+		{
+			objects_3d[i]->SetScale(new_scale);
+		}
+	}
+}
+
 // Geometry Data -------------------------------------
 uint ModuleSceneIntro::GetVertex() const
 {

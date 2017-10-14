@@ -7,7 +7,7 @@
 #include "Math.h"
 #include "SDL\include\SDL.h"
 
-#define MAX_SNAKE 2
+#define MAX_DISTANCE 500
 
 class Body3D;
 
@@ -32,6 +32,8 @@ public:
 	vec3 GetAngles() const;
 	vec3 GetScale() const;
 	vec3 GetPosition() const;
+
+	void Rescale();
 
 	// Geometry Data
 	uint GetVertex() const;
