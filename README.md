@@ -2,7 +2,7 @@
 Simple 3D Engine made for learning purposes
 
 ## Instalation
-Drag the JoPe engine folder inside the .rar file to somewhere in your computer.
+Drag the JoPe engine folder inside the .rar file to somewhere in your computer.  
 Open the 3DEngine.exe file inside the data folder.
 
 ## Usage 
@@ -13,6 +13,7 @@ Drag and drop any .fbx file in the screen to load it, if the .fbx has a texture 
 
 ## Credits 
 This software was made by Pere Rifà and Joan Pareja and is licensed under the MIT license.
+You can check our github page [here](https://github.com/PatatesIDracs/3DGameEngine).
 
 **Libraires**    
 This software was developed thanks to the opensource libraries listed below, we do not take credit for any functionality provided by these libraries.   
