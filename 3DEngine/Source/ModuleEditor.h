@@ -52,7 +52,7 @@ private:
 	bool	showpropertieswindow	= false;
 
 	// Profiler
-	bool	showprofiler	= false;
+	bool	showprofiler	= true;
 	bool	recordpaused	= true;
 
 	int		current_module  = 0;

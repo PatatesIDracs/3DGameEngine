@@ -34,6 +34,48 @@ bool ModuleEditor::Start()
 	showconsole = true;
 	showpropertieswindow = true;
 
+	// Define IMGUI Style
+	ImGuiStyle * style = &ImGui::GetStyle();
+
+	style->WindowRounding = 0.0f;
+	style->ScrollbarSize = 12.0f;
+	style->ScrollbarRounding = 6.0f;
+	style->GrabMinSize = 5.0f;
+	style->GrabRounding = 3.0f;
+
+	style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
+	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.26f, 0.26f, 0.28f, 1.00f);
+	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_ComboBg] = ImVec4(0.19f, 0.18f, 0.21f, 1.00f);
+	style->Colors[ImGuiCol_CheckMark] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_CloseButton] = ImVec4(0.40f, 0.39f, 0.38f, 0.16f);
+	style->Colors[ImGuiCol_CloseButtonHovered] = ImVec4(0.25f, 1.00f, 0.00f, 0.90f);
+	style->Colors[ImGuiCol_CloseButtonActive] = ImVec4(0.25f, 1.00f, 0.00f, 0.80f);
+	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+
 	return true;
 }
 
@@ -116,8 +158,8 @@ update_status ModuleEditor::Update(float dt)
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
-		ImGui::SetWindowPos(ImVec2(App->window->width - 285,18 + App->window->height * 2 / 5), 0);
-		ImGui::SetWindowSize(ImVec2(285, App->window->height * 3 / 5), 0);
+		ImGui::SetWindowPos(ImVec2(0,19), 0);
+		ImGui::SetWindowSize(ImVec2(250, App->window->height - 19), 0);
 
 		ApplicationConfig();
 
@@ -194,7 +236,7 @@ void ModuleEditor::LogToConsole(std::string* log_string)
 void ModuleEditor::DrawAboutWindow()
 {
 
-	ImGui::Begin("About JoPe", &showaboutwindow);
+	ImGui::Begin("About JoPe", &showaboutwindow, ImGuiWindowFlags_NoResize);
 
 	ImGui::Text("JoPe Engine");
 	ImGui::Text("Very simple and limited game engine,\nmade for educational purposes");
@@ -317,8 +359,10 @@ void ModuleEditor::HardwareDetection()
 
 void ModuleEditor::DrawConsole()
 {
-	ImGui::Begin("Console", &showconsole);
-	
+	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImGui::SetWindowPos(ImVec2(250, App->window->height - 200), 0);
+	ImGui::SetWindowSize(ImVec2(App->window->width - 500, 200), 0);
 	for (uint count = 0; count < console_string.size(); count++)
 	{
 		ImGui::Text(console_string[count].c_str());
@@ -329,10 +373,10 @@ void ModuleEditor::DrawConsole()
 
 void ModuleEditor::DrawPropertiesWindow()
 {
-	ImGui::Begin("Properties", &showpropertieswindow,ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Properties", &showpropertieswindow, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-	ImGui::SetWindowPos(ImVec2(App->window->width - 285, 18), 0);
-	ImGui::SetWindowSize(ImVec2(285, App->window->height*2 /5), 0);
+	ImGui::SetWindowPos(ImVec2(App->window->width - 250, 19), 0);
+	ImGui::SetWindowSize(ImVec2(250, App->window->height*2 /5), 0);
 	
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
@@ -364,8 +408,11 @@ void ModuleEditor::DrawPropertiesWindow()
 
 void ModuleEditor::DrawProfilerWindow()
 {
-	ImGui::Begin("Profiler Test", &showprofiler);
+	ImGui::Begin("Profiler Test", &showprofiler, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	{
+		ImGui::SetWindowPos(ImVec2(App->window->width - 250, App->window->height*2/5 + 19), 0);
+		ImGui::SetWindowSize(ImVec2(250, App->window->height*3/5 - 19), 0);
+
 		if (ImGui::Button("Start Profiler")) {
 			if (recordpaused)
 			{
