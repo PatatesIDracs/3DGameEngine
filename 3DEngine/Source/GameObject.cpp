@@ -9,8 +9,25 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 		parent->AddChildren(this);
 }
 
+GameObject::GameObject(GameObject * parent, char * name) : parent(parent), name(name)
+{
+	if (parent != nullptr)
+		parent->AddChildren(this);
+}
+
 GameObject::~GameObject()
 {
+	for (uint i = 0; i < children.size(); i++)
+	{
+		delete	children[i];
+	}
+	children.clear();
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		delete components[i];
+	}
+	components.clear();		
 }
 
 void GameObject::Update()
@@ -28,9 +45,6 @@ void GameObject::Update()
 	{
 		components[i]->Update();
 	}
-
-
-
 }
 
 void GameObject::AddChildren(GameObject * new_child)

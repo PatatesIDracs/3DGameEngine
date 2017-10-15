@@ -30,7 +30,7 @@ class Mesh : public Component
 {
 public:
 	Mesh();
-	Mesh(GameObject* parent, RenderData render_data, bool isactive = true);
+	Mesh(GameObject* parent, RenderData* render_data, bool isactive = true);
 	~Mesh();
 
 	const RenderData* GetRenderData();
@@ -42,7 +42,7 @@ private:
 
 public:
 
-	RenderData render_data;
+	RenderData* render_data;
 	math::AABB bounding_box;
 
 

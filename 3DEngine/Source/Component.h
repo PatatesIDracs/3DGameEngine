@@ -19,7 +19,7 @@ class Component
 public:
 	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false){};
 	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive){};
-	~Component() {};
+	virtual ~Component() {};
 
 	virtual void Enable() { active = true; };
 	virtual void Update() {};

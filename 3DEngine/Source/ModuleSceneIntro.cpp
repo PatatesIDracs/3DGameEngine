@@ -24,7 +24,7 @@ bool ModuleSceneIntro::Start()
 	App->camera->LookAt(vec3(0, 0, 0));
 
 	//Create the root GameObject
-	root = new GameObject(nullptr);
+	root = new GameObject(nullptr, "root");
 	
 	return ret;
 }

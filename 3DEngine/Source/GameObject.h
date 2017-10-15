@@ -11,6 +11,7 @@ class GameObject
 {
 public:
 	GameObject(GameObject* parent);
+	GameObject(GameObject* parent, char* name);
 	~GameObject();
 
 	void Update();
