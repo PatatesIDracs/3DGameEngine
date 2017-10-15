@@ -8,7 +8,7 @@
 #include "SDL\include\SDL.h"
 #include "glmath.h"
 
-#define CONSOLE_LIMIT 50
+#define CONSOLE_LIMIT 100
 
 class Profiler;
 
