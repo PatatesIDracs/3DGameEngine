@@ -41,11 +41,14 @@ void Mesh::Render()
 {
 	//Enable opengl states
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	if (render_data.tex_vertices != nullptr)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	//Bind texture coords buffer
-	glBindBuffer(GL_ARRAY_BUFFER, render_data.id_tex_vertices);
-	glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+		//Bind texture coords buffer
+		glBindBuffer(GL_ARRAY_BUFFER, render_data.id_tex_vertices);
+		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+	}
 
 	//Bind vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, render_data.id_vertices);

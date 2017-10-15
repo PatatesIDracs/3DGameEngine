@@ -11,6 +11,8 @@ public:
 	~Material();
 
 	int GetTextureID() const;
+
+	void Update();
 private:
 	int id_texture = 0;
 

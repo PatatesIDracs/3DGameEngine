@@ -1,4 +1,5 @@
 #include "Material.h"
+#include "Glew\include\glew.h"
 
 Material::Material()
 {
@@ -15,4 +16,9 @@ Material::~Material()
 int Material::GetTextureID() const
 {
 	return id_texture;
+}
+
+void Material::Update()
+{
+	glBindTexture(GL_TEXTURE_2D, id_texture);
 }
