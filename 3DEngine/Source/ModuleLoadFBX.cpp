@@ -55,29 +55,44 @@ void ModuleLoadFBX::LoadFile(const char* file)
 {
 	if (file == nullptr) return;
 
-	std::string	file_name = file;
+	std::string	file_path = file;
 
-	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFile(file_path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		
+	
+		std::string file_name;
+		std::string dot = ".";
+		std::string slash = "\\";
 
-		GameObject* object = App->scene_intro->CreateNewGameObject(file);
+		for (int i = 0; (i < file_path.size()) && (file_path[i] != dot[0]) ; i++)
+		{
+			//Fill the name
+			file_name.push_back(file_path[i]);
+
+			//If a slash is met clear the name
+			if (file_path[i] == slash[0])
+			{
+				file_name.clear();
+			}
+		}
+
+		GameObject* object_parent = App->scene_intro->CreateNewGameObject(file_name.c_str());
 	
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
 		// Create Transform Component from Current Scene Root Node
-		Transform* rot_transform = new Transform(object, transform);
+		Transform* rot_transform = new Transform(object_parent, transform);
 
-		object->AddComponent(rot_transform);
+		object_parent->AddComponent(rot_transform);
 		
 		// Search Absolute Path 
 		std::string temp = "\\";
-		while (file_name[file_name.size() - 1] != temp[temp.size() - 1] || temp.size() == 0)
+		while (file_path[file_path.size() - 1] != temp[temp.size() - 1] || temp.size() == 0)
 		{
-			file_name.pop_back();
+			file_path.pop_back();
 		}
 		temp.clear();
 
@@ -91,7 +106,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				int tex_id = 0;
-				fullpath = file_name + path.data;
+				fullpath = file_path + path.data;
 				tex_id = ilutGLLoadImage((char *)fullpath.c_str());
 				if (tex_id == 0)
 				{
@@ -125,9 +140,11 @@ void ModuleLoadFBX::LoadFile(const char* file)
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
-			RenderData*	mesh = new RenderData;
-
 			const aiMesh* new_mesh = scene->mMeshes[count];
+
+			RenderData*	mesh = new RenderData;
+			GameObject* object_child = App->scene_intro->CreateNewGameObject(new_mesh->mName.C_Str(), object_parent);
+
 			mesh->num_vertices = new_mesh->mNumVertices;
 			mesh->vertices = new float[new_mesh->mNumVertices * 3];
 			memcpy(mesh->vertices, new_mesh->mVertices, sizeof(float) * mesh->num_vertices * 3);
@@ -170,9 +187,9 @@ void ModuleLoadFBX::LoadFile(const char* file)
 				Material* texture = nullptr;
 
 				if (textures.size() != 0)
-					texture = new Material(object, textures[new_mesh->mMaterialIndex]);
-				else texture = new Material(object,0);
-				object->AddComponent(texture);
+					texture = new Material(object_child, textures[new_mesh->mMaterialIndex]);
+				else texture = new Material(object_child,0);
+				object_child->AddComponent(texture);
 			}
 
 			// Load Vertices and Indices To Buffer and Set ID
@@ -208,7 +225,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			//Clean Buffer bind
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			object->AddComponent(new Mesh(object, mesh));
+			object_child->AddComponent(new Mesh(object_child, mesh));
 		}
 
 		aiReleaseImport(scene);
@@ -217,15 +234,15 @@ void ModuleLoadFBX::LoadFile(const char* file)
 	else
 	{
 		// Try to Load Droped file as Image
-		int tex_id = ilutGLLoadImage((char*)file_name.c_str());
+		int tex_id = ilutGLLoadImage((char*)file_path.c_str());
 		if (tex_id != 0)
 		{
 			//App->scene_intro->ChangeTexture(tex_id);
 			//App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 		}
-		else LOGC("Error loading file %s", file_name.c_str());
+		else LOGC("Error loading file %s", file_path.c_str());
 	}
 
-	file_name.clear();	
+	file_path.clear();
 }
 	

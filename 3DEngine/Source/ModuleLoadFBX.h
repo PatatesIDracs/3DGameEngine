@@ -14,7 +14,7 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	void LoadFile(const char* file_name);
+	void LoadFile(const char* file_path);
 
 };
 
