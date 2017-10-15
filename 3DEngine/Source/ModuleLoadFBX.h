@@ -16,7 +16,8 @@ public:
 
 	void LoadFile(const char* file_name);
 
-	int GetDevilVersion();
+	vec3 GetAssimpVersion() const;
+	int GetDevilVersion() const;
 
 };
 

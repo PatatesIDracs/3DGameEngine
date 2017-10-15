@@ -5,6 +5,7 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
+#include "Assimp/include/version.h"
 
 #include "Glew\include\glew.h"
 #include "Globals.h"
@@ -221,7 +222,12 @@ void ModuleLoadFBX::LoadFile(const char* file)
 	file_name.clear();
 }
 
-int ModuleLoadFBX::GetDevilVersion()
+vec3 ModuleLoadFBX::GetAssimpVersion() const
+{
+	return vec3(aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
+}
+
+int ModuleLoadFBX::GetDevilVersion() const
 {
 	return IL_VERSION;
 }

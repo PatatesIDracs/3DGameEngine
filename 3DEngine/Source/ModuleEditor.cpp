@@ -244,7 +244,7 @@ void ModuleEditor::DrawAboutWindow()
 	ImGui::Text("\nMade by: Joan Pareja, Pere Rifa");
 
 	//Libraries: bullet, SDL, glew, glut, dear imgui, json(Parson), MathGeoLib
-	ImGui::Text("\nMade with: SDL, glew, dear imgui, Parson, MathGeoLib");
+	ImGui::Text("\nMade with: SDL, glew, dear imgui, Parson, MathGeoLib\nAssimp and Devil");
 
 	ImGui::Text("\nLicensed under the MIT license");
 
@@ -287,6 +287,8 @@ void ModuleEditor::ApplicationConfig()
 //Small function just to make the code cleaner
 void ModuleEditor::LoadHardwareSoftwareInfo()
 {
+	assimp_version = App->assimp->GetAssimpVersion();
+
 	devil_version = App->assimp->GetDevilVersion();
 
 	cpu_cores = SDL_GetCPUCount();
@@ -311,10 +313,13 @@ void ModuleEditor::HardwareDetection()
 
 	if (ImGui::CollapsingHeader("Hardware & software"))
 	{
-		ImVec4	cyan(0.0f, 1.0f, 1.0f, 1.0f);
+		ImVec4	cyan(0.25f, 1.0f, 0.0f, 1.0f);
 
 		//SDL info--------------
 		ImGui::Text("SDL version: %i.%i.%i", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+		
+		//Assimp info-----------
+		ImGui::Text("Assimp version: %i.%i.%i", (int)assimp_version.x, (int)assimp_version.y, (int)assimp_version.z);
 		
 		//Devil info
 		ImGui::Text("Devil version: %i", devil_version);

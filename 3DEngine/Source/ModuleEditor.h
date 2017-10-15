@@ -6,6 +6,7 @@
 #include <list>	
 #include <string>
 #include "SDL\include\SDL.h"
+#include "glmath.h"
 
 #define CONSOLE_LIMIT 50
 
@@ -66,6 +67,9 @@ private:
 	bool uncapped_fps = true;
 
 	//Hardware and software info (so we don't have to use the functions every update)
+	//Assimp version
+	vec3 assimp_version;
+
 	//Devil version
 	int devil_version = 0;
 
