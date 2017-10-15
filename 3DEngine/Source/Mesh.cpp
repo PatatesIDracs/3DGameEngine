@@ -20,6 +20,11 @@ Mesh::~Mesh()
 	if (render_data.num_vertices > 0)glDeleteBuffers(1, &render_data.id_vertices);
 	if (render_data.num_normals > 0)glDeleteBuffers(1, &render_data.id_normals);
 	if (render_data.num_tex_vertices > 0)	glDeleteBuffers(1, &render_data.id_tex_vertices);
+
+	delete[] render_data.indices;
+	delete[] render_data.vertices;
+	delete[] render_data.normals;
+	delete[] render_data.tex_vertices;
 }
 
 const RenderData* Mesh::GetRenderData()

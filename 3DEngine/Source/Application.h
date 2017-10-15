@@ -31,6 +31,8 @@ public:
 	ModuleEditor* editor;
 	ModuleLoadFBX* assimp;
 
+	int fps = 60;
+
 private:
 
 	Timer	ms_timer;
@@ -85,7 +87,8 @@ public:
 	Profiler* GetProfiler(Module* module);
 	const std::vector<Profiler*>* GetProfilerVect();
 
-	void SetFpsCap(int cap);
+	bool AreFpsCapped();
+	void SetFpsCap(bool fps_uncapped);
 
 private:
 

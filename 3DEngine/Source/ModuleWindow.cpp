@@ -100,18 +100,29 @@ void ModuleWindow::DrawConfig()
 	if (ImGui::Combo("Resolution", &resolution, res_array, (int)(sizeof(res_array) / sizeof(*res_array))))
 	{
 		SetRes(resolution);
+		SDL_SetWindowSize(window, width, height);
 	}
-	ImGui::Checkbox("Fullscren", &fullscreen);
-	if (ImGui::IsItemHovered()) ImGui::SetTooltip("Restart to apply");
+	if (ImGui::Checkbox("Fullscren", &fullscreen))
+	{
+		if (fullscreen)
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		else
+			SDL_SetWindowFullscreen(window, 0);
+	}
 	ImGui::SameLine();
-	ImGui::Checkbox("Full Desktop", &fullscreen_desktop);
-	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+	if (ImGui::Checkbox("Full Desktop", &fullscreen_desktop))
+	{
+		if (fullscreen_desktop)
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		else
+			SDL_SetWindowFullscreen(window, 0);
+	}
 
-	ImGui::Checkbox("Resizable", &resizable);
-	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+	if (ImGui::Checkbox("Resizable", &resizable))
+		SDL_SetWindowResizable(window, (SDL_bool)resizable);
 	ImGui::SameLine();
-	ImGui::Checkbox("Borderless", &borderless);
-	if (ImGui::IsItemHovered())	ImGui::SetTooltip("Restart to apply");
+	if (ImGui::Checkbox("Borderless", &borderless))
+		SDL_SetWindowBordered(window, (SDL_bool)!borderless);
 }
 
 // ----------------------------------------------
