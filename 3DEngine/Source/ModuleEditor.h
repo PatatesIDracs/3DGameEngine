@@ -33,12 +33,15 @@ public:
 private:
 
 	// Draw Configuration ------------------
-	void DrawAboutWindow();
 	void ApplicationConfig();
 	void HardwareDetection();
+
 	void DrawConsole();
 	void DrawPropertiesWindow();
-	
+	void DrawAboutWindow();
+
+	void DrawHierarchy();
+
 	// Draw Profiler -----------------------
 	void DrawProfilerWindow();
 
@@ -49,9 +52,10 @@ private:
 	bool	showconfig				= false;
 	bool	showconsole				= false;
 	bool	showpropertieswindow	= false;
+	bool	showhierarchy			= false;
 
 	// Profiler
-	bool	showprofiler	= true;
+	bool	showprofiler	= false;
 	bool	recordpaused	= true;
 
 	int		current_module  = 0;

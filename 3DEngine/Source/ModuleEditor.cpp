@@ -7,6 +7,7 @@
 #include "Glew\include\glew.h"
 
 #include "Profiler.h"
+#include "GameObject.h"
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
@@ -30,7 +31,7 @@ bool ModuleEditor::Start()
 	showconfig = true;
 	showconsole = true;
 	showpropertieswindow = true;
-	showprofiler = true;
+	showhierarchy = true;
 
 	// Define IMGUI Style
 	ImGuiStyle * style = &ImGui::GetStyle();
@@ -90,11 +91,7 @@ update_status ModuleEditor::Update(float dt)
 {
 	
 	///--------------------------------------------------
-	//-------------------
 	//-----MAIN MENU-----
-	//-------------------
-	//Since main menu may have a major impact on the application it's managed directly from the Update
-
 	//Open a Gui window
 	ImGui::BeginMainMenuBar();
 
@@ -113,6 +110,7 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Workspace"))
 	{
 		if (ImGui::MenuItem("Properties")) showpropertieswindow = !showpropertieswindow;
+		if (ImGui::MenuItem("Hierachy")) showhierarchy = !showhierarchy;
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
 
 		ImGui::EndMenu();
@@ -158,8 +156,8 @@ update_status ModuleEditor::Update(float dt)
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
-		ImGui::SetWindowPos(ImVec2(0, 19), 0);
-		ImGui::SetWindowSize(ImVec2(250, App->window->height - 19), 0);
+		ImGui::SetWindowPos(ImVec2(App->window->width - 250, App->window->height * 2 / 5 + 19), 0);
+		ImGui::SetWindowSize(ImVec2(250, App->window->height * 3 / 5 - 19), 0);
 
 		ApplicationConfig();
 
@@ -190,6 +188,8 @@ update_status ModuleEditor::Update(float dt)
 
 	//Show Game Object properties
 	if (showpropertieswindow) DrawPropertiesWindow();
+
+	if (showhierarchy) DrawHierarchy();
 	
 	return UPDATE_CONTINUE;
 }
@@ -268,6 +268,17 @@ void ModuleEditor::DrawAboutWindow()
 	ImGui::Text("\nMade with: SDL, glew, dear imgui, Parson, MathGeoLib");
 
 	ImGui::Text("\nLicensed under the MIT license");
+
+	ImGui::End();
+}
+
+void ModuleEditor::DrawHierarchy()
+{
+	ImGui::Begin("Game Object hierarchy", &showhierarchy);
+	ImGui::SetWindowPos(ImVec2(0, 19), 0);
+	ImGui::SetWindowSize(ImVec2(250, App->window->height - 19), 0);
+
+	App->scene_intro->root->DrawHierarchy();	
 
 	ImGui::End();
 }
@@ -387,10 +398,8 @@ void ModuleEditor::DrawPropertiesWindow()
 // Profiler Interface ==============================
 void ModuleEditor::DrawProfilerWindow()
 {
-	ImGui::Begin("Profiler Test", &showprofiler, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Profiler Test", &showprofiler, ImGuiWindowFlags_NoResize);
 	{
-		ImGui::SetWindowPos(ImVec2(App->window->width - 250, App->window->height * 2 / 5 + 19), 0);
-		ImGui::SetWindowSize(ImVec2(250, App->window->height * 3 / 5 - 19), 0);
 		if (ImGui::Button("Start Profiler")) {
 			if (recordpaused)
 			{

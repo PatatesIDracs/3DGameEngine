@@ -11,7 +11,7 @@ class GameObject
 {
 public:
 	GameObject(GameObject* parent);
-	GameObject(GameObject* parent, char* name);
+	GameObject(GameObject* parent,const char* name);
 	~GameObject();
 
 	void Update();
@@ -20,6 +20,9 @@ public:
 	void AddComponent(Component* new_component);
 
 	Component* FindComponent(COMP_TYPE type);
+
+	void DrawHierarchy();
+
 
 public:
 	std::string name;

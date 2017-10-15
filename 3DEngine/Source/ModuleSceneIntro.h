@@ -17,7 +17,7 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	GameObject* CreateNewGameObject();
+	GameObject* CreateNewGameObject(const char* name);
 
 public:
 	GameObject* root = nullptr;

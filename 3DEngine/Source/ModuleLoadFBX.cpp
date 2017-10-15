@@ -60,7 +60,9 @@ void ModuleLoadFBX::LoadFile(const char* file)
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		GameObject* object = App->scene_intro->CreateNewGameObject();
+		
+
+		GameObject* object = App->scene_intro->CreateNewGameObject(file);
 	
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
