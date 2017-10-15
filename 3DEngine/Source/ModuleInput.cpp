@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleLoadFBX.h"
+#include "Imgui\imgui.h"
+#include "Imgui\imgui_impl_sdl_gl3.h"
 
 #define MAX_KEYS 300
 
@@ -109,7 +111,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_DROPFILE:
 			{      
 				// In case if dropped file
-				App->assimp->SetUpFile(e.drop.file);
+				App->assimp->LoadFile(e.drop.file);
 				SDL_free(e.drop.file);
 				break;
 			}
@@ -121,6 +123,8 @@ update_status ModuleInput::PreUpdate(float dt)
 			}		
 		}
 	}
+	ImGui_ImplSdlGL3_ProcessEvent(&e);
+
 
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
 		return UPDATE_STOP;
@@ -134,4 +138,15 @@ bool ModuleInput::CleanUp()
 	LOGC("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+bool ModuleInput::IsImGuiUsingInput()
+{
+	ImGuiIO& io = ImGui::GetIO();
+	bool ret = false;
+
+	if (io.WantCaptureKeyboard) ret = true;
+	if (io.WantCaptureMouse) ret = true;
+	if (io.WantTextInput) ret = true;
+	return ret;
 }

@@ -8,7 +8,8 @@ class Transform : public Component
 {
 public:
 	Transform();
-	Transform(GameObject* parent, mat4x4 transf, vec3 pos, vec3 scale, bool isactive = true);
+	Transform(Transform &transf);
+	Transform(GameObject* parent, mat4x4 transf, bool isactive = true);
 	~Transform();
 
 	const mat4x4 GetRotMat() const;

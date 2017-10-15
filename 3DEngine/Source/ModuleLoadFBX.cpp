@@ -1,13 +1,12 @@
 #include "Application.h"
 #include "ModuleLoadFBX.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleSceneIntro.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
-
-#pragma comment (lib, "Assimp/libx86/assimp.lib")
 
 #include "Glew\include\glew.h"
 #include "Globals.h"
@@ -18,7 +17,6 @@
 #include "Devil\include\ilu.h"
 #include "Devil\include\ilut.h"
 
-#include "3DModel.h"
 #include "Math.h"
 
 #include "GameObject.h"
@@ -27,70 +25,101 @@
 #include "Material.h"
 #include "Mesh.h"
 
+#pragma comment (lib, "Assimp/libx86/assimp.lib")
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
 ModuleLoadFBX::ModuleLoadFBX(Application* app, bool start_enabled) : Module(app, "Assimp", start_enabled)
 {}
 
 ModuleLoadFBX::~ModuleLoadFBX(){}
 
-
-bool ModuleLoadFBX::CleanUp()
+bool ModuleLoadFBX::Init()
 {
-	file_name.clear();
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
 	return true;
 }
 
-void ModuleLoadFBX::SetUpFile(const char * file_name)
+bool ModuleLoadFBX::CleanUp()
 {
-	if (file_name != nullptr)
-	{
-		this->file_name = file_name;
-		LoadFile();
-	}
+	ilShutDown();
+	return true;
 }
 
-bool ModuleLoadFBX::LoadFile()
+void ModuleLoadFBX::LoadFile(const char* file)
 {
+	if (file == nullptr) return;
+
+	std::string	file_name = file;
+
 	const aiScene* scene = aiImportFile(file_name.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		GameObject* object = App->scene_intro->CreateNewGameObject();
+	
 		// Set Scene Transform
 		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
-		aiVector3D scale;
-		aiQuaternion quad;
-		aiVector3D position;
-		rot.Decompose(scale, quad, position);
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
 		// Create Transform Component from Current Scene Root Node
-		Transform* rot_transform = new Transform(object, transform, vec3(position.x, position.y, position.z), vec3(scale.x,scale.y,scale.z));
+		Transform* rot_transform = new Transform(object, transform);
 
 		object->AddComponent(rot_transform);
 		
-		/*while ( != "\\")
+		// Search Absolute Path 
+		std::string temp = "\\";
+		while (file_name[file_name.size() - 1] != temp[temp.size() - 1] || temp.size() == 0)
 		{
 			file_name.pop_back();
-		}*/
+		}
+		temp.clear();
+
 		// Loat Textures
 		aiString path;
-		int texIndex = 0;
 		std::vector<int> textures;
 		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
 		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
-			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
+			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
-				fullpath = directory + path.data;
-				textures.push_back(ilutGLLoadImage((char *)fullpath.c_str()));
-			
+				int tex_id = 0;
+				fullpath = file_name + path.data;
+				tex_id = ilutGLLoadImage((char *)fullpath.c_str());
+				if (tex_id == 0)
+				{
+					LOGC("Error: %s texture not found, search directory: %s", path.data, fullpath.c_str());
+					fullpath = directory + path.data;
+					tex_id = ilutGLLoadImage((char *)fullpath.c_str());
+					if (tex_id == 0)
+						LOGC("Error: %s texture not found, search directory: %s", path.data, fullpath.c_str());
+				}
+
+				if (tex_id != 0)
+				{
+					LOGC("Loaded %s texture from path: %s", path.data, fullpath.c_str());
+					//App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+				}
+				else LOGC("Unable to load %s texture", path.data);
+
+				textures.push_back(tex_id);
+			}
+			else
+			{
+				LOGC("This mesh doesn't have a diffuse texture");
+				textures.push_back(0);
 			}
 		}
 		directory.clear();
 		fullpath.clear();
 		path.Clear();
 
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
+		// Iterate Meshes array
 		uint n_meshes = scene->mNumMeshes;
 		for (uint count = 0; count < n_meshes; count++)
 		{
@@ -118,13 +147,13 @@ bool ModuleLoadFBX::LoadFile()
 				}
 			}
 			
+			// Load Vertex Normals
 			if (new_mesh->HasNormals())
 			{
 				mesh.num_normals = new_mesh->mNumVertices;
-				mesh.normals = new float[mesh.num_normals * 2];
-				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 2);
+				mesh.normals = new float[mesh.num_normals * 3];
+				memcpy(mesh.normals, new_mesh->mNormals, sizeof(float) * mesh.num_vertices * 3);
 				LOGC("New mesh with %d normals", mesh.num_normals);
-
 			}
 
 			// Load Textures
@@ -135,22 +164,46 @@ bool ModuleLoadFBX::LoadFile()
 				memcpy(mesh.tex_vertices, new_mesh->mTextureCoords[0], sizeof(float)* mesh.num_tex_vertices*3);
 				LOGC("Texture Coord loaded: %d texture coords", mesh.num_tex_vertices);
 
-				Material* texture = new Material(object, textures[new_mesh->mMaterialIndex]);
+				// Set Texture ID
+				Material* texture = nullptr;
+
+				if (textures.size() != 0)
+					texture = new Material(object, textures[new_mesh->mMaterialIndex]);
+				else texture = new Material(object,0);
 				object->AddComponent(texture);
 			}
 
-			glGenBuffers(1, (GLuint*)&mesh.id_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh.num_vertices*3*sizeof(float), &mesh.vertices[0], GL_STATIC_DRAW);
+			// Load Vertices and Indices To Buffer and Set ID
+			if (mesh.vertices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh.id_vertices);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertices);
+				glBufferData(GL_ARRAY_BUFFER, mesh.num_vertices * 3 * sizeof(float), &mesh.vertices[0], GL_STATIC_DRAW);
+			}
 
-			glGenBuffers(1, (GLuint*)&mesh.id_indices);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices*sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
+			if (mesh.normals != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh.id_normals);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh.id_normals);
+				glBufferData(GL_ARRAY_BUFFER, mesh.num_normals * 3 * sizeof(float), &mesh.normals[0], GL_STATIC_DRAW);
+			}
 
-			//Load texture coords buffer
-			glGenBuffers(1, (GLuint*)&mesh.id_tex_vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
-			glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices*3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
+			if (mesh.indices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh.id_indices);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_indices);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices * sizeof(uint), &mesh.indices[0], GL_STATIC_DRAW);
+			}
+
+			// Load texture coords buffer
+			if (mesh.tex_vertices != nullptr)
+			{
+				glGenBuffers(1, (GLuint*)&mesh.id_tex_vertices);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh.id_tex_vertices);
+				glBufferData(GL_ARRAY_BUFFER, mesh.num_tex_vertices * 3 * sizeof(float), &mesh.tex_vertices[0], GL_STATIC_DRAW);
+			}
+
+			//Clean Buffer bind
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			object->AddComponent(new Mesh(object, mesh));
@@ -160,9 +213,17 @@ bool ModuleLoadFBX::LoadFile()
 		textures.clear();
 	}
 	else
-		LOGC("Error loading scene %s", file_name.c_str());
+	{
+		// Try to Load Droped file as Image
+		int tex_id = ilutGLLoadImage((char*)file_name.c_str());
+		if (tex_id != 0)
+		{
+			//App->scene_intro->ChangeTexture(tex_id);
+			//App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+		}
+		else LOGC("Error loading file %s", file_name.c_str());
+	}
 
-	file_name.clear();
-	return true;
+	file_name.clear();	
 }
 	

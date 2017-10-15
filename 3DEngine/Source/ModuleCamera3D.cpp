@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 #include "ConfigJSON.h"
+#include "Imgui\imgui.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
@@ -40,67 +41,20 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	//If ImGui is using inputs don't use the camera
+	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
+
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
-		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
-
-		float Sensitivity = 0.25f;
-
-		Position -= Reference;
-
-		if (dx != 0)
-		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		}
-
-		if (dy != 0)
-		{
-			float DeltaY = (float)dy * Sensitivity;
-
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
-
-			if (Y.y < 0.0f)
-			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
-			}
-		}
-
-		Position = Reference + Z * length(Position);
-
-		// Set Angle	
-		angle = math::RadToDeg(math::Atan2(Z.y, Z.z));
+		RotateCamera();
 	}
 
 	// Right Click + WASD to Move like FPS 
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		int speed = 8;
-		int dx = 0;
-		int dy = 0;
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
-
-		if (dx != 0)
-		{
-			Position += X*dx*dt;
-			Reference += X*dx*dt;
-		}
-		if (dy != 0)
-		{
-			vec3 dist = rotate(Z, angle, X);
-			Position += dist*dy*dt;
-			Reference += dist*dy*dt;
-		}
+		RotateCamera(false);
+		MoveCamera(dt);
 	}
 
 	// Zoom in and out
@@ -108,7 +62,7 @@ update_status ModuleCamera3D::Update(float dt)
 	if (wheelmotion != 0)
 	{
 		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
-		else Position -= Z*wheelmotion;
+		else Position -= Z*(float)wheelmotion;
 	}
 
 	// Recalculate matrix -------------
@@ -127,7 +81,7 @@ void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool Rota
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
-	if(!RotateAroundReference)
+	if (!RotateAroundReference)
 	{
 		this->Reference = this->Position;
 		this->Position += Z * 0.05f;
@@ -137,7 +91,7 @@ void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool Rota
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::LookAt( const vec3 &Spot)
+void ModuleCamera3D::LookAt(const vec3 &Spot)
 {
 	Reference = Spot;
 
@@ -163,10 +117,69 @@ void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
 	Position -= Reference;
 	Reference = Movement;
 
-	this->distance = 1.2*distance;
-	Position = Reference + Z*distance*2;
+	this->distance = (float)1.2*distance;
+	Position = Reference + Z*distance * 2;
 
 	CalculateViewMatrix();
+}
+
+void ModuleCamera3D::RotateCamera(bool onpoint)
+{
+
+	int dx = -App->input->GetMouseXMotion();
+	int dy = -App->input->GetMouseYMotion();
+
+	float Sensitivity = 0.25f;
+
+	if (onpoint)
+		Position -= Reference;
+
+	if (dx != 0)
+	{
+		float DeltaX = (float)dx * Sensitivity;
+
+		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	if (dy != 0)
+	{
+		float DeltaY = (float)dy * Sensitivity;
+
+		Y = rotate(Y, DeltaY, X);
+		Z = rotate(Z, DeltaY, X);
+
+		if (Y.y < 0.0f)
+		{
+			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = cross(Z, X);
+		}
+	}
+
+	if (onpoint) Position = Reference + Z * length(Position);
+	else Reference = Position - Z*length(Position - Reference);
+}
+
+void ModuleCamera3D::MoveCamera(float dt)
+{
+	float dx = 0;
+	float dy = 0;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
+
+	if (dx != 0)
+	{
+		Position += X*dx*dt;
+		Reference += X*dx*dt;
+	}
+	if (dy != 0)
+	{
+		Position += Z*dy*dt;
+		Reference += Z*dy*dt;
+	}
 }
 
 // -----------------------------------------------------------------
@@ -178,12 +191,19 @@ float* ModuleCamera3D::GetViewMatrix()
 // ----------------------------------------------
 void ModuleCamera3D::LoadModuleConfig(Config_Json & config)
 {
+	speed = config.GetFloat("Speed", 10.0f);
 }
 
 void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
 {
 	Config_Json camera_config = config.AddJsonObject(this->GetName());
 	camera_config.SetBool("Is Active", true);
+	camera_config.SetInt("Speed", (int)speed);
+}
+
+void ModuleCamera3D::DrawConfig()
+{
+	ImGui::SliderFloat("Speed", &speed, 8.0f, 30.0f);
 }
 
 // -----------------------------------------------------------------

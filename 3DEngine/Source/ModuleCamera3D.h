@@ -18,19 +18,26 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	void MoveTo(const vec3 &Movement, float distance);
+	void RotateCamera(bool onpoint = true);
+	void MoveCamera(float dt);
+
 	float* GetViewMatrix();
 
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
+	void DrawConfig();
+
 private:
 
 	void CalculateViewMatrix();
 
 public:
-	
+
 	vec3 X, Y, Z, Position, Reference;
+
+	float speed = 10.0f;
 	float distance = 0.5f;
 
 	float angle = 0.0f;

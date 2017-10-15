@@ -35,10 +35,6 @@ public:
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
 
-	// Add Mesh to Render
-	void AddBody3D(Body3D* new_mesh);
-	void ClearBody3DArray();
-	void DrawBody3D() const;
 
 	void DrawConfig();
 
@@ -63,8 +59,8 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	bool vertex_normals;
-	bool face_normals = false;
+	bool vertex_normals = false;
+	bool show_grid = true;
 
 private:
 
@@ -80,9 +76,6 @@ private:
 	RENDER_MODE render_mode = RENDER_MODE::FILL;
 
 	float LightModelAmbient[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	
-	std::vector<Body3D*> objects_3d;
-
 };
 
 #endif // !__MODULERENDERER_H__

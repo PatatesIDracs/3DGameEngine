@@ -11,14 +11,10 @@ public:
 	ModuleLoadFBX(Application* app, bool start_enabled = true);
 	~ModuleLoadFBX();
 
+	bool Init();
 	bool CleanUp();
 
-	void SetUpFile(const char* file_name);
-	bool LoadFile();
-
-private:
-	std::string file_name;
-
+	void LoadFile(const char* file_name);
 
 };
 

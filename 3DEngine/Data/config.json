@@ -16,7 +16,8 @@
         "Fullscreen Descktop": false
     },
     "Camera": {
-        "Is Active": true
+        "Is Active": true,
+        "Speed": 10
     },
     "Physics": {
         "Is Active": true
@@ -24,8 +25,8 @@
     "Renderer": {
         "Is Active": true,
         "Render mode": 0,
+        "Show Grid": true,
         "Depth Test": true,
-        "Face Normals": false,
         "Cull face": true,
         "Cull face mode": 0,
         "Smooth": true,

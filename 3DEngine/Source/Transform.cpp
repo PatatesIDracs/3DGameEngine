@@ -5,9 +5,14 @@ Transform::Transform() : Component(nullptr, COMP_TRANSFORM, true)
 	transform = mat4x4();
 }
 
-Transform::Transform(GameObject* parent, mat4x4 transf, vec3 pos, vec3 scale, bool isactive) : Component(parent, COMP_TRANSFORM, isactive),
-transform(transf), position(pos), scale(scale)
+Transform::Transform(Transform & transf) : Component(transf.parent, COMP_TRANSFORM, transf.active), transform(transf.GetRotMat()), position(transf.position),
+scale(transf.scale), angle(transf.angle)
+{}
+
+Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Component(parent, COMP_TRANSFORM, isactive), transform(transf)
 {
+	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
+	scale = vec3(transf.M[0], transf.M[5], transf.M[10]);
 	GetEAnglesFromMat();
 }
 

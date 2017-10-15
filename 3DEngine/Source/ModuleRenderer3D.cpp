@@ -7,18 +7,10 @@
 #include "ConfigJSON.h"
 #include "Imgui\imgui.h"
 
-
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-#pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#pragma comment( lib, "Devil/libx86/ILU.lib" )
-#pragma comment( lib, "Devil/libx86/ILUT.lib" )
-
-
-#include "3DModel.h"
-
-ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app,"Renderer", start_enabled)
+ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, "Renderer", start_enabled)
 {
 }
 
@@ -31,19 +23,19 @@ bool ModuleRenderer3D::Init()
 {
 	LOGC("Creating 3D Renderer context");
 	bool ret = true;
-	
+
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
-	if(context == NULL)
+	if (context == NULL)
 	{
 		LOGC("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-	
-	if(ret == true)
+
+	if (ret == true)
 	{
 		//Use Vsync
-		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOGC("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
@@ -52,7 +44,7 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		GLenum error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOGC("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
@@ -64,44 +56,44 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOGC("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-		
+
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glClearDepth(1.0f);
-		
+
 		//Initialize clear color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 
 		//Check for error
 		error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOGC("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-		
+
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-		
+
 		lights[0].ref = GL_LIGHT0;
 		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[0].SetPos(0.0f, 0.0f, 2.5f);
 		lights[0].Init();
-		
-		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
-		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+		GLfloat MaterialDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
-		
+
 
 		lights[0].Active(true);
 		CheckConfig();
-		
+
 	}
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -127,10 +119,15 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
-	for(uint i = 0; i < MAX_LIGHTS; ++i)
+	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	//Set render mode for the current frame
+	return UPDATE_CONTINUE;
+}
+
+// PostUpdate present buffer to screen
+update_status ModuleRenderer3D::PostUpdate(float dt)
+{
 	switch (render_mode)
 	{
 	case FILL:
@@ -146,16 +143,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 		break;
 	}
 
-	return UPDATE_CONTINUE;
-}
-
-// PostUpdate present buffer to screen
-update_status ModuleRenderer3D::PostUpdate(float dt)
-{
-	
-	
-	//DrawBody3D();
-
+	App->scene_intro->Draw();
 
 	App->editor->Draw();
 
@@ -167,12 +155,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	LOGC("Destroying 3D Renderer");
-
-	for (uint count = 0; count < objects_3d.size(); count++)
-	{
-		delete objects_3d[count];
-	}
-	objects_3d.clear();
 
 	SDL_GL_DeleteContext(context);
 
@@ -197,8 +179,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 void ModuleRenderer3D::LoadModuleConfig(Config_Json & config)
 {
 	render_mode = (RENDER_MODE)config.GetInt("Render mode", RENDER_MODE::FILL);
+	show_grid = config.GetBool("Show Grid", true);
 	depth_test = config.GetBool("Depth Test", true);
-	face_normals = config.GetBool("Face Normals", false);
 	cull_face = config.GetBool("Cull face", true);
 	cull_face_mode = config.GetInt("Cull face mode", 0);
 	smooth = config.GetBool("Smooth", 1);
@@ -217,8 +199,8 @@ void ModuleRenderer3D::SaveModuleConfig(Config_Json & config)
 	Config_Json render_config = config.AddJsonObject(this->GetName());
 	render_config.SetBool("Is Active", true);
 	render_config.SetInt("Render mode", render_mode);
+	render_config.SetBool("Show Grid", show_grid);
 	render_config.SetBool("Depth Test", depth_test);
-	render_config.SetBool("Face Normals", face_normals);
 	render_config.SetBool("Cull face", cull_face);
 	render_config.SetInt("Cull face mode", cull_face_mode);
 	render_config.SetBool("Smooth", smooth);
@@ -239,11 +221,10 @@ void ModuleRenderer3D::DrawConfig()
 	ImGui::RadioButton("Wireframe", (int*)&render_mode, (int)RENDER_MODE::WIREFRAME); ImGui::SameLine();
 	ImGui::RadioButton("Vertex", (int*)&render_mode, (int)RENDER_MODE::VERTEX); ImGui::Separator();
 
-//	ImGui::Checkbox("Vertex Normals", &vertex_normals);
+	ImGui::Checkbox("Show Grid", &show_grid);
+	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) SetDepthTest();
-
-	ImGui::Checkbox("Face Normals", &face_normals);
 
 	if (ImGui::Checkbox("Face culling", &cull_face)) SetFaceCulling(); ImGui::SameLine();
 	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) SetFaceCulling(); ImGui::SameLine();
@@ -257,33 +238,8 @@ void ModuleRenderer3D::DrawConfig()
 
 	if (ImGui::Checkbox("Color material", &color_material)) SetColorMaterial();
 	if (ImGui::Checkbox("2D texture", &texture_2d)) Set2DTexture();
-		
-		CheckConfig();
-}
 
-void ModuleRenderer3D::AddBody3D(Body3D* new_mesh)
-{
-	// Get Camera Focus
-	App->camera->MoveTo(new_mesh->GetPosition(), new_mesh->GetBodySize());
-
-	objects_3d.push_back(new_mesh);
-}
-
-void ModuleRenderer3D::ClearBody3DArray()
-{
-	for (uint count = 0; count < objects_3d.size(); count++)
-	{
-		delete objects_3d[count];
-	}
-	objects_3d.clear();
-}
-
-void ModuleRenderer3D::DrawBody3D() const
-{
-	for (uint i = 0; i < objects_3d.size(); i++)
-	{
-		objects_3d[i]->Render();
-	}
+	CheckConfig();
 }
 
 //Check all variables form config and set it right
