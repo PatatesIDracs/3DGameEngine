@@ -61,9 +61,15 @@ update_status ModuleSceneIntro::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name)
+GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject* parent)
 {
-	GameObject* ret = new GameObject(root, name);
+	GameObject* ret = nullptr;
+
+	if (parent == nullptr)
+		ret = new GameObject(root, name);
+	else
+		ret = new GameObject(parent, name);
+
 	return ret;
 }
 

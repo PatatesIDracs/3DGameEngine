@@ -17,7 +17,7 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	GameObject* CreateNewGameObject(const char* name);
+	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
 
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;
