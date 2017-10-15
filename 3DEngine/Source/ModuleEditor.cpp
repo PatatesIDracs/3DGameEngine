@@ -8,6 +8,7 @@
 
 #include "Profiler.h"
 #include "GameObject.h"
+#include "Component.h"
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
@@ -368,29 +369,7 @@ void ModuleEditor::DrawPropertiesWindow()
 	ImGui::SetWindowPos(ImVec2(App->window->width - 250, 19), 0);
 	ImGui::SetWindowSize(ImVec2(250, App->window->height * 2 / 5), 0);
 
-	if (ImGui::CollapsingHeader("Transformation"))
-	{
-		static vec3 test(1, 2, 3);
-		ImGui::InputFloat3("Position", &test.x, -1, ImGuiInputTextFlags_ReadOnly);
-
-		static vec3 test2(4, 5, 6);
-		ImGui::InputFloat3("Rotation", &test2.x, -1, ImGuiInputTextFlags_ReadOnly);
-
-		static vec3 test3(7, 8, 9);
-		ImGui::InputFloat3("Scale", &test3.x, -1, ImGuiInputTextFlags_ReadOnly);
-	}
-	if (ImGui::CollapsingHeader("Geometry"))
-	{
-		static int vertixes = 45;
-		ImGui::InputInt("Vertices:", &vertixes, 0, 100, ImGuiInputTextFlags_ReadOnly);
-	}
-	if (ImGui::CollapsingHeader("Texture"))
-	{
-		static int texture = 45;
-		static int texture2 = 455;
-		ImGui::InputInt("Width:", &texture, 0, 100, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputInt("Height:", &texture2, 0, 100, ImGuiInputTextFlags_ReadOnly);
-	}
+	App->scene_intro->DrawProperties();
 
 	ImGui::End();
 }

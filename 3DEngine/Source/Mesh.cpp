@@ -39,6 +39,17 @@ void Mesh::Update()
 	Render();
 }
 
+void Mesh::DrawComponent()
+{
+	if (ImGui::CollapsingHeader("Geometry"))
+	{
+		ImGui::InputInt("Vertices:", (int*)&render_data->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+
+		int faces = render_data->num_indices / 3;
+		ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
+	}
+}
+
 void Mesh::Render()
 {
 	//Enable opengl states

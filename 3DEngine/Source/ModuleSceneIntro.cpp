@@ -25,7 +25,10 @@ bool ModuleSceneIntro::Start()
 
 	//Create the root GameObject
 	root = new GameObject(nullptr, "root");
-	
+
+	//Set Up current object to show its properties
+	current_object = root;
+
 	return ret;
 }
 
@@ -62,4 +65,17 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name)
 {
 	GameObject* ret = new GameObject(root, name);
 	return ret;
+}
+
+void ModuleSceneIntro::SetProperties(GameObject * show_this)
+{
+	current_object = show_this;
+}
+
+void ModuleSceneIntro::DrawProperties() const
+{
+	for (uint count = 0; count < current_object->components.size(); count++)
+	{
+		current_object->components[count]->DrawComponent();
+	}
 }

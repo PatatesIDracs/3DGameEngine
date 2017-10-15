@@ -15,6 +15,8 @@ public:
 	const mat4x4 GetRotMat() const;
 	void GetEAnglesFromMat();
 
+	void DrawComponent();
+
 private:
 
 	mat4x4 transform;

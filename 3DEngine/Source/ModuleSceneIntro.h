@@ -19,8 +19,14 @@ public:
 
 	GameObject* CreateNewGameObject(const char* name);
 
+	void SetProperties(GameObject* show_this);
+	void DrawProperties() const;
+
 public:
 	GameObject* root = nullptr;
+
+private:
+	GameObject* current_object = nullptr;
 
 };
 

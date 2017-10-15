@@ -122,7 +122,6 @@
     <ClCompile Include="3DModel.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Color.cpp" />
-    <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConfigJSON.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />

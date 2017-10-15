@@ -22,3 +22,12 @@ void Material::Update()
 {
 	glBindTexture(GL_TEXTURE_2D, id_texture);
 }
+
+void Material::DrawComponent()
+{
+	if (ImGui::CollapsingHeader("Texture"))
+	{
+		ImGui::InputInt("Width:", (int*)&texture_width, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Height:", (int*)&texture_height, 0, 100, ImGuiInputTextFlags_ReadOnly);
+	}
+}

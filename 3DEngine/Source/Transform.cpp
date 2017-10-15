@@ -53,3 +53,13 @@ void Transform::GetEAnglesFromMat()
 	angle.z = RadToDeg(angle.z);
 	angle.x = RadToDeg(angle.x);
 }
+
+void Transform::DrawComponent()
+{
+	if (ImGui::CollapsingHeader("Transformation"))
+	{
+		ImGui::InputFloat3("Position", &position.x, -1, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Rotation", &angle.x, -1, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Scale", &scale.x, -1, ImGuiInputTextFlags_ReadOnly);
+	}
+}

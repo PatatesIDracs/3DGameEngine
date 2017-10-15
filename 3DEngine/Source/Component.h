@@ -4,6 +4,9 @@
 #include "Globals.h"
 #include "glmath.h"
 
+#include "Imgui\imgui.h"
+#include "Imgui\imgui_impl_sdl_gl3.h"
+
 class GameObject;
 
 enum COMP_TYPE
@@ -24,6 +27,7 @@ public:
 	virtual void Enable() { active = true; };
 	virtual void Update() {};
 	virtual void Disable() { active = false; };
+	virtual void DrawComponent() {};
 
 protected:
 	

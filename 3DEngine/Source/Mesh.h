@@ -36,6 +36,7 @@ public:
 	const RenderData* GetRenderData();
 
 	void Update();
+	void DrawComponent();
 
 private:
 	void Render();
