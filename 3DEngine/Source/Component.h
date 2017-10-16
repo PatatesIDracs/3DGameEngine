@@ -20,14 +20,16 @@ enum COMP_TYPE
 class Component
 {
 public:
-	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false){};
-	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive){};
+	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false) {};
+	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive) {};
 	virtual ~Component() {};
 
 	virtual void Enable() { active = true; };
 	virtual void Update() {};
 	virtual void Disable() { active = false; };
 	virtual void DrawComponent() {};
+
+	COMP_TYPE GetType() const { return type; };
 
 protected:
 	

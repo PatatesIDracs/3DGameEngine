@@ -228,6 +228,8 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			object_child->AddComponent(new Mesh(object_child, mesh));
 		}
 
+		App->scene_intro->LookAtScene();
+
 		aiReleaseImport(scene);
 		textures.clear();
 	}

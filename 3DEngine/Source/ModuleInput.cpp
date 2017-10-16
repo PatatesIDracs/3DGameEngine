@@ -88,6 +88,8 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	bool quit = false;
 	SDL_Event e;
+
+	ImGui_ImplSdlGL3_ProcessEvent(&e);
 	while(SDL_PollEvent(&e))
 	{
 		switch(e.type)
@@ -123,7 +125,6 @@ update_status ModuleInput::PreUpdate(float dt)
 			}		
 		}
 	}
-	ImGui_ImplSdlGL3_ProcessEvent(&e);
 
 
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)

@@ -54,6 +54,11 @@ update_status ModuleSceneIntro::Update(float dt)
 	oldPlane p(0, 1, 0, 0);
 	if (App->renderer3D->show_grid) p.Render();
 
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		LookAtScene();
+	}
+
 	//Root should never be nullptr but check it just in case
 	if(root != nullptr)
 		root->Update();
@@ -70,7 +75,23 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 	else
 		ret = new GameObject(parent, name);
 
+	current_object = ret;
 	return ret;
+}
+
+void ModuleSceneIntro::LookAtScene() const
+{
+	if (root != nullptr)
+	{
+		math::AABB box = root->GetBoundaryBox();
+		if (box.IsFinite())
+		{
+			vec pos = box.CenterPoint();
+			float dist = box.HalfSize().Length();
+
+			App->camera->MoveTo(vec3(pos.x, pos.y, pos.z), dist);
+		}
+	}
 }
 
 void ModuleSceneIntro::SetProperties(GameObject * show_this)

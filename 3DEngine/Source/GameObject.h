@@ -2,9 +2,9 @@
 #define __GAMEOBJECT_H__
 
 #include <vector>
+#include "Math.h"
 
 class Component;
-class Transform;
 enum COMP_TYPE;
 
 class GameObject
@@ -22,6 +22,8 @@ public:
 	Component* FindComponent(COMP_TYPE type);
 
 	void DrawHierarchy();
+
+	AABB GetBoundaryBox();
 
 
 public:

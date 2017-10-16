@@ -19,6 +19,8 @@ public:
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
 
+	void LookAtScene() const;
+
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;
 
