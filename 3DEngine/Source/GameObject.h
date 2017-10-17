@@ -19,7 +19,7 @@ public:
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
 
-	Component* FindComponent(COMP_TYPE type);
+	Component* FindUniqueComponent(COMP_TYPE type);
 
 	void DrawHierarchy();
 

@@ -31,11 +31,6 @@ const RenderData* Mesh::GetRenderData()
 	return render_data;
 }
 
-void Mesh::Update()
-{
-	Render();
-}
-
 void Mesh::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Geometry"))
@@ -54,34 +49,3 @@ void Mesh::RotateBoundingBox(const math::Quat &transform)
 	bounding_box.Enclose(box);
 }
 
-void Mesh::Render()
-{
-	//Enable opengl states
-	glEnableClientState(GL_VERTEX_ARRAY);
-	if (render_data->tex_vertices != nullptr)
-	{
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		//Bind texture coords buffer
-		glBindBuffer(GL_ARRAY_BUFFER, render_data->id_tex_vertices);
-		glTexCoordPointer(3, GL_FLOAT, 0, NULL);
-	}
-
-	//Bind vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, render_data->id_vertices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	//Bind and draw with indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->id_indices);
-	glDrawElements(GL_TRIANGLES, render_data->num_indices, GL_UNSIGNED_INT, NULL);
-
-	//Disable opengl states
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	// Clear Bind buffers
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//glPopMatrix();
-}

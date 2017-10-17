@@ -11,8 +11,6 @@ public:
 	Transform(GameObject* parent, mat4x4 transf, bool isactive = true);
 	~Transform();
 
-	void Update();
-
 	const mat4x4 GetRotMat() const;
 	void GetEAnglesFromMat();
 

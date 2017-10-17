@@ -12,7 +12,6 @@ public:
 
 	int GetTextureID() const;
 
-	void Update();
 	void DrawComponent();
 
 private:

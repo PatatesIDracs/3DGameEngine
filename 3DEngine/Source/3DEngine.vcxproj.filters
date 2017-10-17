@@ -238,6 +238,12 @@
     <ClCompile Include="Material.cpp">
       <Filter>GameObject\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -658,6 +664,12 @@
       <Filter>GameObject\Components</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
+      <Filter>GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
       <Filter>GameObject\Components</Filter>
     </ClInclude>
   </ItemGroup>

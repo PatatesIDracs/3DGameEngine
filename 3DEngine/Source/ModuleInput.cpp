@@ -88,10 +88,9 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	bool quit = false;
 	SDL_Event e;
-
-	ImGui_ImplSdlGL3_ProcessEvent(&e);
 	while(SDL_PollEvent(&e))
 	{
+		ImGui_ImplSdlGL3_ProcessEvent(&e);
 		switch(e.type)
 		{
 			case SDL_MOUSEWHEEL:
@@ -125,7 +124,6 @@ update_status ModuleInput::PreUpdate(float dt)
 			}		
 		}
 	}
-
 
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
 		return UPDATE_STOP;

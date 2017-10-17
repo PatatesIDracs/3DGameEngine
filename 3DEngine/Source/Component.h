@@ -15,7 +15,9 @@ enum COMP_TYPE
 	COMP_UNKNOWN,
 	COMP_TRANSFORM,
 	COMP_MESH,
-	COMP_MATERIAL
+	COMP_MATERIAL,
+	COMP_MESHRENDERER,
+	COMP_CAMERA
 };
 
 class Component
@@ -31,6 +33,9 @@ public:
 	virtual void DrawComponent() {};
 
 	COMP_TYPE GetType() const { return type; };
+
+public:
+	bool unique = false;
 
 protected:
 	

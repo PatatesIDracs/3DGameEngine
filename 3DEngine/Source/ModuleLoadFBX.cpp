@@ -24,6 +24,7 @@
 #include "Transform.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "MeshRenderer.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
@@ -232,6 +233,8 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			object_child->AddComponent(new Mesh(object_child, mesh));
+
+			object_child->AddComponent(new MeshRenderer(object_child));
 		}
 
 		App->scene_intro->LookAtScene();

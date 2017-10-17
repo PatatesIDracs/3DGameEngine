@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="3DModel.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ConfigJSON.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="MathGeoLib\Math\TransformOps.cpp" />
     <ClCompile Include="MathGeoLib\Time\Clock.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCamera3D.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
@@ -224,6 +226,7 @@
     <ClInclude Include="Assimp\include\vector2.h" />
     <ClInclude Include="Assimp\include\vector3.h" />
     <ClInclude Include="Assimp\include\version.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConfigJSON.h" />
@@ -313,6 +316,7 @@
     <ClInclude Include="MathGeoLib\Math\TransformOps.h" />
     <ClInclude Include="MathGeoLib\Time\Clock.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCamera3D.h" />

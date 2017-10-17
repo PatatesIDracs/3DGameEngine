@@ -19,11 +19,6 @@ int Material::GetTextureID() const
 	return id_texture;
 }
 
-void Material::Update()
-{
-	glBindTexture(GL_TEXTURE_2D, id_texture);
-}
-
 void Material::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Texture"))

@@ -59,9 +59,20 @@ void GameObject::AddComponent(Component * new_component)
 	components.push_back(new_component);
 }
 
-Component * GameObject::FindComponent(COMP_TYPE type)
+Component* GameObject::FindUniqueComponent(COMP_TYPE type)
 {
-	return nullptr;
+	Component* ret = nullptr;
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		if (components[i]->GetType() == type)
+		{
+			ret = components[i];
+			break;
+		}
+	}
+
+	return ret;
 }
 
 void GameObject::DrawHierarchy()
