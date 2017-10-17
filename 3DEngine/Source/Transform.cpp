@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Glew\include\glew.h"
 
 Transform::Transform() : Component(nullptr, COMP_TRANSFORM, true)
 {
@@ -12,12 +13,18 @@ scale(transf.scale), angle(transf.angle)
 Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Component(parent, COMP_TRANSFORM, isactive), transform(transf)
 {
 	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
-	scale = vec3(transf.M[0], transf.M[5], transf.M[10]);
+	scale = vec3(Abs((transf.M[0]+transf.M[1]+transf.M[2])), Abs((transf.M[4] + transf.M[5] + transf.M[6])), Abs((transf.M[8] + transf.M[9] + transf.M[10])));
 	GetEAnglesFromMat();
 }
 
 Transform::~Transform()
 {
+}
+
+void Transform::Update()
+{
+//	glPushMatrix();
+//	glMultMatrixf(transform.M);
 }
 
 const mat4x4 Transform::GetRotMat() const

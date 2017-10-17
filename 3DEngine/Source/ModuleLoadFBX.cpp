@@ -79,8 +79,8 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 		GameObject* object_parent = App->scene_intro->CreateNewGameObject(file_name.c_str());
 	
-		// Set Scene Transform
-		aiMatrix4x4 rot = scene->mRootNode->mTransformation;	
+		aiNode* parent = scene->mRootNode;
+		aiMatrix4x4 rot = parent->mTransformation;	
 		mat4x4 transform = mat4x4(rot.a1, rot.b1, rot.c1, rot.d1, rot.a2, rot.b2, rot.c2, rot.d2, rot.a3, rot.b3, rot.c3, rot.d3, rot.a4, rot.b4, rot.c4, rot.d4);
 
 		// Create Transform Component from Current Scene Root Node
@@ -142,9 +142,13 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			const aiMesh* new_mesh = scene->mMeshes[count];
 
 			RenderData*	mesh = new RenderData;
-			GameObject* object_child = App->scene_intro->CreateNewGameObject(new_mesh->mName.C_Str(), object_parent);
-
+			GameObject* object_child = App->scene_intro->CreateNewGameObject(parent->mChildren[count]->mName.C_Str(), object_parent);
+			
 			// Add Transform To child
+			aiMatrix4x4 crot = parent->mChildren[count]->mTransformation;
+			//crot = crot.Transpose()*rot;
+			mat4x4 transform = mat4x4(crot.a1, crot.b1, crot.c1, crot.d1, crot.a2, crot.b2, crot.c2, crot.d2, crot.a3, crot.b3, crot.c3, crot.d3, crot.a4, crot.b4, crot.c4, crot.d4);
+
 			object_child->AddComponent(new Transform(object_child, transform));
 
 			mesh->num_vertices = new_mesh->mNumVertices;
