@@ -8,10 +8,7 @@ Mesh::Mesh()
 Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Component(parent, COMP_MESH, isactive), render_data(render_data)
 {
 	bounding_box.SetNegativeInfinity();
-	for (uint i = 0; i < render_data->num_vertices * 3; i += 3)
-	{
-		bounding_box.Enclose(vec(render_data->vertices[i], render_data->vertices[i + 1], render_data->vertices[i + 2]));
-	}
+	bounding_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 }
 
 Mesh::~Mesh()

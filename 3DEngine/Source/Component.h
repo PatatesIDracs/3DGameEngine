@@ -2,6 +2,7 @@
 #define __COMPONENT_H__
 
 #include "Globals.h"
+#include "Math.h"
 #include "glmath.h"
 
 #include "Imgui\imgui.h"

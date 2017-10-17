@@ -5,7 +5,8 @@ Material::Material()
 {
 }
 
-Material::Material(GameObject * parent, int ntexture_id, bool isactive) : Component(parent, COMP_MATERIAL, isactive), id_texture(ntexture_id)
+Material::Material(GameObject * parent, float3 texture, bool isactive) : Component(parent, COMP_MATERIAL, isactive), id_texture(texture.x),
+texture_width(texture.y), texture_height(texture.z)
 {
 }
 

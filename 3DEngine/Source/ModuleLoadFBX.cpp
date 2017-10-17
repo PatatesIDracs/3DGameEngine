@@ -65,7 +65,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 		std::string dot = ".";
 		std::string slash = "\\";
 
-		for (int i = 0; (i < file_path.size()) && (file_path[i] != dot[0]) ; i++)
+		for (uint i = 0; (i < file_path.size()) && (file_path[i] != dot[0]) ; i++)
 		{
 			//Fill the name
 			file_name.push_back(file_path[i]);
@@ -98,7 +98,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 		// Loat Textures
 		aiString path;
-		std::vector<int> textures;
+		std::vector<float3> textures;
 		std::string directory = JOPE_DATA_DIRECTORY JOPE_TEXTURE_FOLDER;
 		std::string fullpath = "";
 		for (uint i = 0; i < scene->mNumMaterials; i++)
@@ -120,16 +120,15 @@ void ModuleLoadFBX::LoadFile(const char* file)
 				if (tex_id != 0)
 				{
 					LOGC("Loaded %s texture from path: %s", path.data, fullpath.c_str());
-					//App->scene_intro->SetTexSize(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 				}
 				else LOGC("Unable to load %s texture", path.data);
 
-				textures.push_back(tex_id);
+				textures.push_back(float3((float)tex_id,(float) ilGetInteger(IL_IMAGE_WIDTH), (float)ilGetInteger(IL_IMAGE_HEIGHT)));
 			}
 			else
 			{
 				LOGC("This mesh doesn't have a diffuse texture");
-				textures.push_back(0);
+				textures.push_back(float3(0.f,0.f,0.f));
 			}
 		}
 		directory.clear();
@@ -144,6 +143,9 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 			RenderData*	mesh = new RenderData;
 			GameObject* object_child = App->scene_intro->CreateNewGameObject(new_mesh->mName.C_Str(), object_parent);
+
+			// Add Transform To child
+			object_child->AddComponent(new Transform(object_child, transform));
 
 			mesh->num_vertices = new_mesh->mNumVertices;
 			mesh->vertices = new float[new_mesh->mNumVertices * 3];
@@ -188,7 +190,7 @@ void ModuleLoadFBX::LoadFile(const char* file)
 
 				if (textures.size() != 0)
 					texture = new Material(object_child, textures[new_mesh->mMaterialIndex]);
-				else texture = new Material(object_child,0);
+				else texture = new Material(object_child);
 				object_child->AddComponent(texture);
 			}
 

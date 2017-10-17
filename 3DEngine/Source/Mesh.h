@@ -2,8 +2,6 @@
 #define __MESH_H__
 
 #include "Component.h"
-#include "Math.h"
-
 
 struct RenderData
 {
