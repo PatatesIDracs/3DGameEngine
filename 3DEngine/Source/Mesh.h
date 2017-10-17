@@ -36,6 +36,9 @@ public:
 	void Update();
 	void DrawComponent();
 
+	// Modify Component
+	void RotateBoundingBox(const math::Quat &transform);
+
 private:
 	void Render();
 

@@ -47,6 +47,13 @@ void Mesh::DrawComponent()
 	}
 }
 
+void Mesh::RotateBoundingBox(const math::Quat &transform)
+{
+	OBB box = bounding_box.ToOBB();
+	box.Transform(transform);
+	bounding_box.Enclose(box);
+}
+
 void Mesh::Render()
 {
 	//Enable opengl states
