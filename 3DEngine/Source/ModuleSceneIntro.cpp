@@ -94,6 +94,12 @@ void ModuleSceneIntro::LookAtScene() const
 	}
 }
 
+void ModuleSceneIntro::DrawRootHierarchy()
+{
+	GameObject* ret = root->DrawHierarchy();
+	if (ret != nullptr) current_object = ret;
+}
+
 void ModuleSceneIntro::SetProperties(GameObject * show_this)
 {
 	current_object = show_this;
@@ -101,8 +107,5 @@ void ModuleSceneIntro::SetProperties(GameObject * show_this)
 
 void ModuleSceneIntro::DrawProperties() const
 {
-	for (uint count = 0; count < current_object->components.size(); count++)
-	{
-		current_object->components[count]->DrawComponent();
-	}
+	if (current_object != nullptr) current_object->DrawProperties();
 }

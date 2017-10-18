@@ -279,7 +279,7 @@ void ModuleEditor::DrawHierarchy()
 	ImGui::SetWindowPos(ImVec2(0, 19), 0);
 	ImGui::SetWindowSize(ImVec2(250, App->window->height - 19), 0);
 
-	App->scene_intro->root->DrawHierarchy();	
+	App->scene_intro->DrawRootHierarchy();
 
 	ImGui::End();
 }

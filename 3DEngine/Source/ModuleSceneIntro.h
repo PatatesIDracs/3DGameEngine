@@ -21,6 +21,8 @@ public:
 
 	void LookAtScene() const;
 
+	void DrawRootHierarchy();
+
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;
 

@@ -147,7 +147,6 @@ void ModuleLoadFBX::LoadFile(const char* file)
 			
 			// Add Transform To child
 			aiMatrix4x4 crot = parent->mChildren[count]->mTransformation;
-			//crot = crot.Transpose()*rot;
 			mat4x4 transform = mat4x4(crot.a1, crot.b1, crot.c1, crot.d1, crot.a2, crot.b2, crot.c2, crot.d2, crot.a3, crot.b3, crot.c3, crot.d3, crot.a4, crot.b4, crot.c4, crot.d4);
 
 			object_child->AddComponent(new Transform(object_child, transform));

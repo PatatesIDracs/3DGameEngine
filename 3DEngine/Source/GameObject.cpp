@@ -75,8 +75,10 @@ Component* GameObject::FindUniqueComponent(COMP_TYPE type)
 	return ret;
 }
 
-void GameObject::DrawHierarchy()
+GameObject* GameObject::DrawHierarchy()
 {
+	GameObject* ret = nullptr;
+
 	ImGuiTreeNodeFlags game_object_node_flags;
 
 	//Set which flags will be used (Has children or not)
@@ -88,15 +90,29 @@ void GameObject::DrawHierarchy()
 	//Draw the node
 	if (ImGui::TreeNodeEx(name.c_str(), game_object_node_flags))
 	{
+		if (ImGui::IsItemClicked()) ret = this;
+		
 		for (uint i = 0; i < children.size(); i++)
 		{
-			children[i]->DrawHierarchy();
+			GameObject* child_ret =	children[i]->DrawHierarchy();
+		
+			if (child_ret != nullptr) ret = child_ret;
 		}
 
 		if (children.size() != 0)
 			ImGui::TreePop();
 	}
 	
+	// Return GameObject Selected
+	return ret;
+}
+
+void GameObject::DrawProperties()
+{
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->DrawComponent();
+	}
 }
 
 AABB GameObject::GetBoundaryBox()

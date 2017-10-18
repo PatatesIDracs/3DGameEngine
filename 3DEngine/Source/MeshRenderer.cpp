@@ -19,6 +19,9 @@ void MeshRenderer::Update()
 	if (transform == nullptr)
 		return;
 
+	glPushMatrix();
+	glMultMatrixf(transform->GetRotMat().M);
+
 	if (material != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, material->GetTextureID());
@@ -54,6 +57,8 @@ void MeshRenderer::Update()
 	// Clear possible Binded buffers
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glPopMatrix();
 }
 
 void MeshRenderer::GetElements()

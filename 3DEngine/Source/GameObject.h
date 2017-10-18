@@ -21,7 +21,8 @@ public:
 
 	Component* FindUniqueComponent(COMP_TYPE type);
 
-	void DrawHierarchy();
+	GameObject* DrawHierarchy();
+	void DrawProperties();
 
 	AABB GetBoundaryBox();
 

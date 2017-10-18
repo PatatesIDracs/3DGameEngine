@@ -17,6 +17,17 @@ Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Compone
 {
 	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
 	scale = vec3(Abs((transf.M[0]+transf.M[1]+transf.M[2])), Abs((transf.M[4] + transf.M[5] + transf.M[6])), Abs((transf.M[8] + transf.M[9] + transf.M[10])));
+	transform.M[0] *= 1 / scale.x;
+	transform.M[1] *= 1 / scale.x;
+	transform.M[2] *= 1 / scale.x;
+	transform.M[4] *= 1 / scale.y;
+	transform.M[5] *= 1 / scale.y;
+	transform.M[6] *= 1 / scale.y;
+	transform.M[8] *= 1 / scale.z;
+	transform.M[9] *= 1 / scale.z;
+	transform.M[10] *= 1 / scale.z;
+
+
 	GetEAnglesFromMat();
 	unique = true;
 }
