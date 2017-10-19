@@ -123,7 +123,7 @@ AABB GameObject::GetBoundaryBox()
 	for (uint i = 0; i < components.size(); i++)
 	{
 		if (components[i]->GetType() == COMP_MESH)
-			box.Enclose(((Mesh*)components[i])->bounding_box);
+			box.Enclose(((Mesh*)components[i])->aabb_box);
 	}
 
 	for (uint i = 0; i < children.size(); i++)

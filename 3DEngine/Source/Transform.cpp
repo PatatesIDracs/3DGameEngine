@@ -1,6 +1,8 @@
 #include "Transform.h"
 #include "Glew\include\glew.h"
 
+#include "Mesh.h"
+
 Transform::Transform() : Component(nullptr, COMP_TRANSFORM, true)
 {
 	transform = mat4x4();
@@ -53,7 +55,11 @@ void Transform::SetRotation()
 	else axis = rot_q.Axis();
 	transform = transform.rotate(rot_q.Angle()*RADTODEG,vec3(axis.x, axis.y, axis.z));
 
-	SetScale();
+	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
+	if (mesh != nullptr)
+	{
+		mesh->RotateBoundingBox(rot_q);
+	}
 }
 
 void Transform::SetScale()
