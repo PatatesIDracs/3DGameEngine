@@ -250,6 +250,9 @@
     <ClCompile Include="MeshImporter.cpp">
       <Filter>Importer</Filter>
     </ClCompile>
+    <ClCompile Include="Importer.cpp">
+      <Filter>Importer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />

@@ -1,16 +1,16 @@
 #ifndef __MESHIMPORTER_H__
 #define __MESHIMPORTER_H__
 
-#include "Importer.h"
+#include <string>
 
-class MeshImporter : public Importer
+class MeshImporter
 {
+public:
 	MeshImporter();
 	~MeshImporter();
 
-	void Import(const char* path);
+	void Import(std::string* path, std::string* filename, std::string* extension);
 
-	void Load(const char* path);
 
 };
 

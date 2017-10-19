@@ -130,6 +130,7 @@
     <ClCompile Include="Imgui\imgui_demo.cpp" />
     <ClCompile Include="Imgui\imgui_draw.cpp" />
     <ClCompile Include="Imgui\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="Importer.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="Light.cpp" />
