@@ -16,18 +16,9 @@ scale(transf.scale), angle(transf.angle)
 Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Component(parent, COMP_TRANSFORM, isactive), transform(transf)
 {
 	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
-	scale = vec3(Abs((transf.M[0]+transf.M[1]+transf.M[2])), Abs((transf.M[4] + transf.M[5] + transf.M[6])), Abs((transf.M[8] + transf.M[9] + transf.M[10])));
-	transform.M[0] *= 1 / scale.x;
-	transform.M[1] *= 1 / scale.x;
-	transform.M[2] *= 1 / scale.x;
-	transform.M[4] *= 1 / scale.y;
-	transform.M[5] *= 1 / scale.y;
-	transform.M[6] *= 1 / scale.y;
-	transform.M[8] *= 1 / scale.z;
-	transform.M[9] *= 1 / scale.z;
-	transform.M[10] *= 1 / scale.z;
-
-
+	scale = vec3(1, 1, 1);
+	SetScale();
+	
 	GetEAnglesFromMat();
 	unique = true;
 }
@@ -39,6 +30,57 @@ Transform::~Transform()
 const mat4x4 Transform::GetRotMat() const
 {
 	return transform;
+}
+
+const Quat Transform::GetRotQuat()
+{
+	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+}
+
+void Transform::SetPosition()
+{
+	transform.translate(position.x, position.y,  position.z);
+}
+
+void Transform::SetRotation()
+{
+	// Temporal Function need to improve
+	Quat rot_q = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+
+	float rot_a = rot_q.Angle();
+	vec axis;
+	if (rot_a == 0) axis = vec(1, 0, 0);
+	else axis = rot_q.Axis();
+	transform = transform.rotate(rot_q.Angle()*RADTODEG,vec3(axis.x, axis.y, axis.z));
+
+	SetScale();
+}
+
+void Transform::SetScale()
+{
+	// Temporal Function need to improve
+	vec3 curr_scale = vec3(Abs((transform.M[0] + transform.M[1] + transform.M[2])), Abs((transform.M[4] + transform.M[5] + transform.M[6])), Abs((transform.M[8] + transform.M[9] + transform.M[10])));
+	float x = scale.x / curr_scale.x;
+	float y = scale.y / curr_scale.y;
+	float z = scale.z / curr_scale.z;
+	if (x != 0)
+	{
+		transform.M[0] *= x;
+		transform.M[1] *= x;
+		transform.M[2] *= x;
+	}
+	if (y != 0)
+	{
+		transform.M[4] *= y;
+		transform.M[5] *= y;
+		transform.M[6] *= y;
+	}
+	if (z != 0)
+	{
+		transform.M[8] *= z;
+		transform.M[9] *= z;
+		transform.M[10] *= z;
+	}
 }
 
 // Change Name
@@ -74,8 +116,8 @@ void Transform::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
-		ImGui::InputFloat3("Position", &position.x, -1, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat3("Rotation", &angle.x, -1, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat3("Scale", &scale.x, -1, ImGuiInputTextFlags_ReadOnly);
+		if(ImGui::InputFloat3("Position", &position.x, 2)) SetPosition();
+		if(ImGui::InputFloat3("Rotation", &angle.x, 2)) SetRotation();
+		if(ImGui::InputFloat3("Scale", &scale.x, 2)) SetScale();
 	}
 }

@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "Glew\include\glew.h"
 
+#include "Transform.h"
+
 Mesh::Mesh()
 {
 }
@@ -9,6 +11,12 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 {
 	bounding_box.SetNegativeInfinity();
 	bounding_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+
+	Component* transf = parent->FindUniqueComponent(COMP_TRANSFORM);
+	if (transf != nullptr)
+	{
+		RotateBoundingBox(((Transform*)transf)->GetRotQuat());
+	}
 }
 
 Mesh::~Mesh()

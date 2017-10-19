@@ -12,6 +12,12 @@ public:
 	~Transform();
 
 	const mat4x4 GetRotMat() const;
+	const Quat GetRotQuat();
+	
+	void SetPosition();
+	void SetRotation();
+	void SetScale();
+
 	void GetEAnglesFromMat();
 
 	void DrawComponent();

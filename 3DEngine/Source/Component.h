@@ -8,7 +8,7 @@
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
-class GameObject;
+#include "GameObject.h"
 
 enum COMP_TYPE
 {

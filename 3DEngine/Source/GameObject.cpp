@@ -120,25 +120,15 @@ AABB GameObject::GetBoundaryBox()
 	math::AABB box;
 	box.SetNegativeInfinity();
 
-	Mesh* mesh = nullptr;
 	for (uint i = 0; i < components.size(); i++)
 	{
 		if (components[i]->GetType() == COMP_MESH)
-		{
-			mesh = (Mesh*)components[i];
-			box.Enclose(mesh->bounding_box.minPoint);
-			box.Enclose(mesh->bounding_box.maxPoint);
-			if (i == 0) box.minPoint = box.maxPoint;
-		}
+			box.Enclose(((Mesh*)components[i])->bounding_box);
 	}
 
-	AABB child_box;
-	child_box.SetNegativeInfinity();
 	for (uint i = 0; i < children.size(); i++)
 	{
-		child_box = children[i]->GetBoundaryBox();
-		box.Enclose(child_box.minPoint);
-		box.Enclose(child_box.maxPoint);
+		box.Enclose(children[i]->GetBoundaryBox());
 	}
 
 	return box;
