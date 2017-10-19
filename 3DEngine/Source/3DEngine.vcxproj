@@ -130,6 +130,7 @@
     <ClCompile Include="Imgui\imgui_demo.cpp" />
     <ClCompile Include="Imgui\imgui_draw.cpp" />
     <ClCompile Include="Imgui\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />
@@ -248,6 +249,8 @@
     <ClInclude Include="Imgui\stb_rect_pack.h" />
     <ClInclude Include="Imgui\stb_textedit.h" />
     <ClInclude Include="Imgui\stb_truetype.h" />
+    <ClInclude Include="Importer.h" />
+    <ClInclude Include="MeshImporter.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />

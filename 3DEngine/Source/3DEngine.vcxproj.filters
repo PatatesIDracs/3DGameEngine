@@ -45,6 +45,9 @@
     <Filter Include="Temp_files">
       <UniqueIdentifier>{2b1456c6-93f2-4cec-a938-5224b9ad872e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Importer">
+      <UniqueIdentifier>{ab43562b-0b78-4def-9417-03d508fcbee4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="j1PerfTimer.cpp">
@@ -243,6 +246,9 @@
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
       <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshImporter.cpp">
+      <Filter>Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -671,6 +677,12 @@
     </ClInclude>
     <ClInclude Include="MeshRenderer.h">
       <Filter>GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Importer.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshImporter.h">
+      <Filter>Importer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
