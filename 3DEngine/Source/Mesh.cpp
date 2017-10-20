@@ -48,6 +48,39 @@ const RenderData* Mesh::GetRenderData()
 	return render_data;
 }
 
+void Mesh::Update()
+{
+	if (draw_aabb || draw_obb)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glLineWidth(2.0f);
+
+		if (draw_aabb)
+		{
+			//Bind AABB vertex buffer
+			glBindBuffer(GL_ARRAY_BUFFER, render_data->aabb_vertex_id);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+			//Bind and draw with indices
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
+			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
+		}
+
+		if (draw_obb)
+		{
+			//Bind OBB vertex buffer
+			glBindBuffer(GL_ARRAY_BUFFER, render_data->obb_vertex_id);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+			//Bind and draw with indices
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
+			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
+		}
+		glLineWidth(1.0f);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+}
+
 void Mesh::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Geometry"))
@@ -65,10 +98,10 @@ void Mesh::DrawComponent()
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
 	OBB box = obb_box;
-	box.Transform(transform);
+	obb_box.Transform(transform);
 
 	aabb_box.SetNegativeInfinity();
-	aabb_box.Enclose(box);
+	aabb_box.Enclose(obb_box);
 	CreateBoxBuffers();
 }
 

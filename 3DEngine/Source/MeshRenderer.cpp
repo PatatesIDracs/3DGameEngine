@@ -33,32 +33,6 @@ void MeshRenderer::Update()
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 
-		if (mesh->draw_aabb)
-		{
-			//Need to fix Rotation
-			glLineWidth(2.0f);
-			//Bind AABB vertex buffer
-			glBindBuffer(GL_ARRAY_BUFFER, mesh_render_data->aabb_vertex_id);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-			//Bind and draw with indices
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_render_data->box_indices_id);
-			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
-			glLineWidth(1.0f);
-		}
-
-		if (mesh->draw_obb)
-		{
-			glLineWidth(2.0f);
-			//Bind OBB vertex buffer
-			glBindBuffer(GL_ARRAY_BUFFER, mesh_render_data->obb_vertex_id);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-			//Bind and draw with indices
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_render_data->box_indices_id);
-			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
-		}
-
 		if (mesh_render_data->tex_vertices != nullptr)
 		{
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);

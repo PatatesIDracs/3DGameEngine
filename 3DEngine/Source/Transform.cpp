@@ -22,6 +22,8 @@ Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Compone
 	SetScale();
 	
 	GetEAnglesFromMat();
+	SetRotation();
+	rotation = GetRotQuat();
 	unique = true;
 }
 
@@ -36,7 +38,7 @@ const mat4x4 Transform::GetRotMat() const
 
 const Quat Transform::GetRotQuat()
 {
-	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, -angle.z*DEGTORAD);
 }
 
 void Transform::SetPosition()
@@ -47,7 +49,7 @@ void Transform::SetPosition()
 void Transform::SetRotation()
 {
 	// Temporal Function need to improve
-	Quat rot_q = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+	Quat rot_q = GetRotQuat();
 
 	float rot_a = rot_q.Angle();
 	vec axis;
@@ -55,11 +57,13 @@ void Transform::SetRotation()
 	else axis = rot_q.Axis();
 	transform = transform.rotate(rot_q.Angle()*RADTODEG,vec3(axis.x, axis.y, axis.z));
 
+	rotation.Inverse();
 	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
 	if (mesh != nullptr)
 	{
-		mesh->RotateBoundingBox(rot_q);
+		mesh->RotateBoundingBox(rot_q*rotation);
 	}
+	rotation = rot_q;
 }
 
 void Transform::SetScale()
@@ -122,8 +126,8 @@ void Transform::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
-		if(ImGui::InputFloat3("Position", &position.x, 2)) SetPosition();
-		if(ImGui::InputFloat3("Rotation", &angle.x, 2)) SetRotation();
-		if(ImGui::InputFloat3("Scale", &scale.x, 2)) SetScale();
+		if(ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetPosition();
+		if(ImGui::InputFloat3("Rotation", &angle.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetRotation();
+		if(ImGui::InputFloat3("Scale", &scale.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetScale();
 	}
 }

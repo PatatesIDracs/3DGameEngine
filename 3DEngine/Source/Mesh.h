@@ -43,6 +43,8 @@ public:
 
 	const RenderData* GetRenderData();
 
+	void Update();
+
 	void DrawComponent();
 
 	// Modify Component
