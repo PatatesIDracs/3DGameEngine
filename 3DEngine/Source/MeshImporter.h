@@ -13,7 +13,6 @@ public:
 
 	void Import(const char* full_path);
 
-	void Load()
 };
 
 #endif // !__IMPORTERMESH_H__
