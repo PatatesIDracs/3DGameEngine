@@ -15,6 +15,7 @@ public:
 
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	
+	void CheckDirectories();
 
 private:
 

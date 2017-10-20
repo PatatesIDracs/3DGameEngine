@@ -2,9 +2,11 @@
 #include "MeshImporter.h"
 #include "Globals.h"
 
+#include <filesystem>
 
 Importer::Importer()
 {
+	CheckDirectories();
 	mesh_importer = new MeshImporter();
 }
 
@@ -25,8 +27,10 @@ void Importer::Import(char * full_path)
 	DividePath(full_path, &path, &filename, &extension);
 
 	//Depending on which file it is decide which importer is needed
-	if (extension == ".fbx")
-		mesh_importer->Import(&path, &filename, &extension);
+	if (extension == ".fbx" || extension == ".obj")
+	{
+		mesh_importer->Import(full_path);
+	}
 }
 
 void Importer::DividePath(char * full_path, std::string * path, std::string * filename, std::string * extension)
@@ -64,5 +68,44 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 		if (i > name_end)
 			extension->push_back(full_path[i]);
 	}
+
+}
+
+//Create Assts and library directories if don't exist
+void Importer::CheckDirectories()
+{
+	//Assets folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER))
+	{
+		LOGC("Assets not detected, creating a new one...");
+	}
+	else
+		LOGC("Assets folder identified.");
+
+
+	//Library folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER))
+	{
+		LOGC("Library not detected, creating a new one...");
+	}
+	else
+		LOGC("Library folder identified.");
+
+	//Library/Meshes folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
+	{
+		LOGC("Library meshes not detected, creating a new one...");
+	}
+	else
+		LOGC("Library meshes folder identified.");
+
+	//Library/Textures folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER))
+	{
+		LOGC("Library textures not detected, creating a new one...");
+	}
+	else
+		LOGC("Library meshes folder identified.");
+
 
 }

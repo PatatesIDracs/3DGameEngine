@@ -28,6 +28,9 @@
 
 //Subfolders or files 
 #define JOPE_CONFIG_FILENAME "config.json"
+#define JOPE_ASSETS_FOLDER "Assets/"
+#define JOPE_LIBRARY_FOLDER "Library/"
+#define JOPE_MESHES_FOLDER "Meshes/"
 #define JOPE_TEXTURE_FOLDER "Textures/"
 
 

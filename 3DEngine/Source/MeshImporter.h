@@ -3,15 +3,17 @@
 
 #include <string>
 
+#define MESHFILEFORMAT ".mjope"
+
 class MeshImporter
 {
 public:
 	MeshImporter();
 	~MeshImporter();
 
-	void Import(std::string* path, std::string* filename, std::string* extension);
+	void Import(const char* full_path);
 
-
+	void Load()
 };
 
 #endif // !__IMPORTERMESH_H__

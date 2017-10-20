@@ -1,5 +1,8 @@
 #include "MeshImporter.h"
 #include "Mesh.h"
+#include "Globals.h"
+
+#include <fstream>
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -16,18 +19,24 @@ MeshImporter::~MeshImporter()
 {
 }
 
-void MeshImporter::Import(std::string* path, std::string* filename, std::string* extension)
+void MeshImporter::Import(const char* full_path)
 {
-	if (path == nullptr) return;
+	if (full_path == nullptr) return;
 
-	const aiScene* scene = aiImportFile((*path + *filename + *extension).c_str() , aiProcessPreset_TargetRealtime_MaxQuality);
-	aiNode* parent = scene->mRootNode;
+	std::string import_path("../Data/Library/Meshes/");
+
+	const aiScene* scene = aiImportFile(full_path , aiProcessPreset_TargetRealtime_MaxQuality);
+	aiNode* mesh_root_node = scene->mRootNode;
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		uint num_meshes = scene->mNumMeshes;
 		for (uint i = 0; i < num_meshes; i++)
 		{
 			RenderData* mesh = new RenderData;
+			std::string file_name = mesh_root_node->mChildren[i]->mName.C_Str();
+			file_name.append(".mjope");
+
+
 			//Indices data
 			mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
 			mesh->indices = new uint[mesh->num_indices];
@@ -73,7 +82,6 @@ void MeshImporter::Import(std::string* path, std::string* filename, std::string*
 			char* buffer_data = new char[buffer_size];
 			char* cursor = buffer_data;
 
-
 			uint bytes_to_copy = sizeof(ranges);
 			memcpy(buffer_data, ranges, bytes_to_copy);
 			cursor += bytes_to_copy; //Advance cursor
@@ -92,7 +100,10 @@ void MeshImporter::Import(std::string* path, std::string* filename, std::string*
 
 			bytes_to_copy = (sizeof(float) * mesh->num_normals * 3);
 			memcpy(buffer_data, mesh->normals, bytes_to_copy);
-		}
 
+
+			std::ofstream new_file((import_path + file_name).c_str());
+			new_file.write(buffer_data, buffer_size);
+		}
 	}
 }
