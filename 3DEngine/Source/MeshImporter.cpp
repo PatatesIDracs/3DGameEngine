@@ -14,6 +14,7 @@
 
 MeshImporter::MeshImporter()
 {
+	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
 }
 
 MeshImporter::~MeshImporter()
@@ -24,8 +25,6 @@ void MeshImporter::Import(const char* full_path)
 {
 	if (full_path == nullptr) return;
 
-	std::string import_path("../Data/Library/Meshes/");
-
 	const aiScene* scene = aiImportFile(full_path , aiProcessPreset_TargetRealtime_MaxQuality);
 	aiNode* mesh_root_node = scene->mRootNode;
 	if (scene != nullptr && scene->HasMeshes())
@@ -35,9 +34,8 @@ void MeshImporter::Import(const char* full_path)
 		{
 			RenderData* mesh = new RenderData;
 			std::string file_name = mesh_root_node->mChildren[i]->mName.C_Str();
-			file_name.append(".mjope");
-
-
+			file_name.append(MESHFILEFORMAT);
+	
 			//Indices data
 			mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
 			mesh->indices = new uint[mesh->num_indices];
@@ -67,46 +65,8 @@ void MeshImporter::Import(const char* full_path)
 			mesh->normals = new float[mesh->num_normals * 3];
 			memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
 
-
-
-			//NumIndices, NumVertices, NumTexCoords, NumNormals
-			uint ranges[4] = { mesh->num_indices, mesh->num_vertices,mesh->num_tex_vertices,  mesh->num_normals };
-
-
-			uint buffer_size = sizeof(ranges) + 
-				(sizeof(uint) * mesh->num_indices) +			//Indices
-				(sizeof(float) * mesh->num_vertices * 3) +		//Vertices
-				(sizeof(float) * mesh->num_tex_vertices * 3) +	//Texture_coords
-				(sizeof(float) * mesh->num_normals * 3);		//Normals
-
-
-			char* buffer_data = new char[buffer_size];
-			char* cursor = buffer_data;
-
-			uint bytes_to_copy = sizeof(ranges);
-			memcpy(cursor, ranges, bytes_to_copy);
-			cursor += bytes_to_copy; //Advance cursor
-
-			bytes_to_copy = (sizeof(uint) * mesh->num_indices);
-			memcpy(cursor, mesh->indices, bytes_to_copy);
-			cursor += bytes_to_copy; //Advance cursor
-
-			bytes_to_copy = (sizeof(float) * mesh->num_vertices * 3);
-			memcpy(cursor, mesh->vertices, bytes_to_copy);
-			cursor += bytes_to_copy; //Advance cursor
-
-			bytes_to_copy = (sizeof(float) * mesh->num_tex_vertices * 3);
-			memcpy(cursor, mesh->tex_vertices, bytes_to_copy);
-			cursor += bytes_to_copy; //Advance cursor
-
-			bytes_to_copy = (sizeof(float) * mesh->num_normals * 3);
-			memcpy(cursor, mesh->normals, bytes_to_copy);
-
-
-			std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
-			new_file.write(buffer_data, buffer_size);
-
-			LOGC("File Saved at: %s", (import_path + file_name).c_str());
+			//Save file 
+			SaveMesh(mesh, file_name.c_str());
 		}
 	}
 }
@@ -130,6 +90,9 @@ RenderData * MeshImporter::Load(const char * full_path)
 		loaded_file.close();
 	}
 	
+	if (buffer_data == nullptr)
+		return nullptr;
+
 	char* cursor = buffer_data;
 	uint bytes_to_copy = 0;
 
@@ -205,4 +168,47 @@ RenderData * MeshImporter::Load(const char * full_path)
 
 
 	return ret;
+}
+
+void MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
+{
+	//NumIndices, NumVertices, NumTexCoords, NumNormals
+	uint ranges[4] = { mesh->num_indices, mesh->num_vertices,mesh->num_tex_vertices,  mesh->num_normals };
+
+
+	uint buffer_size = sizeof(ranges) +
+		(sizeof(uint) * mesh->num_indices) +			//Indices
+		(sizeof(float) * mesh->num_vertices * 3) +		//Vertices
+		(sizeof(float) * mesh->num_tex_vertices * 3) +	//Texture_coords
+		(sizeof(float) * mesh->num_normals * 3);		//Normals
+
+
+	char* buffer_data = new char[buffer_size];
+	char* cursor = buffer_data;
+
+	uint bytes_to_copy = sizeof(ranges);
+	memcpy(cursor, ranges, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(uint) * mesh->num_indices);
+	memcpy(cursor, mesh->indices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * mesh->num_vertices * 3);
+	memcpy(cursor, mesh->vertices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * mesh->num_tex_vertices * 3);
+	memcpy(cursor, mesh->tex_vertices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * mesh->num_normals * 3);
+	memcpy(cursor, mesh->normals, bytes_to_copy);
+
+
+	std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
+	new_file.write(buffer_data, buffer_size);
+
+	LOGC("File Saved at: %s", (import_path + file_name).c_str());
+
 }

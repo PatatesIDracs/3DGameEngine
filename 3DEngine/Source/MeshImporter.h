@@ -16,6 +16,15 @@ public:
 	void Import(const char* full_path);
 
 	RenderData* Load(const char* full_path);
+
+private:
+
+	void SaveMesh(RenderData* mesh, const char* file_name);
+
+
+private:
+	std::string import_path;
+
 };
 
 #endif // !__IMPORTERMESH_H__

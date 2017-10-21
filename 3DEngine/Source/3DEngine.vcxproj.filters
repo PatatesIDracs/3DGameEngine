@@ -253,6 +253,9 @@
     <ClCompile Include="Importer.cpp">
       <Filter>Importer</Filter>
     </ClCompile>
+    <ClCompile Include="TextureImporter.cpp">
+      <Filter>Importer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -685,6 +688,9 @@
       <Filter>Importer</Filter>
     </ClInclude>
     <ClInclude Include="MeshImporter.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureImporter.h">
       <Filter>Importer</Filter>
     </ClInclude>
   </ItemGroup>

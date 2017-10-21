@@ -186,6 +186,7 @@
     <ClCompile Include="parson.c" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -334,6 +335,7 @@
     <ClInclude Include="parson.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
