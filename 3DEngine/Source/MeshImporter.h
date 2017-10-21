@@ -5,6 +5,8 @@
 
 #define MESHFILEFORMAT ".mjope"
 
+class RenderData;
+
 class MeshImporter
 {
 public:
@@ -13,6 +15,7 @@ public:
 
 	void Import(const char* full_path);
 
+	RenderData* Load(const char* full_path);
 };
 
 #endif // !__IMPORTERMESH_H__
