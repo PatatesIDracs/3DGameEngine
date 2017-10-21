@@ -5,7 +5,7 @@
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
-GameObject::GameObject(GameObject* parent) : parent(parent)
+GameObject::GameObject(GameObject* parent) : parent(parent), name("GameObject")
 {
 	if (parent != nullptr)
 		parent->AddChildren(this);

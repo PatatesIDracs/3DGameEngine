@@ -1,5 +1,6 @@
 #include "Importer.h"
 #include "MeshImporter.h"
+#include "TextureImporter.h"
 #include "Globals.h"
 
 #include <filesystem>
@@ -8,6 +9,7 @@ Importer::Importer()
 {
 	CheckDirectories();
 	mesh_importer = new MeshImporter();
+	text_importer = new TextureImporter();
 }
 
 Importer::~Importer()

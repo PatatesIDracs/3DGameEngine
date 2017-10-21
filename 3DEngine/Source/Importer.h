@@ -4,6 +4,7 @@
 #include <string>
 
 class MeshImporter;
+class TextureImporter;
 
 class Importer
 {
@@ -21,6 +22,7 @@ private:
 
 	//Specialized importers
 	MeshImporter* mesh_importer = nullptr;
+	TextureImporter* text_importer = nullptr;
 };
 
 #endif // !__IMPORTER_H__

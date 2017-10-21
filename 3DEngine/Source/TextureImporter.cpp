@@ -1,4 +1,5 @@
 #include "TextureImporter.h"
+#include "Globals.h"
 #include <fstream>
 
 #include "Devil\include\il.h"
@@ -12,33 +13,41 @@
 
 TextureImporter::TextureImporter()
 {
+	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER;
 }
 
 TextureImporter::~TextureImporter()
 {
 }
 
-void TextureImporter::Import(const char * full_path)
+void TextureImporter::Import(const char * full_path, const char* name)
 {
-	ilEnable(IL_FILE_OVERWRITE);
+	std::string file_name = name;
+	file_name.append(TEXFILEFORMAT);
 
-	ilLoadImage(full_path);
+	//Generate file
+	ilEnable(IL_FILE_OVERWRITE);
+	uint imgID = 0;
+	ilGenImages(1, &imgID);
+	ilBindImage(imgID);
+	ILboolean success = ilLoadImage(full_path);
+
+	
 
 	ILuint size;
 	ILubyte* data;
 
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
 	size = ilSaveL(IL_DDS, NULL, 0);
-
-
-
 	if (size > 0)
 	{
 		data = new ILubyte[size];
 		if (ilSaveL(IL_DDS, data, size) > 0)
 		{
-			std::ofstream new_file("../Data/Library/Textures/test.dds", std::ofstream::binary);
+			std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
 			new_file.write((char*)data, size);
+
+			LOGC("Imported %s textre at %s", file_name.c_str(), import_path.c_str());
 		}
 	}
 }
