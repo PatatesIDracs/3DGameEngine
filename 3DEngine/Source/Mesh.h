@@ -23,14 +23,9 @@ struct RenderData
 
 	// Draw AABB and OBB
 	uint aabb_vertex_id = 0;
-	float* aabb_vertices = nullptr;
-
 	uint obb_vertex_id = 0;
-	float* obb_vertices = nullptr;
-	
-	uint num_box_indices = 24;
+
 	uint box_indices_id = 0;
-	uint* box_indices = nullptr;
 };
 
 

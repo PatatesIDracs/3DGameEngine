@@ -1,4 +1,5 @@
 #include "glmath.h"
+#include "Math.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------
 
@@ -417,6 +418,14 @@ mat4x4::mat4x4(float c1r1, float c1r2, float c1r3, float c1r4, float c2r1, float
 	M[1] = c1r2; M[5] = c2r2; M[9] = c3r2; M[13] = c4r2;
 	M[2] = c1r3; M[6] = c2r3; M[10] = c3r3; M[14] = c4r3;
 	M[3] = c1r4; M[7] = c2r4; M[11] = c3r4; M[15] = c4r4;
+}
+
+mat4x4::mat4x4(float4x4 & Matrix)
+{
+	M[0] = Matrix[0][0]; M[4] = Matrix[1][0]; M[8]  = Matrix[2][0]; M[12] = Matrix[3][0];
+	M[1] = Matrix[0][1]; M[5] = Matrix[1][1]; M[9]  = Matrix[2][1]; M[13] = Matrix[3][1];
+	M[2] = Matrix[0][2]; M[6] = Matrix[1][2]; M[10] = Matrix[2][2]; M[14] = Matrix[3][2];
+	M[3] = Matrix[0][3]; M[7] = Matrix[1][3]; M[11] = Matrix[2][3]; M[15] = Matrix[3][3];
 }
 
 mat4x4::mat4x4(const mat2x2 &Matrix)

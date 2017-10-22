@@ -4,6 +4,8 @@
 #include "Module.h"
 #include "glmath.h"
 
+#include "Camera.h"
+
 class ModuleCamera3D : public Module
 {
 public:
@@ -34,6 +36,10 @@ private:
 	void CalculateViewMatrix();
 
 public:
+
+	Camera* camera_editor = nullptr;
+	
+	bool mode_editor = true;
 
 	vec3 X, Y, Z, Position, Reference;
 

@@ -8,6 +8,8 @@
 
 #include <math.h>
 
+#include "Math.h"
+
 // ----------------------------------------------------------------------------------------------------------------------------
 
 class vec2
@@ -174,6 +176,8 @@ public:
 	vec3(const vec2 &u, float z) : x(u.x), y(u.y), z(z)
 	{}
 	vec3(const vec3 &u) : x(u.x), y(u.y), z(u.z)
+	{}
+	vec3(const float3 &u) : x(u.x), y(u.y), z(u.z)
 	{}
 	void Set(float x, float y, float z)
 	{
@@ -480,6 +484,7 @@ public:
 	mat4x4(const mat4x4 &Matrix);
 	mat4x4(const vec4 &col1, const vec4 &col2, const vec4 &col3, const vec4 &col4);
 	mat4x4(float c1r1, float c1r2, float c1r3, float c1r4, float c2r1, float c2r2, float c2r3, float c2r4, float c3r1, float c3r2, float c3r3, float c3r4, float c4r1, float c4r2, float c4r3, float c4r4);
+	mat4x4(float4x4 &Matrix);
 	explicit mat4x4(const mat2x2 &Matrix);
 	explicit mat4x4(const mat3x3 &Matrix);
 	mat4x4& operator = (const mat4x4 &Matrix);

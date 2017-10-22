@@ -3,9 +3,11 @@
 #include "ConfigJSON.h"
 #include "Imgui\imgui.h"
 
+#include "Glew\include\glew.h"
+
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
-	CalculateViewMatrix();
+	camera_editor = new Camera(nullptr, true);
 
 	X = vec3(1.0f, 0.0f, 0.0f);
 	Y = vec3(0.0f, 1.0f, 0.0f);
@@ -16,6 +18,8 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	// Set Angle	
 	angle = 45;
+
+	CalculateViewMatrix();
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -26,7 +30,9 @@ bool ModuleCamera3D::Start()
 {
 	LOGC("Setting up the camera");
 	bool ret = true;
-
+	glewInit();
+	camera_editor->SetFOVRatio(App->window->width, App->window->height);
+	camera_editor->GenerateFrostumDraw();
 	return ret;
 }
 
@@ -41,6 +47,8 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	camera_editor->Update();
+
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
 
@@ -65,9 +73,14 @@ update_status ModuleCamera3D::Update(float dt)
 		else Position -= Z*(float)wheelmotion;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
+	{
+		camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) mode_editor = !mode_editor;
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -185,7 +198,8 @@ void ModuleCamera3D::MoveCamera(float dt)
 // -----------------------------------------------------------------
 float* ModuleCamera3D::GetViewMatrix()
 {
-	return &ViewMatrix;
+	if(mode_editor)	return &ViewMatrix;
+	else return camera_editor->GetViewMatrix();
 }
 
 // ----------------------------------------------

@@ -23,6 +23,44 @@ vec3 Primitive::GetPosition() const
 	return vec3(transform.M[12] + box_pos.x, transform.M[13] + box_pos.y, transform.M[14] + box_pos.z);
 }
 
+uint Primitive::GenerateBBoxVertices(float * vertices)
+{
+	uint id = 0;
+	//Buffer for vertex
+	glGenBuffers(1, (GLuint*)&id);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, vertices, GL_STATIC_DRAW);
+
+	return id;
+}
+
+uint Primitive::GenerateBBoxIndices()
+{
+	uint id = 0;
+	uint indices[] =
+	{
+		0,2,
+		0,4,
+		0,1,
+		7,6,
+		7,3,
+		7,5,
+		5,1,
+		5,4,
+		2,3,
+		2,6,
+		6,4,
+		3,1
+	};
+
+	// Buffer for indices
+	glGenBuffers(1, (GLuint*)&id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices, GL_STATIC_DRAW);
+
+	return id;
+}
+
 void Primitive::CalculateFaceNormals(float* vertices)
 {
 	float3 normal_temp;

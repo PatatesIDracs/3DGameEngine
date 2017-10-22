@@ -49,7 +49,8 @@ public:
 	PrimitiveTypes	GetType() const;
 	vec3			GetPosition() const;
 
-
+	uint			GenerateBBoxVertices(float* vertices);
+	uint			GenerateBBoxIndices();
 public:
 
 	Color color;

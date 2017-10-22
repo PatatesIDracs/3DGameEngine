@@ -288,7 +288,7 @@ void ModuleEditor::ApplicationConfig()
 {
 	if (ImGui::CollapsingHeader("Application"))
 	{
-		if (ImGui::InputText("App name", str_name, (int)sizeof(str_name)))
+		if (ImGui::InputText("App name", str_name, (int)sizeof(str_name),ImGuiInputTextFlags_EnterReturnsTrue))
 			App->window->SetTitle(str_name);
 
 		static char str_org[150] = "Patates i Dracs";

@@ -28,17 +28,14 @@ Mesh::~Mesh()
 	if (render_data->num_vertices > 0)glDeleteBuffers(1, &render_data->id_vertices);
 	if (render_data->num_normals > 0)glDeleteBuffers(1, &render_data->id_normals);
 	if (render_data->num_tex_vertices > 0)	glDeleteBuffers(1, &render_data->id_tex_vertices);
-	if (render_data->aabb_vertices != nullptr) glDeleteBuffers(1, &render_data->aabb_vertex_id);
-	if (render_data->obb_vertices != nullptr) glDeleteBuffers(1, &render_data->obb_vertex_id);
-	if (render_data->box_indices != nullptr) glDeleteBuffers(1, &render_data->box_indices_id);
+	if (render_data->aabb_vertex_id > 0) glDeleteBuffers(1, &render_data->aabb_vertex_id);
+	if (render_data->obb_vertex_id > 0) glDeleteBuffers(1, &render_data->obb_vertex_id);
+	if (render_data->box_indices_id > 0) glDeleteBuffers(1, &render_data->box_indices_id);
 
 	delete[] render_data->indices;
 	delete[] render_data->vertices;
 	delete[] render_data->normals;
 	delete[] render_data->tex_vertices;
-	delete[] render_data->aabb_vertices;
-	delete[] render_data->obb_vertices;
-	delete[] render_data->box_indices;
 
 	delete render_data;
 }
@@ -55,7 +52,7 @@ void Mesh::Update()
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glLineWidth(2.0f);
 
-		if (draw_aabb)
+		if (draw_aabb && render_data->aabb_vertex_id > 0)
 		{
 			//Bind AABB vertex buffer
 			glBindBuffer(GL_ARRAY_BUFFER, render_data->aabb_vertex_id);
@@ -66,7 +63,7 @@ void Mesh::Update()
 			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
 		}
 
-		if (draw_obb)
+		if (draw_obb && render_data->obb_vertex_id > 0)
 		{
 			//Bind OBB vertex buffer
 			glBindBuffer(GL_ARRAY_BUFFER, render_data->obb_vertex_id);
@@ -97,7 +94,6 @@ void Mesh::DrawComponent()
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
-	OBB box = obb_box;
 	obb_box.Transform(transform);
 
 	aabb_box.SetNegativeInfinity();
@@ -108,52 +104,30 @@ void Mesh::RotateBoundingBox(const math::Quat &transform)
 // Create box indices buffer (only once)
 void Mesh::CreateBoxIndices()
 {
-	if (render_data->box_indices != nullptr)
+	if (render_data->box_indices_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->box_indices_id);
-		delete[] render_data->box_indices;
 	}
 
-	uint new_indices[24] = {	
-		0,1,
-		0,2,
-		0,4,
-		1,3,
-		1,5,
-		2,3,
-		2,6,
-		3,7,
-		4,5,
-		4,6,
-		5,7,
-		6,7
-	};
-
-	render_data->box_indices = new uint[24];
-	memcpy(render_data->box_indices, new_indices, sizeof(uint) * 24);
-
-	glGenBuffers(1, (GLuint*)&render_data->box_indices_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, render_data->box_indices, GL_STATIC_DRAW);
+	Primitive indices;
+	render_data->box_indices_id = indices.GenerateBBoxIndices();
 }
 
 // Generate AABB and OBB buffers
 void Mesh::CreateBoxBuffers()
 {
 	// delete buffers;
-	if (render_data->aabb_vertices != nullptr)
+	if (render_data->aabb_vertex_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->aabb_vertex_id);
 	}
-	else render_data->aabb_vertices = new float[24];
 
-	if (render_data->obb_vertices != nullptr)
+	if (render_data->obb_vertex_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->obb_vertex_id);
 	}
-	else render_data->obb_vertices = new float[24];
 
-	float new_aabb[]
+	float new_aabb[24]
 	{
 		aabb_box.CornerPoint(0).x, aabb_box.CornerPoint(0).y,	aabb_box.CornerPoint(0).z,
 		aabb_box.CornerPoint(1).x, aabb_box.CornerPoint(1).y,	aabb_box.CornerPoint(1).z,
@@ -165,7 +139,7 @@ void Mesh::CreateBoxBuffers()
 		aabb_box.CornerPoint(7).x, aabb_box.CornerPoint(7).y,	aabb_box.CornerPoint(7).z,
 	};
 
-	float new_obb[]
+	float new_obb[24]
 	{
 		obb_box.CornerPoint(0).x, obb_box.CornerPoint(0).y,	obb_box.CornerPoint(0).z,
 		obb_box.CornerPoint(1).x, obb_box.CornerPoint(1).y,	obb_box.CornerPoint(1).z,
@@ -176,16 +150,8 @@ void Mesh::CreateBoxBuffers()
 		obb_box.CornerPoint(6).x, obb_box.CornerPoint(6).y,	obb_box.CornerPoint(6).z,
 		obb_box.CornerPoint(7).x, obb_box.CornerPoint(7).y,	obb_box.CornerPoint(7).z,
 	};
-
-	memcpy(render_data->aabb_vertices, new_aabb, sizeof(float)* 24);
-	memcpy(render_data->obb_vertices, new_obb, sizeof(float) * 24);
-
-	glGenBuffers(1, (GLuint*)&render_data->aabb_vertex_id);
-	glBindBuffer(GL_ARRAY_BUFFER, render_data->aabb_vertex_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, render_data->aabb_vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*)&render_data->obb_vertex_id);
-	glBindBuffer(GL_ARRAY_BUFFER, render_data->obb_vertex_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, render_data->obb_vertices, GL_STATIC_DRAW);
-
+	
+	Primitive box;
+	render_data->aabb_vertex_id = box.GenerateBBoxVertices(new_aabb);
+	render_data->obb_vertex_id = box.GenerateBBoxVertices(new_obb);
 }
