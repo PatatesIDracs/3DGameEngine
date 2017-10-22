@@ -40,6 +40,7 @@ public:
 	Camera* camera_editor = nullptr;
 	
 	bool mode_editor = true;
+	bool update_camera = false;
 
 	vec3 X, Y, Z, Position, Reference;
 

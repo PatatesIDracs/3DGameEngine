@@ -10,7 +10,7 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 {
 	cfrustum = new Frustum();
 	cfrustum->SetKind(FrustumSpaceGL, FrustumLeftHanded);
-	cfrustum->SetViewPlaneDistances(1.f, 50.f);
+	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, MIN_FARP_DIST);
 	if (parent != nullptr)
 	{
 		Transform* ptransf = (Transform*)parent->FindUniqueComponent(COMP_TRANSFORM);
@@ -20,9 +20,8 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 			cfrustum->SetFrame(vec(transf.M[12], transf.M[13], transf.M[14]), vec(transf.M[8],transf.M[9],transf.M[10]), vec(transf.M[4], transf.M[5], transf.M[6]));
 		}
 	}
-	else cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
-	cfrustum->SetPerspective(1366, 768);
-
+	else cfrustum->SetFrame(vec(0.f, 0.f, 0.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
+	cfrustum->SetPerspective(1024, 720);
 }
 
 Camera::~Camera()
@@ -69,7 +68,7 @@ float* Camera::GetViewMatrix()
 	vec3 X = vec3(world_mat.Col(0));
 	vec3 Y = vec3(world_mat.Col(1));
 	vec3 Z = vec3(world_mat.Col(2));
-	vec3 Pos = vec3(world_mat.Col(3));
+	vec3 Pos = vec3(world_mat.Col(3)); 
 
 	return &mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Pos), -dot(Y, Pos), -dot(Z, Pos), 1.0f);
 }
@@ -113,9 +112,9 @@ void Camera::SetFrustumViewAngle()
 
 void Camera::SetFOVRatio(uint width, uint height)
 {
-	float ratio = (float)width / height;
+	aspect_ratio = (float)width / height;
 	float vfov = field_of_view * DEGTORAD;
-	float hfov = Atan(ratio * Tan(vfov * 0.5f)) * 2.0f;
+	float hfov = Atan(aspect_ratio * Tan(vfov * 0.5f)) * 2.0f;
 
 	cfrustum->SetPerspective(hfov, vfov);
 }

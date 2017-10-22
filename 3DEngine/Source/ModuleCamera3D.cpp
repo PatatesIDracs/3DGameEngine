@@ -23,7 +23,9 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 }
 
 ModuleCamera3D::~ModuleCamera3D()
-{}
+{
+	delete camera_editor;
+}
 
 // -----------------------------------------------------------------
 bool ModuleCamera3D::Start()
@@ -31,7 +33,7 @@ bool ModuleCamera3D::Start()
 	LOGC("Setting up the camera");
 	bool ret = true;
 	glewInit();
-	camera_editor->SetFOVRatio(App->window->width, App->window->height);
+	camera_editor->SetFrustumViewAngle();
 	camera_editor->GenerateFrostumDraw();
 	return ret;
 }
@@ -47,8 +49,8 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
+	update_camera = false;
 	camera_editor->Update();
-
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
 
@@ -56,6 +58,7 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		RotateCamera();
+		update_camera = true;
 	}
 
 	// Right Click + WASD to Move like FPS 
@@ -63,6 +66,7 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		RotateCamera(false);
 		MoveCamera(dt);
+		update_camera = true;
 	}
 
 	// Zoom in and out
@@ -71,16 +75,14 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
 		else Position -= Z*(float)wheelmotion;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
-	{
-		camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+		update_camera = true;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) mode_editor = !mode_editor;
 	// Recalculate matrix -------------
-	CalculateViewMatrix();
+	if (!mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+	else if(mode_editor) CalculateViewMatrix();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -114,7 +116,6 @@ void ModuleCamera3D::LookAt(const vec3 &Spot)
 
 	CalculateViewMatrix();
 }
-
 
 // -----------------------------------------------------------------
 void ModuleCamera3D::Move(const vec3 &Movement)
