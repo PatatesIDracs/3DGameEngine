@@ -35,7 +35,7 @@ void MeshImporter::Import(const char* full_path)
 			RenderData* mesh = new RenderData;
 			std::string file_name = mesh_root_node->mChildren[i]->mName.C_Str();
 			file_name.append(MESHFILEFORMAT);
-	
+
 			//Indices data
 			mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
 			mesh->indices = new uint[mesh->num_indices];
@@ -52,7 +52,7 @@ void MeshImporter::Import(const char* full_path)
 
 			//Vertices data 
 			mesh->num_vertices = scene->mMeshes[i]->mNumVertices;
-			mesh->vertices = new float[mesh->num_vertices *3];
+			mesh->vertices = new float[mesh->num_vertices * 3];
 			memcpy(mesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertices * 3);
 
 			//TextureCoords data
@@ -69,6 +69,8 @@ void MeshImporter::Import(const char* full_path)
 			SaveMesh(mesh, file_name.c_str());
 		}
 	}
+	else
+		LOGC("No meshes found");
 }
 
 RenderData * MeshImporter::Load(const char * full_path)

@@ -33,6 +33,10 @@ void Importer::Import(char * full_path)
 	{
 		mesh_importer->Import(full_path);
 	}
+	if (extension == ".png")
+	{
+		text_importer->Import(full_path, filename.c_str());
+	}
 }
 
 void Importer::DividePath(char * full_path, std::string * path, std::string * filename, std::string * extension)
