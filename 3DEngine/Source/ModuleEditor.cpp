@@ -11,9 +11,7 @@
 #include "Component.h"
 #include "Importer.h"
 
-#include <filesystem>
 
-namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
@@ -83,7 +81,7 @@ bool ModuleEditor::Start()
 	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 
-
+	it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
 	return true;
 }
 
@@ -425,7 +423,7 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 	//Get to the library path
 	fs::path path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
 
-	
+	fs::directory_iterator it{ it_library_path.c_str() };
 
 	fs::directory_iterator end{};
 	
@@ -436,9 +434,19 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 	
 	ImGui::NextColumn();
 	ImGui::Text("Other files test");
-	for (fs::directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER }; it != end; it++)
+	for (; it != end; it++)
 	{
-		ImGui::Text("%s", it->path().filename().c_str());
+		if (fs::is_directory(it->path()))
+		{
+			if (ImGui::Button((const char*)("%S", it->path().filename().c_str())))
+			{
+				char new_path[150];
+				std::wcstombs(new_path, it->path().c_str(), 150);
+				it_library_path = new_path;
+			}
+
+		}
+
 	}
 		
 	ImGui::End();

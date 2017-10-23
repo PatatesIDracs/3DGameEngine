@@ -5,11 +5,15 @@
 #include <queue>
 #include <list>	
 #include <string>
+#include <filesystem>
+
 #include "SDL\include\SDL.h"
 
 #define CONSOLE_LIMIT 50
 
 class Profiler;
+
+namespace fs = std::experimental::filesystem;
 
 class ModuleEditor : public Module
 {
@@ -88,6 +92,10 @@ private:
 	bool	has_SSE3 = false;
 	bool	has_SSE41 = false;
 	bool	has_SSE42 = false;
+
+
+	//Explorer
+	std::string it_library_path;
 };
 
 #endif // !__MODULE_EDITOR_H__
