@@ -1,7 +1,10 @@
 #include "Mesh.h"
 #include "Glew\include\glew.h"
 
+#include "Application.h"
+#include "ModuleEditor.h"
 #include "Transform.h"
+
 
 Mesh::Mesh()
 {
@@ -82,6 +85,10 @@ void Mesh::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
+		ImGui::Text("the figure"); ImGui::SameLine();
+		if (ImGui::Button("Change")) changing_mesh = !changing_mesh;
+		if (changing_mesh) ChangeMesh();
+
 		ImGui::InputInt("Vertices:", (int*)&render_data->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		int faces = render_data->num_indices / 3;
@@ -90,6 +97,16 @@ void Mesh::DrawComponent()
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
 		ImGui::Checkbox("Draw OBB", &draw_obb);
 	}
+}
+
+void Mesh::ChangeMesh()
+{
+	std::string* new_mesh_path = nullptr;
+	if (App->editor->DrawLibraryExplorer(new_mesh_path))
+	{
+		changing_mesh = false;
+	}
+
 }
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)

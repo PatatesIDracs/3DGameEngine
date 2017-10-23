@@ -30,6 +30,7 @@ public:
 
 	void LoadHardwareSoftwareInfo();
 
+	bool DrawLibraryExplorer(std::string* output);
 private:
 
 	// Draw Configuration ------------------

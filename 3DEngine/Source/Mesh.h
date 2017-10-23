@@ -42,6 +42,8 @@ public:
 
 	void DrawComponent();
 
+	void ChangeMesh();
+
 	// Modify Component
 	void RotateBoundingBox(const math::Quat &transform);
 
@@ -57,6 +59,8 @@ public:
 
 	bool draw_aabb = true;
 	bool draw_obb = true;
+
+	bool changing_mesh = false;
 	
 };
 

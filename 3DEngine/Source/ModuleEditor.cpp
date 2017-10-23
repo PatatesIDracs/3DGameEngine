@@ -9,6 +9,11 @@
 #include "Profiler.h"
 #include "GameObject.h"
 #include "Component.h"
+#include "Importer.h"
+
+#include <filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
@@ -20,7 +25,9 @@ ModuleEditor::~ModuleEditor()
 
 bool ModuleEditor::Start()
 {
-	
+	Importer test_imp;
+
+
 	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
 	ImGuiIO& io = ImGui::GetIO();
@@ -101,7 +108,6 @@ update_status ModuleEditor::Update(float dt)
 	{
 		//Open Setting window
 		if (ImGui::MenuItem("Configuration")) showconfig = !showconfig;
-
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
 		ImGui::EndMenu();
@@ -113,7 +119,6 @@ update_status ModuleEditor::Update(float dt)
 		if (ImGui::MenuItem("Properties")) showpropertieswindow = !showpropertieswindow;
 		if (ImGui::MenuItem("Hierachy")) showhierarchy = !showhierarchy;
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
-
 		ImGui::EndMenu();
 	}
 
@@ -121,8 +126,6 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Tools"))
 	{
 		if (ImGui::MenuItem("Profiler")) showprofiler = !showprofiler;
-	
-
 		ImGui::EndMenu();
 	}
 
@@ -131,16 +134,11 @@ update_status ModuleEditor::Update(float dt)
 	{
 		//Show about info 
 		if (ImGui::MenuItem("About")) showaboutwindow = !showaboutwindow;
-
 		//Show ImGui demo
 		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
-
 		if (ImGui::MenuItem("Documentation(WIP)")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/wiki");
-
 		if (ImGui::MenuItem("Download lastest")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/releases");
-
 		if (ImGui::MenuItem("Report a bug")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/issues");
-		
 		ImGui::EndMenu();
 	}
 
@@ -169,27 +167,19 @@ update_status ModuleEditor::Update(float dt)
 	
 			item++;
 		}
-
 		HardwareDetection();
-
 		ImGui::End();
-		
 	}
 
 	//Show the ImGui test window if requested
 	if (showtestwindow) ImGui::ShowTestWindow();
-
 	//Draw about window when requested
 	if (showaboutwindow) DrawAboutWindow();
-
 	if (showconsole) DrawConsole();
-
 	//Draw Profiler
 	if (showprofiler) DrawProfilerWindow();
-
 	//Show Game Object properties
 	if (showpropertieswindow) DrawPropertiesWindow();
-
 	if (showhierarchy) DrawHierarchy();
 	
 	return UPDATE_CONTINUE;
@@ -428,5 +418,30 @@ void ModuleEditor::DrawProfilerWindow()
 		App->DoRecord();
 	}
 
+}
+
+bool ModuleEditor::DrawLibraryExplorer(std::string* output)
+{
+	//Get to the library path
+	fs::path path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+
+	
+
+	fs::directory_iterator end{};
+	
+	ImGui::Begin("Explorer");
+	ImGui::Columns(2);
+	ImGui::Text("directory explorer test");
+	
+	
+	ImGui::NextColumn();
+	ImGui::Text("Other files test");
+	for (fs::directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER }; it != end; it++)
+	{
+		ImGui::Text("%s", it->path().filename().c_str());
+	}
+		
+	ImGui::End();
+	return false;
 }
 
