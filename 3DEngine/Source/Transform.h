@@ -6,14 +6,13 @@
 class Transform : public Component
 {
 public:
-	Transform();
-	Transform(Transform &transf);
-	Transform(GameObject* parent, mat4x4 transf, bool isactive = true);
+	Transform(GameObject* parent);
 	~Transform();
 
 	const mat4x4 GetRotMat() const;
 	const Quat GetRotQuat();
 	
+	void SetTransform(mat4x4 &transf);
 	void SetPosition();
 	void SetRotation();
 	void SetScale();

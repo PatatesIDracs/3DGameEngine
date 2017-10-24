@@ -3,27 +3,8 @@
 
 #include "Mesh.h"
 
-Transform::Transform() : Component(nullptr, COMP_TRANSFORM, true)
+Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(mat4x4())
 {
-	transform = mat4x4();
-	unique = true;
-}
-
-Transform::Transform(Transform & transf) : Component(transf.parent, COMP_TRANSFORM, transf.active), transform(transf.GetRotMat()), position(transf.position),
-scale(transf.scale), angle(transf.angle)
-{
-	unique = true;
-}
-
-Transform::Transform(GameObject* parent, mat4x4 transf, bool isactive) : Component(parent, COMP_TRANSFORM, isactive), transform(transf)
-{
-	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
-	scale = vec3(1, 1, 1);
-	SetScale();
-	
-	GetEAnglesFromMat();
-	SetRotation();
-	rotation = GetRotQuat();
 	unique = true;
 }
 
@@ -39,6 +20,18 @@ const mat4x4 Transform::GetRotMat() const
 const Quat Transform::GetRotQuat()
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+}
+
+void Transform::SetTransform(mat4x4 &transf)
+{
+	transform = transf;
+	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
+	scale = vec3(1, 1, 1);
+	SetScale();
+
+	GetEAnglesFromMat();
+	SetRotation();
+	unique = true;
 }
 
 void Transform::SetPosition()

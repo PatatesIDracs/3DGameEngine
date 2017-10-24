@@ -10,17 +10,17 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 {
 	cfrustum = new Frustum();
 	cfrustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
-	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, MIN_FARP_DIST);
+	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
-		Transform* ptransf = (Transform*)parent->FindUniqueComponent(COMP_TRANSFORM);
-		if (ptransf != nullptr)
-		{
-			mat4x4 transf = ptransf->GetRotMat();
-			cfrustum->SetFrame(vec(transf.M[12], transf.M[13], transf.M[14]), vec(transf.M[8],transf.M[9],transf.M[10]), vec(transf.M[4], transf.M[5], transf.M[6]));
-		}
+		mat4x4 transf = parent->GetTransform()->GetRotMat();
+		cfrustum->SetFrame(vec(transf.M[12], transf.M[13], transf.M[14]), -vec(transf.M[8],transf.M[9],transf.M[10]), vec(transf.M[4], transf.M[5], transf.M[6]));
 	}
-	else cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
+	else
+	{
+		LOGC("WARNING: Component Camera Parent is NULL");
+		cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
+	}
 	cfrustum->SetPerspective(1024, 720);
 }
 
@@ -56,12 +56,14 @@ void Camera::DrawComponent()
 	{
 		ImGui::Checkbox("Active", &active);
 
-		if (ImGui::InputInt("Near Plane", (int*)&near_plane, 0, 100, ImGuiInputTextFlags_EnterReturnsTrue)
-			|| ImGui::InputInt("Far Plane", (int*)&far_plane, 0, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100,2, ImGuiInputTextFlags_EnterReturnsTrue)
+		||ImGui::InputFloat("Far Plane", &far_plane, 0, 100,2, ImGuiInputTextFlags_EnterReturnsTrue))
 			SetFrustumPlanes();
 
-		if (ImGui::SliderFloat("Field of View", &field_of_view, 45.f, 100.f, "%.2f"))
+		if (ImGui::SliderInt("Field of View", &field_of_view, 45.f, 100.f, "%.2f"))
 			SetFrustumViewAngle();
+
+		ImGui::InputFloat("Aspect Ratio", &aspect_ratio, 0, 100, 3, ImGuiInputTextFlags_ReadOnly);
 	}
 }
 
@@ -100,6 +102,14 @@ void Camera::SetFrustumPlanes()
 	if (far_plane < MIN_FARP_DIST) far_plane = MIN_FARP_DIST;
 
 	cfrustum->SetViewPlaneDistances(near_plane, far_plane);
+}
+
+void Camera::SetFrustumPlanes(float nearp, float farp)
+{
+	if (nearp < MIN_NEARP_DIST) nearp = MIN_NEARP_DIST;
+	if (farp < MIN_FARP_DIST) farp = MIN_FARP_DIST;
+
+	cfrustum->SetViewPlaneDistances(nearp, farp);
 }
 
 void Camera::SetFrustumViewAngle()

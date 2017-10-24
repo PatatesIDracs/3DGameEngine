@@ -110,7 +110,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (!App->camera->mode_editor)
+	if (App->camera->mode_editor)
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();

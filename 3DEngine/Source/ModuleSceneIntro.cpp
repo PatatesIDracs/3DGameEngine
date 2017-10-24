@@ -29,6 +29,8 @@ bool ModuleSceneIntro::Start()
 	//Set Up current object to show its properties
 	current_object = root;
 
+	App->camera->SetCameraEditor();
+
 	return ret;
 }
 

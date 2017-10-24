@@ -22,6 +22,7 @@ public:
 
 	// Set Methods
 	void SetFrustumPlanes();
+	void SetFrustumPlanes(float nearp, float farp);
 	void SetFrustumViewAngle();
 	void SetFOVRatio(uint width, uint height);
 	void SetNewFrame(vec& pos, vec& front, vec& up);
@@ -31,7 +32,7 @@ private:
 	
 	float near_plane = 1.f;
 	float far_plane = 50.f;
-	float field_of_view = 60.0f;
+	int field_of_view = 60;
 	float aspect_ratio = 0.f;
 
 	uint findices_id = 0;

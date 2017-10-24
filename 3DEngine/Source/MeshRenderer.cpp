@@ -64,7 +64,7 @@ void MeshRenderer::Update()
 
 void MeshRenderer::GetElements()
 {
-	transform = (Transform*)parent->FindUniqueComponent(COMP_TRANSFORM);
+	transform = (Transform*)parent->GetTransform();
 	mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
 	material = (Material*)parent->FindUniqueComponent(COMP_MATERIAL);
 }

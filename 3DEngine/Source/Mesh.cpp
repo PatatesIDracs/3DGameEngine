@@ -22,8 +22,8 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 	CreateBoxIndices();
 	CreateBoxBuffers();
 
-	Transform* rot = (Transform*)parent->FindUniqueComponent(COMP_TRANSFORM);
-	if (rot != nullptr) RotateBoundingBox(rot->GetRotQuat());
+	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+	else LOGC("WARNING: Mesh parent is NULL");
 }
 
 Mesh::~Mesh()

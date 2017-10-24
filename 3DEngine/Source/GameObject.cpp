@@ -9,12 +9,18 @@ GameObject::GameObject(GameObject* parent) : parent(parent), name("GameObject")
 {
 	if (parent != nullptr)
 		parent->AddChildren(this);
+
+	// Create default Transform
+	components.push_back(new Transform(this));
 }
 
 GameObject::GameObject(GameObject * parent,const char * name) : parent(parent), name(name)
 {
 	if (parent != nullptr)
 		parent->AddChildren(this);
+
+	// Create default Transform
+	components.push_back(new Transform(this));
 }
 
 GameObject::~GameObject()
@@ -57,6 +63,16 @@ void GameObject::AddChildren(GameObject * new_child)
 void GameObject::AddComponent(Component * new_component)
 {
 	components.push_back(new_component);
+}
+
+void GameObject::SetTransform(mat4x4 &transform)
+{
+	((Transform*)components[0])->SetTransform(transform);
+}
+
+Transform * GameObject::GetTransform()
+{
+	return (Transform*)components[0];
 }
 
 Component* GameObject::FindUniqueComponent(COMP_TYPE type)

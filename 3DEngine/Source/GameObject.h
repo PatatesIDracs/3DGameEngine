@@ -3,8 +3,10 @@
 
 #include <vector>
 #include "Math.h"
+#include "glmath.h"
 
 class Component;
+class Transform;
 enum COMP_TYPE;
 
 class GameObject
@@ -18,6 +20,9 @@ public:
 
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
+
+	void SetTransform(mat4x4 &transform);
+	Transform* GetTransform();
 
 	Component* FindUniqueComponent(COMP_TYPE type);
 

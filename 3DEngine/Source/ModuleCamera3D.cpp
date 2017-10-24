@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "ModuleSceneIntro.h"
 #include "ConfigJSON.h"
 #include "Imgui\imgui.h"
 
@@ -7,7 +8,6 @@
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
-	camera_editor = new Camera(nullptr, true);
 
 	X = vec3(1.0f, 0.0f, 0.0f);
 	Y = vec3(0.0f, 1.0f, 0.0f);
@@ -18,13 +18,11 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	// Set Angle	
 	angle = 45;
-
-	CalculateViewMatrix();
 }
 
 ModuleCamera3D::~ModuleCamera3D()
 {
-	delete camera_editor;
+	if(camera_editor != nullptr) delete camera_editor;
 }
 
 // -----------------------------------------------------------------
@@ -33,8 +31,7 @@ bool ModuleCamera3D::Start()
 	LOGC("Setting up the camera");
 	bool ret = true;
 	glewInit();
-	camera_editor->SetFrustumViewAngle();
-	camera_editor->GenerateFrostumDraw();
+
 	return ret;
 }
 
@@ -46,11 +43,20 @@ bool ModuleCamera3D::CleanUp()
 	return true;
 }
 
+void ModuleCamera3D::SetCameraEditor()
+{
+	camera_editor = new Camera(nullptr, true);
+	camera_editor->SetFrustumPlanes(0.5, 100);
+	camera_editor->SetFrustumViewAngle();
+	camera_editor->GenerateFrostumDraw();
+	camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
-{
+{	
 	update_camera = false;
-	camera_editor->Update();
+
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
 
@@ -58,7 +64,6 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		RotateCamera();
-		update_camera = true;
 	}
 
 	// Right Click + WASD to Move like FPS 
@@ -66,7 +71,6 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		RotateCamera(false);
 		MoveCamera(dt);
-		update_camera = true;
 	}
 
 	// Zoom in and out
@@ -75,13 +79,12 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
 		else Position -= Z*(float)wheelmotion;
+
 		update_camera = true;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) mode_editor = !mode_editor;
 	// Recalculate matrix -------------
-	if (!mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
-	else if(mode_editor) CalculateViewMatrix();
+	if (mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
 
 	return UPDATE_CONTINUE;
 }
@@ -102,7 +105,7 @@ void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool Rota
 		this->Position += Z * 0.05f;
 	}
 
-	CalculateViewMatrix();
+	update_camera = true;
 }
 
 // -----------------------------------------------------------------
@@ -114,7 +117,7 @@ void ModuleCamera3D::LookAt(const vec3 &Spot)
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
-	CalculateViewMatrix();
+	update_camera = true;
 }
 
 // -----------------------------------------------------------------
@@ -123,7 +126,7 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 	Position += Movement;
 	Reference += Movement;
 
-	CalculateViewMatrix();
+	update_camera = true;
 }
 
 void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
@@ -134,7 +137,7 @@ void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
 	this->distance = (float)1.2*distance;
 	Position = Reference + Z*distance * 2;
 
-	CalculateViewMatrix();
+	update_camera = true;
 }
 
 void ModuleCamera3D::RotateCamera(bool onpoint)
@@ -173,6 +176,8 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 
 	if (onpoint) Position = Reference + Z * length(Position);
 	else Reference = Position - Z*length(Position - Reference);
+
+	update_camera = true;
 }
 
 void ModuleCamera3D::MoveCamera(float dt)
@@ -194,13 +199,14 @@ void ModuleCamera3D::MoveCamera(float dt)
 		Position += Z*dy*dt;
 		Reference += Z*dy*dt;
 	}
+
+	update_camera = true;
 }
 
 // -----------------------------------------------------------------
 float* ModuleCamera3D::GetViewMatrix()
 {
-	if(mode_editor)	return &ViewMatrix;
-	else return camera_editor->GetViewMatrix();
+	 return camera_editor->GetViewMatrix();
 }
 
 // ----------------------------------------------
@@ -219,11 +225,4 @@ void ModuleCamera3D::SaveModuleConfig(Config_Json & config)
 void ModuleCamera3D::DrawConfig()
 {
 	ImGui::SliderFloat("Speed", &speed, 8.0f, 30.0f);
-}
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::CalculateViewMatrix()
-{
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	ViewMatrixInverse = inverse(ViewMatrix);
 }
