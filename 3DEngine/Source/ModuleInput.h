@@ -3,6 +3,7 @@
 
 
 #include "Module.h"
+#include "Importer.h"
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -61,6 +62,9 @@ public:
 	}
 
 	bool IsImGuiUsingInput();
+
+public:
+	Importer jope_importer;
 
 private:
 	KEY_STATE* keyboard;

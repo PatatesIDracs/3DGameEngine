@@ -168,7 +168,7 @@ RenderData * MeshImporter::Load(const char * full_path)
 	//Clean Buffer bind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
+	delete[] buffer_data;
 	return ret;
 }
 

@@ -10,7 +10,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Importer.h"
-
+#include "Mesh.h"
 
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
@@ -420,11 +420,9 @@ void ModuleEditor::DrawProfilerWindow()
 
 bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 {
+	bool ret = false;
 	//Get to the library path
-	fs::path path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
-
 	fs::directory_iterator it{ it_library_path.c_str() };
-
 	fs::directory_iterator end{};
 	
 	ImGui::Begin("Explorer");
@@ -438,18 +436,32 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 	{
 		if (fs::is_directory(it->path()))
 		{
-			if (ImGui::Button((const char*)("%S", it->path().filename().c_str())))
+			static char dir_name[150];
+			std::wcstombs(dir_name, it->path().filename().c_str(), sizeof(dir_name));
+			if (ImGui::Button(dir_name))
 			{
-				char new_path[150];
+				static char new_path[150];
 				std::wcstombs(new_path, it->path().c_str(), 150);
 				it_library_path = new_path;
 			}
-
 		}
-
+		else
+		{
+			static char file_name[150];
+			std::wcstombs(file_name, it->path().filename().c_str(), sizeof(file_name));
+			if (ImGui::Button(file_name))
+			{
+				char file[150];
+				std::wcstombs(file, it->path().c_str(), 150);
+				*output = file;
+				LOGC("Loaded file from: %s\\%S", it_library_path.c_str(), it->path().filename().c_str());
+				it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+				ret = true;
+				break;
+			}
+		}
 	}
-		
 	ImGui::End();
-	return false;
+	return ret;
 }
 

@@ -5,6 +5,8 @@
 
 struct RenderData
 {
+	~RenderData();
+
 	uint id_indices = 0; // id in VRAM
 	uint num_indices = 0;
 	uint* indices = nullptr;

@@ -5,7 +5,7 @@
 
 class MeshImporter;
 class TextureImporter;
-
+class RenderData;
 class Importer
 {
 public:
@@ -17,6 +17,9 @@ public:
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	
 	void CheckDirectories();
+
+	//Mesh importing and loading methods
+	RenderData* GetNewMesh(const char* mesh_path);
 
 private:
 

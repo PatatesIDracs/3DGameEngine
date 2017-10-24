@@ -2,6 +2,7 @@
 #include "MeshImporter.h"
 #include "TextureImporter.h"
 #include "Globals.h"
+#include "Mesh.h"
 
 #include <filesystem>
 
@@ -14,6 +15,8 @@ Importer::Importer()
 
 Importer::~Importer()
 {
+	delete mesh_importer;
+	delete text_importer;
 }
 
 void Importer::Import(char * full_path)
@@ -113,5 +116,12 @@ void Importer::CheckDirectories()
 	else
 		LOGC("Library meshes folder identified.");
 
+
+}
+
+RenderData* Importer::GetNewMesh(const char* mesh_path)
+{
+
+	return mesh_importer->Load(mesh_path);
 
 }

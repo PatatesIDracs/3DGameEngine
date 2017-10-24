@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ModuleEditor.h"
+#include "ModuleInput.h"
 #include "Transform.h"
 
 
@@ -27,19 +28,6 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 
 Mesh::~Mesh()
 {
-	if (render_data->num_indices > 0)glDeleteBuffers(1, &render_data->id_indices);
-	if (render_data->num_vertices > 0)glDeleteBuffers(1, &render_data->id_vertices);
-	if (render_data->num_normals > 0)glDeleteBuffers(1, &render_data->id_normals);
-	if (render_data->num_tex_vertices > 0)	glDeleteBuffers(1, &render_data->id_tex_vertices);
-	if (render_data->aabb_vertex_id > 0) glDeleteBuffers(1, &render_data->aabb_vertex_id);
-	if (render_data->obb_vertex_id > 0) glDeleteBuffers(1, &render_data->obb_vertex_id);
-	if (render_data->box_indices_id > 0) glDeleteBuffers(1, &render_data->box_indices_id);
-
-	delete[] render_data->indices;
-	delete[] render_data->vertices;
-	delete[] render_data->normals;
-	delete[] render_data->tex_vertices;
-
 	delete render_data;
 }
 
@@ -101,9 +89,11 @@ void Mesh::DrawComponent()
 
 void Mesh::ChangeMesh()
 {
-	std::string* new_mesh_path = nullptr;
-	if (App->editor->DrawLibraryExplorer(new_mesh_path))
+	std::string new_mesh_path;
+	if (App->editor->DrawLibraryExplorer(&new_mesh_path))
 	{
+		delete render_data;
+		render_data = App->input->jope_importer.GetNewMesh(new_mesh_path.c_str());
 		changing_mesh = false;
 	}
 
@@ -171,4 +161,21 @@ void Mesh::CreateBoxBuffers()
 	Primitive box;
 	render_data->aabb_vertex_id = box.GenerateBBoxVertices(new_aabb);
 	render_data->obb_vertex_id = box.GenerateBBoxVertices(new_obb);
+}
+
+RenderData::~RenderData()
+{
+	if (num_indices > 0)glDeleteBuffers(1, &id_indices);
+	if (num_vertices > 0)glDeleteBuffers(1, &id_vertices);
+	if (num_normals > 0)glDeleteBuffers(1, &id_normals);
+	if (num_tex_vertices > 0)	glDeleteBuffers(1, &id_tex_vertices);
+	if (aabb_vertex_id > 0) glDeleteBuffers(1, &aabb_vertex_id);
+	if (obb_vertex_id > 0) glDeleteBuffers(1, &obb_vertex_id);
+	if (box_indices_id > 0) glDeleteBuffers(1, &box_indices_id);
+
+	delete[] indices;
+	delete[] vertices;
+	delete[] normals;
+	delete[] tex_vertices;
+
 }
