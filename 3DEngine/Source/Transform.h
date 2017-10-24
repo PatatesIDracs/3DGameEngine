@@ -11,11 +11,13 @@ public:
 
 	const float4x4 GetRotMat() const;
 	const Quat GetRotQuat();
+	float3 GetPosition() const;
 	
 	void Update();
 	void UpdateTransform();
 
 	void SetTransform(float4x4 &transf);
+
 
 	void DrawComponent();
 

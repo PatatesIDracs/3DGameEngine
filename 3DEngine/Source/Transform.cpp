@@ -6,6 +6,7 @@
 Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity)
 {
 	unique = true;
+	update_transform = true;
 }
 
 Transform::~Transform()
@@ -20,6 +21,11 @@ const float4x4 Transform::GetRotMat() const
 const Quat Transform::GetRotQuat()
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+}
+
+float3 Transform::GetPosition() const
+{
+	return position;
 }
 
 void Transform::Update()

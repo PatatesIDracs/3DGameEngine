@@ -31,6 +31,10 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->SetCameraEditor();
 
+	GameObject* camera = CreateNewGameObject("Camera", nullptr);
+	Camera* new_camera = new Camera(camera, true);
+	new_camera->SetFrustumViewAngle();
+	camera->AddComponent(new_camera);
 	return ret;
 }
 

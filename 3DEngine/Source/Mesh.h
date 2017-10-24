@@ -41,6 +41,7 @@ public:
 	const RenderData* GetRenderData();
 
 	void Update();
+	void UpdateTransform();
 
 	void DrawComponent();
 

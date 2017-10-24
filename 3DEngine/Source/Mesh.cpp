@@ -69,6 +69,13 @@ void Mesh::Update()
 	}
 }
 
+void Mesh::UpdateTransform()
+{
+	aabb_box.SetNegativeInfinity();
+	aabb_box.Enclose(obb_box);
+	CreateBoxBuffers();
+}
+
 void Mesh::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Geometry"))
@@ -102,10 +109,6 @@ void Mesh::ChangeMesh()
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
 	obb_box.Transform(transform.Inverted());
-
-	aabb_box.SetNegativeInfinity();
-	aabb_box.Enclose(obb_box);
-	CreateBoxBuffers();
 }
 
 // Create box indices buffer (only once)

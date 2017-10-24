@@ -35,8 +35,6 @@ void Camera::Update()
 {
 	if (fvertices_id != 0 && findices_id != 0)
 	{
-		//glPushMatrix();
-		//glMultMatrixf(cfrustum->);
 		glLineWidth(2.0f);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -46,8 +44,18 @@ void Camera::Update()
 		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
 
 		glLineWidth(1.0f);
-		//glPopMatrix();
 	}
+}
+
+void Camera::UpdateTransform()
+{
+	Transform* transf = parent->GetTransform();
+
+	float3x3 mat = transf->GetRotMat().Transposed().Float3x3Part();
+	cfrustum->SetFrame(transf->GetPosition(), -mat.Col(2), mat.Col(1));
+
+	//Temporal
+	GenerateFrostumDraw();
 }
 
 void Camera::DrawComponent()

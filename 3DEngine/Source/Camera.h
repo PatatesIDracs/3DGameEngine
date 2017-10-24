@@ -13,6 +13,7 @@ public:
 	~Camera();
 
 	void Update();
+	void UpdateTransform();
 
 	void DrawComponent();
 
