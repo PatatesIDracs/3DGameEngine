@@ -111,7 +111,7 @@ void Mesh::ChangeMesh()
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
-	obb_box.Transform(transform);
+	obb_box.Transform(transform.Inverted());
 
 	aabb_box.SetNegativeInfinity();
 	aabb_box.Enclose(obb_box);

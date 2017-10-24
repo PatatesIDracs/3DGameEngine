@@ -9,7 +9,7 @@
 Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAMERA, isactive)
 {
 	cfrustum = new Frustum();
-	cfrustum->SetKind(FrustumSpaceGL, FrustumLeftHanded);
+	cfrustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, MIN_FARP_DIST);
 	if (parent != nullptr)
 	{
@@ -20,7 +20,7 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 			cfrustum->SetFrame(vec(transf.M[12], transf.M[13], transf.M[14]), vec(transf.M[8],transf.M[9],transf.M[10]), vec(transf.M[4], transf.M[5], transf.M[6]));
 		}
 	}
-	else cfrustum->SetFrame(vec(0.f, 0.f, 0.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
+	else cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, -1.f), vec(0.f, 1.f, 0.f));
 	cfrustum->SetPerspective(1024, 720);
 }
 
@@ -35,6 +35,8 @@ void Camera::Update()
 {
 	if (fvertices_id != 0 && findices_id != 0)
 	{
+		//glPushMatrix();
+		//glMultMatrixf(cfrustum->);
 		glLineWidth(2.0f);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -44,6 +46,7 @@ void Camera::Update()
 		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
 
 		glLineWidth(1.0f);
+		//glPopMatrix();
 	}
 }
 
@@ -64,13 +67,7 @@ void Camera::DrawComponent()
 
 float* Camera::GetViewMatrix()
 {
-	float3x4 world_mat = cfrustum->WorldMatrix();
-	vec3 X = vec3(world_mat.Col(0));
-	vec3 Y = vec3(world_mat.Col(1));
-	vec3 Z = vec3(world_mat.Col(2));
-	vec3 Pos = vec3(world_mat.Col(3)); 
-
-	return &mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Pos), -dot(Y, Pos), -dot(Z, Pos), 1.0f);
+	return cfrustum->ViewProjMatrix().Transposed().ptr();
 }
 
 void Camera::GenerateFrostumDraw()

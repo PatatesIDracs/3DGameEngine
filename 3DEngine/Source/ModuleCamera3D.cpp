@@ -80,7 +80,7 @@ update_status ModuleCamera3D::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) mode_editor = !mode_editor;
 	// Recalculate matrix -------------
-	if (!mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+	if (!mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
 	else if(mode_editor) CalculateViewMatrix();
 
 	return UPDATE_CONTINUE;

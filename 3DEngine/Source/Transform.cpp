@@ -38,24 +38,22 @@ const mat4x4 Transform::GetRotMat() const
 
 const Quat Transform::GetRotQuat()
 {
-	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, -angle.z*DEGTORAD);
+	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
 }
 
 void Transform::SetPosition()
 {
 	transform.translate(position.x, position.y,  position.z);
+
+	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
+//	if (mesh != nullptr) mesh->MoveBoundingBox(position);
 }
 
 void Transform::SetRotation()
 {
 	// Temporal Function need to improve
 	Quat rot_q = GetRotQuat();
-
-	float rot_a = rot_q.Angle();
-	vec axis;
-	if (rot_a == 0) axis = vec(1, 0, 0);
-	else axis = rot_q.Axis();
-	transform = transform.rotate(rot_q.Angle()*RADTODEG,vec3(axis.x, axis.y, axis.z));
+	transform = rot_q.ToFloat4x4();
 
 	rotation.Inverse();
 	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
