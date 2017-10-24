@@ -20,7 +20,7 @@ void MeshRenderer::Update()
 		return;
 
 	glPushMatrix();
-	glMultMatrixf(transform->GetRotMat().M);
+	glMultMatrixf(transform->GetRotMat().ptr());
 
 	if (material != nullptr)
 	{

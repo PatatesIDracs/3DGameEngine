@@ -65,7 +65,7 @@ void GameObject::AddComponent(Component * new_component)
 	components.push_back(new_component);
 }
 
-void GameObject::SetTransform(mat4x4 &transform)
+void GameObject::SetTransform(float4x4 &transform)
 {
 	((Transform*)components[0])->SetTransform(transform);
 }

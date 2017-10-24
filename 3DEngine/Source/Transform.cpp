@@ -3,7 +3,7 @@
 
 #include "Mesh.h"
 
-Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(mat4x4())
+Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity)
 {
 	unique = true;
 }
@@ -12,7 +12,7 @@ Transform::~Transform()
 {
 }
 
-const mat4x4 Transform::GetRotMat() const
+const float4x4 Transform::GetRotMat() const
 {
 	return transform;
 }
@@ -22,103 +22,57 @@ const Quat Transform::GetRotQuat()
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
 }
 
-void Transform::SetTransform(mat4x4 &transf)
+void Transform::Update()
 {
-	transform = transf;
-	position = vec3(transf.M[12], transf.M[13], transf.M[14]);
-	scale = vec3(1, 1, 1);
-	SetScale();
-
-	GetEAnglesFromMat();
-	SetRotation();
-	unique = true;
+	if (update_transform)
+	{
+		for (uint i = 0; i < parent->components.size(); i++)
+		{
+			parent->components[i]->UpdateTransform();
+		}
+	}
 }
 
-void Transform::SetPosition()
+void Transform::UpdateTransform()
 {
-	transform.translate(position.x, position.y,  position.z);
-
-	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
-//	if (mesh != nullptr) mesh->MoveBoundingBox(position);
-}
-
-void Transform::SetRotation()
-{
-	// Temporal Function need to improve
+	// Set Rotation
 	Quat rot_q = GetRotQuat();
-	transform = rot_q.ToFloat4x4();
 
+	// Set Scale
+	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4();
+	
+	// Set Position
+	transform.Translate(position);
+
+	// Rotate Bounding Box
 	rotation.Inverse();
 	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
 	if (mesh != nullptr)
 	{
-		mesh->RotateBoundingBox(rot_q*rotation);
+		mesh->RotateBoundingBox(rotation);
+		mesh->RotateBoundingBox(rot_q);
 	}
 	rotation = rot_q;
+
+	update_transform = false;
 }
 
-void Transform::SetScale()
+void Transform::SetTransform(float4x4 &transf)
 {
-	// Temporal Function need to improve
-	vec3 curr_scale = vec3(Abs((transform.M[0] + transform.M[1] + transform.M[2])), Abs((transform.M[4] + transform.M[5] + transform.M[6])), Abs((transform.M[8] + transform.M[9] + transform.M[10])));
-	float x = scale.x / curr_scale.x;
-	float y = scale.y / curr_scale.y;
-	float z = scale.z / curr_scale.z;
-	if (x != 0)
-	{
-		transform.M[0] *= x;
-		transform.M[1] *= x;
-		transform.M[2] *= x;
-	}
-	if (y != 0)
-	{
-		transform.M[4] *= y;
-		transform.M[5] *= y;
-		transform.M[6] *= y;
-	}
-	if (z != 0)
-	{
-		transform.M[8] *= z;
-		transform.M[9] *= z;
-		transform.M[10] *= z;
-	}
-}
+	transform = transf;
+	transform.Decompose(position, rotation, scale);
+	scale = float3(1.f, 1.f, 1.f);
+	angle = rotation.ToEulerXYZ()*RADTODEG;
 
-// Change Name
-void Transform::GetEAnglesFromMat()
-{
-	// Euler Angles
-	if (transform.M[2] != 1 && transform.M[2] != -1)
-	{
-		angle.y = -asin(transform.M[2]);
-		angle.z = atan2(transform.M[6] / math::Cos(angle.y), transform.M[10] / math::Cos(angle.y));
-		angle.x = atan2(transform.M[1] / math::Cos(angle.y), transform.M[0] / math::Cos(angle.y));
-		angle.y = RadToDeg(angle.y);
-	}
-	else
-	{
-		angle.z = 0;
-		if (transform.M[2] == -1)
-		{
-			angle.y = 90;
-			angle.x = atan2(transform.M[4], transform.M[8]);
-		}
-		else
-		{
-			angle.y = -90;
-			angle.x = atan2(-transform.M[4], -transform.M[8]);
-		}
-	}
-	angle.z = RadToDeg(angle.z);
-	angle.x = RadToDeg(angle.x);
+	update_transform = true;
 }
 
 void Transform::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
-		if(ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetPosition();
-		if(ImGui::InputFloat3("Rotation", &angle.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetRotation();
-		if(ImGui::InputFloat3("Scale", &scale.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) SetScale();
+		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
+		if(ImGui::InputFloat3("Rotation", &angle.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
+		if(ImGui::InputFloat3("Scale", &scale.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
 	}
 }

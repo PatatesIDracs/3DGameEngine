@@ -13,8 +13,8 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
-		mat4x4 transf = parent->GetTransform()->GetRotMat();
-		cfrustum->SetFrame(vec(transf.M[12], transf.M[13], transf.M[14]), -vec(transf.M[8],transf.M[9],transf.M[10]), vec(transf.M[4], transf.M[5], transf.M[6]));
+		const float* transf = parent->GetTransform()->GetRotMat().ptr();
+		cfrustum->SetFrame(vec(transf[12], transf[13], transf[14]), -vec(transf[8],transf[9],transf[10]), vec(transf[4], transf[5], transf[6]));
 	}
 	else
 	{

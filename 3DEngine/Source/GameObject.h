@@ -21,7 +21,7 @@ public:
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
 
-	void SetTransform(mat4x4 &transform);
+	void SetTransform(float4x4 &transform);
 	Transform* GetTransform();
 
 	Component* FindUniqueComponent(COMP_TYPE type);

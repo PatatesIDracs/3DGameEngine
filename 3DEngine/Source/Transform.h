@@ -9,28 +9,26 @@ public:
 	Transform(GameObject* parent);
 	~Transform();
 
-	const mat4x4 GetRotMat() const;
+	const float4x4 GetRotMat() const;
 	const Quat GetRotQuat();
 	
-	void SetTransform(mat4x4 &transf);
-	void SetPosition();
-	void SetRotation();
-	void SetScale();
+	void Update();
+	void UpdateTransform();
 
-	void GetEAnglesFromMat();
+	void SetTransform(float4x4 &transf);
 
 	void DrawComponent();
 
 private:
 
-	mat4x4 transform;
+	float4x4 transform;
 	Quat rotation = Quat::identity;
 
-	vec3 position = {0.0f,0.0f,0.0f};
-	vec3 angle = {0.0f, 0.0f, 0.0f};
-	vec3 scale = {1.0f,1.0f,1.0f};
+	bool update_transform = false;
 
-	vec3 rot_angle = { 0.f,0.f,0.f };
+	float3 position = {0.0f,0.0f,0.0f};
+	float3 angle = {0.0f, 0.0f, 0.0f};
+	float3 scale = {1.0f,1.0f,1.0f};
 };
 
 #endif // !__TRANSFORM_H__

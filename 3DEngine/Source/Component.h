@@ -34,6 +34,8 @@ public:
 	virtual void Disable() { active = false; };
 	virtual void DrawComponent() {};
 
+	virtual void UpdateTransform() {};
+
 	COMP_TYPE GetType() const { return type; };
 
 public:
