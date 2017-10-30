@@ -27,7 +27,7 @@ void MeshRenderer::Update()
 		glBindTexture(GL_TEXTURE_2D, material->GetTextureID());
 	}
 
-	if (mesh != nullptr)
+	if (mesh != nullptr && mesh->IsActive())
 	{
 		const RenderData* mesh_render_data = mesh->GetRenderData();
 

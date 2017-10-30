@@ -8,7 +8,7 @@
 
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
+Primitive::Primitive() : transform(float4x4().identity), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
 {}
 
 // ------------------------------------------------------------
@@ -17,10 +17,10 @@ PrimitiveTypes Primitive::GetType() const
 	return type;
 }
 
-vec3 Primitive::GetPosition() const
+vec Primitive::GetPosition() const
 {
 	float3 box_pos = bounding_box.CenterPoint();
-	return vec3(transform.M[12] + box_pos.x, transform.M[13] + box_pos.y, transform.M[14] + box_pos.z);
+	return vec(transform[0][3] + box_pos.x, transform[1][3] + box_pos.y, transform[2][3] + box_pos.z);
 }
 
 uint Primitive::GenerateBBoxVertices(float * vertices)
@@ -112,7 +112,7 @@ void Primitive::CalculateFaceNormals(float* vertices)
 void Primitive::Render(bool face_normals) const
 {
 	glPushMatrix();
-	glMultMatrixf(transform.M);
+	glMultMatrixf(transform.ptr());
 
 	if(axis == true)
 	{
@@ -179,21 +179,21 @@ void Primitive::PrepareToRender()
 }
 
 // ------------------------------------------------------------
-void Primitive::SetPos(float x, float y, float z)
+void Primitive::SetPos(float3 pos)
 {
-	transform.translate(x, y, z);
+	transform.Translate(pos);
 }
 
 // ------------------------------------------------------------
-void Primitive::SetRotation(float angle, const vec3 &u)
+void Primitive::SetRotation(float angle, const vec &u)
 {
-	transform.rotate(angle, u);
+	transform.RotateAxisAngle(u, angle);
 }
 
 // ------------------------------------------------------------
 void Primitive::Scale(float x, float y, float z)
 {
-	transform.scale(x, y, z);
+	transform.Scale(x, y, z);
 }
 
 // CUBE ============================================
@@ -280,10 +280,10 @@ oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 			float phi1 = ((float)p / slices)*2*pi;
 			float phi2 = ((float)(p + 1) / slices) *2* pi;
 
-			vec3 vertex1;
-			vec3 vertex2;
-			vec3 vertex3;
-			vec3 vertex4;
+			vec vertex1;
+			vec vertex2;
+			vec vertex3;
+			vec vertex4;
 
 			vertex1.z = radius * Sin(theta1) * Cos(phi1);
 			vertex1.x = radius * Sin(theta1) * Sin(phi1);
@@ -447,7 +447,7 @@ void oldCylinder::InnerRender() const
 	
 	for(int i = 360; i >= 0; i -= (360 / n))
 	{
-		float a = (float)(i * M_PI / 180); // degrees to radians
+		float a = (float)(i * pi / 180); // degrees to radians
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a));
 	}
 	glEnd();
@@ -457,7 +457,7 @@ void oldCylinder::InnerRender() const
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	for(int i = 0; i <= 360; i += (360 / n))
 	{
-		float a =(float) (i * M_PI / 180); // degrees to radians
+		float a =(float) (i * pi / 180); // degrees to radians
 		glVertex3f(height * 0.5f, radius * cos(a), radius * sin(a));
 	}
 	glEnd();
@@ -466,7 +466,7 @@ void oldCylinder::InnerRender() const
 	glBegin(GL_QUAD_STRIP);
 	for(int i = 0; i < 480; i += (360 / n))
 	{
-		float a = (float)(i * M_PI / 180); // degrees to radians
+		float a = (float)(i * pi / 180); // degrees to radians
 
 		glVertex3f(height*0.5f,  radius * cos(a), radius * sin(a) );
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a) );

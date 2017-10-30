@@ -75,6 +75,11 @@ void Camera::DrawComponent()
 	}
 }
 
+float4x4 Camera::GetProjMatrix() const
+{
+	return cfrustum->ComputeProjectionMatrix();
+}
+
 float* Camera::GetViewMatrix()
 {
 	return cfrustum->ViewProjMatrix().Transposed().ptr();

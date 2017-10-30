@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "Math.h"
-#include "glmath.h"
+ 
 
 class Component;
 class Transform;

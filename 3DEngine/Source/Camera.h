@@ -17,6 +17,7 @@ public:
 
 	void DrawComponent();
 
+	float4x4 GetProjMatrix() const;
 	float* GetViewMatrix();
 
 	void GenerateFrostumDraw();

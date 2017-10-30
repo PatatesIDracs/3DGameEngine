@@ -2,8 +2,7 @@
 #define __3D_MODEL__
 
 #include "Globals.h"
-#include "Math.h"
-#include "glmath.h"
+#include "Math.h" 
 
 struct body_mesh
 {

@@ -20,8 +20,8 @@ bool ModuleSceneIntro::Start()
 	LOGC("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(vec3(0, 0, 0));
+	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
+	App->camera->LookAt(vec(0, 0, 0));
 
 	//Create the root GameObject
 	root = new GameObject(nullptr, "root");
@@ -95,7 +95,7 @@ void ModuleSceneIntro::LookAtScene() const
 			vec pos = box.CenterPoint();
 			float dist = box.HalfSize().Length();
 
-			App->camera->MoveTo(vec3(pos.x, pos.y, pos.z), dist);
+			App->camera->MoveTo(vec(pos.x, pos.y, pos.z), dist);
 		}
 	}
 }

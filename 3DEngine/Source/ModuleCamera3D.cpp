@@ -9,12 +9,12 @@
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
+	X = vec(1.0f, 0.0f, 0.0f);
+	Y = vec(0.0f, 1.0f, 0.0f);
+	Z = vec(0.0f, 0.0f, 1.0f);
 
-	Position = vec3(3.0f, 3.0f, 3.0f);
-	Reference = vec3(0.0f, 0.0f, 0.0f);
+	Position = vec(3.0f, 3.0f, 3.0f);
+	Reference = vec(0.0f, 0.0f, 0.0f);
 
 	// Set Angle	
 	angle = 45;
@@ -77,7 +77,7 @@ update_status ModuleCamera3D::Update(float dt)
 	int wheelmotion = App->input->GetMouseZ();
 	if (wheelmotion != 0)
 	{
-		if (wheelmotion > 0 && length(Position - Reference) < distance) {}
+		if (wheelmotion > 0 && ((Position - Reference)).Length() < distance) {}
 		else Position -= Z*(float)wheelmotion;
 
 		update_camera = true;
@@ -90,14 +90,14 @@ update_status ModuleCamera3D::Update(float dt)
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void ModuleCamera3D::Look(const vec &Position, const vec &Reference, bool RotateAroundReference)
 {
 	this->Position = Position;
 	this->Reference = Reference;
 
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	Z = (Position - Reference).Normalized();
+	X = vec(0.0f, 1.0f, 0.0f).Cross(Z).Normalized();
+	Y = Z.Cross(X);
 
 	if (!RotateAroundReference)
 	{
@@ -109,19 +109,19 @@ void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool Rota
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::LookAt(const vec3 &Spot)
+void ModuleCamera3D::LookAt(const vec &Spot)
 {
 	Reference = Spot;
 
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	Z = (Position - Reference).Normalized();
+	X = vec(0.0f,1.0f,0.0f).Cross(Z).Normalized();
+	Y = Z.Cross(X);
 
 	update_camera = true;
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::Move(const vec3 &Movement)
+void ModuleCamera3D::Move(const vec &Movement)
 {
 	Position += Movement;
 	Reference += Movement;
@@ -129,7 +129,7 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 	update_camera = true;
 }
 
-void ModuleCamera3D::MoveTo(const vec3 & Movement, float distance)
+void ModuleCamera3D::MoveTo(const vec & Movement, float distance)
 {
 	Position -= Reference;
 	Reference = Movement;
@@ -153,29 +153,32 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 
 	if (dx != 0)
 	{
-		float DeltaX = (float)dx * Sensitivity;
+		float DeltaX = (float)dx * Sensitivity*DEGTORAD;
 
-		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		float3x3 rotate = float3x3::RotateAxisAngle(vec(0.0f, 1.0f, 0.0f), DeltaX);
+		X = rotate * X;
+		Y = rotate * Y;
+		Z = rotate * Z;		
 	}
 
 	if (dy != 0)
 	{
-		float DeltaY = (float)dy * Sensitivity;
+		float DeltaY = (float)dy * Sensitivity*DEGTORAD;
 
-		Y = rotate(Y, DeltaY, X);
-		Z = rotate(Z, DeltaY, X);
+		float3x3 rotate = float3x3::RotateAxisAngle(X, DeltaY);
+
+		Y = rotate * Y;
+		Z = rotate * Z;
 
 		if (Y.y < 0.0f)
 		{
-			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = cross(Z, X);
+			Z = vec(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = Z.Cross(X);
 		}
 	}
 
-	if (onpoint) Position = Reference + Z * length(Position);
-	else Reference = Position - Z*length(Position - Reference);
+	if (onpoint) Position = Reference + Z *Position.Length();
+	else Reference = Position - Z*(Position - Reference).Length();
 
 	update_camera = true;
 }
@@ -201,6 +204,11 @@ void ModuleCamera3D::MoveCamera(float dt)
 	}
 
 	update_camera = true;
+}
+
+float4x4 ModuleCamera3D::GetProjMatrix() const
+{
+	return camera_editor->GetProjMatrix();
 }
 
 // -----------------------------------------------------------------

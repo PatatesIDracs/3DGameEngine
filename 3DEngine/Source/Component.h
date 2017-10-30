@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include "Math.h"
-#include "glmath.h"
+ 
 
 #include "Primitive.h"
 
@@ -37,6 +37,7 @@ public:
 	virtual void UpdateTransform() {};
 
 	COMP_TYPE GetType() const { return type; };
+	bool IsActive() const { return active; };
 
 public:
 	bool unique = false;

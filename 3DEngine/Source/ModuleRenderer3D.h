@@ -3,8 +3,7 @@
 
 
 
-#include "Module.h"
-#include "glmath.h"
+#include "Module.h" 
 #include "Light.h"
 
 #define MAX_LIGHTS 8
@@ -56,8 +55,8 @@ public:
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
-	mat3x3 NormalMatrix;
-	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	float3x3 NormalMatrix;
+	float4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	bool vertex_normals = false;
 	bool show_grid = true;

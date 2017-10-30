@@ -1,7 +1,6 @@
 #ifndef __PRIMITIVE_H__
 #define __PRIMITIVE_H__
-
-#include "glmath.h"
+ 
 #include "Color.h"
 #include "Math.h"
 #include <list>
@@ -43,18 +42,18 @@ public:
 	virtual void	InnerRender() const;
 	virtual void	FaceNormalsRender() const;
 	virtual void	PrepareToRender();
-	void			SetPos(float x, float y, float z);
-	void			SetRotation(float angle, const vec3 &u);
+	void			SetPos(float3 pos);
+	void			SetRotation(float angle, const vec &u);
 	void			Scale(float x, float y, float z);
 	PrimitiveTypes	GetType() const;
-	vec3			GetPosition() const;
+	vec				GetPosition() const;
 
 	uint			GenerateBBoxVertices(float* vertices);
 	uint			GenerateBBoxIndices();
 public:
 
 	Color color;
-	mat4x4 transform;
+	float4x4 transform;
 	bool axis, wire;
 
 protected:
@@ -74,7 +73,7 @@ public:
 	oldCube(float sizeX, float sizeY, float sizeZ);
 	void InnerRender() const;
 public:
-	vec3 size;
+	vec size;
 };
 
 // ============================================
@@ -93,7 +92,7 @@ private:
 	int stacks = 0;
 	int slices = 0;
 
-	mutable std::list<vec3> mesh;
+	mutable std::list<vec> mesh;
 	mutable std::vector<float> vertex_array;
 	mutable std::vector<float3> face_normals;
 	mutable std::vector<float>	normal_array;
@@ -120,8 +119,8 @@ public:
 	oldLine(float x, float y, float z);
 	void InnerRender() const;
 public:
-	vec3 origin;
-	vec3 destination;
+	vec origin;
+	vec destination;
 };
 
 // ============================================
@@ -132,7 +131,7 @@ public:
 	oldPlane(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
-	vec3 normal;
+	vec normal;
 	float constant;
 };
 

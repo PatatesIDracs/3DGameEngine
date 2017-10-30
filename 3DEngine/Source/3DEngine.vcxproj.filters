@@ -74,9 +74,6 @@
     <ClCompile Include="ModuleWindow.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="glmath.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
@@ -229,9 +226,6 @@
     <ClCompile Include="Primitive.cpp">
       <Filter>Temp_files</Filter>
     </ClCompile>
-    <ClCompile Include="3DModel.cpp">
-      <Filter>Temp_files</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>GameObject\Components</Filter>
     </ClCompile>
@@ -282,9 +276,6 @@
     </ClInclude>
     <ClInclude Include="ModuleWindow.h">
       <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="glmath.h">
-      <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="p2Point.h">
       <Filter>Tools</Filter>
@@ -664,9 +655,6 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
-      <Filter>Temp_files</Filter>
-    </ClInclude>
-    <ClInclude Include="3DModel.h">
       <Filter>Temp_files</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">

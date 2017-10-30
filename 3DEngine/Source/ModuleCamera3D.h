@@ -1,8 +1,7 @@
 #ifndef __MODULECAMERA3D_H__
 #define __MODULECAMERA3D_H__
 
-#include "Module.h"
-#include "glmath.h"
+#include "Module.h" 
 
 #include "Camera.h"
 
@@ -18,13 +17,14 @@ public:
 
 	void SetCameraEditor();
 
-	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);
-	void Move(const vec3 &Movement);
-	void MoveTo(const vec3 &Movement, float distance);
+	void Look(const vec &Position, const vec &Reference, bool RotateAroundReference = false);
+	void LookAt(const vec &Spot);
+	void Move(const vec &Movement);
+	void MoveTo(const vec &Movement, float distance);
 	void RotateCamera(bool onpoint = true);
 	void MoveCamera(float dt);
 
+	float4x4 GetProjMatrix() const;
 	float* GetViewMatrix();
 
 	// JSON Save/Load Configuration
@@ -39,7 +39,7 @@ public:
 	bool mode_editor = true;
 	bool update_camera = false;
 
-	vec3 X, Y, Z, Position, Reference;
+	vec X, Y, Z, Position, Reference;
 
 	float speed = 10.0f;
 	float distance = 0.5f;
@@ -48,7 +48,7 @@ public:
 
 private:
 	//mat3x3 R;
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+	float4x4 ViewMatrix, ViewMatrixInverse;
 };
 
 #endif // !__MODULECAMERA3D_H__

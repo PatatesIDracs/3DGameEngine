@@ -6,6 +6,8 @@
 #include <vector>
 #include <list>
 
+#include "Math.h"
+
 #define NAME_LENGTH 30
 
 class Application;
