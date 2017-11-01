@@ -25,7 +25,7 @@ public:
 	void MoveCamera(float dt);
 
 	float4x4 GetProjMatrix() const;
-	float* GetViewMatrix();
+	float* GetViewMatrix() const;
 
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json& config);

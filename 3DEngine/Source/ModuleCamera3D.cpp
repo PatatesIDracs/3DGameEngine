@@ -49,7 +49,7 @@ void ModuleCamera3D::SetCameraEditor()
 	camera_editor->SetFrustumPlanes(0.5, 100);
 	camera_editor->SetFrustumViewAngle();
 	camera_editor->GenerateFrostumDraw();
-	camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
+	camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
 }
 
 // -----------------------------------------------------------------
@@ -84,7 +84,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Recalculate matrix -------------
-	if (mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), vec(-Z.x, -Z.y, -Z.z), vec(Y.x, Y.y, Y.z));
+	if (mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
 
 	return UPDATE_CONTINUE;
 }
@@ -129,7 +129,7 @@ void ModuleCamera3D::Move(const vec &Movement)
 	update_camera = true;
 }
 
-void ModuleCamera3D::MoveTo(const vec & Movement, float distance)
+void ModuleCamera3D::MoveTo(const vec &Movement, float distance)
 {
 	Position -= Reference;
 	Reference = Movement;
@@ -143,7 +143,7 @@ void ModuleCamera3D::MoveTo(const vec & Movement, float distance)
 void ModuleCamera3D::RotateCamera(bool onpoint)
 {
 
-	int dx = -App->input->GetMouseXMotion();
+	int dx = App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
 	float Sensitivity = 0.25f;
@@ -187,8 +187,8 @@ void ModuleCamera3D::MoveCamera(float dt)
 {
 	float dx = 0;
 	float dy = 0;
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 
@@ -212,7 +212,7 @@ float4x4 ModuleCamera3D::GetProjMatrix() const
 }
 
 // -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
+float* ModuleCamera3D::GetViewMatrix() const
 {
 	 return camera_editor->GetViewMatrix();
 }
