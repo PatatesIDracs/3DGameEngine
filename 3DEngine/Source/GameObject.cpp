@@ -5,22 +5,26 @@
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
-GameObject::GameObject(GameObject* parent) : parent(parent), name("GameObject")
+GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name("GameObject"), isactive(isactive)
 {
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
 	// Create default Transform
 	components.push_back(new Transform(this));
+
+	boundary_box.SetNegativeInfinity();
 }
 
-GameObject::GameObject(GameObject * parent,const char * name) : parent(parent), name(name)
+GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : parent(parent), name(name), isactive(isactive)
 {
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
 	// Create default Transform
 	components.push_back(new Transform(this));
+
+	boundary_box.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()

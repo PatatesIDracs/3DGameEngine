@@ -12,14 +12,16 @@ enum COMP_TYPE;
 class GameObject
 {
 public:
-	GameObject(GameObject* parent);
-	GameObject(GameObject* parent,const char* name);
+	GameObject(GameObject* parent, bool isactive = true);
+	GameObject(GameObject* parent,const char* name, bool isactive = true);
 	~GameObject();
 
 	void Update();
 
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
+
+	bool IsActive()const { return isactive; }
 
 	void SetTransform(float4x4 &transform);
 	Transform* GetTransform();
@@ -34,11 +36,14 @@ public:
 
 public:
 	std::string name;
+	bool isactive = true;
 
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
+
+	AABB boundary_box;
 };
 
 

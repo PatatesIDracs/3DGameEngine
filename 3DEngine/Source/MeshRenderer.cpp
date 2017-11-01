@@ -16,7 +16,7 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Update()
 {
-	if (transform == nullptr)
+	/*if (transform == nullptr)
 		return;
 
 	glPushMatrix();
@@ -59,7 +59,7 @@ void MeshRenderer::Update()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glPopMatrix();
+	glPopMatrix();*/
 }
 
 void MeshRenderer::GetElements()

@@ -34,7 +34,7 @@ struct RenderData
 class Mesh : public Component
 {
 public:
-	Mesh();
+
 	Mesh(GameObject* parent, RenderData* render_data, bool isactive = true);
 	~Mesh();
 

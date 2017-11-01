@@ -18,7 +18,7 @@ const float4x4 Transform::GetRotMat() const
 	return transform;
 }
 
-const Quat Transform::GetRotQuat()
+const Quat Transform::GetRotQuat() const
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
 }
@@ -45,17 +45,16 @@ void Transform::UpdateTransform()
 	Quat rot_q = GetRotQuat();
 
 	// Set Scale
-	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4();
-	
+	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4().Transposed();
+
 	// Set Position
-	transform.Translate(position);
+
 
 	// Rotate Bounding Box
-	rotation.Inverse();
 	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
 	if (mesh != nullptr)
 	{
-		mesh->RotateBoundingBox(rotation);
+		mesh->RotateBoundingBox(rotation.Inverted());
 		mesh->RotateBoundingBox(rot_q);
 	}
 	rotation = rot_q;

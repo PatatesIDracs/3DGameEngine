@@ -5,7 +5,10 @@
 #include "Module.h"
 #include "Math.h"
 
+
 class GameObject;
+class MeshRenderer;
+class Camera;
 
 class ModuleSceneIntro : public Module
 {
@@ -16,6 +19,7 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+	void Draw();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
 
@@ -31,6 +35,9 @@ public:
 
 private:
 	GameObject* current_object = nullptr;
+	Camera* render_camera_test = nullptr;
+
+	std::vector<MeshRenderer*> render_this;
 
 };
 

@@ -30,7 +30,7 @@
         "Show Grid": true,
         "Depth Test": true,
         "Cull face": true,
-        "Cull face mode": 0,
+        "Cull face mode": 1,
         "Smooth": true,
         "Lighting": true,
         "Color material": true,

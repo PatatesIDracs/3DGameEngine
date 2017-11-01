@@ -17,7 +17,7 @@ public:
 
 	void GetElements();
 
-private:
+public:
 	Transform* transform;
 	Mesh* mesh;
 	Material* material;

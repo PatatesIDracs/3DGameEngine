@@ -2,9 +2,16 @@
 #define __CAMERA_H__
 
 #include "Component.h"
+#include "MeshRenderer.h"
 
 #define MIN_NEARP_DIST 0.5
 #define MIN_FARP_DIST 25
+
+enum CONTAINS_GOBJ_RESULT {
+	CONT_INTERSECTS, 
+	CONT_IN,
+	CONT_OUT
+};
 
 class Camera : public Component
 {
@@ -18,7 +25,10 @@ public:
 	void DrawComponent();
 
 	float4x4 GetProjMatrix() const;
-	float* GetViewMatrix();
+	float* GetViewMatrix() const;
+
+	bool GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*> &render_this) const;
+	int ContainsAABB(const AABB &refBox) const;
 
 	void GenerateFrostumDraw();
 
@@ -31,6 +41,7 @@ public:
 
 private:
 	Frustum* cfrustum = nullptr;
+	Plane* frustum_planes = nullptr;
 	
 	float near_plane = 1.f;
 	float far_plane = 50.f;

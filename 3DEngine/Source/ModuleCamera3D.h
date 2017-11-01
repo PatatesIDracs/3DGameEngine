@@ -2,7 +2,6 @@
 #define __MODULECAMERA3D_H__
 
 #include "Module.h" 
-
 #include "Camera.h"
 
 class ModuleCamera3D : public Module
@@ -21,34 +20,32 @@ public:
 	void LookAt(const vec &Spot);
 	void Move(const vec &Movement);
 	void MoveTo(const vec &Movement, float distance);
-	void RotateCamera(bool onpoint = true);
+	void RotateCamera(bool RotateAroundReference = true);
 	void MoveCamera(float dt);
 
 	float4x4 GetProjMatrix() const;
 	float* GetViewMatrix() const;
 
 	// JSON Save/Load Configuration
-	void LoadModuleConfig(Config_Json& config);
-	void SaveModuleConfig(Config_Json& config);
+	void LoadModuleConfig(Config_Json &config);
+	void SaveModuleConfig(Config_Json &config);
 
 	void DrawConfig();
 
 public:
-	Camera* camera_editor = nullptr;
-	
-	bool mode_editor = true;
-	bool update_camera = false;
 
 	vec X, Y, Z, Position, Reference;
 
-	float speed = 10.0f;
-	float distance = 0.5f;
-
-	float angle = 0.0f;
+	bool mode_editor = true;
 
 private:
-	//mat3x3 R;
-	float4x4 ViewMatrix, ViewMatrixInverse;
+
+	float distance = 0.5f;
+	float speed = 10.0f;
+
+	Camera* camera_editor = nullptr;
+	bool update_camera = false;
+
 };
 
 #endif // !__MODULECAMERA3D_H__

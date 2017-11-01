@@ -6,11 +6,6 @@
 #include "ModuleInput.h"
 #include "Transform.h"
 
-
-Mesh::Mesh()
-{
-}
-
 Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Component(parent, COMP_MESH, isactive), render_data(render_data)
 {
 	
@@ -74,6 +69,8 @@ void Mesh::UpdateTransform()
 	aabb_box.SetNegativeInfinity();
 	aabb_box.Enclose(obb_box);
 	CreateBoxBuffers();
+
+	if (parent != nullptr) parent->boundary_box = aabb_box;
 }
 
 void Mesh::DrawComponent()
@@ -108,7 +105,7 @@ void Mesh::ChangeMesh()
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
-	obb_box.Transform(transform.Inverted());
+	obb_box.Transform(transform);
 }
 
 // Create box indices buffer (only once)

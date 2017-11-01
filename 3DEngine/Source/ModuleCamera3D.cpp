@@ -16,8 +16,6 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Position = vec(3.0f, 3.0f, 3.0f);
 	Reference = vec(0.0f, 0.0f, 0.0f);
 
-	// Set Angle	
-	angle = 45;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -55,8 +53,6 @@ void ModuleCamera3D::SetCameraEditor()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {	
-	update_camera = false;
-
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
 
@@ -84,7 +80,10 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Recalculate matrix -------------
-	if (mode_editor && update_camera) camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+	if (mode_editor && update_camera) {
+		camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+		update_camera = false;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -140,7 +139,7 @@ void ModuleCamera3D::MoveTo(const vec &Movement, float distance)
 	update_camera = true;
 }
 
-void ModuleCamera3D::RotateCamera(bool onpoint)
+void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 {
 
 	int dx = App->input->GetMouseXMotion();
@@ -148,7 +147,7 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 
 	float Sensitivity = 0.25f;
 
-	if (onpoint)
+	if (RotateAroundReference)
 		Position -= Reference;
 
 	if (dx != 0)
@@ -177,7 +176,7 @@ void ModuleCamera3D::RotateCamera(bool onpoint)
 		}
 	}
 
-	if (onpoint) Position = Reference + Z *Position.Length();
+	if (RotateAroundReference) Position = Reference + Z *Position.Length();
 	else Reference = Position - Z*(Position - Reference).Length();
 
 	update_camera = true;

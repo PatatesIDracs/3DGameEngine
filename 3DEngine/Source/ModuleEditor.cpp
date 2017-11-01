@@ -153,8 +153,8 @@ update_status ModuleEditor::Update(float dt)
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
-		ImGui::SetWindowPos(ImVec2(App->window->width - 250, App->window->height * 2 / 5 + 19), 0);
-		ImGui::SetWindowSize(ImVec2(250, App->window->height * 3 / 5 - 19), 0);
+		ImGui::SetWindowPos(ImVec2((float)App->window->width - 250, (float)App->window->height * 2 / 5 + 19), 0);
+		ImGui::SetWindowSize(ImVec2((float)250, (float)App->window->height * 3 / 5 - 19), 0);
 
 		ApplicationConfig();
 
@@ -264,8 +264,8 @@ void ModuleEditor::DrawAboutWindow()
 void ModuleEditor::DrawHierarchy()
 {
 	ImGui::Begin("Game Object hierarchy", &showhierarchy);
-	ImGui::SetWindowPos(ImVec2(0, 19), 0);
-	ImGui::SetWindowSize(ImVec2(250, App->window->height - 19), 0);
+	ImGui::SetWindowPos(ImVec2(0.f, 19.f), 0);
+	ImGui::SetWindowSize(ImVec2((float)250, (float)App->window->height - 19), 0);
 
 	App->scene_intro->DrawRootHierarchy();
 
@@ -340,8 +340,8 @@ void ModuleEditor::HardwareDetection()
 void ModuleEditor::DrawConsole()
 {
 	ImGui::Begin("Console", &showconsole);
-	ImGui::SetWindowPos(ImVec2(250, App->window->height - 200), 0);
-	ImGui::SetWindowSize(ImVec2(App->window->width - 500, 200), 0);
+	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
+	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 	
 	for (uint count = 0; count < console_string.size(); count++)
 	{
@@ -354,8 +354,8 @@ void ModuleEditor::DrawConsole()
 void ModuleEditor::DrawPropertiesWindow()
 {
 	ImGui::Begin("Properties", &showpropertieswindow, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::SetWindowPos(ImVec2(App->window->width - 250, 19), 0);
-	ImGui::SetWindowSize(ImVec2(250, App->window->height * 2 / 5), 0);
+	ImGui::SetWindowPos(ImVec2((float)App->window->width - 250, 19.f), 0);
+	ImGui::SetWindowSize(ImVec2(250.f, (float)App->window->height * 2 / 5), 0);
 
 	App->scene_intro->DrawProperties();
 

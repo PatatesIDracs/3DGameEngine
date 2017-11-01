@@ -14,7 +14,7 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	if (parent != nullptr)
 	{
 		const float* transf = parent->GetTransform()->GetRotMat().ptr();
-		cfrustum->SetFrame(vec(transf[12], transf[13], transf[14]), vec(transf[8],transf[9],transf[10]), vec(transf[4], transf[5], transf[6]));
+		cfrustum->SetFrame(vec(transf[12], transf[13], transf[14]), vec(transf[8], transf[9], transf[10]), vec(transf[4], transf[5], transf[6]));
 	}
 	else
 	{
@@ -22,6 +22,8 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 		cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
 	}
 	cfrustum->SetPerspective(1024, 720);
+	frustum_planes = new Plane[6];
+	cfrustum->GetPlanes(frustum_planes);
 }
 
 Camera::~Camera()
@@ -51,8 +53,8 @@ void Camera::UpdateTransform()
 {
 	Transform* transf = parent->GetTransform();
 
-	float3x3 mat = transf->GetRotMat().Float3x3Part();
-	cfrustum->SetFrame(transf->GetPosition(), mat.Col(2), mat.Col(1));
+	float3x3 mat = transf->GetRotMat().Transposed().Float3x3Part();
+	cfrustum->SetFrame(transf->GetPosition(), -mat.Col(2), mat.Col(1));
 
 	//Temporal
 	GenerateFrostumDraw();
@@ -64,11 +66,11 @@ void Camera::DrawComponent()
 	{
 		ImGui::Checkbox("Active", &active);
 
-		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100,2, ImGuiInputTextFlags_EnterReturnsTrue)
-		||ImGui::InputFloat("Far Plane", &far_plane, 0, 100,2, ImGuiInputTextFlags_EnterReturnsTrue))
+		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue)
+			|| ImGui::InputFloat("Far Plane", &far_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue))
 			SetFrustumPlanes();
 
-		if (ImGui::SliderInt("Field of View", &field_of_view, 45.f, 100.f, "%.2f"))
+		if (ImGui::SliderInt("Field of View", &field_of_view, 45, 100, "%.2f"))
 			SetFrustumViewAngle();
 
 		ImGui::InputFloat("Aspect Ratio", &aspect_ratio, 0, 100, 3, ImGuiInputTextFlags_ReadOnly);
@@ -77,12 +79,86 @@ void Camera::DrawComponent()
 
 float4x4 Camera::GetProjMatrix() const
 {
-	return cfrustum->ComputeProjectionMatrix();
+	return cfrustum->ProjectionMatrix();
 }
 
-float* Camera::GetViewMatrix()
+float* Camera::GetViewMatrix() const
 {
 	return cfrustum->ViewProjMatrix().Transposed().ptr();
+}
+
+bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& render_this) const
+{
+	if (!active) return false;
+
+	cfrustum->GetPlanes(frustum_planes);
+
+	std::vector<GameObject*> check_list;
+	check_list.push_back(root);
+
+	int contains_gobj_result = 0;
+
+	uint curr_item = 0;
+	GameObject* curr_game_obj = nullptr;
+	while (curr_item < check_list.size())
+	{
+		contains_gobj_result = CONT_OUT;
+		curr_game_obj = check_list[curr_item];
+
+		// check if gameobject is inside frustum, only if gameobject is active
+		if (curr_game_obj->IsActive()) ;
+			contains_gobj_result = ContainsAABB(curr_game_obj->boundary_box);
+			
+		// Add GameObject to render_this
+		if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
+			MeshRenderer* mesh = (MeshRenderer*)curr_game_obj->FindUniqueComponent(COMP_MESHRENDERER);
+
+			if(mesh != nullptr) render_this.push_back(mesh);
+		}
+
+		// Add Childs to Check List
+		for (uint i = 0; i < curr_game_obj->children.size(); i++)
+			check_list.push_back(curr_game_obj->children[i]);
+
+		curr_item++;
+	}
+	check_list.clear();
+
+	return true;
+}
+
+int Camera::ContainsAABB(const AABB &box) const
+{
+	if (!box.IsFinite()) return CONT_OUT;
+
+	vec vCorner[8];
+	box.GetCornerPoints(vCorner); // get the corners of the box into the vCorner array
+								  // test all 8 corners against the 6 sides
+								  // if all points are behind 1 specific plane, we are out
+								  // if we are in with all points, then we are fully in
+
+	int iTotalIn = 0;
+	for (int p = 0; p < 6; ++p) {
+		int iInCount = 8;
+		int iPtIn = 1;
+		for (int i = 0; i < 8; ++i) {
+			// test this point against the planes
+			if (frustum_planes[p].IsOnPositiveSide(vCorner[i])) {
+				iPtIn = 0;
+				--iInCount;
+			}
+		}
+		// were all the points outside of plane p?
+		if (iInCount == 0)
+			return CONT_OUT;
+		// check if they were all on the right side of the plane
+		iTotalIn += iPtIn;
+	}
+	// so if iTotalIn is 6, then all are inside the view
+	if (iTotalIn == 6)
+		return CONT_IN;
+	// we must be partly in then otherwise
+	return CONT_INTERSECTS;
 }
 
 void Camera::GenerateFrostumDraw()
