@@ -18,6 +18,11 @@ const float4x4 Transform::GetRotMat() const
 	return transform;
 }
 
+const float4x4 Transform::GetGlovalTransform() const
+{
+	return gloval_transform;
+}
+
 const Quat Transform::GetRotQuat() const
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
@@ -26,6 +31,11 @@ const Quat Transform::GetRotQuat() const
 float3 Transform::GetPosition() const
 {
 	return position;
+}
+
+float3 Transform::GetScale() const
+{
+	return scale;
 }
 
 void Transform::Update()
@@ -37,6 +47,11 @@ void Transform::Update()
 			parent->components[i]->UpdateTransform();
 		}
 	}
+
+	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
+		gloval_transform = parent->parent->GetTransform()->gloval_transform* transform;
+	}
+	else gloval_transform = transform;
 }
 
 void Transform::UpdateTransform()
@@ -44,24 +59,21 @@ void Transform::UpdateTransform()
 	// Set Rotation
 	rotation = GetRotQuat();
 
-	// Set Scale
-	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rotation.ToFloat4x4();
-
-	// Set Position
-
-	
-	
+	// Set Transform
+	transform = float4x4::FromTRS(position, rotation, scale);
 
 	update_transform = false;
 }
 
 void Transform::SetTransform(float4x4 &transf)
 {
-	transform = transf;
+	transform = transf.Transposed();
 	transform.Decompose(position, rotation, scale);
 	scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
+	UpdateTransform();
+	gloval_transform = transform;
 	update_transform = true;
 }
 

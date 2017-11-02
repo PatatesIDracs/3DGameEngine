@@ -10,8 +10,10 @@ public:
 	~Transform();
 
 	const float4x4 GetRotMat() const;
+	const float4x4 GetGlovalTransform()const;
 	const Quat GetRotQuat() const;
 	float3 GetPosition() const;
+	float3 GetScale() const;
 	
 	void Update();
 	void UpdateTransform();

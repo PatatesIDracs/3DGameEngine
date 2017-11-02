@@ -13,7 +13,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Y = vec(0.0f, 1.0f, 0.0f);
 	Z = vec(0.0f, 0.0f, 1.0f);
 
-	Position = vec(3.0f, 3.0f, 3.0f);
+	Position = vec(1.0f, 1.0f, 1.0f);
 	Reference = vec(0.0f, 0.0f, 0.0f);
 
 }
@@ -47,7 +47,7 @@ void ModuleCamera3D::SetCameraEditor()
 	camera_editor->SetFrustumPlanes(0.5, 100);
 	camera_editor->SetFrustumViewAngle();
 	camera_editor->GenerateFrostumDraw();
-	camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+	camera_editor->SetNewFrame(Position, -Z, Y);
 }
 
 // -----------------------------------------------------------------
@@ -81,7 +81,7 @@ update_status ModuleCamera3D::Update(float dt)
 
 	// Recalculate matrix -------------
 	if (mode_editor && update_camera) {
-		camera_editor->SetNewFrame(vec(Position.x, Position.y, Position.z), -vec(Z.x, Z.y, Z.z), vec(Y.x, Y.y, Y.z));
+		camera_editor->SetNewFrame(Position, -Z, Y);
 		update_camera = false;
 	}
 
@@ -186,8 +186,8 @@ void ModuleCamera3D::MoveCamera(float dt)
 {
 	float dx = 0;
 	float dy = 0;
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 

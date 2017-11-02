@@ -13,15 +13,15 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
-		const float* transf = parent->GetTransform()->GetRotMat().ptr();
-		cfrustum->SetFrame(vec(transf[12], transf[13], transf[14]), vec(transf[8], transf[9], transf[10]), vec(transf[4], transf[5], transf[6]));
+		const float4x4 transf = parent->GetTransform()->GetRotMat();
+		cfrustum->SetFrame(transf.Col3(3), transf.Col3(2), transf.Col3(2));
 	}
 	else
 	{
 		LOGC("WARNING: Component Camera Parent is NULL");
-		cfrustum->SetFrame(vec(2.f, 2.f, 2.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
+		cfrustum->SetFrame(vec(1.f, 1.f, 1.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
 	}
-	cfrustum->SetPerspective(1024, 720);
+	//cfrustum->SetPerspective(1024, 720);
 	frustum_planes = new Plane[6];
 	cfrustum->GetPlanes(frustum_planes);
 }
@@ -55,8 +55,8 @@ void Camera::UpdateTransform()
 {
 	Transform* transf = parent->GetTransform();
 
-	float3x3 mat = transf->GetRotMat().Transposed().Float3x3Part();
-	cfrustum->SetFrame(transf->GetPosition(), mat.Col(2), mat.Col(1));
+	float4x4 mat = transf->GetRotMat();
+	cfrustum->SetFrame(transf->GetPosition(), mat.Col3(2), mat.Col3(1));
 
 	//Temporal
 	GenerateFrostumDraw();
@@ -81,7 +81,7 @@ void Camera::DrawComponent()
 
 float4x4 Camera::GetProjMatrix() const
 {
-	return cfrustum->ProjectionMatrix();
+	return cfrustum->ProjectionMatrix().Transposed();
 }
 
 float* Camera::GetViewMatrix() const

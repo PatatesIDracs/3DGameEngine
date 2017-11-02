@@ -63,7 +63,7 @@ void ModuleSceneIntro::Draw()
 				continue;
 
 			glPushMatrix();
-			glMultMatrixf(object->transform->GetRotMat().ptr());
+			glMultMatrixf(object->transform->GetGlovalTransform().Transposed().ptr());
 
 			if (object->material != nullptr)
 			{

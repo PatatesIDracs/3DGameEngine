@@ -181,8 +181,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = App->camera->GetProjMatrix();
-	glLoadMatrixf(ProjectionMatrix.ptr());
+	ProjectionMatrix = App->camera->GetProjMatrix().Inverted();
+	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

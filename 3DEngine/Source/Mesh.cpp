@@ -66,7 +66,10 @@ void Mesh::Update()
 
 void Mesh::UpdateTransform()
 {
-	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+	if (parent != nullptr) {
+		RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+		//obb_box.Scale(aabb_box.CenterPoint(), parent->GetTransform()->GetScale());
+	}
 
 	aabb_box.SetNegativeInfinity();
 	aabb_box.Enclose(obb_box);
@@ -107,8 +110,8 @@ void Mesh::ChangeMesh()
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
-	obb_box.Transform(prev_rotation);
-	obb_box.Transform(transform.Conjugated());
+	obb_box.Transform(prev_rotation.Conjugated());
+	obb_box.Transform(transform);
 	prev_rotation = transform;
 }
 

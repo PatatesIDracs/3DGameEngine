@@ -22,6 +22,7 @@ public:
 	void AddComponent(Component* new_component);
 
 	bool IsActive()const { return isactive && parent_active; }
+	bool IsRoot()const { return (parent == NULL ? true : false); }
 
 	void SetTransform(float4x4 &transform);
 	Transform* GetTransform();
