@@ -1,4 +1,7 @@
 #include "MeshImporter.h"
+#include "GameObject.h"
+#include "ModuleSceneIntro.h"
+#include "Application.h"
 #include "Mesh.h"
 #include "Globals.h"
 #include "Glew\include\glew.h"
@@ -14,6 +17,7 @@
 
 MeshImporter::MeshImporter()
 {
+	//Set the path where all the meshes would be imported
 	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
 }
 
@@ -21,7 +25,7 @@ MeshImporter::~MeshImporter()
 {
 }
 
-void MeshImporter::Import(const char* full_path)
+void MeshImporter::Import(const char* full_path, GameObject* import_target)
 {
 	if (full_path == nullptr) return;
 
@@ -30,6 +34,12 @@ void MeshImporter::Import(const char* full_path)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		uint num_meshes = scene->mNumMeshes;
+
+		if (num_meshes == 1)
+		{
+			//TODO: Save file one time (without creating child GameObjects), should make a function that puts mesh data in RenderData* and call it
+		}
+
 		for (uint i = 0; i < num_meshes; i++)
 		{
 			RenderData* mesh = new RenderData;
@@ -67,6 +77,12 @@ void MeshImporter::Import(const char* full_path)
 
 			//Save file 
 			SaveMesh(mesh, file_name.c_str());
+
+			GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(mesh_root_node->mChildren[i]->mName.C_Str(), import_target);
+			//RenderData* new_mesh_data = ;
+			Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
+			mesh_holder->AddComponent(new_mesh_component);
+
 		}
 	}
 	else
@@ -169,6 +185,8 @@ RenderData * MeshImporter::Load(const char * full_path)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	delete[] buffer_data;
+
+	LOGC("Mesh loaded");
 	return ret;
 }
 

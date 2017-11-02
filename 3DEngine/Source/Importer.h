@@ -19,7 +19,7 @@ public:
 	void CheckDirectories();
 
 	//Mesh importing and loading methods
-	RenderData* GetNewMesh(const char* mesh_path);
+	RenderData* GetNewMesh(const char* mesh_path) const;
 
 private:
 

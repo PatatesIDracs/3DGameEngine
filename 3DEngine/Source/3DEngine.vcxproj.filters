@@ -206,9 +206,6 @@
     <ClCompile Include="Profiler.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleLoadFBX.cpp">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -504,9 +501,6 @@
     </ClInclude>
     <ClInclude Include="Profiler.h">
       <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleLoadFBX.h">
-      <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="Assimp\include\ai_assert.h">
       <Filter>3rd parties\Assimp</Filter>

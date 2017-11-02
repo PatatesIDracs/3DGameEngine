@@ -6,6 +6,7 @@
 #define MESHFILEFORMAT ".mjope"
 
 class RenderData;
+class GameObject;
 
 class MeshImporter
 {
@@ -13,7 +14,7 @@ public:
 	MeshImporter();
 	~MeshImporter();
 
-	void Import(const char* full_path);
+	void Import(const char* full_path, GameObject* import_target);
 
 	RenderData* Load(const char* full_path);
 

@@ -13,7 +13,6 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
-#include "ModuleLoadFBX.h"
 
 
 class Config_Json;
@@ -29,7 +28,6 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	ModuleEditor* editor;
-	ModuleLoadFBX* assimp;
 
 	int fps = 60;
 

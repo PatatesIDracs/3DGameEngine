@@ -3,6 +3,8 @@
 #include "TextureImporter.h"
 #include "Globals.h"
 #include "Mesh.h"
+#include "ModuleSceneIntro.h"
+#include "Application.h"
 
 #include <filesystem>
 
@@ -34,7 +36,10 @@ void Importer::Import(char * full_path)
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		mesh_importer->Import(full_path);
+		//Create a new gameobject to store the data
+		GameObject* imported_go = App->scene_intro->CreateNewGameObject(filename.c_str());
+
+		mesh_importer->Import(full_path, imported_go);
 	}
 	if (extension == ".png")
 	{
@@ -50,8 +55,8 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 	uint full_path_len = strlen(full_path);
 	for (int i = 0; i < full_path_len; i++)
 	{
-		if (full_path[i] == '/')
-			full_path[i] = '\\';
+		if (full_path[i] == '\\')
+			full_path[i] = '/';
 	}
 
 	uint path_end = 0;
@@ -59,7 +64,7 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 	
 	for (int i = 0; i < full_path_len; i++)
 	{
-		if (full_path[i] == '\\')
+		if (full_path[i] == '/')
 			path_end = i;
 
 		if (full_path[i] == '.')
@@ -119,9 +124,7 @@ void Importer::CheckDirectories()
 
 }
 
-RenderData* Importer::GetNewMesh(const char* mesh_path)
+RenderData* Importer::GetNewMesh(const char* mesh_path) const
 {
-
 	return mesh_importer->Load(mesh_path);
-
 }
