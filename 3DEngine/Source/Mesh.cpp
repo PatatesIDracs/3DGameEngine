@@ -17,7 +17,7 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 	CreateBoxIndices();
 	CreateBoxBuffers();
 
-	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat().Conjugated());
+	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
 	else LOGC("WARNING: Mesh parent is NULL");
 }
 
@@ -66,6 +66,8 @@ void Mesh::Update()
 
 void Mesh::UpdateTransform()
 {
+	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+
 	aabb_box.SetNegativeInfinity();
 	aabb_box.Enclose(obb_box);
 	CreateBoxBuffers();
@@ -105,7 +107,9 @@ void Mesh::ChangeMesh()
 
 void Mesh::RotateBoundingBox(const math::Quat &transform)
 {
-	obb_box.Transform(transform);
+	obb_box.Transform(prev_rotation);
+	obb_box.Transform(transform.Conjugated());
+	prev_rotation = transform;
 }
 
 // Create box indices buffer (only once)

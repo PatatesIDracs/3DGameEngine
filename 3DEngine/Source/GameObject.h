@@ -21,7 +21,7 @@ public:
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
 
-	bool IsActive()const { return isactive; }
+	bool IsActive()const { return isactive && parent_active; }
 
 	void SetTransform(float4x4 &transform);
 	Transform* GetTransform();
@@ -29,7 +29,9 @@ public:
 	Component* FindUniqueComponent(COMP_TYPE type);
 
 	GameObject* DrawHierarchy();
+
 	void DrawProperties();
+	void DrawGameObject();
 
 	AABB GetBoundaryBox();
 
@@ -37,6 +39,7 @@ public:
 public:
 	std::string name;
 	bool isactive = true;
+	bool parent_active = true;
 
 	std::vector<Component*> components;
 

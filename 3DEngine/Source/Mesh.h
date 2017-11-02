@@ -56,6 +56,7 @@ public:
 public:
 
 	RenderData* render_data;
+	Quat prev_rotation = Quat::identity;
 
 	math::AABB aabb_box;
 	math::OBB obb_box;

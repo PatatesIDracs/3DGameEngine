@@ -29,6 +29,8 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 Camera::~Camera()
 {
 	delete cfrustum;
+	delete[] frustum_planes;
+
 	if (fvertices_id != 0) glDeleteBuffers(1, &fvertices_id);
 	if (findices_id != 0) glDeleteBuffers(1, &findices_id);
 }
@@ -106,9 +108,13 @@ bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& 
 		curr_game_obj = check_list[curr_item];
 
 		// check if gameobject is inside frustum, only if gameobject is active
-		if (curr_game_obj->IsActive()) ;
+		if (curr_game_obj->IsActive())
 			contains_gobj_result = ContainsAABB(curr_game_obj->boundary_box);
-			
+		else {
+			curr_item++;
+			continue;
+		}
+
 		// Add GameObject to render_this
 		if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
 			MeshRenderer* mesh = (MeshRenderer*)curr_game_obj->FindUniqueComponent(COMP_MESHRENDERER);

@@ -13,8 +13,6 @@ public:
 	MeshRenderer(GameObject* parent);
 	~MeshRenderer();
 
-	void Update();
-
 	void GetElements();
 
 public:

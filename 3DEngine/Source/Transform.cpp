@@ -3,7 +3,7 @@
 
 #include "Mesh.h"
 
-Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity)
+Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity), gloval_transform(float4x4::identity)
 {
 	unique = true;
 	update_transform = true;
@@ -42,22 +42,15 @@ void Transform::Update()
 void Transform::UpdateTransform()
 {
 	// Set Rotation
-	Quat rot_q = GetRotQuat();
+	rotation = GetRotQuat();
 
 	// Set Scale
-	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4();
+	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rotation.ToFloat4x4();
 
 	// Set Position
 
-
-	// Rotate Bounding Box
-	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
-	if (mesh != nullptr)
-	{
-		mesh->RotateBoundingBox(rotation);
-		mesh->RotateBoundingBox(rot_q.Conjugated());
-	}
-	rotation = rot_q;
+	
+	
 
 	update_transform = false;
 }

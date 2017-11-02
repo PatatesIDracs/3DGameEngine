@@ -22,7 +22,7 @@ public:
 
 private:
 
-	float4x4 transform;
+	float4x4 transform, gloval_transform;
 	Quat rotation = Quat::identity;
 
 	bool update_transform = false;
