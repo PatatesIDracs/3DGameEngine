@@ -142,7 +142,7 @@ void ModuleCamera3D::MoveTo(const vec &Movement, float distance)
 void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 {
 
-	int dx = App->input->GetMouseXMotion();
+	int dx = -App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
 	float Sensitivity = 0.25f;

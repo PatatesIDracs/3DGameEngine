@@ -45,7 +45,7 @@ void Transform::UpdateTransform()
 	Quat rot_q = GetRotQuat();
 
 	// Set Scale
-	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4().Transposed();
+	transform = math::float4x4::Scale(float3(scale.x, scale.y, scale.z), float3(0,0,0))*rot_q.ToFloat4x4();
 
 	// Set Position
 
@@ -54,8 +54,8 @@ void Transform::UpdateTransform()
 	Mesh* mesh = (Mesh*)parent->FindUniqueComponent(COMP_MESH);
 	if (mesh != nullptr)
 	{
-		mesh->RotateBoundingBox(rotation.Inverted());
-		mesh->RotateBoundingBox(rot_q);
+		mesh->RotateBoundingBox(rotation);
+		mesh->RotateBoundingBox(rot_q.Conjugated());
 	}
 	rotation = rot_q;
 

@@ -9,7 +9,7 @@
 Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAMERA, isactive)
 {
 	cfrustum = new Frustum();
-	cfrustum->SetKind(FrustumSpaceGL, FrustumLeftHanded);
+	cfrustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
@@ -54,7 +54,7 @@ void Camera::UpdateTransform()
 	Transform* transf = parent->GetTransform();
 
 	float3x3 mat = transf->GetRotMat().Transposed().Float3x3Part();
-	cfrustum->SetFrame(transf->GetPosition(), -mat.Col(2), mat.Col(1));
+	cfrustum->SetFrame(transf->GetPosition(), mat.Col(2), mat.Col(1));
 
 	//Temporal
 	GenerateFrostumDraw();
