@@ -3,6 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "Application.h"
 #include "Mesh.h"
+#include "MeshRenderer.h"
 #include "Globals.h"
 #include "Glew\include\glew.h"
 
@@ -82,6 +83,7 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 			//RenderData* new_mesh_data = ;
 			Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
 			mesh_holder->AddComponent(new_mesh_component);
+			mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
 
 		}
 	}

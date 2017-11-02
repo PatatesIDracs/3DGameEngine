@@ -55,6 +55,8 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 	uint full_path_len = strlen(full_path);
 	for (int i = 0; i < full_path_len; i++)
 	{
+		full_path[i] = tolower(full_path[i]);
+
 		if (full_path[i] == '\\')
 			full_path[i] = '/';
 	}

@@ -14,6 +14,10 @@
 TextureImporter::TextureImporter()
 {
 	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER;
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
 }
 
 TextureImporter::~TextureImporter()
