@@ -31,65 +31,91 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 	if (full_path == nullptr) return;
 
 	const aiScene* scene = aiImportFile(full_path , aiProcessPreset_TargetRealtime_MaxQuality);
-	aiNode* mesh_root_node = scene->mRootNode;
-	if (scene != nullptr && scene->HasMeshes())
+	aiNode* mesh_root_node = nullptr;
+	if (scene != nullptr)
+		mesh_root_node = scene->mRootNode;
+
+
+	if (mesh_root_node != nullptr)
 	{
-		uint num_meshes = scene->mNumMeshes;
-
-		if (num_meshes == 1)
-		{
-			//TODO: Save file one time (without creating child GameObjects), should make a function that puts mesh data in RenderData* and call it
-		}
-
-		for (uint i = 0; i < num_meshes; i++)
-		{
-			RenderData* mesh = new RenderData;
-			std::string file_name = mesh_root_node->mChildren[i]->mName.C_Str();
-			file_name.append(MESHFILEFORMAT);
-
-			//Indices data
-			mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
-			mesh->indices = new uint[mesh->num_indices];
-			for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
-			{
-				if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
-				{
-					LOGC("WARNING, geometry face with != 3 indices! %d", 0);
-				}
-				else {
-					memcpy(&mesh->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
-				}
-			}
-
-			//Vertices data 
-			mesh->num_vertices = scene->mMeshes[i]->mNumVertices;
-			mesh->vertices = new float[mesh->num_vertices * 3];
-			memcpy(mesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertices * 3);
-
-			//TextureCoords data
-			mesh->num_tex_vertices = scene->mMeshes[i]->mNumVertices;
-			mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
-			memcpy(mesh->tex_vertices, scene->mMeshes[i]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
-
-			//Normals data
-			mesh->num_normals = scene->mMeshes[i]->mNumVertices;
-			mesh->normals = new float[mesh->num_normals * 3];
-			memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
-
-			//Save file 
-			SaveMesh(mesh, file_name.c_str());
-
-			GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(mesh_root_node->mChildren[i]->mName.C_Str(), import_target);
-			//RenderData* new_mesh_data = ;
-			Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
-			mesh_holder->AddComponent(new_mesh_component);
-			mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
-
-		}
+		ImportNode(mesh_root_node, scene, import_target);
 	}
 	else
 		LOGC("No meshes found");
 }
+
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObject* import_target)
+{
+
+	for (int k = 0; k < to_import->mNumChildren; k++)
+	{
+		aiNode* child_node = to_import->mChildren[k];
+
+		if (child_node->mNumChildren > 0)
+			ImportNode(child_node, scene, import_target);
+
+		if (child_node->mNumMeshes > 0)
+		{
+
+			uint num_meshes = child_node->mNumMeshes;
+			if (num_meshes == 1)
+			{
+				//TODO: Save file one time (without creating child GameObjects), should make a function that puts mesh data in RenderData* and call it
+			}
+
+			for (uint i = 0; i < num_meshes; i++)
+			{
+				int mesh_id = child_node->mMeshes[i];
+				RenderData* mesh = new RenderData;
+				std::string file_name = child_node->mName.C_Str();
+				file_name.append(MESHFILEFORMAT);
+
+				//Indices data
+				mesh->num_indices = scene->mMeshes[mesh_id]->mNumFaces * 3;
+				mesh->indices = new uint[mesh->num_indices];
+				for (uint j = 0; j < scene->mMeshes[mesh_id]->mNumFaces; ++j)
+				{
+					if (scene->mMeshes[mesh_id]->mFaces[j].mNumIndices != 3)
+					{
+						LOGC("WARNING, geometry face with != 3 indices! %d", 0);
+					}
+					else {
+						memcpy(&mesh->indices[j * 3], scene->mMeshes[mesh_id]->mFaces[j].mIndices, 3 * sizeof(uint));
+					}
+				}
+
+				//Vertices data 
+				mesh->num_vertices = scene->mMeshes[mesh_id]->mNumVertices;
+				mesh->vertices = new float[mesh->num_vertices * 3];
+				memcpy(mesh->vertices, scene->mMeshes[mesh_id]->mVertices, sizeof(float) * mesh->num_vertices * 3);
+
+				//TextureCoords data
+				if (scene->mMeshes[mesh_id]->HasTextureCoords(0))
+				{
+					mesh->num_tex_vertices = scene->mMeshes[mesh_id]->mNumVertices;
+					mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
+					memcpy(mesh->tex_vertices, scene->mMeshes[mesh_id]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
+				}
+
+				//Normals data
+				mesh->num_normals = scene->mMeshes[mesh_id]->mNumVertices;
+				mesh->normals = new float[mesh->num_normals * 3];
+				memcpy(mesh->normals, scene->mMeshes[mesh_id]->mNormals, sizeof(float) * mesh->num_normals * 3);
+
+				//Save file 
+				SaveMesh(mesh, file_name.c_str());
+
+				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
+				//RenderData* new_mesh_data = ;
+				Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
+				mesh_holder->AddComponent(new_mesh_component);
+				mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
+
+			}
+		}
+	}
+}
+
 
 RenderData * MeshImporter::Load(const char * full_path)
 {
@@ -234,3 +260,4 @@ void MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
 	LOGC("File Saved at: %s", (import_path + file_name).c_str());
 
 }
+

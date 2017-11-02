@@ -7,6 +7,8 @@
 
 class RenderData;
 class GameObject;
+class aiNode;
+class aiScene;
 
 class MeshImporter
 {
@@ -22,6 +24,7 @@ private:
 
 	void SaveMesh(RenderData* mesh, const char* file_name);
 
+	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target);
 
 private:
 	std::string import_path;
