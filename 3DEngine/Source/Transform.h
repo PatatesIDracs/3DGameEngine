@@ -10,7 +10,7 @@ public:
 	~Transform();
 
 	const float4x4 GetRotMat() const;
-	const float4x4 GetGlovalTransform()const;
+	const float4x4 GetGlobalTransform()const;
 	const Quat GetRotQuat() const;
 	float3 GetPosition() const;
 	float3 GetScale() const;
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	float4x4 transform, gloval_transform;
+	float4x4 transform, global_transform;
 	Quat rotation = Quat::identity;
 
 	bool update_transform = false;

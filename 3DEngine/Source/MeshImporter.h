@@ -9,6 +9,8 @@ class RenderData;
 class GameObject;
 class aiNode;
 class aiScene;
+template <class T>
+class aiMatrix4x4t;
 
 class MeshImporter
 {
@@ -24,7 +26,7 @@ private:
 
 	void SaveMesh(RenderData* mesh, const char* file_name);
 
-	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target);
+	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform);
 
 private:
 	std::string import_path;

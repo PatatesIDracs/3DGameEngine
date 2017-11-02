@@ -3,7 +3,7 @@
 
 #include "Mesh.h"
 
-Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity), gloval_transform(float4x4::identity)
+Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity), global_transform(float4x4::identity)
 {
 	unique = true;
 	update_transform = true;
@@ -18,9 +18,9 @@ const float4x4 Transform::GetRotMat() const
 	return transform;
 }
 
-const float4x4 Transform::GetGlovalTransform() const
+const float4x4 Transform::GetGlobalTransform() const
 {
-	return gloval_transform;
+	return global_transform;
 }
 
 const Quat Transform::GetRotQuat() const
@@ -49,9 +49,9 @@ void Transform::Update()
 	}
 
 	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
-		gloval_transform = parent->parent->GetTransform()->gloval_transform* transform;
+		global_transform = parent->parent->GetTransform()->global_transform* transform;
 	}
-	else gloval_transform = transform;
+	else global_transform = transform;
 }
 
 void Transform::UpdateTransform()
@@ -73,7 +73,7 @@ void Transform::SetTransform(float4x4 &transf)
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
 	UpdateTransform();
-	gloval_transform = transform;
+	global_transform = transform;
 	update_transform = true;
 }
 

@@ -63,7 +63,7 @@ void ModuleSceneIntro::Draw()
 				continue;
 
 			glPushMatrix();
-			glMultMatrixf(object->transform->GetGlovalTransform().Transposed().ptr());
+			glMultMatrixf(object->transform->GetGlobalTransform().Transposed().ptr());
 
 			if (object->material != nullptr)
 			{

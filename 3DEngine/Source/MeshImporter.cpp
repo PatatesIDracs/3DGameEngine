@@ -3,6 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "Application.h"
 #include "Mesh.h"
+#include "Transform.h"
 #include "MeshRenderer.h"
 #include "Globals.h"
 #include "Glew\include\glew.h"
@@ -38,13 +39,14 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 
 	if (mesh_root_node != nullptr)
 	{
-		ImportNode(mesh_root_node, scene, import_target);
+		aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
+		ImportNode(mesh_root_node, scene, import_target, node_transform);
 	}
 	else
 		LOGC("No meshes found");
 }
 
-void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObject* import_target)
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform)
 {
 
 	for (int k = 0; k < to_import->mNumChildren; k++)
@@ -52,7 +54,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 		aiNode* child_node = to_import->mChildren[k];
 
 		if (child_node->mNumChildren > 0)
-			ImportNode(child_node, scene, import_target);
+			ImportNode(child_node, scene, import_target, (parent_transform * child_node->mTransformation));
 
 		if (child_node->mNumMeshes > 0)
 		{
@@ -105,7 +107,15 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 				//Save file 
 				SaveMesh(mesh, file_name.c_str());
 
+				aiMatrix4x4 curr_trans = parent_transform * child_node->mTransformation;
+				float4x4 new_transform(curr_trans.a1, curr_trans.a2, curr_trans.a3, curr_trans.a4,
+										curr_trans.b1, curr_trans.b2, curr_trans.b3, curr_trans.b4, 
+										curr_trans.c1, curr_trans.c2, curr_trans.c3, curr_trans.c4, 
+										curr_trans.d1, curr_trans.d2, curr_trans.d3, curr_trans.d4);
+
 				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
+
+				mesh_holder->GetTransform()->SetTransform(new_transform);
 				//RenderData* new_mesh_data = ;
 				Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
 				mesh_holder->AddComponent(new_mesh_component);

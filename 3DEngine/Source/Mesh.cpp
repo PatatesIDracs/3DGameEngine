@@ -103,6 +103,16 @@ void Mesh::ChangeMesh()
 	{
 		delete render_data;
 		render_data = App->input->jope_importer.GetNewMesh(new_mesh_path.c_str());
+
+		//Generate AABB/OBB boxes
+ 		aabb_box.SetNegativeInfinity();
+		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+		obb_box = aabb_box.ToOBB();
+		CreateBoxIndices();
+		CreateBoxBuffers();
+		if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+		else LOGC("WARNING: Mesh parent is NULL");
+
 		changing_mesh = false;
 	}
 
