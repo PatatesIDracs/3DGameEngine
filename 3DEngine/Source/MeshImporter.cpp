@@ -108,10 +108,10 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 				SaveMesh(mesh, file_name.c_str());
 
 				aiMatrix4x4 curr_trans = parent_transform * child_node->mTransformation;
-				float4x4 new_transform(curr_trans.a1, curr_trans.a2, curr_trans.a3, curr_trans.a4,
-										curr_trans.b1, curr_trans.b2, curr_trans.b3, curr_trans.b4, 
-										curr_trans.c1, curr_trans.c2, curr_trans.c3, curr_trans.c4, 
-										curr_trans.d1, curr_trans.d2, curr_trans.d3, curr_trans.d4);
+				float4x4 new_transform(curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
+										curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2, 
+										curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3, 
+										curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
 
 				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
 
