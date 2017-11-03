@@ -38,6 +38,7 @@ public:
 
 
 public:
+	int UID = 0;
 	std::string name;
 	bool isactive = true;
 	bool parent_active = true;

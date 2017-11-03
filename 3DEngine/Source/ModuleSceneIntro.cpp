@@ -181,3 +181,15 @@ void ModuleSceneIntro::DrawProperties() const
 {
 	if (current_object != nullptr) current_object->DrawProperties();
 }
+
+void ModuleSceneIntro::SaveScene()
+{
+	LOGC("Saving the scene...");
+
+
+}
+
+void ModuleSceneIntro::LoadScene(const char * file_path)
+{
+	LOGC("Loading the scence from %s", file_path);
+}

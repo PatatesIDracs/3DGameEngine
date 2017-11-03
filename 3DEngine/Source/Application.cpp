@@ -1,9 +1,9 @@
 #include "Application.h"
 
-#include "Imgui\imgui.h"
-#include "Imgui\imgui_impl_sdl_gl3.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 
-#include "Glew\include\glew.h"
+#include "Glew/include/glew.h"
 
 #include "parson.h"
 #include "ConfigJSON.h"
@@ -177,6 +177,7 @@ void Application::SaveModuleConfig(Config_Json & config)
 	app_config.SetBool("Is Active", true);
 }
 
+
 bool Application::AreFpsCapped()
 {
 	return capped;
@@ -187,6 +188,28 @@ void Application::SetFpsCap(bool fps_uncapped)
 	capped = !fps_uncapped;
 	if (capped)
 		capped_ms = (1000 / fps);
+}
+
+void Application::SaveScene()
+{
+	want_to_save_scene = true;
+}
+
+void Application::LoadScene()
+{
+	want_to_load_scene = true;
+}
+
+void Application::LoadSceneNow()
+{
+	scene_intro->LoadScene("POSAL");
+	want_to_load_scene = false;
+}
+
+void Application::SaveSceneNow()
+{
+	scene_intro->SaveScene();
+	want_to_save_scene = false;
 }
 
 // ---------------------------------------------
@@ -206,6 +229,12 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	//Scene Save and Load
+	if (want_to_save_scene)
+		SaveSceneNow();
+	if (want_to_load_scene)
+		LoadSceneNow();
+
 
 	//---FRAMERATE CALCULATIONS---
 	//When a second has passed...

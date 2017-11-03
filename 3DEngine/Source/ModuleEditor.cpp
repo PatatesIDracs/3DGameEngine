@@ -106,6 +106,9 @@ update_status ModuleEditor::Update(float dt)
 	{
 		//Open Setting window
 		if (ImGui::MenuItem("Configuration")) showconfig = !showconfig;
+		//Save and Load Scene
+		if (ImGui::MenuItem("Save scene ...")) App->SaveScene();
+		if (ImGui::MenuItem("Load scene ...")) App->LoadScene();
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
 		ImGui::EndMenu();
@@ -179,6 +182,8 @@ update_status ModuleEditor::Update(float dt)
 	//Show Game Object properties
 	if (showpropertieswindow) DrawPropertiesWindow();
 	if (showhierarchy) DrawHierarchy();
+
+	
 	
 	return UPDATE_CONTINUE;
 }
@@ -462,6 +467,21 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 		}
 	}
 	ImGui::End();
+	return ret;
+}
+
+bool ModuleEditor::DrawExplorer(std::string* output_file)
+{
+	bool ret = false;
+	//Get to the library path
+	fs::directory_iterator it{ it_library_path.c_str() };
+	fs::directory_iterator end{};
+
+	ImGui::Begin("test");
+
+	ImGui::End();
+
+
 	return ret;
 }
 

@@ -25,8 +25,16 @@ enum COMP_TYPE
 class Component
 {
 public:
-	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false) {};
-	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive) {};
+	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false) 
+	{
+		LCG UUIDGen;
+		UID = UUIDGen.Int();
+	};
+	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive) 
+	{
+		LCG UUIDGen;
+		UID = UUIDGen.Int();
+	};
 	virtual ~Component() {};
 
 	virtual void Enable() { active = true; };
@@ -43,7 +51,7 @@ public:
 	bool unique = false;
 
 protected:
-	
+	int UID = 0;
 	bool active = false;
 	GameObject* parent = nullptr;
 

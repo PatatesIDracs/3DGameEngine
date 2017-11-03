@@ -58,6 +58,10 @@ private:
 	int capped_ms = 16;
 	bool capped = true;
 
+	bool want_to_save_scene = false;
+	bool want_to_load_scene = false;
+	std::string file_to_load;
+
 public:
 
 	Application();
@@ -88,6 +92,9 @@ public:
 	bool AreFpsCapped();
 	void SetFpsCap(bool fps_uncapped);
 
+	void SaveScene();
+	void LoadScene();
+
 private:
 
 	void AddModule(Module* mod);
@@ -100,6 +107,9 @@ private:
 
 	void LoadModuleConfig(Config_Json& config);
 	void SaveModuleConfig(Config_Json& config);
+
+	void LoadSceneNow();
+	void SaveSceneNow();
 	
 };
 

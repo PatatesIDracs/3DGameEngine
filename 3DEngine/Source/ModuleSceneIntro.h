@@ -30,6 +30,9 @@ public:
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;
 
+	void SaveScene();
+	void LoadScene(const char* file_path);
+
 public:
 	GameObject* root = nullptr;
 

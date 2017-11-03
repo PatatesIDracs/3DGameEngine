@@ -7,6 +7,9 @@
 
 GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name("GameObject"), isactive(isactive)
 {
+	LCG UUIDGen;
+	UID = UUIDGen.Int();
+
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
@@ -18,6 +21,8 @@ GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name
 
 GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : parent(parent), name(name), isactive(isactive)
 {
+	LCG UUIDGen;
+	UID = UUIDGen.Int();
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
