@@ -25,8 +25,6 @@ struct RenderData
 
 	// Draw AABB and OBB
 	uint aabb_vertex_id = 0;
-	uint obb_vertex_id = 0;
-
 	uint box_indices_id = 0;
 };
 
@@ -47,11 +45,8 @@ public:
 
 	void ChangeMesh();
 
-	// Modify Component
-	void RotateBoundingBox(const math::Quat &transform);
-
 	void CreateBoxIndices();
-	void CreateBoxBuffers();
+	void CreateBoxBuffers(AABB &box);
 
 public:
 
@@ -59,10 +54,8 @@ public:
 	Quat prev_rotation = Quat::identity;
 
 	math::AABB aabb_box;
-	math::OBB obb_box;
 
 	bool draw_aabb = true;
-	bool draw_obb = true;
 
 	bool changing_mesh = false;
 	

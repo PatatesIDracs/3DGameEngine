@@ -12,13 +12,10 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 	aabb_box.SetNegativeInfinity();
 	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 
-	obb_box = aabb_box.ToOBB();
-
 	CreateBoxIndices();
-	CreateBoxBuffers();
-
-	if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
-	else LOGC("WARNING: Mesh parent is NULL");
+	CreateBoxBuffers(aabb_box);	
+	
+	UpdateTransform();
 }
 
 Mesh::~Mesh()
@@ -33,13 +30,13 @@ const RenderData* Mesh::GetRenderData()
 
 void Mesh::Update()
 {
-	if (draw_aabb || draw_obb)
+	if (draw_aabb)
 	{
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glLineWidth(2.0f);
-
 		if (draw_aabb && render_data->aabb_vertex_id > 0)
 		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glLineWidth(2.0f);
+
 			//Bind AABB vertex buffer
 			glBindBuffer(GL_ARRAY_BUFFER, render_data->aabb_vertex_id);
 			glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -47,35 +44,26 @@ void Mesh::Update()
 			//Bind and draw with indices
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
 			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
-		}
 
-		if (draw_obb && render_data->obb_vertex_id > 0)
-		{
-			//Bind OBB vertex buffer
-			glBindBuffer(GL_ARRAY_BUFFER, render_data->obb_vertex_id);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-			//Bind and draw with indices
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
-			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
+			glLineWidth(1.0f);
+			glDisableClientState(GL_VERTEX_ARRAY);
 		}
-		glLineWidth(1.0f);
-		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 }
 
 void Mesh::UpdateTransform()
 {
+	AABB temp = aabb_box;
 	if (parent != nullptr) {
-		RotateBoundingBox(parent->GetTransform()->GetRotQuat());
-		//obb_box.Scale(aabb_box.CenterPoint(), parent->GetTransform()->GetScale());
+		temp.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
+		
 	}
+	else {
+		temp.TransformAsAABB(parent->GetTransform()->GetLocalTransform());
+	}
+	CreateBoxBuffers(temp);
 
-	aabb_box.SetNegativeInfinity();
-	aabb_box.Enclose(obb_box);
-	CreateBoxBuffers();
-
-	if (parent != nullptr) parent->boundary_box = aabb_box;
+	if (parent != nullptr) parent->boundary_box = temp;
 }
 
 void Mesh::DrawComponent()
@@ -92,7 +80,6 @@ void Mesh::DrawComponent()
 		ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
-		ImGui::Checkbox("Draw OBB", &draw_obb);
 	}
 }
 
@@ -107,22 +94,15 @@ void Mesh::ChangeMesh()
 		//Generate AABB/OBB boxes
  		aabb_box.SetNegativeInfinity();
 		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
-		obb_box = aabb_box.ToOBB();
+
 		CreateBoxIndices();
-		CreateBoxBuffers();
-		if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
-		else LOGC("WARNING: Mesh parent is NULL");
+		CreateBoxBuffers(aabb_box);
+		//if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
+		//else LOGC("WARNING: Mesh parent is NULL");
 
 		changing_mesh = false;
 	}
 
-}
-
-void Mesh::RotateBoundingBox(const math::Quat &transform)
-{
-	obb_box.Transform(prev_rotation.Conjugated());
-	obb_box.Transform(transform);
-	prev_rotation = transform;
 }
 
 // Create box indices buffer (only once)
@@ -138,7 +118,7 @@ void Mesh::CreateBoxIndices()
 }
 
 // Generate AABB and OBB buffers
-void Mesh::CreateBoxBuffers()
+void Mesh::CreateBoxBuffers(AABB &box)
 {
 	// delete buffers;
 	if (render_data->aabb_vertex_id > 0)
@@ -146,38 +126,20 @@ void Mesh::CreateBoxBuffers()
 		glDeleteBuffers(1, &render_data->aabb_vertex_id);
 	}
 
-	if (render_data->obb_vertex_id > 0)
-	{
-		glDeleteBuffers(1, &render_data->obb_vertex_id);
-	}
-
 	float new_aabb[24]
 	{
-		aabb_box.CornerPoint(0).x, aabb_box.CornerPoint(0).y,	aabb_box.CornerPoint(0).z,
-		aabb_box.CornerPoint(1).x, aabb_box.CornerPoint(1).y,	aabb_box.CornerPoint(1).z,
-		aabb_box.CornerPoint(2).x, aabb_box.CornerPoint(2).y,	aabb_box.CornerPoint(2).z,
-		aabb_box.CornerPoint(3).x, aabb_box.CornerPoint(3).y,	aabb_box.CornerPoint(3).z,
-		aabb_box.CornerPoint(4).x, aabb_box.CornerPoint(4).y,	aabb_box.CornerPoint(4).z,
-		aabb_box.CornerPoint(5).x, aabb_box.CornerPoint(5).y,	aabb_box.CornerPoint(5).z,
-		aabb_box.CornerPoint(6).x, aabb_box.CornerPoint(6).y,	aabb_box.CornerPoint(6).z,
-		aabb_box.CornerPoint(7).x, aabb_box.CornerPoint(7).y,	aabb_box.CornerPoint(7).z,
-	};
-
-	float new_obb[24]
-	{
-		obb_box.CornerPoint(0).x, obb_box.CornerPoint(0).y,	obb_box.CornerPoint(0).z,
-		obb_box.CornerPoint(1).x, obb_box.CornerPoint(1).y,	obb_box.CornerPoint(1).z,
-		obb_box.CornerPoint(2).x, obb_box.CornerPoint(2).y,	obb_box.CornerPoint(2).z,
-		obb_box.CornerPoint(3).x, obb_box.CornerPoint(3).y,	obb_box.CornerPoint(3).z,
-		obb_box.CornerPoint(4).x, obb_box.CornerPoint(4).y,	obb_box.CornerPoint(4).z,
-		obb_box.CornerPoint(5).x, obb_box.CornerPoint(5).y,	obb_box.CornerPoint(5).z,
-		obb_box.CornerPoint(6).x, obb_box.CornerPoint(6).y,	obb_box.CornerPoint(6).z,
-		obb_box.CornerPoint(7).x, obb_box.CornerPoint(7).y,	obb_box.CornerPoint(7).z,
+		box.CornerPoint(0).x, box.CornerPoint(0).y,	box.CornerPoint(0).z,
+		box.CornerPoint(1).x, box.CornerPoint(1).y,	box.CornerPoint(1).z,
+		box.CornerPoint(2).x, box.CornerPoint(2).y,	box.CornerPoint(2).z,
+		box.CornerPoint(3).x, box.CornerPoint(3).y,	box.CornerPoint(3).z,
+		box.CornerPoint(4).x, box.CornerPoint(4).y,	box.CornerPoint(4).z,
+		box.CornerPoint(5).x, box.CornerPoint(5).y,	box.CornerPoint(5).z,
+		box.CornerPoint(6).x, box.CornerPoint(6).y,	box.CornerPoint(6).z,
+		box.CornerPoint(7).x, box.CornerPoint(7).y,	box.CornerPoint(7).z,
 	};
 	
-	Primitive box;
-	render_data->aabb_vertex_id = box.GenerateBBoxVertices(new_aabb);
-	render_data->obb_vertex_id = box.GenerateBBoxVertices(new_obb);
+	Primitive temporal_primitive;
+	render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
 }
 
 RenderData::~RenderData()
@@ -187,7 +149,6 @@ RenderData::~RenderData()
 	if (num_normals > 0)glDeleteBuffers(1, &id_normals);
 	if (num_tex_vertices > 0)	glDeleteBuffers(1, &id_tex_vertices);
 	if (aabb_vertex_id > 0) glDeleteBuffers(1, &aabb_vertex_id);
-	if (obb_vertex_id > 0) glDeleteBuffers(1, &obb_vertex_id);
 	if (box_indices_id > 0) glDeleteBuffers(1, &box_indices_id);
 
 	delete[] indices;

@@ -13,7 +13,7 @@ Transform::~Transform()
 {
 }
 
-const float4x4 Transform::GetRotMat() const
+const float4x4 Transform::GetLocalTransform() const
 {
 	return transform;
 }
@@ -21,6 +21,11 @@ const float4x4 Transform::GetRotMat() const
 const float4x4 Transform::GetGlobalTransform() const
 {
 	return global_transform;
+}
+
+const float * Transform::GetGlobalTransposed() const
+{
+	return global_transform.Transposed().ptr();
 }
 
 const Quat Transform::GetRotQuat() const
@@ -40,29 +45,26 @@ float3 Transform::GetScale() const
 
 void Transform::Update()
 {
-	if (update_transform)
-	{
-		for (uint i = 0; i < parent->components.size(); i++)
-		{
-			parent->components[i]->UpdateTransform();
-		}
+	if (update_transform) {
+		// Set Rotation
+		rotation = GetRotQuat();
+
+		// Set Transform
+		transform = float4x4::FromTRS(position, rotation, scale);
 	}
 
 	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
 		global_transform = parent->parent->GetTransform()->global_transform* transform;
 	}
 	else global_transform = transform;
-}
 
-void Transform::UpdateTransform()
-{
-	// Set Rotation
-	rotation = GetRotQuat();
+	if (update_transform)
+	{
+		for (uint i = 0; i < parent->components.size(); i++)
+			parent->components[i]->UpdateTransform();
 
-	// Set Transform
-	transform = float4x4::FromTRS(position, rotation, scale);
-
-	update_transform = false;
+		update_transform = false;
+	}
 }
 
 void Transform::SetTransform(float4x4 &transf)
@@ -72,8 +74,11 @@ void Transform::SetTransform(float4x4 &transf)
 	scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
-	UpdateTransform();
-	global_transform = transform;
+	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
+		global_transform = parent->parent->GetTransform()->global_transform* transform;
+	}
+	else global_transform = transform;
+
 	update_transform = true;
 }
 

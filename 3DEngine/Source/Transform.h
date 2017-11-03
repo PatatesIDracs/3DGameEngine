@@ -9,14 +9,15 @@ public:
 	Transform(GameObject* parent);
 	~Transform();
 
-	const float4x4 GetRotMat() const;
+	const float4x4 GetLocalTransform() const;
 	const float4x4 GetGlobalTransform()const;
+	const float* GetGlobalTransposed()const;
 	const Quat GetRotQuat() const;
 	float3 GetPosition() const;
 	float3 GetScale() const;
 	
 	void Update();
-	void UpdateTransform();
+	//void UpdateTransform();
 
 	void SetTransform(float4x4 &transf);
 

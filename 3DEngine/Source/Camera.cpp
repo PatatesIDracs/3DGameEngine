@@ -13,7 +13,7 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
-		const float4x4 transf = parent->GetTransform()->GetRotMat();
+		const float4x4 transf = parent->GetTransform()->GetGlobalTransform();
 		cfrustum->SetFrame(transf.Col3(3), transf.Col3(2), transf.Col3(2));
 	}
 	else
@@ -55,7 +55,7 @@ void Camera::UpdateTransform()
 {
 	Transform* transf = parent->GetTransform();
 
-	float4x4 mat = transf->GetRotMat();
+	float4x4 mat = transf->GetLocalTransform();
 	cfrustum->SetFrame(transf->GetPosition(), mat.Col3(2), mat.Col3(1));
 
 	//Temporal
