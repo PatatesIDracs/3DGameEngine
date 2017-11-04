@@ -43,6 +43,8 @@ public:
 	bool isactive = true;
 	bool parent_active = true;
 
+	bool isstatic = false;
+
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;

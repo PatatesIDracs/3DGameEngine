@@ -44,7 +44,7 @@ bool ModuleCamera3D::CleanUp()
 void ModuleCamera3D::SetCameraEditor()
 {
 	camera_editor = new Camera(nullptr, true);
-	camera_editor->SetFrustumPlanes(0.5, 100);
+	camera_editor->SetFrustumPlanes(0.5, 512);
 	camera_editor->SetFrustumViewAngle();
 	camera_editor->GenerateFrostumDraw();
 	camera_editor->SetNewFrame(Position, -Z, Y);

@@ -70,11 +70,14 @@ void Camera::DrawComponent()
 
 		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue)
 			|| ImGui::InputFloat("Far Plane", &far_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
 			SetFrustumPlanes();
-
-		if (ImGui::SliderInt("Field of View", &field_of_view, 45, 100, "%.2f"))
+			GenerateFrostumDraw();
+		}
+		if (ImGui::SliderInt("Field of View", &field_of_view, 45, 100, "%.2f")) {
 			SetFrustumViewAngle();
-
+			GenerateFrostumDraw();
+		}
 		ImGui::InputFloat("Aspect Ratio", &aspect_ratio, 0, 100, 3, ImGuiInputTextFlags_ReadOnly);
 	}
 }

@@ -52,6 +52,7 @@ void GameObject::Update()
 	if (parent != nullptr) parent_active = parent->IsActive();
 
 	if (!IsActive()) return;
+
 	//Check if the GameObject has a gameobject list
 	if (children.size() != 0)
 	{
@@ -61,7 +62,7 @@ void GameObject::Update()
 		}
 	}
 	
-	for (uint i = 0; i < components.size(); i++)
+	for (uint i = (int)isstatic; i < components.size(); i++)
 	{
 		components[i]->Update();
 	}
@@ -149,9 +150,10 @@ void GameObject::DrawProperties()
 
 void GameObject::DrawGameObject()
 {
-	ImGui::Checkbox("Active", &isactive); 
+	ImGui::Checkbox("Active", &isactive);
 	ImGui::SameLine();
 	ImGui::InputText("", (char*)name.c_str(), name.size(), ImGuiInputTextFlags_ReadOnly);
+	ImGui::Checkbox("Static", &isstatic);
 }
 
 AABB GameObject::GetBoundaryBox()

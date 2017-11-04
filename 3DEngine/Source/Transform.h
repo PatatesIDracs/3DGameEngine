@@ -26,6 +26,10 @@ public:
 
 private:
 
+	void NormalizeRotationAngle();
+
+private:
+
 	float4x4 transform, global_transform;
 	Quat rotation = Quat::identity;
 
