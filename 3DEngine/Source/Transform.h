@@ -17,7 +17,8 @@ public:
 	float3 GetScale() const;
 	
 	void Update();
-	//void UpdateTransform();
+	void UpdateGlobalTransform();
+	void EnableUpdateTransform();
 
 	void SetTransform(float4x4 &transf);
 

@@ -51,20 +51,30 @@ void Transform::Update()
 
 		// Set Transform
 		transform = float4x4::FromTRS(position, rotation, scale);
-	}
 
-	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
-		global_transform = parent->parent->GetTransform()->global_transform* transform;
-	}
-	else global_transform = transform;
+		UpdateGlobalTransform();
 
-	if (update_transform)
-	{
-		for (uint i = 0; i < parent->components.size(); i++)
+		for (uint i = 1; i < parent->components.size(); i++)
 			parent->components[i]->UpdateTransform();
 
 		update_transform = false;
 	}
+}
+
+void Transform::UpdateGlobalTransform()
+{
+	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
+		global_transform = parent->parent->GetTransform()->GetGlobalTransform()* transform;
+	}
+	else global_transform = transform;
+
+	for (uint i = 0; i < parent->children.size(); i++)
+		parent->children[i]->GetTransform()->EnableUpdateTransform();
+}
+
+void Transform::EnableUpdateTransform()
+{
+	update_transform = true;
 }
 
 void Transform::SetTransform(float4x4 &transf)
