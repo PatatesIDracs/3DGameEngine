@@ -23,6 +23,10 @@ bool ModuleSceneIntro::Start()
 {
 	LOGC("Loading Intro assets");
 	bool ret = true;
+	
+	AABB octree_limit;
+	octree_limit.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(512.0f, 512.0f, 512.0f));
+	scene_octree.Create(octree_limit, 4);
 
 	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec(0, 0, 0));
@@ -135,6 +139,12 @@ update_status ModuleSceneIntro::Update(float dt)
 		}
 	}
 
+	/* // Add Objcts to Octree Test
+	if (!scene_added && current_object->isstatic) {
+	scene_added = AddGameObjectToOctree(current_object);
+	}
+	*/
+
 	return UPDATE_CONTINUE;
 }
 
@@ -149,6 +159,19 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 
 	current_object = ret;
 	return ret;
+}
+
+bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
+{
+	if (object != nullptr && object->isstatic) {
+		if (scene_octree.Insert((GameObject*)object, object->boundary_box)) {
+			/*for (uint i = 0; i < object->children.size(); i++) {
+			AddGameObjectToOctree(object->children[i]);
+			}*/
+			return true;
+		}
+	}
+	return false;
 }
 
 void ModuleSceneIntro::LookAtScene() const

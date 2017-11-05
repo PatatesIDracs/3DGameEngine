@@ -4,7 +4,7 @@
 
 #include "Module.h"
 #include "Math.h"
-
+#include "OcTree.h"
 
 class GameObject;
 class MeshRenderer;
@@ -22,6 +22,8 @@ public:
 	void Draw();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
+
+	bool AddGameObjectToOctree(const GameObject* object);
 
 	void LookAtScene() const;
 
@@ -42,6 +44,8 @@ private:
 
 	std::vector<MeshRenderer*> render_this;
 
+	Octree<GameObject*>	scene_octree;
+	bool scene_added = false;
 };
 
 #endif // !__MODULESCENEINTRO_H__

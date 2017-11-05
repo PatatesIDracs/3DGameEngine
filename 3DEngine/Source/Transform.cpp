@@ -84,12 +84,8 @@ void Transform::SetTransform(float4x4 &transf)
 	scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
-	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
-		global_transform = parent->parent->GetTransform()->global_transform* transform;
-	}
-	else global_transform = transform;
-
 	update_transform = true;
+	Update();
 }
 
 void Transform::DrawComponent()

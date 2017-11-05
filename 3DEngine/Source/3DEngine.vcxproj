@@ -325,6 +325,7 @@
     <ClInclude Include="ModuleRenderer3D.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="OcTree.h" />
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="parson.h" />
     <ClInclude Include="Primitive.h" />
