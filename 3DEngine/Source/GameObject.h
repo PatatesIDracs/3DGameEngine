@@ -18,27 +18,29 @@ public:
 
 	void Update();
 
+	//Set methods
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component);
-
-	bool IsActive()const { return isactive && parent_active; }
-	bool IsRoot()const { return (parent == NULL ? true : false); }
-
 	void SetTransform(float4x4 &transform);
-	Transform* GetTransform();
 
-	Component* FindUniqueComponent(COMP_TYPE type);
+	//Get/Check state methods
+	bool IsActive()const;
+	bool IsRoot()const;
+	Transform* GetTransform() const;
+	AABB GetBoundaryBox();
+	Component* FindFirstComponent(COMP_TYPE type);
+	std::vector<Component*>* FindAllTypeComponents(COMP_TYPE type);
 
+	//UI Drawing methods
 	GameObject* DrawHierarchy();
-
 	void DrawProperties();
 	void DrawGameObject();
 
-	AABB GetBoundaryBox();
-
+	void Save();
+	void Load();
 
 public:
-	int UID = 0;
+	int UUID = 0;
 	std::string name;
 	bool isactive = true;
 	bool parent_active = true;

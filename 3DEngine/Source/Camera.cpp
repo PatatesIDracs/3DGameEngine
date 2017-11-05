@@ -120,7 +120,7 @@ bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& 
 
 		// Add GameObject to render_this
 		if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
-			MeshRenderer* mesh = (MeshRenderer*)curr_game_obj->FindUniqueComponent(COMP_MESHRENDERER);
+			MeshRenderer* mesh = (MeshRenderer*)curr_game_obj->FindFirstComponent(COMP_MESHRENDERER);
 
 			if(mesh != nullptr) render_this.push_back(mesh);
 		}

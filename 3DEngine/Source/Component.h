@@ -28,12 +28,12 @@ public:
 	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false) 
 	{
 		LCG UUIDGen;
-		UID = UUIDGen.Int();
+		UUID = UUIDGen.Int();
 	};
 	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive) 
 	{
 		LCG UUIDGen;
-		UID = UUIDGen.Int();
+		UUID = UUIDGen.Int();
 	};
 	virtual ~Component() {};
 
@@ -46,13 +46,14 @@ public:
 
 	COMP_TYPE GetType() const { return type; };
 	bool IsActive() const { return active; };
+	bool IsUnique() const { return unique; };
 
-public:
-	bool unique = false;
 
 protected:
-	int UID = 0;
+	int UUID = 0;
+	int parent_UUID = 0;
 	bool active = false;
+	bool unique = false;
 	GameObject* parent = nullptr;
 
 private:

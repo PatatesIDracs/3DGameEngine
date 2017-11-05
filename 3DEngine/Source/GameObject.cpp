@@ -8,7 +8,7 @@
 GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name("GameObject"), isactive(isactive)
 {
 	LCG UUIDGen;
-	UID = UUIDGen.Int();
+	UUID = UUIDGen.Int();
 
 	if (parent != nullptr)
 		parent->AddChildren(this);
@@ -22,11 +22,11 @@ GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name
 GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : parent(parent), name(name), isactive(isactive)
 {
 	LCG UUIDGen;
-	UID = UUIDGen.Int();
+	UUID = UUIDGen.Int();
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
-	// Create default Transform
+	// Create default Transform, this way we know the first component will always be the transform
 	components.push_back(new Transform(this));
 
 	boundary_box.SetNegativeInfinity();
@@ -68,6 +68,7 @@ void GameObject::Update()
 	}
 }
 
+//Set methods
 void GameObject::AddChildren(GameObject * new_child)
 {
 	children.push_back(new_child);
@@ -75,6 +76,19 @@ void GameObject::AddChildren(GameObject * new_child)
 
 void GameObject::AddComponent(Component * new_component)
 {
+	//If the new component is unique check if we have a component of the same type
+	if (new_component->IsUnique())
+	{
+		for (uint i = 0; i < components.size(); i++)
+		{
+			if (components[i]->GetType() == new_component->GetType())
+			{
+				LOGC("%s already has this component",name.c_str());
+				return;
+			}
+		}
+	}
+
 	components.push_back(new_component);
 }
 
@@ -83,12 +97,44 @@ void GameObject::SetTransform(float4x4 &transform)
 	((Transform*)components[0])->SetTransform(transform);
 }
 
-Transform * GameObject::GetTransform()
+
+//Get/Check state methods
+bool GameObject::IsActive() const
+{
+	return isactive && parent_active;
+}
+
+bool GameObject::IsRoot() const
+{
+	return (parent == NULL ? true : false);
+}
+
+Transform * GameObject::GetTransform() const
 {
 	return (Transform*)components[0];
 }
 
-Component* GameObject::FindUniqueComponent(COMP_TYPE type)
+AABB GameObject::GetBoundaryBox()
+{
+	math::AABB box;
+	box.SetNegativeInfinity();
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		if (components[i]->GetType() == COMP_MESH)
+			box.Enclose(((Mesh*)components[i])->aabb_box);
+	}
+
+	for (uint i = 0; i < children.size(); i++)
+	{
+		box.Enclose(children[i]->GetBoundaryBox());
+	}
+
+	return box;
+}
+
+
+Component* GameObject::FindFirstComponent(COMP_TYPE type)
 {
 	Component* ret = nullptr;
 
@@ -98,6 +144,21 @@ Component* GameObject::FindUniqueComponent(COMP_TYPE type)
 		{
 			ret = components[i];
 			break;
+		}
+	}
+
+	return ret;
+}
+
+std::vector<Component*>* GameObject::FindAllTypeComponents(COMP_TYPE type)
+{
+	std::vector<Component*>* ret = new std::vector<Component*>;
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		if (components[i]->GetType() == type)
+		{
+			ret->push_back(components[i]);
 		}
 	}
 
@@ -156,21 +217,12 @@ void GameObject::DrawGameObject()
 	ImGui::Checkbox("Static", &isstatic);
 }
 
-AABB GameObject::GetBoundaryBox()
+
+void GameObject::Save()
 {
-	math::AABB box;
-	box.SetNegativeInfinity();
-
-	for (uint i = 0; i < components.size(); i++)
-	{
-		if (components[i]->GetType() == COMP_MESH)
-			box.Enclose(((Mesh*)components[i])->aabb_box);
-	}
-
+	LOGC("Saving %s", name.c_str());
 	for (uint i = 0; i < children.size(); i++)
 	{
-		box.Enclose(children[i]->GetBoundaryBox());
+		children[i]->Save();
 	}
-
-	return box;
 }

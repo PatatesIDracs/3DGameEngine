@@ -185,8 +185,7 @@ void ModuleSceneIntro::DrawProperties() const
 void ModuleSceneIntro::SaveScene()
 {
 	LOGC("Saving the scene...");
-
-
+	root->Save();
 }
 
 void ModuleSceneIntro::LoadScene(const char * file_path)

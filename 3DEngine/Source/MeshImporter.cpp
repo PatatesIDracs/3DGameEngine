@@ -116,7 +116,6 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
 
 				mesh_holder->GetTransform()->SetTransform(new_transform);
-				//RenderData* new_mesh_data = ;
 				Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
 				mesh_holder->AddComponent(new_mesh_component);
 				mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
