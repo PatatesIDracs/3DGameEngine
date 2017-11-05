@@ -15,6 +15,10 @@ public:
 
 	void GetElements();
 
+//	void Save();
+//	void Load();
+	void GetOwnBufferSize(uint& buffer_size);
+
 public:
 	Transform* transform;
 	Mesh* mesh;

@@ -101,6 +101,14 @@ void Transform::DrawComponent()
 	}
 }
 
+void Transform::GetOwnBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(COMP_TYPE);
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+	buffer_size += sizeof(float) * 16;		//Transform
+}
+
 void Transform::NormalizeRotationAngle()
 {
 	float max_angle = 360.0f;

@@ -5,7 +5,8 @@
 
 class MeshImporter;
 class TextureImporter;
-class RenderData;
+struct RenderData;
+
 class Importer
 {
 public:

@@ -142,6 +142,14 @@ void Mesh::CreateBoxBuffers(AABB &box)
 	render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
 }
 
+void Mesh::GetOwnBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(COMP_TYPE);
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+	buffer_size += strlen(render_data->mesh_path);
+}
+
 RenderData::~RenderData()
 {
 	if (num_indices > 0)glDeleteBuffers(1, &id_indices);

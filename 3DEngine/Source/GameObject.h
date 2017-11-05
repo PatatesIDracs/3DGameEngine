@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Math.h"
+#include "Globals.h"
  
 
 class Component;
@@ -36,19 +37,20 @@ public:
 	void DrawProperties();
 	void DrawGameObject();
 
+	//Save and load methods
 	void Save();
 	void Load();
+	void GetOwnBufferSize(uint& buffer_size);
 
 public:
 	int UUID = 0;
+	int parent_UUID = 0;
 	std::string name;
 	bool isactive = true;
 	bool parent_active = true;
-
 	bool isstatic = false;
 
 	std::vector<Component*> components;
-
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 

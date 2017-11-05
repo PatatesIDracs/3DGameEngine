@@ -228,3 +228,12 @@ void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 {
 	cfrustum->SetFrame(pos, front, up);
 }
+
+void Camera::GetOwnBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(COMP_TYPE);
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+	buffer_size += sizeof(float) * 3;	//near_plane, far_plane, aspect_ratio
+	buffer_size += sizeof(int);			//Field of view	
+}

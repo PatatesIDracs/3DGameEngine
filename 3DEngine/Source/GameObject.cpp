@@ -9,7 +9,7 @@ GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name
 {
 	LCG UUIDGen;
 	UUID = UUIDGen.Int();
-
+	parent_active = true;
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
@@ -23,6 +23,7 @@ GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : p
 {
 	LCG UUIDGen;
 	UUID = UUIDGen.Int();
+	parent_active = true;
 	if (parent != nullptr)
 		parent->AddChildren(this);
 
@@ -72,6 +73,7 @@ void GameObject::Update()
 void GameObject::AddChildren(GameObject * new_child)
 {
 	children.push_back(new_child);
+	new_child->parent_UUID = UUID;
 }
 
 void GameObject::AddComponent(Component * new_component)
@@ -90,6 +92,7 @@ void GameObject::AddComponent(Component * new_component)
 	}
 
 	components.push_back(new_component);
+	new_component->SetParent(this);
 }
 
 void GameObject::SetTransform(float4x4 &transform)
@@ -224,5 +227,29 @@ void GameObject::Save()
 	for (uint i = 0; i < children.size(); i++)
 	{
 		children[i]->Save();
+	}
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->Save();
+	}
+}
+
+void GameObject::GetOwnBufferSize(uint& buffer_size)
+{
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+	buffer_size += name.size();
+	buffer_size += sizeof(isactive);
+	buffer_size += sizeof(isstatic);
+
+	for (uint i = 0; i < children.size(); i++)
+	{
+		children[i]->GetOwnBufferSize(buffer_size);
+	}
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->GetOwnBufferSize(buffer_size);
 	}
 }

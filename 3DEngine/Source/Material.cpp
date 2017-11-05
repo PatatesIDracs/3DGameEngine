@@ -27,3 +27,12 @@ void Material::DrawComponent()
 		ImGui::InputInt("Height:", (int*)&texture_height, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 }
+
+void Material::GetOwnBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(COMP_TYPE);
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+	buffer_size += sizeof(id_texture);
+	buffer_size += sizeof(uint) * 2;	//Texture height and width
+}

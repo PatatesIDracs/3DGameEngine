@@ -49,7 +49,7 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform)
 {
 
-	for (int k = 0; k < to_import->mNumChildren; k++)
+	for (uint k = 0; k < to_import->mNumChildren; k++)
 	{
 		aiNode* child_node = to_import->mChildren[k];
 
@@ -129,6 +129,10 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 RenderData * MeshImporter::Load(const char * full_path)
 {
 	RenderData* ret = new RenderData;
+	std::string path = full_path;
+	ret->mesh_path = new char[path.size() + 1];
+	memcpy(ret->mesh_path, path.c_str(), path.size());
+	ret->mesh_path[path.size()] = 0x00;
 	char* buffer_data = nullptr;
 
 	std::ifstream loaded_file(full_path, std::ifstream::binary);

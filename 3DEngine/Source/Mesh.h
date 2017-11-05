@@ -26,6 +26,9 @@ struct RenderData
 	// Draw AABB and OBB
 	uint aabb_vertex_id = 0;
 	uint box_indices_id = 0;
+
+	//Path to the imported mesh
+	char* mesh_path = nullptr;	//TODO: Mesh_path should be part of Mesh not RenderData
 };
 
 
@@ -48,17 +51,19 @@ public:
 	void CreateBoxIndices();
 	void CreateBoxBuffers(AABB &box);
 
+	//void Save();
+	//void Load();
+	void GetOwnBufferSize(uint& buffer_size);
+
 public:
 
 	RenderData* render_data;
 	Quat prev_rotation = Quat::identity;
 
 	math::AABB aabb_box;
-
 	bool draw_aabb = true;
 
 	bool changing_mesh = false;
-	
 };
 
 

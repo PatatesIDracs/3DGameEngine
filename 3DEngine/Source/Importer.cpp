@@ -53,7 +53,7 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 
 	//Make sure the path uses the same slash character
 	uint full_path_len = strlen(full_path);
-	for (int i = 0; i < full_path_len; i++)
+	for (uint i = 0; i < full_path_len; i++)
 	{
 		full_path[i] = tolower(full_path[i]);
 
@@ -64,7 +64,7 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 	uint path_end = 0;
 	uint name_end = 0;
 	
-	for (int i = 0; i < full_path_len; i++)
+	for (uint i = 0; i < full_path_len; i++)
 	{
 		if (full_path[i] == '/')
 			path_end = i;
@@ -73,7 +73,7 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 			name_end = i - 1;
 	}
 
-	for (int i = 0; i < full_path_len; i++)
+	for (uint i = 0; i < full_path_len; i++)
 	{
 		if (i <= path_end)
 			path->push_back(full_path[i]);

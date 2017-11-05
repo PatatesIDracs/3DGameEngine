@@ -208,7 +208,19 @@ void ModuleSceneIntro::DrawProperties() const
 void ModuleSceneIntro::SaveScene()
 {
 	LOGC("Saving the scene...");
+
+	//TODO: Get the buffer size
+	uint buffer_size = 0;
+	root->GetOwnBufferSize(buffer_size);
+	LOGC("Buffer size is %i", buffer_size);
+
+	//TODO: Create the buffer and cursor
+
+
+	//TODO: Pass the buffer and cursor and go saving data
 	root->Save();
+
+	//TODO: Put and ending signature to the file to check if it could be corrupted
 }
 
 void ModuleSceneIntro::LoadScene(const char * file_path)

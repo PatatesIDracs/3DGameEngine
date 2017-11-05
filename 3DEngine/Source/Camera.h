@@ -39,6 +39,10 @@ public:
 	void SetFOVRatio(uint width, uint height);
 	void SetNewFrame(vec& pos, vec& front, vec& up);
 
+	//void Save();
+	//void Load();
+	void GetOwnBufferSize(uint& buffer_size);
+
 private:
 	Frustum* cfrustum = nullptr;
 	Plane* frustum_planes = nullptr;

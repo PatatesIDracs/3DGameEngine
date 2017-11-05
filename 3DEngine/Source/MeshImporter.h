@@ -5,10 +5,10 @@
 
 #define MESHFILEFORMAT ".mjope"
 
-class RenderData;
+struct RenderData;
 class GameObject;
-class aiNode;
-class aiScene;
+struct aiNode;
+struct aiScene;
 template <class T>
 class aiMatrix4x4t;
 

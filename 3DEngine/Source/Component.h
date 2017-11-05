@@ -44,10 +44,17 @@ public:
 
 	virtual void UpdateTransform() {};
 
+	//Save and Load methods
+	virtual void Save() {};
+	virtual void Load() {};
+	virtual void GetOwnBufferSize(uint& buffer_size) {};
+
+
 	COMP_TYPE GetType() const { return type; };
 	bool IsActive() const { return active; };
 	bool IsUnique() const { return unique; };
 
+	void SetParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->UUID; };
 
 protected:
 	int UUID = 0;

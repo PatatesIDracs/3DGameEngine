@@ -20,3 +20,10 @@ void MeshRenderer::GetElements()
 	mesh = (Mesh*)parent->FindFirstComponent(COMP_MESH);
 	material = (Material*)parent->FindFirstComponent(COMP_MATERIAL);
 }
+
+void MeshRenderer::GetOwnBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(COMP_TYPE);
+	buffer_size += sizeof(UUID);
+	buffer_size += sizeof(parent_UUID);
+}

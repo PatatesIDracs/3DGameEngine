@@ -24,6 +24,10 @@ public:
 
 	void DrawComponent();
 
+	//void Save();
+	//void Load();
+	void GetOwnBufferSize(uint& buffer_size);
+
 private:
 
 	void NormalizeRotationAngle();
