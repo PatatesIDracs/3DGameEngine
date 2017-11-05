@@ -101,8 +101,41 @@ void Transform::DrawComponent()
 	}
 }
 
+void Transform::Save(const char * buffer_data, char * cursor)
+{
+	LOGC("Saving transform comp");
+
+	//identifier and type
+	int identifier = COMPONENTIDENTIFIER;
+	uint bytes_to_copy = sizeof(identifier);
+	memcpy(cursor, &identifier, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(type);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	//UUID and parent UUID
+	bytes_to_copy = sizeof(UUID);
+	memcpy(cursor, &UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(parent_UUID);
+	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	//Transform
+	bytes_to_copy = sizeof(float) * 16;
+	//turn float4x4 class to a float array for easy memcpy
+	float t[] = {	transform[0][0] , transform[0][1] , transform[0][2] , transform[0][3] ,
+					transform[1][0] , transform[1][1] , transform[1][2] , transform[1][3] ,
+					transform[2][0] , transform[2][1] , transform[2][2] , transform[2][3] ,
+					transform[3][0] , transform[3][1] , transform[3][2] , transform[3][3] };
+	memcpy(cursor, t, bytes_to_copy);
+	cursor += bytes_to_copy;
+}
+
 void Transform::GetOwnBufferSize(uint & buffer_size)
 {
+	buffer_size += sizeof(int);			//identifier
 	buffer_size += sizeof(COMP_TYPE);
 	buffer_size += sizeof(UUID);
 	buffer_size += sizeof(parent_UUID);
@@ -119,3 +152,4 @@ void Transform::NormalizeRotationAngle()
 		if (angle[i] > 180.0f) angle[i] -= 360.0f;
 	}
 }
+

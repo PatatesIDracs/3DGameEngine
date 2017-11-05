@@ -142,8 +142,35 @@ void Mesh::CreateBoxBuffers(AABB &box)
 	render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
 }
 
+void Mesh::Save(const char * buffer_data, char * cursor)
+{
+	LOGC("Saving mesh comp");
+
+	//identifier and type
+	int identifier = COMPONENTIDENTIFIER;
+	uint bytes_to_copy = sizeof(identifier);
+	memcpy(cursor, &identifier, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(type);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	//UUID and parent UUID
+	bytes_to_copy = sizeof(UUID);
+	memcpy(cursor, &UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(parent_UUID);
+	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	bytes_to_copy = strlen(render_data->mesh_path);
+	memcpy(cursor, render_data->mesh_path, bytes_to_copy);
+	cursor += bytes_to_copy;
+}
+
 void Mesh::GetOwnBufferSize(uint & buffer_size)
 {
+	buffer_size += sizeof(int);			//identifier
 	buffer_size += sizeof(COMP_TYPE);
 	buffer_size += sizeof(UUID);
 	buffer_size += sizeof(parent_UUID);

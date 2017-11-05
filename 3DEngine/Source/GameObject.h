@@ -38,7 +38,7 @@ public:
 	void DrawGameObject();
 
 	//Save and load methods
-	void Save();
+	void Save(const char* buffer_data, char* cursor);
 	void Load();
 	void GetOwnBufferSize(uint& buffer_size);
 

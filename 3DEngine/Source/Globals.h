@@ -33,6 +33,10 @@
 #define JOPE_MESHES_FOLDER "Meshes/"
 #define JOPE_TEXTURE_FOLDER "Textures/"
 
+//Identifier for scene serialitzation
+#define GAMEOBJECTIDENTIFIER -1
+#define COMPONENTIDENTIFIER	 -1
+
 
 #define LOGC(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
@@ -56,8 +60,7 @@ enum update_status
 
 
 // Configuration -----------
-
-
+//Here in case a config file isn't found
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 1

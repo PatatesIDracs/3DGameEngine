@@ -9,6 +9,7 @@
 
 #include "Glew\include\glew.h"
 
+#include <fstream>
 
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app,"Scene", start_enabled)
@@ -259,12 +260,15 @@ void ModuleSceneIntro::SaveScene()
 	LOGC("Buffer size is %i", buffer_size);
 
 	//TODO: Create the buffer and cursor
-
+	char* buffer_data = new char[buffer_size];
+	char* cursor = buffer_data;
 
 	//TODO: Pass the buffer and cursor and go saving data
-	root->Save();
+	root->Save(buffer_data, cursor);
 
 	//TODO: Put and ending signature to the file to check if it could be corrupted
+	std::ofstream new_file("../Data/Assets/TestScene.jope", std::ofstream::binary);
+	new_file.write(buffer_data, buffer_size);
 }
 
 void ModuleSceneIntro::LoadScene(const char * file_path)

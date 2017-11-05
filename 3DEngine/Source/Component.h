@@ -45,7 +45,7 @@ public:
 	virtual void UpdateTransform() {};
 
 	//Save and Load methods
-	virtual void Save() {};
+	virtual void Save(const char* buffer_data, char* cursor) {};
 	virtual void Load() {};
 	virtual void GetOwnBufferSize(uint& buffer_size) {};
 
@@ -63,7 +63,6 @@ protected:
 	bool unique = false;
 	GameObject* parent = nullptr;
 
-private:
 	COMP_TYPE type = COMP_UNKNOWN;
 
 };

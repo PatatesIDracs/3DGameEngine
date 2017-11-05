@@ -234,8 +234,44 @@ void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 	cfrustum->SetFrame(pos, front, up);
 }
 
+void Camera::Save(const char * buffer_data, char * cursor)
+{
+	LOGC("Saving camera comp");
+
+	//identifier and type
+	int identifier = COMPONENTIDENTIFIER;
+	uint bytes_to_copy = sizeof(identifier);
+	memcpy(cursor, &identifier, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(type);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	//UUID and parent UUID
+	bytes_to_copy = sizeof(UUID);
+	memcpy(cursor, &UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(parent_UUID);
+	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+
+	//near_plane, far_plane, aspect_ratio, field_of_view
+	bytes_to_copy = sizeof(float);
+	memcpy(cursor, &near_plane, bytes_to_copy);
+	cursor += bytes_to_copy;
+	memcpy(cursor, &far_plane, bytes_to_copy);
+	cursor += bytes_to_copy;
+	memcpy(cursor, &aspect_ratio, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_to_copy = sizeof(int);
+	memcpy(cursor, &field_of_view, bytes_to_copy);
+	cursor += bytes_to_copy;
+	
+}
+
 void Camera::GetOwnBufferSize(uint & buffer_size)
 {
+	buffer_size += sizeof(int);			//identifier
 	buffer_size += sizeof(COMP_TYPE);
 	buffer_size += sizeof(UUID);
 	buffer_size += sizeof(parent_UUID);

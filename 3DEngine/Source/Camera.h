@@ -40,7 +40,7 @@ public:
 	void SetFOVRatio(uint width, uint height);
 	void SetNewFrame(vec& pos, vec& front, vec& up);
 
-	//void Save();
+	void Save(const char* buffer_data, char* cursor);
 	//void Load();
 	void GetOwnBufferSize(uint& buffer_size);
 
@@ -50,8 +50,8 @@ private:
 	
 	float near_plane = 1.f;
 	float far_plane = 50.f;
-	int field_of_view = 60;
 	float aspect_ratio = 0.f;
+	int field_of_view = 60;
 
 	uint findices_id = 0;
 	uint fvertices_id = 0;
