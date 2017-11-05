@@ -25,7 +25,7 @@ bool ModuleSceneIntro::Start()
 	bool ret = true;
 	
 	AABB octree_limit;
-	octree_limit.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(512.0f, 512.0f, 512.0f));
+	octree_limit.SetFromCenterAndSize(float3(0.0f, -4.0f, 0.0f), float3(128.0f, 128.0f, 128.0f));
 	scene_octree.Create(octree_limit, 4);
 
 	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
@@ -133,18 +133,17 @@ update_status ModuleSceneIntro::Update(float dt)
 	//Root should never be nullptr but check it just in case
 	if (root != nullptr) {
 		root->Update();
+
+		// Add Objcts to Octree Test
+		CheckDynamicGameObjectsState();
 		// Get Meshes to Render;
-		if (render_camera_test != nullptr) {
+		/*if (render_camera_test != nullptr) {
 			render_camera_test->GetFrustumGameObjecs(root, render_this);
-		}
+		}*/
+		CollectCandidates(); 
+		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
-
-	/* // Add Objcts to Octree Test
-	if (!scene_added && current_object->isstatic) {
-	scene_added = AddGameObjectToOctree(current_object);
-	}
-	*/
-
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -157,8 +156,20 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 	else
 		ret = new GameObject(parent, name);
 
+	dynamic_gameobjects.push_back(ret);
+
 	current_object = ret;
 	return ret;
+}
+
+void ModuleSceneIntro::CollectCandidates()
+{
+	std::vector<GameObject*> candidates;
+	scene_octree.Inersect(candidates, this->render_camera_test->GetFrustum());
+
+	for (uint i = 0; i < candidates.size(); i++) {
+		render_this.push_back((MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER)));
+	}
 }
 
 bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
@@ -172,6 +183,39 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 		}
 	}
 	return false;
+}
+
+
+void ModuleSceneIntro::CheckDynamicGameObjectsState()
+{
+	GameObject* object = nullptr;
+	std::list<GameObject*>::const_iterator item = dynamic_gameobjects.begin();
+	while (item != dynamic_gameobjects.end())
+	{
+		object = item._Ptr->_Myval;
+		item++;
+		if (object->isstatic) {
+			dynamic_gameobjects.remove(object);
+			static_gameobjects.push_back(object);
+			AddGameObjectToOctree(object);
+		}
+	}
+}
+
+void ModuleSceneIntro::CheckStaticGameObjectsState()
+{
+	GameObject* object = nullptr;
+	std::list<GameObject*>::const_iterator item = static_gameobjects.begin();
+	for (; item != static_gameobjects.end(); item++)
+	{
+		object = item._Ptr->_Myval;
+		if (!object->isstatic) {
+			static_gameobjects.remove(object);
+			dynamic_gameobjects.push_back(object);
+			// TODO----------------
+			//RemoveGameObjectFromOctree(object);
+		}
+	}
 }
 
 void ModuleSceneIntro::LookAtScene() const

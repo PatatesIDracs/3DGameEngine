@@ -27,6 +27,7 @@ public:
 	float4x4 GetProjMatrix() const;
 	float* GetViewMatrix() const;
 
+	Frustum& GetFrustum()const;
 	bool GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*> &render_this) const;
 	int ContainsAABB(const AABB &refBox) const;
 

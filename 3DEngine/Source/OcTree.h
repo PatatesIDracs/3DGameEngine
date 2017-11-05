@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "Math.h"
 
+#include "Glew\include\glew.h"
+
 #define MAX_NODES 8
 
 // Octree Item
@@ -60,6 +62,43 @@ public:
 public:
 	// Octree Node public methods ------------------
 
+	void Draw() const {
+		float3 vertices[8];
+		box.GetCornerPoints(vertices);
+
+		// Left to Right Plane lines ----------
+		for (uint i = 0; i <= 2; i += 2)
+		{
+			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+			glVertex3f(vertices[i + 4].x, vertices[i + 4].y, vertices[i + 4].z);
+
+			glVertex3f(vertices[i+1].x, vertices[i+1].y, vertices[i+1].z);
+			glVertex3f(vertices[i + 5].x, vertices[i + 5].y, vertices[i + 5].z);			
+		}
+
+		// Left and Right Planes ----------
+		for (uint i = 0; i <= 4; i += 4)
+		{
+			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+			glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+
+			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+			glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+
+			glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+			glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+
+			glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+			glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+		}
+
+		if (full) {
+			for (uint i = 0; i < MAX_NODES; i++)
+				childs[i]->Draw();
+		}
+
+	}
+
 	bool Insert(DATA_TYPE data, const AABB& box) {
 		
 		if (!box.IsFinite() || !ContainsAABB(box)){
@@ -70,7 +109,7 @@ public:
 			uint count = 0;
 			uint index = 0;
 			for (uint i = 0; i < MAX_NODES; i++) {
-				if(childs[i]->ContainsAABB(box));
+				if(childs[i]->ContainsAABB(box))
 				{
 					count++;
 					index = i;
@@ -123,7 +162,7 @@ public:
 			uint index = 0;
 
 			for (uint j = 0; j < MAX_NODES; j++) {
-				if (childs[j]->ContainsAABB(objects[i].bounding_box));
+				if (childs[j]->ContainsAABB(objects[i].bounding_box))
 				{
 					count++;
 					index = j;
@@ -144,6 +183,26 @@ public:
 	// TODO -------------------
 	bool Remove(const DATA_TYPE data) {
 		return false;
+	}
+
+	// Intersect with Frustum
+	bool Intersect(std::vector<DATA_TYPE>& candidates, const Frustum& frustum) {
+		
+		if (!(box.Contains(frustum) || box.Intersects(frustum))) return false;
+		
+		for(uint i = 0; i < objects.size(); i++){
+			if (objects[i].bounding_box.Contains(frustum) || objects[i].bounding_box.Intersects(frustum))
+			{
+				candidates.push_back(objects[i].item_data);
+			}
+		}
+
+		if (full) {
+			for (uint i = 0; i < MAX_NODES; i++) {
+				childs[i]->Intersect(candidates, frustum);
+			}
+		}
+
 	}
 };
 
@@ -188,7 +247,23 @@ public:
 
 	void Clear() {
 		if (root != nullptr) delete root;
-	};
+	}
+
+	void Draw(float width, float4 color) {
+		if (root != nullptr) {
+
+			glBegin(GL_LINES);
+
+			glLineWidth(width);
+			glColor4f(color.x, color.y, color.z, color.w);
+
+			root->Draw();
+
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glLineWidth(1.0f);
+			glEnd();
+		}
+	}
 
 	bool Insert(const DATA_TYPE data, const AABB& box) {
 
@@ -209,7 +284,12 @@ public:
 
 	// TODO -------------------
 	// should add Frustum, AABB, Sphere and Ray
-	bool Inersect(std::vector<DATA_TYPE>& objects, Frustum primitive) {
+	bool Inersect(std::vector<DATA_TYPE>& objects, const Frustum& frustum) {
+		
+		if (root != nullptr)
+		{
+			root->Intersect(objects, frustum);
+		}
 		return false; 
 	}
 };

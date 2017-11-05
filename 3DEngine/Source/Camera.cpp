@@ -92,6 +92,11 @@ float* Camera::GetViewMatrix() const
 	return cfrustum->ViewProjMatrix().Transposed().ptr();
 }
 
+Frustum& Camera::GetFrustum() const
+{
+	return *cfrustum;
+}
+
 bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& render_this) const
 {
 	if (!active) return false;
