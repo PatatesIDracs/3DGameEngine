@@ -16,7 +16,7 @@ enum CONTAINS_GOBJ_RESULT {
 class Camera : public Component
 {
 public: 
-	Camera(GameObject* parent, bool isactive);
+	Camera(GameObject* parent, bool isactive = true);
 	~Camera();
 
 	void Update();
@@ -40,8 +40,8 @@ public:
 	void SetFOVRatio(uint width, uint height);
 	void SetNewFrame(vec& pos, vec& front, vec& up);
 
-	void Save(const char* buffer_data, char* cursor);
-	//void Load();
+	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
+	void Load(const char* buffer_data, char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
 private:

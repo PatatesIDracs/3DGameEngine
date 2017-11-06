@@ -234,7 +234,7 @@ void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 	cfrustum->SetFrame(pos, front, up);
 }
 
-void Camera::Save(const char * buffer_data, char * cursor)
+void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving camera comp");
 
@@ -243,30 +243,65 @@ void Camera::Save(const char * buffer_data, char * cursor)
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(type);
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
 	bytes_to_copy = sizeof(UUID);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//near_plane, far_plane, aspect_ratio, field_of_view
 	bytes_to_copy = sizeof(float);
 	memcpy(cursor, &near_plane, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	memcpy(cursor, &far_plane, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	memcpy(cursor, &aspect_ratio, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(int);
 	memcpy(cursor, &field_of_view, bytes_to_copy);
 	cursor += bytes_to_copy;
-	
+	bytes_copied += bytes_to_copy;
+}
+
+void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+{
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Field of view
+	memcpy(&field_of_view, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	//near_plane, far_plane, aspect_ratio
+	bytes_to_copy = sizeof(float);
+	memcpy(&near_plane, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&far_plane, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&aspect_ratio, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	LOGC("Component camera loaded");
 }
 
 void Camera::GetOwnBufferSize(uint & buffer_size)

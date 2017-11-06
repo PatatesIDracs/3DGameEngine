@@ -7,7 +7,8 @@
 
 MeshRenderer::MeshRenderer(GameObject* parent) : Component(parent, COMP_MESHRENDERER)
 {
-	GetElements();
+	if (parent != nullptr)
+		GetElements();
 }
 
 MeshRenderer::~MeshRenderer()
@@ -21,7 +22,7 @@ void MeshRenderer::GetElements()
 	material = (Material*)parent->FindFirstComponent(COMP_MATERIAL);
 }
 
-void MeshRenderer::Save(const char * buffer_data, char * cursor)
+void MeshRenderer::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving meshRenderer comp");
 
@@ -30,17 +31,21 @@ void MeshRenderer::Save(const char * buffer_data, char * cursor)
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(type);
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
 	bytes_to_copy = sizeof(UUID);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void MeshRenderer::GetOwnBufferSize(uint & buffer_size)

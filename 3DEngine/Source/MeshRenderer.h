@@ -15,7 +15,7 @@ public:
 
 	void GetElements();
 
-	void Save(const char * buffer_data, char * cursor);
+	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 //	void Load();
 	void GetOwnBufferSize(uint& buffer_size);
 

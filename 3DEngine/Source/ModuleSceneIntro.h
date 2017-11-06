@@ -9,6 +9,8 @@
 class GameObject;
 class MeshRenderer;
 class Camera;
+class Component;
+enum COMP_TYPE;
 
 class ModuleSceneIntro : public Module
 {
@@ -37,6 +39,9 @@ public:
 
 	void SaveScene();
 	void LoadScene(const char* file_path);
+
+private:
+	Component* ComponentToLoad(COMP_TYPE new_comp_type);
 
 public:
 	GameObject* root = nullptr;

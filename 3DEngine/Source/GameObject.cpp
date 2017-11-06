@@ -221,7 +221,7 @@ void GameObject::DrawGameObject()
 }
 
 
-void GameObject::Save(const char* buffer_data, char* cursor)
+void GameObject::Save(const char* buffer_data, char* cursor, int& bytes_copied)
 {
 	LOGC("Saving %s", name.c_str());
 
@@ -229,38 +229,90 @@ void GameObject::Save(const char* buffer_data, char* cursor)
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
 	bytes_to_copy = sizeof(UUID);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//name
+	bytes_to_copy = sizeof(int);
+	int name_size = name.size();
+	memcpy(cursor, &name_size, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = name.size();
 	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//isactive + isstatic
 	bytes_to_copy = sizeof(isactive);
 	memcpy(cursor, &isactive, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(isstatic);
 	memcpy(cursor, &isstatic, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//Save components
 	for (uint i = 0; i < components.size(); i++)
 	{
-		components[i]->Save(buffer_data, cursor);
+		int bytes_advanced = 0;
+		components[i]->Save(buffer_data, cursor, bytes_advanced);
+		cursor += bytes_advanced;
+		bytes_copied += bytes_advanced;
 	}
 	//Save child objects
 	for (uint i = 0; i < children.size(); i++)
 	{
-		children[i]->Save(buffer_data, cursor);
+		int bytes_advanced = 0;
+		children[i]->Save(buffer_data, cursor, bytes_advanced);
+		cursor += bytes_advanced;
+		bytes_copied += bytes_advanced;
 	}
+}
+
+void GameObject::Load(const char * buffer_data, char* cursor, int& bytes_copied)
+{
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//copy name
+	int name_size = 0;
+	memcpy(&name_size, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	char* name_c_str = new char[name_size+1];
+	bytes_to_copy = name_size;
+	memcpy(name_c_str, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	name_c_str[name_size] = 0x00;
+	name = name_c_str;
+
+	bytes_to_copy = sizeof(bool);
+	memcpy(&isactive, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&isstatic, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	LOGC("%s game object loaded", name.c_str());
 }
 
 void GameObject::GetOwnBufferSize(uint& buffer_size)
@@ -268,6 +320,7 @@ void GameObject::GetOwnBufferSize(uint& buffer_size)
 	buffer_size += sizeof(int);			//identifier
 	buffer_size += sizeof(UUID);
 	buffer_size += sizeof(parent_UUID);
+	buffer_size += sizeof(int);			//Save name size
 	buffer_size += name.size();
 	buffer_size += sizeof(isactive);
 	buffer_size += sizeof(isstatic);

@@ -35,7 +35,8 @@
 
 //Identifier for scene serialitzation
 #define GAMEOBJECTIDENTIFIER -1
-#define COMPONENTIDENTIFIER	 -1
+#define COMPONENTIDENTIFIER	 -2
+#define ENDFILEIDENTIFIER	 -3
 
 
 #define LOGC(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);

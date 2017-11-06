@@ -28,7 +28,7 @@ void Material::DrawComponent()
 	}
 }
 
-void Material::Save(const char * buffer_data, char * cursor)
+void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving material comp");
 
@@ -37,28 +37,34 @@ void Material::Save(const char * buffer_data, char * cursor)
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(type);
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
 	bytes_to_copy = sizeof(UUID);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = sizeof(id_texture);
 	memcpy(cursor, &id_texture, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = sizeof(uint);
 	memcpy(cursor, &texture_width, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	memcpy(cursor, &texture_height, bytes_to_copy);
 	cursor += bytes_to_copy;
-
+	bytes_copied += bytes_to_copy;
 }
 
 void Material::GetOwnBufferSize(uint & buffer_size)

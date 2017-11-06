@@ -202,7 +202,7 @@ void Application::LoadScene()
 
 void Application::LoadSceneNow()
 {
-	scene_intro->LoadScene("POSAL");
+	scene_intro->LoadScene("../Data/Assets/TestScene.jope");
 	want_to_load_scene = false;
 }
 

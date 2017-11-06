@@ -3,8 +3,10 @@
 #include "Primitive.h"
 
 #include "GameObject.h"
+#include "Camera.h"
 #include "Transform.h"
 #include "Mesh.h"
+#include "MeshRenderer.h"
 #include "Material.h"
 
 #include "Glew\include\glew.h"
@@ -257,16 +259,20 @@ void ModuleSceneIntro::SaveScene()
 	//TODO: Get the buffer size
 	uint buffer_size = 0;
 	root->GetOwnBufferSize(buffer_size);
+	buffer_size += sizeof(int);
 	LOGC("Buffer size is %i", buffer_size);
 
 	//TODO: Create the buffer and cursor
 	char* buffer_data = new char[buffer_size];
 	char* cursor = buffer_data;
 
-	//TODO: Pass the buffer and cursor and go saving data
-	root->Save(buffer_data, cursor);
-
-	//TODO: Put and ending signature to the file to check if it could be corrupted
+	//Pass the buffer and cursor and go saving data
+	int bytes_copied = 0;
+	root->Save(buffer_data, cursor, bytes_copied);
+	cursor += bytes_copied;
+	int identifier = ENDFILEIDENTIFIER;
+	memcpy(cursor, &identifier, sizeof(identifier));
+	
 	std::ofstream new_file("../Data/Assets/TestScene.jope", std::ofstream::binary);
 	new_file.write(buffer_data, buffer_size);
 }
@@ -274,4 +280,107 @@ void ModuleSceneIntro::SaveScene()
 void ModuleSceneIntro::LoadScene(const char * file_path)
 {
 	LOGC("Loading the scence from %s", file_path);
+
+	char* buffer_data = nullptr;
+	int buffer_size = 0;
+	std::ifstream loaded_file(file_path, std::fstream::binary);
+	if (loaded_file)
+	{
+		loaded_file.seekg(0, loaded_file.end);
+		buffer_size = loaded_file.tellg();
+		loaded_file.seekg(0, loaded_file.beg);
+
+		buffer_data = new char[buffer_size];
+
+		loaded_file.read(buffer_data, buffer_size);
+		loaded_file.close();
+	}
+	if (buffer_data == nullptr)
+	{
+		LOGC("Couldn't load file from %s", file_path);
+		return;
+	}
+	char* cursor = buffer_data;
+	int bytes_copied = 0;
+	uint bytes_to_copy = 0;
+	int next_identifier = 0;
+
+	std::vector<GameObject*> loaded_gameobjects;
+	std::vector<Component*>  loaded_components;
+
+	while (bytes_copied < buffer_size)
+	{
+		bytes_to_copy = sizeof(int);
+		memcpy(&next_identifier, cursor, bytes_to_copy);
+		cursor += bytes_to_copy;
+		bytes_copied += bytes_to_copy;
+
+		switch (next_identifier)
+		{
+		case GAMEOBJECTIDENTIFIER:
+			{
+			GameObject* new_gameobject = new GameObject(nullptr);
+			int bytes_advanced = 0;
+			new_gameobject->Load(buffer_data, cursor, bytes_advanced);
+			cursor += bytes_advanced;
+			bytes_copied += bytes_advanced;
+			loaded_gameobjects.push_back(new_gameobject);
+			}
+			break;
+		case COMPONENTIDENTIFIER:
+			{
+			COMP_TYPE new_comp_type = COMP_TYPE::COMP_UNKNOWN;
+			bytes_to_copy = sizeof(COMP_TYPE);
+			memcpy(&new_comp_type, cursor, bytes_to_copy);
+			cursor += bytes_to_copy;
+			bytes_copied += bytes_to_copy;
+			
+			Component* new_component = ComponentToLoad(new_comp_type);
+			int bytes_advanced = 0;
+			new_component->Load(buffer_data, cursor, bytes_advanced);
+			cursor += bytes_advanced;
+			bytes_copied += bytes_advanced;
+			loaded_components.push_back(new_component);
+			}
+			break;
+		case ENDFILEIDENTIFIER:
+			LOGC("File loaded from %s", file_path);
+			break;
+		default:
+			LOGC("File seems corrupted");
+			break;
+		}
+
+	}
+
+}
+
+Component * ModuleSceneIntro::ComponentToLoad(COMP_TYPE new_comp_type)
+{
+	Component* ret = nullptr;
+
+	switch (new_comp_type)
+	{
+	case COMP_UNKNOWN:
+		LOGC("File seems corrupted");
+		break;
+	case COMP_TRANSFORM:
+		ret = new Transform(nullptr);
+		break;
+	case COMP_MESH:
+		ret = new Mesh(nullptr, nullptr);
+		break;
+	case COMP_MATERIAL:
+		ret = new Material();
+		break;
+	case COMP_MESHRENDERER:
+		ret = new MeshRenderer(nullptr);
+		break;
+	case COMP_CAMERA:
+		ret = new Camera(nullptr);
+		break;
+	default:
+		break;
+	}
+	return ret;
 }

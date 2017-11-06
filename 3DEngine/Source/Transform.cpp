@@ -101,7 +101,7 @@ void Transform::DrawComponent()
 	}
 }
 
-void Transform::Save(const char * buffer_data, char * cursor)
+void Transform::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving transform comp");
 
@@ -110,17 +110,21 @@ void Transform::Save(const char * buffer_data, char * cursor)
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(type);
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
 	bytes_to_copy = sizeof(UUID);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//Transform
 	bytes_to_copy = sizeof(float) * 16;
@@ -131,6 +135,43 @@ void Transform::Save(const char * buffer_data, char * cursor)
 					transform[3][0] , transform[3][1] , transform[3][2] , transform[3][3] };
 	memcpy(cursor, t, bytes_to_copy);
 	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+}
+
+void Transform::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+{
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	float new_transform[16];
+	bytes_to_copy = sizeof(float) * 16;
+	memcpy(new_transform, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	transform[0][0] = new_transform[0];
+	transform[0][1] = new_transform[1];
+	transform[0][2] = new_transform[2];
+	transform[0][3] = new_transform[3];
+	transform[1][0] = new_transform[4];
+	transform[1][1] = new_transform[5];
+	transform[1][2] = new_transform[6];
+	transform[1][3] = new_transform[7];
+	transform[2][0] = new_transform[8];
+	transform[2][1] = new_transform[9];
+	transform[2][2] = new_transform[10];
+	transform[2][3] = new_transform[11];
+	transform[3][0] = new_transform[12];
+	transform[3][1] = new_transform[13];
+	transform[3][2] = new_transform[14];
+	transform[3][3] = new_transform[15];
+
+	LOGC("Component transform loaded");
 }
 
 void Transform::GetOwnBufferSize(uint & buffer_size)
