@@ -350,7 +350,24 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 			LOGC("File seems corrupted");
 			break;
 		}
+	}
 
+	for (int i = 0; i < loaded_components.size(); i++)
+	{
+		for (int j = 0; j < loaded_gameobjects.size(); j++)
+		{
+			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
+				loaded_gameobjects[j]->AddComponent(loaded_components[i]);
+		}
+	}
+
+	for (int i = 0; i < loaded_gameobjects.size(); i++)
+	{
+		for (int j = 0; j < loaded_gameobjects.size(); j++)
+		{
+			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
+				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
+		}
 	}
 
 }

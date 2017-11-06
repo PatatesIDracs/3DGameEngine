@@ -48,7 +48,7 @@ public:
 	std::string name;
 	bool isactive = true;
 	bool parent_active = true;
-	bool isstatic = false;
+	bool isstatic = true;
 
 	std::vector<Component*> components;
 	GameObject* parent = nullptr;

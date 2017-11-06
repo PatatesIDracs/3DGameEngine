@@ -54,7 +54,9 @@ public:
 	bool IsActive() const { return active; };
 	bool IsUnique() const { return unique; };
 
-	void SetParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->UUID; };
+	void ChangeParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->UUID; };
+
+	int GetParentUUID() const { return parent_UUID; };
 
 protected:
 	int UUID = 0;

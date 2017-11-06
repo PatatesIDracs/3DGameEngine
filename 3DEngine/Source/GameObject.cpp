@@ -92,7 +92,7 @@ void GameObject::AddComponent(Component * new_component)
 	}
 
 	components.push_back(new_component);
-	new_component->SetParent(this);
+	new_component->ChangeParent(this);
 }
 
 void GameObject::SetTransform(float4x4 &transform)
