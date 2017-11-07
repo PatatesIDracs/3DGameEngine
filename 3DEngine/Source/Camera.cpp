@@ -13,15 +13,16 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
 	if (parent != nullptr)
 	{
-		const float4x4 transf = parent->GetTransform()->GetGlobalTransform();
-		cfrustum->SetFrame(transf.Col3(3), transf.Col3(2), transf.Col3(2));
+		Transform* transf = parent->GetTransform();
+
+		float4x4 mat = transf->GetLocalTransform();
+		cfrustum->SetFrame(transf->GetPosition(), mat.Col3(2), mat.Col3(1));
 	}
 	else
 	{
 		LOGC("WARNING: Component Camera Parent is NULL");
 		cfrustum->SetFrame(vec(1.f, 1.f, 1.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
 	}
-	//cfrustum->SetPerspective(1024, 720);
 	frustum_planes = new Plane[6];
 	cfrustum->GetPlanes(frustum_planes);
 }
@@ -97,6 +98,7 @@ Frustum& Camera::GetFrustum() const
 	return *cfrustum;
 }
 
+// Should not be used
 bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& render_this) const
 {
 	if (!active) return false;
@@ -138,6 +140,29 @@ bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& 
 	}
 	check_list.clear();
 
+	return true;
+}
+
+// Use this function instead -----------------
+bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::vector<MeshRenderer*>& render_this) const
+{
+	if (!active) return false;
+
+	cfrustum->GetPlanes(frustum_planes);
+
+	int contains_gobj_result;
+	for (uint curr_obj = 0; curr_obj < dynamic_array.size(); curr_obj++) {
+		contains_gobj_result = CONT_OUT;
+		if (dynamic_array[curr_obj]->IsActive()){
+			contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
+
+			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
+				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
+
+				if (mesh != nullptr) render_this.push_back(mesh);
+			}
+		}
+	}
 	return true;
 }
 

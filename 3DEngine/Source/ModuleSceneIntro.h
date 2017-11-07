@@ -50,8 +50,8 @@ private:
 	GameObject* current_object = nullptr;
 	Camera* render_camera_test = nullptr;
 	
-	std::list<GameObject*> static_gameobjects;
-	std::list<GameObject*> dynamic_gameobjects;
+	std::vector<GameObject*> static_gameobjects;
+	std::vector<GameObject*> dynamic_gameobjects;
 
 	std::vector<MeshRenderer*> render_this;
 

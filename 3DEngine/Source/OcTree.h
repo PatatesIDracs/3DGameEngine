@@ -180,11 +180,6 @@ public:
 		objects = temporal;
 	}
 
-	// TODO -------------------
-	bool Remove(const DATA_TYPE data) {
-		return false;
-	}
-
 	// Intersect with Frustum
 	bool Intersect(std::vector<DATA_TYPE>& candidates, const Frustum& frustum) {
 		
@@ -273,11 +268,14 @@ public:
 		return false; 
 	};
 
-	bool Remove(const DATA_TYPE data) {
+	bool Reset() {
 		
 		if (root != nullptr) {
-			// TODO -------------------
-			return root->Remove(data);
+			AABB root_box = root->box;
+			Clear();
+
+			root = new Octree_Node<DATA_TYPE>(root_box, max_objects);
+			return true;
 		}
 		return false;
 	};

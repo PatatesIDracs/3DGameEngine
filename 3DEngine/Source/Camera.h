@@ -29,6 +29,7 @@ public:
 
 	Frustum& GetFrustum()const;
 	bool GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*> &render_this) const;
+	bool GetFrustumGameObjecs(std::vector<GameObject*> &dynamic_array, std::vector<MeshRenderer*> &render_this) const;
 	int ContainsAABB(const AABB &refBox) const;
 
 	void GenerateFrostumDraw();

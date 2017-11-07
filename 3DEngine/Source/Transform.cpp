@@ -93,7 +93,7 @@ void Transform::DrawComponent()
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
-		if (ImGui::DragFloat3("Rotation", &angle.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		if (ImGui::DragFloat3("Rotation", &angle.x, 2)) {
 			NormalizeRotationAngle();
 			update_transform = true;
 		}
@@ -192,11 +192,14 @@ void Transform::GetOwnBufferSize(uint & buffer_size)
 void Transform::NormalizeRotationAngle()
 {
 	float max_angle = 360.0f;
-	uint num_spins = 0;
+	int num_spins = 0;
 	for (uint i = 0; i < 3; i++) {
 		num_spins = (int)angle[i] / max_angle;
 		angle[i] = angle[i] - max_angle* num_spins;
-		if (angle[i] > 180.0f) angle[i] -= 360.0f;
+
+		if (angle[i] <= -180.0f) angle[i] += 360.0f;
+		else if (angle[i] > 180.0f) angle[i] -= 360.0f;
+
 	}
 }
 

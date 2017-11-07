@@ -56,6 +56,13 @@ bool ModuleSceneIntro::CleanUp()
 
 	if (root != nullptr) delete root;
 
+	dynamic_gameobjects.clear();
+	static_gameobjects.clear();
+	scene_octree.Clear();
+
+	render_this.clear();
+
+
 	return true;
 }
 
@@ -135,17 +142,20 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	//Root should never be nullptr but check it just in case
 	if (root != nullptr) {
+		// Must check only when game is on Editor Mode;
+		CheckStaticGameObjectsState();
+
 		root->Update();
 
-		// Add Objcts to Octree Test
+		// Must check only when game is on Editor Mode;
 		CheckDynamicGameObjectsState();
+	
 		// Get Meshes to Render;
-		/*if (render_camera_test != nullptr) {
-			render_camera_test->GetFrustumGameObjecs(root, render_this);
-		}*/
-		CollectCandidates(); 
+		CollectCandidates();
+
 		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
+
 	
 	return UPDATE_CONTINUE;
 }
@@ -167,11 +177,18 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 
 void ModuleSceneIntro::CollectCandidates()
 {
-	std::vector<GameObject*> candidates;
-	scene_octree.Inersect(candidates, this->render_camera_test->GetFrustum());
+	// Get Dynamic Meshes to render
+	if (render_camera_test != nullptr) {
+		render_camera_test->GetFrustumGameObjecs(dynamic_gameobjects, render_this);
 
-	for (uint i = 0; i < candidates.size(); i++) {
-		render_this.push_back((MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER)));
+		// Get Static Meshes to render
+		std::vector<GameObject*> candidates;
+		scene_octree.Inersect(candidates, this->render_camera_test->GetFrustum());
+
+		for (uint i = 0; i < candidates.size(); i++) {
+			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
+			if (mesh != nullptr) render_this.push_back(mesh);
+		}
 	}
 }
 
@@ -179,9 +196,6 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 {
 	if (object != nullptr && object->isstatic) {
 		if (scene_octree.Insert((GameObject*)object, object->boundary_box)) {
-			/*for (uint i = 0; i < object->children.size(); i++) {
-			AddGameObjectToOctree(object->children[i]);
-			}*/
 			return true;
 		}
 	}
@@ -192,13 +206,13 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 void ModuleSceneIntro::CheckDynamicGameObjectsState()
 {
 	GameObject* object = nullptr;
-	std::list<GameObject*>::const_iterator item = dynamic_gameobjects.begin();
-	while (item != dynamic_gameobjects.end())
+	for (uint i = 0; i < dynamic_gameobjects.size(); i++)
 	{
-		object = item._Ptr->_Myval;
-		item++;
+		object = dynamic_gameobjects[i];
 		if (object->isstatic) {
-			dynamic_gameobjects.remove(object);
+			for (uint j = i; j + 1 < dynamic_gameobjects.size(); j++)
+				dynamic_gameobjects[j] = dynamic_gameobjects[j + 1];
+			dynamic_gameobjects.pop_back();
 			static_gameobjects.push_back(object);
 			AddGameObjectToOctree(object);
 		}
@@ -207,17 +221,23 @@ void ModuleSceneIntro::CheckDynamicGameObjectsState()
 
 void ModuleSceneIntro::CheckStaticGameObjectsState()
 {
+	bool reset_octree = false;
 	GameObject* object = nullptr;
-	std::list<GameObject*>::const_iterator item = static_gameobjects.begin();
-	for (; item != static_gameobjects.end(); item++)
-	{
-		object = item._Ptr->_Myval;
+	for (uint i = 0; i < static_gameobjects.size(); i++) {
+		object = static_gameobjects[i];
 		if (!object->isstatic) {
-			static_gameobjects.remove(object);
+			for (uint j = i; j + 1 < static_gameobjects.size(); j++)
+				static_gameobjects[j] = static_gameobjects[j + 1];
+			static_gameobjects.pop_back();
 			dynamic_gameobjects.push_back(object);
-			// TODO----------------
-			//RemoveGameObjectFromOctree(object);
+
+			reset_octree = true;
 		}
+	}
+
+	if (reset_octree && scene_octree.Reset()) {
+		for (uint i = 0; i < static_gameobjects.size(); i++) 
+			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->boundary_box);
 	}
 }
 
