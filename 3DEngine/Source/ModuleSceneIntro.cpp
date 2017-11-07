@@ -31,9 +31,9 @@ bool ModuleSceneIntro::Start()
 	octree_limit.SetFromCenterAndSize(float3(0.0f, -4.0f, 0.0f), float3(128.0f, 128.0f, 128.0f));
 	scene_octree.Create(octree_limit, 4);
 
-	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(vec(0, 0, 0));
-
+	//App->camera->Move(vec(1.0f, 1.0f, 0.0f));
+	//App->camera->LookAt(vec(0, 0, 0));
+	
 	//Create the root GameObject
 	root = new GameObject(nullptr, "root");
 
@@ -155,6 +155,20 @@ update_status ModuleSceneIntro::Update(float dt)
 		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
 
+	if (last_ray.IsFinite()) {
+		glBegin(GL_LINES);
+
+		glLineWidth(3.0);
+		glColor4f(1.0f, 0.25f, 0.f, 1.f);
+		float3 ray_pos = last_ray.pos + last_ray.dir * 200;
+
+		glVertex3f(last_ray.pos.x, last_ray.pos.y, last_ray.pos.z);
+		glVertex3f(ray_pos.x,ray_pos.y, ray_pos.z);
+
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glLineWidth(1.0f);
+		glEnd();
+	}
 	
 	return UPDATE_CONTINUE;
 }
@@ -185,8 +199,10 @@ void ModuleSceneIntro::CollectCandidates()
 		scene_octree.Inersect(candidates, this->render_camera_test->GetFrustum());
 
 		for (uint i = 0; i < candidates.size(); i++) {
-			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
-			if (mesh != nullptr) render_this.push_back(mesh);
+			if (candidates[i]->IsActive()) {
+				MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
+				if (mesh != nullptr) render_this.push_back(mesh);
+			}
 		}
 	}
 }
@@ -238,6 +254,67 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 		for (uint i = 0; i < static_gameobjects.size(); i++) 
 			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->boundary_box);
 	}
+}
+
+void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
+{
+	last_ray = camera_ray;
+	std::vector<float3> order;
+	float ndist = 0, fdist = 0;
+	// Test Dynamic GameObjects
+	for (uint i = 0; i < dynamic_gameobjects.size(); i++) {
+		if (dynamic_gameobjects[i]->IsActive() && dynamic_gameobjects[i]->boundary_box.IsFinite())
+		{
+			if (camera_ray.Intersects(dynamic_gameobjects[i]->boundary_box, ndist, fdist))
+				order.push_back(float3(ndist, i, 0));
+		}
+	}
+	// Test Static GameObjects
+	for (uint i = 0; i < static_gameobjects.size(); i++) {
+		if (static_gameobjects[i]->IsActive() && static_gameobjects[i]->boundary_box.IsFinite())
+		{
+			if (camera_ray.Intersects(static_gameobjects[i]->boundary_box, ndist, fdist))
+				order.push_back(float3(ndist, i, 1));
+		}
+	}
+
+	// Order GameObjects by hit Distance
+	int order_size = order.size();
+	if (order_size > 0) {
+		std::vector<MeshRenderer*> meshes;
+		meshes.reserve(order_size);
+
+		MeshRenderer* mesh = nullptr;
+
+		float3 curr_min = order[0];
+		int curr_minim_order = 0;;
+		for (uint i = 0; i < order_size; i++) {
+			for (uint j = 0; j < order_size; j++) {
+				if (curr_min.z == -1 && order[j].z != -1) curr_min = order[j];
+
+				if (curr_min.x > order[j].x && order[j].z != -1) {
+					curr_min = order[j];
+					curr_minim_order = j;
+				}
+			}
+
+			// Add Hit
+			if (curr_min.z == 0) {
+				mesh = (MeshRenderer*)dynamic_gameobjects[curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
+			}
+			else {
+				mesh = (MeshRenderer*)static_gameobjects[curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
+			}
+			order[curr_minim_order].z = -1;
+			curr_min.z = -1;
+
+			if (mesh != nullptr)meshes.push_back(mesh);
+			
+		}
+		order.clear();
+		meshes.clear();
+	}
+
 }
 
 void ModuleSceneIntro::LookAtScene() const

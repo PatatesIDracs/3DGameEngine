@@ -30,6 +30,8 @@ public:
 	void CheckDynamicGameObjectsState();
 	void CheckStaticGameObjectsState();
 
+	void CheckRayCastCollision(Ray& camera_ray);
+
 	void LookAtScene() const;
 
 	void DrawRootHierarchy();
@@ -56,6 +58,8 @@ private:
 	std::vector<MeshRenderer*> render_this;
 
 	Octree<GameObject*>	scene_octree;
+
+	Ray last_ray;
 };
 
 #endif // !__MODULESCENEINTRO_H__

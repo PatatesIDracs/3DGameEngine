@@ -26,6 +26,8 @@ public:
 	float4x4 GetProjMatrix() const;
 	float* GetViewMatrix() const;
 
+	void CameraRayCast();
+
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json &config);
 	void SaveModuleConfig(Config_Json &config);

@@ -13,7 +13,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Y = vec(0.0f, 1.0f, 0.0f);
 	Z = vec(0.0f, 0.0f, 1.0f);
 
-	Position = vec(1.0f, 1.0f, 1.0f);
+	Position = vec(0.0f, 0.0f, 0.0f);
 	Reference = vec(0.0f, 0.0f, 0.0f);
 
 }
@@ -60,6 +60,14 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		RotateCamera();
+	}	
+	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
+	{
+		float y = (-App->input->GetMouseY() + App->window->height*0.5)/ (App->window->height*0.5);
+		float x = (App->input->GetMouseX() - App->window->width*0.5)/ (App->window->width*0.5);
+		
+		// Camera Ray Cast
+		App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectFromNearPlane(x,y));
 	}
 
 	// Right Click + WASD to Move like FPS 
@@ -68,6 +76,8 @@ update_status ModuleCamera3D::Update(float dt)
 		RotateCamera(false);
 		MoveCamera(dt);
 	}
+
+
 
 	// Zoom in and out
 	int wheelmotion = App->input->GetMouseZ();
@@ -214,6 +224,10 @@ float4x4 ModuleCamera3D::GetProjMatrix() const
 float* ModuleCamera3D::GetViewMatrix() const
 {
 	 return camera_editor->GetViewMatrix();
+}
+
+void ModuleCamera3D::CameraRayCast()
+{
 }
 
 // ----------------------------------------------
