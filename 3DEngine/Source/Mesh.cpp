@@ -10,12 +10,15 @@ Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Compone
 {
 	
 	aabb_box.SetNegativeInfinity();
-	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+	if (render_data != nullptr)
+	{
+		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 
-	CreateBoxIndices();
-	CreateBoxBuffers(aabb_box);	
-	
-	UpdateTransform();
+		CreateBoxIndices();
+		CreateBoxBuffers(aabb_box);
+	}
+	if (parent != nullptr)
+		UpdateTransform();
 }
 
 Mesh::~Mesh()
@@ -58,9 +61,7 @@ void Mesh::UpdateTransform()
 		temp.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
 		
 	}
-	else {
-		temp.TransformAsAABB(parent->GetTransform()->GetLocalTransform());
-	}
+
 	CreateBoxBuffers(temp);
 
 	if (parent != nullptr) parent->boundary_box = temp;
@@ -167,10 +168,50 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = strlen(render_data->mesh_path);
+	//Path to load the mesh
+	int name_length = strlen(render_data->mesh_path);
+	bytes_to_copy = sizeof(int);
+	memcpy(cursor, &name_length, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = name_length;
 	memcpy(cursor, render_data->mesh_path, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+}
+
+void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+{
+	//UUID and parentUUID
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	render_data = new RenderData();
+	int name_lenght = 0;
+	memcpy(&name_lenght, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = name_lenght;
+	render_data->mesh_path = new char[name_lenght];
+	render_data->mesh_path[name_lenght] = 0x00;
+	memcpy(render_data->mesh_path, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	render_data = App->input->jope_importer.GetNewMesh(render_data->mesh_path);
+	//Generate AABB/OBB boxes
+	aabb_box.SetNegativeInfinity();
+	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+
+	CreateBoxIndices();
+	CreateBoxBuffers(aabb_box);
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)
@@ -179,6 +220,7 @@ void Mesh::GetOwnBufferSize(uint & buffer_size)
 	buffer_size += sizeof(COMP_TYPE);
 	buffer_size += sizeof(UUID);
 	buffer_size += sizeof(parent_UUID);
+	buffer_size += sizeof(int);
 	buffer_size += strlen(render_data->mesh_path);
 }
 

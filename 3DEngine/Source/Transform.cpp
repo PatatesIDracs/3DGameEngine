@@ -63,7 +63,7 @@ void Transform::Update()
 
 void Transform::UpdateGlobalTransform()
 {
-	if (parent->parent != nullptr && !parent->parent->IsRoot()) {
+	if (parent->parent != nullptr) {
 		global_transform = parent->parent->GetTransform()->GetGlobalTransform()* transform;
 	}
 	else global_transform = transform;
@@ -140,6 +140,7 @@ void Transform::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 
 void Transform::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 {
+	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;

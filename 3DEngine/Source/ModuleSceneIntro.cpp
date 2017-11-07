@@ -58,7 +58,6 @@ bool ModuleSceneIntro::CleanUp()
 
 	dynamic_gameobjects.clear();
 	static_gameobjects.clear();
-	scene_octree.Clear();
 
 	render_this.clear();
 
@@ -300,6 +299,8 @@ void ModuleSceneIntro::SaveScene()
 void ModuleSceneIntro::LoadScene(const char * file_path)
 {
 	LOGC("Loading the scence from %s", file_path);
+	static_gameobjects.clear();
+	dynamic_gameobjects.clear();
 
 	char* buffer_data = nullptr;
 	int buffer_size = 0;
@@ -345,6 +346,10 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 			cursor += bytes_advanced;
 			bytes_copied += bytes_advanced;
 			loaded_gameobjects.push_back(new_gameobject);
+			if (new_gameobject->isstatic)
+				static_gameobjects.push_back(new_gameobject);
+			else
+				dynamic_gameobjects.push_back(new_gameobject);
 			}
 			break;
 		case COMPONENTIDENTIFIER:
@@ -377,7 +382,11 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		for (int j = 0; j < loaded_gameobjects.size(); j++)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
+			{
 				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
+				if (loaded_components[i]->GetType() == COMP_CAMERA)
+					render_camera_test = (Camera*)loaded_components[i];
+			}
 		}
 	}
 

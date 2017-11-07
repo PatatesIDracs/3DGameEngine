@@ -13,10 +13,14 @@ public:
 	MeshRenderer(GameObject* parent);
 	~MeshRenderer();
 
-	void GetElements();
+	//Get the elements to render from parent
+	void PrepareRenderer();
+
+	void DrawComponent();
+	void ChangeParent(GameObject* new_parent);
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
-//	void Load();
+	void Load(const char * buffer_data, char * cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
 public:

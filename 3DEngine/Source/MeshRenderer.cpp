@@ -8,18 +8,38 @@
 MeshRenderer::MeshRenderer(GameObject* parent) : Component(parent, COMP_MESHRENDERER)
 {
 	if (parent != nullptr)
-		GetElements();
+		PrepareRenderer();
 }
 
 MeshRenderer::~MeshRenderer()
 {
 }
 
-void MeshRenderer::GetElements()
+void MeshRenderer::PrepareRenderer()
 {
 	transform = (Transform*)parent->GetTransform();
 	mesh = (Mesh*)parent->FindFirstComponent(COMP_MESH);
 	material = (Material*)parent->FindFirstComponent(COMP_MATERIAL);
+}
+
+void MeshRenderer::DrawComponent()
+{
+	if (ImGui::CollapsingHeader("Mesh Renderer"))
+	{
+		if (mesh == nullptr)
+			ImGui::Text("No mesh");
+		else
+			ImGui::Text("%s", mesh->render_data->mesh_path);
+
+		if (ImGui::Button("Reload elements")) PrepareRenderer();
+	}
+}
+
+void MeshRenderer::ChangeParent(GameObject * new_parent)
+{
+	parent = new_parent;
+	parent_UUID = new_parent->UUID;
+	PrepareRenderer();
 }
 
 void MeshRenderer::Save(const char * buffer_data, char * cursor, int& bytes_copied)
@@ -46,6 +66,20 @@ void MeshRenderer::Save(const char * buffer_data, char * cursor, int& bytes_copi
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+}
+
+void MeshRenderer::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+{
+	//UUID and parentUUID
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	
+	LOGC("Component mesh renderer loaded");
 }
 
 void MeshRenderer::GetOwnBufferSize(uint & buffer_size)

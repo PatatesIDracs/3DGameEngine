@@ -74,6 +74,7 @@ void GameObject::AddChildren(GameObject * new_child)
 {
 	children.push_back(new_child);
 	new_child->parent_UUID = UUID;
+	new_child->parent = this;
 }
 
 void GameObject::AddComponent(Component * new_component, bool overwrite)

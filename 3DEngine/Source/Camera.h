@@ -40,6 +40,7 @@ public:
 	void SetFrustumViewAngle();
 	void SetFOVRatio(uint width, uint height);
 	void SetNewFrame(vec& pos, vec& front, vec& up);
+	void ChangeParent(GameObject* new_parent);
 
 	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
 	void Load(const char* buffer_data, char* cursor, int& bytes_copied);

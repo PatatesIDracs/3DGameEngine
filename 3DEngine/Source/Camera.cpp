@@ -50,6 +50,7 @@ void Camera::Update()
 
 		glLineWidth(1.0f);
 	}
+	UpdateTransform();
 }
 
 void Camera::UpdateTransform()
@@ -197,7 +198,7 @@ int Camera::ContainsAABB(const AABB &box) const
 	if (iTotalIn == 6)
 		return CONT_IN;
 	// we must be partly in then otherwise
-	return CONT_INTERSECTS;
+	return CONT_INTERSECTS;
 }
 
 void Camera::GenerateFrostumDraw()
@@ -257,6 +258,13 @@ void Camera::SetFOVRatio(uint width, uint height)
 void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 {
 	cfrustum->SetFrame(pos, front, up);
+}
+
+void Camera::ChangeParent(GameObject * new_parent)
+{
+	parent = new_parent; 
+	parent_UUID = new_parent->UUID;
+	UpdateTransform();
 }
 
 void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
@@ -329,25 +337,8 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 	LOGC("Component camera loaded");
 
-	cfrustum = new Frustum();
-	cfrustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
-	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
-	if (parent != nullptr)
-	{
-		const float4x4 transf = parent->GetTransform()->GetGlobalTransform();
-		cfrustum->SetFrame(transf.Col3(3), transf.Col3(2), transf.Col3(2));
-	}
-	else
-	{
-		cfrustum->SetFrame(vec(1.f, 1.f, 1.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
-	}
-	//cfrustum->SetPerspective(1024, 720);
-	frustum_planes = new Plane[6];
-	cfrustum->GetPlanes(frustum_planes);
-
 	SetFrustumPlanes();
 	SetFrustumViewAngle();
-
 }
 
 void Camera::GetOwnBufferSize(uint & buffer_size)
