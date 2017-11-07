@@ -76,7 +76,7 @@ void GameObject::AddChildren(GameObject * new_child)
 	new_child->parent_UUID = UUID;
 }
 
-void GameObject::AddComponent(Component * new_component)
+void GameObject::AddComponent(Component * new_component, bool overwrite)
 {
 	//If the new component is unique check if we have a component of the same type
 	if (new_component->IsUnique())
@@ -85,7 +85,14 @@ void GameObject::AddComponent(Component * new_component)
 		{
 			if (components[i]->GetType() == new_component->GetType())
 			{
-				LOGC("%s already has this component",name.c_str());
+				if (overwrite)
+				{
+					delete components[i];
+					components[i] = new_component;
+					new_component->ChangeParent(this);
+				}
+				else
+					LOGC("%s already has this component", name.c_str());
 				return;
 			}
 		}

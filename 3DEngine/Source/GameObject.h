@@ -21,7 +21,7 @@ public:
 
 	//Set methods
 	void AddChildren(GameObject* new_child);
-	void AddComponent(Component* new_component);
+	void AddComponent(Component* new_component, bool overwrite = false);
 	void SetTransform(float4x4 &transform);
 
 	//Get/Check state methods

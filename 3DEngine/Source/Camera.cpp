@@ -286,10 +286,6 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	//Field of view
-	memcpy(&field_of_view, cursor, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
 	//near_plane, far_plane, aspect_ratio
 	bytes_to_copy = sizeof(float);
 	memcpy(&near_plane, cursor, bytes_to_copy);
@@ -301,7 +297,32 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	memcpy(&aspect_ratio, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+	//Field of view
+	bytes_to_copy = sizeof(int);
+	memcpy(&field_of_view, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	LOGC("Component camera loaded");
+
+	cfrustum = new Frustum();
+	cfrustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
+	cfrustum->SetViewPlaneDistances(MIN_NEARP_DIST, 50.f);
+	if (parent != nullptr)
+	{
+		const float4x4 transf = parent->GetTransform()->GetGlobalTransform();
+		cfrustum->SetFrame(transf.Col3(3), transf.Col3(2), transf.Col3(2));
+	}
+	else
+	{
+		cfrustum->SetFrame(vec(1.f, 1.f, 1.f), vec(0.f, 0.f, 1.f), vec(0.f, 1.f, 0.f));
+	}
+	//cfrustum->SetPerspective(1024, 720);
+	frustum_planes = new Plane[6];
+	cfrustum->GetPlanes(frustum_planes);
+
+	SetFrustumPlanes();
+	SetFrustumViewAngle();
+
 }
 
 void Camera::GetOwnBufferSize(uint & buffer_size)

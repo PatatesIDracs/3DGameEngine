@@ -81,7 +81,7 @@ void Transform::SetTransform(float4x4 &transf)
 {
 	transform = transf.Transposed();
 	transform.Decompose(position, rotation, scale);
-	scale = float3(1.f, 1.f, 1.f);
+	//scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
 	update_transform = true;
@@ -170,6 +170,12 @@ void Transform::Load(const char * buffer_data, char * cursor, int & bytes_copied
 	transform[3][1] = new_transform[13];
 	transform[3][2] = new_transform[14];
 	transform[3][3] = new_transform[15];
+
+
+	transform.Decompose(position, rotation, scale);
+	//scale = float3(1.f, 1.f, 1.f);
+	angle = rotation.ToEulerXYZ()*RADTODEG;
+	update_transform = true;
 
 	LOGC("Component transform loaded");
 }

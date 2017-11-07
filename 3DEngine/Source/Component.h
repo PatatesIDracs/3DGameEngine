@@ -34,6 +34,8 @@ public:
 	{
 		LCG UUIDGen;
 		UUID = UUIDGen.Int();
+		if (parent != nullptr)
+			parent_UUID = parent->UUID;
 	};
 	virtual ~Component() {};
 

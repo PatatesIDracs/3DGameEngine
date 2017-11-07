@@ -357,7 +357,7 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		for (int j = 0; j < loaded_gameobjects.size(); j++)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
-				loaded_gameobjects[j]->AddComponent(loaded_components[i]);
+				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
 		}
 	}
 
@@ -367,6 +367,17 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
 				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
+		}
+	}
+
+	GameObject* new_root = nullptr;
+	for (int i = 0; i < loaded_gameobjects.size(); i++)
+	{
+		if (loaded_gameobjects[i]->parent == nullptr)
+		{
+			
+			root = loaded_gameobjects[i];
+			break;
 		}
 	}
 
