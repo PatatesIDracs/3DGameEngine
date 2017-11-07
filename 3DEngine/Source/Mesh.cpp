@@ -192,6 +192,7 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//Load mesh.mjope path
 	render_data = new RenderData();
 	int name_lenght = 0;
 	memcpy(&name_lenght, cursor, bytes_to_copy);

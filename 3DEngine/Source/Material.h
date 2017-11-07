@@ -15,7 +15,7 @@ public:
 	void DrawComponent();
 
 	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
-	//void Load();
+	void Load(const char* buffer_data, char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
 private:

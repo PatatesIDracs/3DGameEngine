@@ -51,7 +51,7 @@ void TextureImporter::Import(const char * full_path, const char* name)
 			std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
 			new_file.write((char*)data, size);
 
-			LOGC("Imported %s textre at %s", file_name.c_str(), import_path.c_str());
+			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());
 		}
 	}
 }

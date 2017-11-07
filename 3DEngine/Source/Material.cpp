@@ -67,6 +67,32 @@ void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 }
 
+void Material::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+{
+	//UUID and parentUUID
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Texture id
+	memcpy(&id_texture, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//height and width
+	bytes_to_copy = sizeof(uint);
+	memcpy(&texture_width, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&texture_height, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+}
+
 void Material::GetOwnBufferSize(uint & buffer_size)
 {
 	buffer_size += sizeof(int);			//identifier
