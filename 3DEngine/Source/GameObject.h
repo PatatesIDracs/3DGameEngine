@@ -42,6 +42,11 @@ public:
 	void Load(const char* buffer_data, char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
+private:
+	void DrawAddComponentWindow();
+
+	Component* CreatComponent(COMP_TYPE new_comp_type);
+
 public:
 	int UUID = 0;
 	int parent_UUID = 0;
@@ -55,6 +60,9 @@ public:
 	std::vector<GameObject*> children;
 
 	AABB boundary_box;
+
+private:
+	bool creating_component = false;
 };
 
 

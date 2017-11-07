@@ -5,6 +5,10 @@
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
+#include "Material.h"
+#include "MeshRenderer.h"
+#include "Camera.h"
+
 GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name("GameObject"), isactive(isactive)
 {
 	LCG UUIDGen;
@@ -218,6 +222,10 @@ void GameObject::DrawProperties()
 	{
 		components[i]->DrawComponent();
 	}
+
+	if (ImGui::Button("AddComponent")) creating_component = !creating_component;
+
+	if (creating_component) DrawAddComponentWindow();
 }
 
 void GameObject::DrawGameObject()
@@ -342,4 +350,54 @@ void GameObject::GetOwnBufferSize(uint& buffer_size)
 	{
 		components[i]->GetOwnBufferSize(buffer_size);
 	}
+}
+
+void GameObject::DrawAddComponentWindow()
+{
+	COMP_TYPE new_comp_type = COMP_TYPE::COMP_UNKNOWN;
+
+	ImGui::Begin("Add Component", &creating_component);
+
+	if (ImGui::Button("Transform")) new_comp_type = COMP_TYPE::COMP_TRANSFORM;
+	if (ImGui::Button("Mesh")) new_comp_type = COMP_TYPE::COMP_MESH;
+	if (ImGui::Button("Material")) new_comp_type = COMP_TYPE::COMP_MATERIAL;
+	if (ImGui::Button("Mesh Renderer")) new_comp_type = COMP_TYPE::COMP_MESHRENDERER;
+	if (ImGui::Button("Camera")) new_comp_type = COMP_TYPE::COMP_CAMERA;
+
+	ImGui::End();
+
+	if (new_comp_type != COMP_TYPE::COMP_UNKNOWN)
+	{
+		AddComponent( CreatComponent(new_comp_type));
+		creating_component = false;
+	}
+}
+
+//TODO: Factory in a dummy file, module? but not here (too much includes)
+Component* GameObject::CreatComponent(COMP_TYPE new_comp_type)
+{
+	Component* ret = nullptr;
+	switch (new_comp_type)
+	{
+	case COMP_UNKNOWN:
+		break;
+	case COMP_TRANSFORM:
+		ret = new Transform(this);
+		break;
+	case COMP_MESH:
+		ret = new Mesh(this, nullptr);
+		break;
+	case COMP_MATERIAL:
+		ret = new Material(this);
+		break;
+	case COMP_MESHRENDERER:
+		ret = new MeshRenderer(this);
+		break;
+	case COMP_CAMERA:
+		ret = new Camera(this);
+		break;
+	default:
+		break;
+	}
+	return ret;
 }
