@@ -154,7 +154,7 @@ update_status ModuleSceneIntro::Update(float dt)
 
 		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
-
+	/*
 	if (last_ray.IsFinite()) {
 		glBegin(GL_LINES);
 
@@ -165,11 +165,17 @@ update_status ModuleSceneIntro::Update(float dt)
 		glVertex3f(last_ray.pos.x, last_ray.pos.y, last_ray.pos.z);
 		glVertex3f(ray_pos.x,ray_pos.y, ray_pos.z);
 
+		ray_pos = local_ray.pos + local_ray.dir * 200;
+		glColor4f(1.0f, 1.0f, 0.f, 1.f);
+
+		glVertex3f(local_ray.pos.x, local_ray.pos.y, local_ray.pos.z);
+		glVertex3f(ray_pos.x, ray_pos.y, ray_pos.z);
+
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glLineWidth(1.0f);
 		glEnd();
 	}
-	
+	*/
 	return UPDATE_CONTINUE;
 }
 
@@ -258,6 +264,7 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 
 void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 {
+	// Need a lot of Polish;
 	last_ray = camera_ray;
 	std::vector<float3> order;
 	float ndist = 0, fdist = 0;
@@ -312,9 +319,49 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 			
 		}
 		order.clear();
+
+		ndist = -1;
+		float3 intersection;
+		for (uint i = 0; i < order_size; i++) {
+			if (CheckRayVsMesh(meshes[i], ndist, intersection)) {
+				current_object = meshes[i]->GetParent();
+				break; 
+			}
+		}
 		meshes.clear();
 	}
 
+}
+
+bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, float3 &point) 
+{
+	bool ret = false;
+	
+	local_ray = last_ray;
+	float4x4 rot = mesh->transform->GetGlobalTransform().Inverted();
+	local_ray.Transform(rot);
+	
+	const RenderData* mesh_data = mesh->mesh->GetRenderData();
+	Triangle tri;
+	float best_dist = dist;
+	float3 intersect_point;
+	for (uint i = 0; i < mesh_data->num_indices; i +=3)
+	{
+		tri.a = float3(&mesh_data->vertices[mesh_data->indices[i] * 3]);
+		tri.b = float3(&mesh_data->vertices[mesh_data->indices[i + 1] * 3]);
+		tri.c = float3(&mesh_data->vertices[mesh_data->indices[i + 2] * 3]);
+
+		if (local_ray.Intersects(tri, &best_dist, &intersect_point)) {
+			if (dist == -1 || best_dist < dist)
+			{
+				dist = best_dist;
+				point = intersect_point;
+				ret = true;
+			}
+		}
+	}
+	
+	return ret;
 }
 
 void ModuleSceneIntro::LookAtScene() const
