@@ -30,7 +30,7 @@ public:
 	void CheckDynamicGameObjectsState();
 	void CheckStaticGameObjectsState();
 
-	void CheckRayCastCollision(Ray& camera_ray);
+	void CheckRayCastCollision(LineSegment& camera_ray);
 	bool CheckRayVsMesh(const MeshRenderer* mesh, float &dist, float3 &intersection) ;
 
 	void LookAtScene() const;
@@ -61,8 +61,7 @@ private:
 
 	Octree<GameObject*>	scene_octree;
 
-	Ray last_ray;
-	Ray local_ray;
+	LineSegment last_ray;
 };
 
 #endif // !__MODULESCENEINTRO_H__

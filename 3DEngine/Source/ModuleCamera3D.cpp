@@ -233,7 +233,7 @@ void ModuleCamera3D::CameraRayCast()
 	float x = (App->input->GetMouseX() - App->window->width*0.5) / (App->window->width*0.5);
 
 	// Camera Ray Cast
-	App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectFromNearPlane(x, y));
+	App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectLineSegment(x, y));
 }
 
 // ----------------------------------------------

@@ -208,6 +208,7 @@ bool ModuleEditor::CleanUp()
 {
 	LOGC("Cleaning Module Editor");
 
+	ImGuizmo::Enable(false);
 	ImGui_ImplSdlGL3_Shutdown();
 
 	return true;

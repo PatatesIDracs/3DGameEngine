@@ -154,28 +154,7 @@ update_status ModuleSceneIntro::Update(float dt)
 
 		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
-	/*
-	if (last_ray.IsFinite()) {
-		glBegin(GL_LINES);
-
-		glLineWidth(3.0);
-		glColor4f(1.0f, 0.25f, 0.f, 1.f);
-		float3 ray_pos = last_ray.pos + last_ray.dir * 200;
-
-		glVertex3f(last_ray.pos.x, last_ray.pos.y, last_ray.pos.z);
-		glVertex3f(ray_pos.x,ray_pos.y, ray_pos.z);
-
-		ray_pos = local_ray.pos + local_ray.dir * 200;
-		glColor4f(1.0f, 1.0f, 0.f, 1.f);
-
-		glVertex3f(local_ray.pos.x, local_ray.pos.y, local_ray.pos.z);
-		glVertex3f(ray_pos.x, ray_pos.y, ray_pos.z);
-
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glLineWidth(1.0f);
-		glEnd();
-	}
-	*/
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -202,7 +181,7 @@ void ModuleSceneIntro::CollectCandidates()
 
 		// Get Static Meshes to render
 		std::vector<GameObject*> candidates;
-		scene_octree.Inersect(candidates, this->render_camera_test->GetFrustum());
+		scene_octree.Intersect(candidates, this->render_camera_test->GetFrustum());
 
 		for (uint i = 0; i < candidates.size(); i++) {
 			if (candidates[i]->IsActive()) {
@@ -262,7 +241,7 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 	}
 }
 
-void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
+void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 {
 	// Need a lot of Polish;
 	last_ray = camera_ray;
@@ -273,20 +252,22 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 		if (dynamic_gameobjects[i]->IsActive() && dynamic_gameobjects[i]->boundary_box.IsFinite())
 		{
 			if (camera_ray.Intersects(dynamic_gameobjects[i]->boundary_box, ndist, fdist))
-				order.push_back(float3(ndist, i, 0));
-		}
-	}
-	// Test Static GameObjects
-	for (uint i = 0; i < static_gameobjects.size(); i++) {
-		if (static_gameobjects[i]->IsActive() && static_gameobjects[i]->boundary_box.IsFinite())
-		{
-			if (camera_ray.Intersects(static_gameobjects[i]->boundary_box, ndist, fdist))
-				order.push_back(float3(ndist, i, 1));
+				order.push_back(float3(ndist, (float)i, 0));
 		}
 	}
 
+	// Test Static GameObjects with octree
+	std::vector<GameObject*> static_hits;
+	std::vector<float> hit_distance;
+	scene_octree.Intersect(static_hits, camera_ray, hit_distance);
+	
+	for (uint i = 0; i < hit_distance.size(); i++) {
+		order.push_back(float3(hit_distance[i], (float)i, 1));
+	}
+	hit_distance.clear();
+
 	// Order GameObjects by hit Distance
-	int order_size = order.size();
+	uint order_size = order.size();
 	if (order_size > 0) {
 		std::vector<MeshRenderer*> meshes;
 		meshes.reserve(order_size);
@@ -307,10 +288,10 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 
 			// Add Hit
 			if (curr_min.z == 0) {
-				mesh = (MeshRenderer*)dynamic_gameobjects[curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
+				mesh = (MeshRenderer*)dynamic_gameobjects[(int)curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
 			}
 			else {
-				mesh = (MeshRenderer*)static_gameobjects[curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
+				mesh = (MeshRenderer*)static_hits[(int)curr_min.y]->FindFirstComponent(COMP_MESHRENDERER);
 			}
 			order[curr_minim_order].z = -1;
 			curr_min.z = -1;
@@ -318,8 +299,10 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 			if (mesh != nullptr)meshes.push_back(mesh);
 			
 		}
+		static_hits.clear();
 		order.clear();
 
+		// Find Closest Intersection with Mesh
 		ndist = -1;
 		float3 intersection;
 		for (uint i = 0; i < order_size; i++) {
@@ -336,7 +319,7 @@ bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, fl
 {
 	bool ret = false;
 	
-	local_ray = last_ray;
+	Ray local_ray = last_ray.ToRay();
 	local_ray.Transform(mesh->transform->GetGlobalTransform().Inverted());
 	
 	const RenderData* mesh_data = mesh->mesh->GetRenderData();
@@ -506,9 +489,9 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		}
 	}
 
-	for (int i = 0; i < loaded_components.size(); i++)
+	for (uint i = 0; i < loaded_components.size(); i++)
 	{
-		for (int j = 0; j < loaded_gameobjects.size(); j++)
+		for (uint j = 0; j < loaded_gameobjects.size(); j++)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
 			{
@@ -519,9 +502,9 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		}
 	}
 
-	for (int i = 0; i < loaded_gameobjects.size(); i++)
+	for (uint i = 0; i < loaded_gameobjects.size(); i++)
 	{
-		for (int j = 0; j < loaded_gameobjects.size(); j++)
+		for (uint j = 0; j < loaded_gameobjects.size(); j++)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
 				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
@@ -529,7 +512,7 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 	}
 
 	GameObject* new_root = nullptr;
-	for (int i = 0; i < loaded_gameobjects.size(); i++)
+	for (uint i = 0; i < loaded_gameobjects.size(); i++)
 	{
 		if (loaded_gameobjects[i]->parent == nullptr)
 		{

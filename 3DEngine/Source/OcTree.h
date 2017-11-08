@@ -134,7 +134,7 @@ public:
 				}
 			}
 		}
-
+		return false;
 	}
 
 	bool ContainsAABB(const AABB& box) {
@@ -197,7 +197,30 @@ public:
 				childs[i]->Intersect(candidates, frustum);
 			}
 		}
+		return false;
+	}
 
+	bool Intersect(std::vector<DATA_TYPE>& candidates, const LineSegment& linesegment, std::vector<float>& hit_dist) {
+
+		if (!(box.Contains(linesegment) || box.Intersects(linesegment))) return false;
+
+		float ndist = 0;
+		float fdist = 0;
+		Ray raycast = linesegment.ToRay();
+		for (uint i = 0; i < objects.size(); i++) {
+			if (raycast.Intersects(objects[i].bounding_box, ndist, fdist))
+			{
+				candidates.push_back(objects[i].item_data);
+				hit_dist.push_back(ndist);
+			}
+		}
+
+		if (full) {
+			for (uint i = 0; i < MAX_NODES; i++) {
+				childs[i]->Intersect(candidates, linesegment, hit_dist);
+			}
+		}
+		return true;
 	}
 };
 
@@ -282,13 +305,22 @@ public:
 
 	// TODO -------------------
 	// should add Frustum, AABB, Sphere and Ray
-	bool Inersect(std::vector<DATA_TYPE>& objects, const Frustum& frustum) {
+	bool Intersect(std::vector<DATA_TYPE>& objects, const Frustum& frustum) {
 		
 		if (root != nullptr)
 		{
-			root->Intersect(objects, frustum);
+			return root->Intersect(objects, frustum);
 		}
 		return false; 
+	}
+
+	bool Intersect(std::vector<DATA_TYPE>& objects, const LineSegment& linesegment, std::vector<float>& hit_dist) {
+
+		if (root != nullptr)
+		{
+			return root->Intersect(objects, linesegment, hit_dist);
+		}
+		return false;
 	}
 };
 
