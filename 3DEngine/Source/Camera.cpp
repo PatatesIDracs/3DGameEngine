@@ -281,7 +281,7 @@ void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 
 	//identifier and type
 	int identifier = COMPONENTIDENTIFIER;
-	uint bytes_to_copy = sizeof(identifier);
+	uint bytes_to_copy = sizeof(int);
 	memcpy(cursor, &identifier, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
@@ -291,12 +291,20 @@ void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	//UUID and parent UUID
-	bytes_to_copy = sizeof(UUID);
+	bytes_to_copy = sizeof(int);
 	memcpy(cursor, &UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
-	bytes_to_copy = sizeof(parent_UUID);
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
@@ -327,6 +335,15 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//near_plane, far_plane, aspect_ratio
 	bytes_to_copy = sizeof(float);
 	memcpy(&near_plane, cursor, bytes_to_copy);
@@ -351,10 +368,8 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 
 void Camera::GetOwnBufferSize(uint & buffer_size)
 {
-	buffer_size += sizeof(int);			//identifier
-	buffer_size += sizeof(COMP_TYPE);
-	buffer_size += sizeof(UUID);
-	buffer_size += sizeof(parent_UUID);
+	Component::GetOwnBufferSize(buffer_size);
+
 	buffer_size += sizeof(float) * 3;	//near_plane, far_plane, aspect_ratio
 	buffer_size += sizeof(int);			//Field of view	
 }

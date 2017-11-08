@@ -53,6 +53,15 @@ void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	bytes_to_copy = sizeof(id_texture);
 	memcpy(cursor, &id_texture, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -78,6 +87,15 @@ void Material::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//Texture id
 	memcpy(&id_texture, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -95,10 +113,8 @@ void Material::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 
 void Material::GetOwnBufferSize(uint & buffer_size)
 {
-	buffer_size += sizeof(int);			//identifier
-	buffer_size += sizeof(COMP_TYPE);
-	buffer_size += sizeof(UUID);
-	buffer_size += sizeof(parent_UUID);
+	Component::GetOwnBufferSize(buffer_size);
+
 	buffer_size += sizeof(id_texture);
 	buffer_size += sizeof(uint) * 2;	//Texture height and width
 }

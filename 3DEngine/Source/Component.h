@@ -49,7 +49,12 @@ public:
 	//Save and Load methods
 	virtual void Save(const char* buffer_data, char* cursor, int& bytes_copied) {};
 	virtual void Load(const char* buffer_data, char* cursor, int& bytes_copied) {};
-	virtual void GetOwnBufferSize(uint& buffer_size) {};
+	virtual void GetOwnBufferSize(uint& buffer_size)
+	{
+		buffer_size += sizeof(int) * 3;		//identifier + UUID + parentUUID
+		buffer_size += sizeof(COMP_TYPE);
+		buffer_size += sizeof(bool) * 2;	//active + unique
+	};
 
 
 	COMP_TYPE GetType() const { return type; };

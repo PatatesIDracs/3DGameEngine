@@ -33,6 +33,7 @@ const RenderData* Mesh::GetRenderData()
 
 void Mesh::Update()
 {
+	if (render_data == nullptr) return;
 	if (draw_aabb)
 	{
 		if (draw_aabb && render_data->aabb_vertex_id > 0)
@@ -109,6 +110,7 @@ void Mesh::ChangeMesh()
 // Create box indices buffer (only once)
 void Mesh::CreateBoxIndices()
 {
+	if (render_data == nullptr) return;
 	if (render_data->box_indices_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->box_indices_id);
@@ -121,6 +123,7 @@ void Mesh::CreateBoxIndices()
 // Generate AABB and OBB buffers
 void Mesh::CreateBoxBuffers(AABB &box)
 {
+	if (render_data == nullptr) return;
 	// delete buffers;
 	if (render_data->aabb_vertex_id > 0)
 	{
@@ -168,6 +171,15 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//Path to load the mesh
 	int name_length = strlen(render_data->mesh_path);
 	bytes_to_copy = sizeof(int);
@@ -192,9 +204,19 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//Load mesh.mjope path
-	render_data = new RenderData();
+	render_data = new RenderData;
 	int name_lenght = 0;
+	bytes_to_copy = sizeof(int);
 	memcpy(&name_lenght, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
@@ -222,10 +244,8 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)
 {
-	buffer_size += sizeof(int);			//identifier
-	buffer_size += sizeof(COMP_TYPE);
-	buffer_size += sizeof(UUID);
-	buffer_size += sizeof(parent_UUID);
+	Component::GetOwnBufferSize(buffer_size);
+
 	buffer_size += sizeof(int);
 	buffer_size += strlen(render_data->mesh_path);
 }
@@ -243,5 +263,5 @@ RenderData::~RenderData()
 	delete[] vertices;
 	delete[] normals;
 	delete[] tex_vertices;
-
+	delete[] mesh_path;
 }

@@ -68,7 +68,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 			for (uint i = 0; i < num_meshes; i++)
 			{
 				int mesh_id = child_node->mMeshes[i];
-				RenderData* mesh = new RenderData;
+				RenderData* mesh = new RenderData();
 				std::string file_name = child_node->mName.C_Str();
 				file_name.append(MESHFILEFORMAT);
 
@@ -272,5 +272,6 @@ void MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
 
 	LOGC("File Saved at: %s", (import_path + file_name).c_str());
 
+	delete[] buffer_data;
 }
 

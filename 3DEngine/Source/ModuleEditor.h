@@ -9,7 +9,7 @@
 
 #include "SDL\include\SDL.h"
 
-#define CONSOLE_LIMIT 50
+#define CONSOLE_LIMIT 500
 
 class Profiler;
 

@@ -66,6 +66,15 @@ void MeshRenderer::Save(const char * buffer_data, char * cursor, int& bytes_copi
 	memcpy(cursor, &parent_UUID, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void MeshRenderer::Load(const char * buffer_data, char * cursor, int & bytes_copied)
@@ -78,14 +87,20 @@ void MeshRenderer::Load(const char * buffer_data, char * cursor, int & bytes_cop
 	memcpy(&parent_UUID, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 	
 	LOGC("Component mesh renderer loaded");
 }
 
 void MeshRenderer::GetOwnBufferSize(uint & buffer_size)
 {
-	buffer_size += sizeof(int);			//identifier
-	buffer_size += sizeof(COMP_TYPE);
-	buffer_size += sizeof(UUID);
-	buffer_size += sizeof(parent_UUID);
+	Component::GetOwnBufferSize(buffer_size);
 }
