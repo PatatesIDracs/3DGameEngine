@@ -87,7 +87,7 @@ void Mesh::DrawComponent()
 void Mesh::ChangeMesh()
 {
 	std::string new_mesh_path;
-	if (App->editor->DrawLibraryExplorer(&new_mesh_path))
+	if (App->editor->DrawFixedExplorer(new_mesh_path, JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
 	{
 		delete render_data;
 		render_data = App->input->jope_importer.GetNewMesh(new_mesh_path.c_str());
@@ -207,12 +207,17 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	render_data = App->input->jope_importer.GetNewMesh(render_data->mesh_path);
-	//Generate AABB/OBB boxes
-	aabb_box.SetNegativeInfinity();
-	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+	if (render_data != nullptr)
+	{
+		//Generate AABB/OBB boxes
+		aabb_box.SetNegativeInfinity();
+		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 
-	CreateBoxIndices();
-	CreateBoxBuffers(aabb_box);
+		CreateBoxIndices();
+		CreateBoxBuffers(aabb_box);
+	}
+	else
+		LOGC("Error: Unable to load the mesh, file not found in library please import again");
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)

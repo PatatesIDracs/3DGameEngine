@@ -35,7 +35,7 @@ public:
 	void LoadHardwareSoftwareInfo();
 
 	//Return true when a file is selected
-	bool DrawLibraryExplorer(std::string* output);
+	bool DrawFixedExplorer(std::string& output, const char* path);
 	bool DrawExplorer(std::string* output_file);
 
 private:

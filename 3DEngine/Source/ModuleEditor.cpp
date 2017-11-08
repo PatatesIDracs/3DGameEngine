@@ -423,11 +423,11 @@ void ModuleEditor::DrawProfilerWindow()
 
 }
 
-bool ModuleEditor::DrawLibraryExplorer(std::string* output)
+bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
 {
 	bool ret = false;
 	//Get to the library path
-	fs::directory_iterator it{ it_library_path.c_str() };
+	fs::directory_iterator it{ path };
 	fs::directory_iterator end{};
 	
 	ImGui::Begin("Explorer");
@@ -435,6 +435,42 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 	ImGui::Text("directory explorer test");
 	
 	
+	ImGui::NextColumn();
+	ImGui::Text("Other files test");
+	for (; it != end; it++)
+	{
+		if (fs::is_regular_file(it->path()))
+		{
+			static char file_name[150];
+			std::wcstombs(file_name, it->path().filename().c_str(), sizeof(file_name));
+			if (ImGui::Button(file_name))
+			{
+				char file[150];
+				std::wcstombs(file, it->path().c_str(), 150);
+				output = file;
+				LOGC("Loaded file from: %s\\%S", it_library_path.c_str(), it->path().filename().c_str());
+				it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+				ret = true;
+				break;
+			}
+		}
+	}
+	ImGui::End();
+	return ret;
+}
+
+bool ModuleEditor::DrawExplorer(std::string* output_file)
+{
+	bool ret = false;
+	//Get to the library path
+	fs::directory_iterator it{ it_library_path.c_str() };
+	fs::directory_iterator end{};
+
+	ImGui::Begin("test");
+	ImGui::Columns(2);
+	ImGui::Text("directory explorer test");
+
+
 	ImGui::NextColumn();
 	ImGui::Text("Other files test");
 	for (; it != end; it++)
@@ -458,7 +494,7 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 			{
 				char file[150];
 				std::wcstombs(file, it->path().c_str(), 150);
-				*output = file;
+				//output = file;
 				LOGC("Loaded file from: %s\\%S", it_library_path.c_str(), it->path().filename().c_str());
 				it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
 				ret = true;
@@ -466,19 +502,6 @@ bool ModuleEditor::DrawLibraryExplorer(std::string* output)
 			}
 		}
 	}
-	ImGui::End();
-	return ret;
-}
-
-bool ModuleEditor::DrawExplorer(std::string* output_file)
-{
-	bool ret = false;
-	//Get to the library path
-	fs::directory_iterator it{ it_library_path.c_str() };
-	fs::directory_iterator end{};
-
-	ImGui::Begin("test");
-
 	ImGui::End();
 
 

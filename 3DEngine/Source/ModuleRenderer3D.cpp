@@ -177,6 +177,8 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
+	App->window->height = height;
+	App->window->width = width;
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
