@@ -55,7 +55,7 @@ void Transform::Update()
 	}
 
 	if (update_transform) {
-		// Set Rotation
+		// Set Rotation Quaternion
 		rotation = GetRotQuat();
 
 		// Set Transform
@@ -135,6 +135,19 @@ void Transform::DrawComponent()
 	}
 }
 
+void Transform::NormalizeRotationAngle()
+{
+	float max_angle = 360.0f;
+	int num_spins = 0;
+	for (uint i = 0; i < 3; i++) {
+		num_spins = (int)(angle[i] / max_angle);
+		angle[i] = angle[i] - max_angle* num_spins;
+
+		if (angle[i] <= -180.0f) angle[i] += 360.0f;
+		else if (angle[i] > 180.0f) angle[i] -= 360.0f;
+
+	}
+}
 void Transform::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving transform comp");
@@ -224,17 +237,4 @@ void Transform::GetOwnBufferSize(uint & buffer_size)
 	buffer_size += sizeof(float) * 16;		//Transform
 }
 
-void Transform::NormalizeRotationAngle()
-{
-	float max_angle = 360.0f;
-	int num_spins = 0;
-	for (uint i = 0; i < 3; i++) {
-		num_spins = (int)(angle[i] / max_angle);
-		angle[i] = angle[i] - max_angle* num_spins;
-
-		if (angle[i] <= -180.0f) angle[i] += 360.0f;
-		else if (angle[i] > 180.0f) angle[i] -= 360.0f;
-
-	}
-}
 

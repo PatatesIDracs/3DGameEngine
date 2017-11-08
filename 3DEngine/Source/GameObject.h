@@ -44,6 +44,8 @@ public:
 
 private:
 	void DrawAddComponentWindow();
+	void DrawSetStaticGObjWindow();
+	void ChangeChildsStatic(bool state);
 
 	Component* CreatComponent(COMP_TYPE new_comp_type);
 
@@ -63,6 +65,7 @@ public:
 
 private:
 	bool creating_component = false;
+	bool change_static = false;
 };
 
 

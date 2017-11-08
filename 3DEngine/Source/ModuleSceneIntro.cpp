@@ -141,13 +141,8 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	//Root should never be nullptr but check it just in case
 	if (root != nullptr) {
-		// Must check only when game is on Editor Mode;
-		CheckStaticGameObjectsState();
 
 		root->Update();
-
-		// Must check only when game is on Editor Mode;
-		CheckDynamicGameObjectsState();
 	
 		// Get Meshes to Render;
 		CollectCandidates();
@@ -215,6 +210,7 @@ void ModuleSceneIntro::CheckDynamicGameObjectsState()
 			dynamic_gameobjects.pop_back();
 			static_gameobjects.push_back(object);
 			AddGameObjectToOctree(object);
+			i--;
 		}
 	}
 }
@@ -232,6 +228,7 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 			dynamic_gameobjects.push_back(object);
 
 			reset_octree = true;
+			i--;
 		}
 	}
 

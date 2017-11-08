@@ -2,6 +2,9 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Mesh.h"
+
+#include "Application.h"
+#include "ModuleSceneIntro.h"
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
@@ -233,7 +236,15 @@ void GameObject::DrawGameObject()
 	ImGui::Checkbox("Active", &isactive);
 	ImGui::SameLine();
 	ImGui::InputText("", (char*)name.c_str(), name.size(), ImGuiInputTextFlags_ReadOnly);
-	ImGui::Checkbox("Static", &isstatic);
+	if (ImGui::Checkbox("Static", &isstatic)) {
+		if(children.size() > 0) change_static = true;
+		else {
+			if (isstatic) App->scene_intro->CheckDynamicGameObjectsState();
+			else App->scene_intro->CheckStaticGameObjectsState();
+		}
+	}
+
+	if (change_static) DrawSetStaticGObjWindow();
 }
 
 
@@ -319,6 +330,7 @@ void GameObject::Load(const char * buffer_data, char* cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 	name_c_str[name_size] = 0x00;
 	name = name_c_str;
+	delete[] name_c_str;
 
 	bytes_to_copy = sizeof(bool);
 	memcpy(&isactive, cursor, bytes_to_copy);
@@ -370,6 +382,43 @@ void GameObject::DrawAddComponentWindow()
 	{
 		AddComponent( CreatComponent(new_comp_type));
 		creating_component = false;
+	}
+}
+
+void GameObject::DrawSetStaticGObjWindow()
+{
+	ImGui::Begin("Game Object changed static state", &change_static, ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoCollapse);
+	
+	if (isstatic) {
+		if (ImGui::Button("Set childs as static")) {
+			ChangeChildsStatic(isstatic);
+			App->scene_intro->CheckDynamicGameObjectsState();
+			change_static = false;
+		}
+	}
+	else {
+		if (ImGui::Button("Set childs as dynamic")) {
+			ChangeChildsStatic(isstatic);
+			App->scene_intro->CheckStaticGameObjectsState();
+			change_static = false;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Cancel")) {
+		if (isstatic) App->scene_intro->CheckDynamicGameObjectsState();
+		else App->scene_intro->CheckStaticGameObjectsState();
+		change_static = false;
+	}
+	ImGui::End();
+}
+
+void GameObject::ChangeChildsStatic(bool state)
+{
+	isstatic = state;
+
+	for (uint i = 0; i < children.size(); i++)
+	{
+		children[i]->ChangeChildsStatic(state);
 	}
 }
 
