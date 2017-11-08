@@ -299,7 +299,7 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 			for (uint j = 0; j < order_size; j++) {
 				if (curr_min.z == -1 && order[j].z != -1) curr_min = order[j];
 
-				if (curr_min.x > order[j].x && order[j].z != -1) {
+				if (curr_min.x >= order[j].x && order[j].z != -1) {
 					curr_min = order[j];
 					curr_minim_order = j;
 				}
@@ -325,7 +325,6 @@ void ModuleSceneIntro::CheckRayCastCollision(Ray & camera_ray)
 		for (uint i = 0; i < order_size; i++) {
 			if (CheckRayVsMesh(meshes[i], ndist, intersection)) {
 				current_object = meshes[i]->GetParent();
-				break; 
 			}
 		}
 		meshes.clear();
@@ -338,13 +337,14 @@ bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, fl
 	bool ret = false;
 	
 	local_ray = last_ray;
-	float4x4 rot = mesh->transform->GetGlobalTransform().Inverted();
-	local_ray.Transform(rot);
+	local_ray.Transform(mesh->transform->GetGlobalTransform().Inverted());
 	
 	const RenderData* mesh_data = mesh->mesh->GetRenderData();
+	
 	Triangle tri;
 	float best_dist = dist;
 	float3 intersect_point;
+
 	for (uint i = 0; i < mesh_data->num_indices; i +=3)
 	{
 		tri.a = float3(&mesh_data->vertices[mesh_data->indices[i] * 3]);
@@ -383,6 +383,11 @@ void ModuleSceneIntro::DrawRootHierarchy()
 {
 	GameObject* ret = root->DrawHierarchy();
 	if (ret != nullptr) current_object = ret;
+}
+
+GameObject * ModuleSceneIntro::GetSelectedGameObject() const
+{
+	return current_object;
 }
 
 void ModuleSceneIntro::SetProperties(GameObject * show_this)

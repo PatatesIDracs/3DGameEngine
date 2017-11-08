@@ -36,6 +36,7 @@ public:
 	void LookAtScene() const;
 
 	void DrawRootHierarchy();
+	GameObject* GetSelectedGameObject() const;
 
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;

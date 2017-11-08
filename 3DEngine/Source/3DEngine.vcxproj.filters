@@ -247,6 +247,9 @@
     <ClCompile Include="TextureImporter.cpp">
       <Filter>Importer</Filter>
     </ClCompile>
+    <ClCompile Include="Imgui\ImGuizmo.cpp">
+      <Filter>3rd parties\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -677,6 +680,9 @@
     </ClInclude>
     <ClInclude Include="OcTree.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\ImGuizmo.h">
+      <Filter>3rd parties\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

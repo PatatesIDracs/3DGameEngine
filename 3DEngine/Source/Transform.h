@@ -2,6 +2,7 @@
 #define __TRANSFORM_H__
 
 #include "Component.h"
+#include "Imgui\ImGuizmo.h"
 
 class Transform : public Component
 {
@@ -19,6 +20,7 @@ public:
 	void Update();
 	void UpdateGlobalTransform();
 	void EnableUpdateTransform();
+	void OnGuizmo();
 
 	void SetTransform(float4x4 &transf);
 
@@ -39,6 +41,7 @@ private:
 	Quat rotation = Quat::identity;
 
 	bool update_transform = false;
+	ImGuizmo::OPERATION guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
 
 	float3 position = {0.0f,0.0f,0.0f};
 	float3 angle = {0.0f, 0.0f, 0.0f};

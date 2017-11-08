@@ -3,6 +3,7 @@
 
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
+#include "Imgui\ImGuizmo.h"
 
 #include "Glew\include\glew.h"
 
@@ -88,7 +89,7 @@ bool ModuleEditor::Start()
 update_status ModuleEditor::PreUpdate(float dt)
 {
 	ImGui_ImplSdlGL3_NewFrame(App->window->window);
-
+	ImGuizmo::BeginFrame();
 
 	return UPDATE_CONTINUE;
 }

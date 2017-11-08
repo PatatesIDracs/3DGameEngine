@@ -1,7 +1,12 @@
 #include "Transform.h"
 #include "Glew\include\glew.h"
+#include "Imgui\ImGuizmo.h"
 
 #include "Mesh.h"
+
+#include "Application.h"
+#include "ModuleSceneIntro.h"
+#include "ModuleCamera3D.h"
 
 Transform::Transform(GameObject* parent) : Component(parent, COMP_TRANSFORM, true), transform(float4x4::identity), global_transform(float4x4::identity)
 {
@@ -45,6 +50,10 @@ float3 Transform::GetScale() const
 
 void Transform::Update()
 {
+	if (parent != nullptr && App->scene_intro->GetSelectedGameObject() == parent) {
+		OnGuizmo();
+	}
+
 	if (update_transform) {
 		// Set Rotation
 		rotation = GetRotQuat();
@@ -75,6 +84,33 @@ void Transform::UpdateGlobalTransform()
 void Transform::EnableUpdateTransform()
 {
 	update_transform = true;
+}
+
+void Transform::OnGuizmo()
+{
+	ImGuizmo::Enable(true);
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+		guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+		guizmo_op = ImGuizmo::OPERATION::ROTATE;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+		guizmo_op = ImGuizmo::OPERATION::SCALE;
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+	float4x4 viewmatrix = App->camera->GetViewMatrix4x4();
+	float4x4 projectionmatrix = App->camera->GetProjMatrix();
+
+	float4x4 matrix = transform.Transposed();
+
+	ImGuizmo::Manipulate(viewmatrix.ptr(), projectionmatrix.ptr(), guizmo_op, ImGuizmo::LOCAL, matrix.ptr());
+
+	if (ImGuizmo::IsUsing()) {
+		update_transform = true;
+	}
+	
 }
 
 void Transform::SetTransform(float4x4 &transf)
@@ -195,7 +231,7 @@ void Transform::NormalizeRotationAngle()
 	float max_angle = 360.0f;
 	int num_spins = 0;
 	for (uint i = 0; i < 3; i++) {
-		num_spins = (int)angle[i] / max_angle;
+		num_spins = (int)(angle[i] / max_angle);
 		angle[i] = angle[i] - max_angle* num_spins;
 
 		if (angle[i] <= -180.0f) angle[i] += 360.0f;

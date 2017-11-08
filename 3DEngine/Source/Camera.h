@@ -25,6 +25,7 @@ public:
 	void DrawComponent();
 
 	float4x4 GetProjMatrix() const;
+	float4x4 GetViewMatrix4x4() const;
 	float* GetViewMatrix() const;
 
 	Frustum& GetFrustum()const;

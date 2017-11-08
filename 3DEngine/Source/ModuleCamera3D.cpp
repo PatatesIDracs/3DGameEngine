@@ -63,11 +63,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}	
 	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
 	{
-		float y = (-App->input->GetMouseY() + App->window->height*0.5)/ (App->window->height*0.5);
-		float x = (App->input->GetMouseX() - App->window->width*0.5)/ (App->window->width*0.5);
-		
-		// Camera Ray Cast
-		App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectFromNearPlane(x,y));
+		CameraRayCast();
 	}
 
 	// Right Click + WASD to Move like FPS 
@@ -220,6 +216,11 @@ float4x4 ModuleCamera3D::GetProjMatrix() const
 	return camera_editor->GetProjMatrix();
 }
 
+float4x4 ModuleCamera3D::GetViewMatrix4x4() const
+{
+	return camera_editor->GetViewMatrix4x4();
+}
+
 // -----------------------------------------------------------------
 float* ModuleCamera3D::GetViewMatrix() const
 {
@@ -228,6 +229,11 @@ float* ModuleCamera3D::GetViewMatrix() const
 
 void ModuleCamera3D::CameraRayCast()
 {
+	float y = (-App->input->GetMouseY() + App->window->height*0.5) / (App->window->height*0.5);
+	float x = (App->input->GetMouseX() - App->window->width*0.5) / (App->window->width*0.5);
+
+	// Camera Ray Cast
+	App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectFromNearPlane(x, y));
 }
 
 // ----------------------------------------------

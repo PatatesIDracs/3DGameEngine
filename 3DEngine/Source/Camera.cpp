@@ -89,6 +89,11 @@ float4x4 Camera::GetProjMatrix() const
 	return cfrustum->ProjectionMatrix().Transposed();
 }
 
+float4x4 Camera::GetViewMatrix4x4() const
+{
+	return cfrustum->ViewProjMatrix().Transposed();
+}
+
 float* Camera::GetViewMatrix() const
 {
 	return cfrustum->ViewProjMatrix().Transposed().ptr();
