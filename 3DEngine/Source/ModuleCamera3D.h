@@ -15,6 +15,8 @@ public:
 	bool CleanUp();
 
 	void SetCameraEditor();
+	void SetMainCamera(Camera* comp_camera, bool active);
+	const Camera* GetMainCamera() const;
 
 	void Look(const vec &Position, const vec &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec &Spot);
@@ -47,6 +49,7 @@ private:
 	float speed = 10.0f;
 
 	Camera* camera_editor = nullptr;
+	Camera* main_camera = nullptr;
 	bool update_camera = false;
 
 };

@@ -31,8 +31,8 @@ bool ModuleSceneIntro::Start()
 	octree_limit.SetFromCenterAndSize(float3(0.0f, -4.0f, 0.0f), float3(128.0f, 128.0f, 128.0f));
 	scene_octree.Create(octree_limit, 4);
 
-	//App->camera->Move(vec(1.0f, 1.0f, 0.0f));
-	//App->camera->LookAt(vec(0, 0, 0));
+	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
+	App->camera->LookAt(vec(0, 0, 0));
 	
 	//Create the root GameObject
 	root = new GameObject(nullptr, "root");
@@ -43,9 +43,9 @@ bool ModuleSceneIntro::Start()
 	App->camera->SetCameraEditor();
 
 	GameObject* camera = CreateNewGameObject("Camera", nullptr);
-	render_camera_test = new Camera(camera, true);
-	render_camera_test->SetFrustumViewAngle();
-	camera->AddComponent(render_camera_test);
+	Camera* camera_test = new Camera(camera, true);
+	camera_test->SetFrustumViewAngle();
+	camera->AddComponent(camera_test);
 	return ret;
 }
 
@@ -67,35 +67,34 @@ bool ModuleSceneIntro::CleanUp()
 
 void ModuleSceneIntro::Draw()
 {
-	if (render_camera_test != nullptr) {
-		MeshRenderer* object = nullptr;
-		for (uint i = 0; i < render_this.size(); i++)
+	MeshRenderer* object = nullptr;
+	for (uint i = 0; i < render_this.size(); i++)
+	{
+		object = render_this[i];
+		if (object->transform == nullptr)
+			continue;
+
+		glPushMatrix();
+		glMultMatrixf(object->transform->GetGlobalTransform().Transposed().ptr());
+
+		if (object->material != nullptr)
 		{
-			object = render_this[i];
-			if (object->transform == nullptr)
-				continue;
-
-			glPushMatrix();
-			glMultMatrixf(object->transform->GetGlobalTransform().Transposed().ptr());
-
-			if (object->material != nullptr)
-			{
 			glBindTexture(GL_TEXTURE_2D, object->material->GetTextureID());
-			}
+		}
 
-			if (object->mesh != nullptr && object->mesh->IsActive())
-			{
+		if (object->mesh != nullptr && object->mesh->IsActive())
+		{
 			const RenderData* mesh_render_data = object->mesh->GetRenderData();
 
 			glEnableClientState(GL_VERTEX_ARRAY);
 
 			if (mesh_render_data->tex_vertices != nullptr)
 			{
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-			//Bind texture coords buffer
-			glBindBuffer(GL_ARRAY_BUFFER, mesh_render_data->id_tex_vertices);
-			glTexCoordPointer(3, GL_FLOAT, 0, NULL);
+				//Bind texture coords buffer
+				glBindBuffer(GL_ARRAY_BUFFER, mesh_render_data->id_tex_vertices);
+				glTexCoordPointer(3, GL_FLOAT, 0, NULL);
 			}
 
 			//Bind vertex buffer
@@ -109,16 +108,16 @@ void ModuleSceneIntro::Draw()
 			//Disable opengl states
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			glDisableClientState(GL_VERTEX_ARRAY);
-			}
-
-			// Clear possible Binded buffers
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-			glPopMatrix();
 		}
-		render_this.clear();
+
+		// Clear possible Binded buffers
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glPopMatrix();
 	}
+	render_this.clear();
+
 	
 }
 
@@ -171,20 +170,19 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 void ModuleSceneIntro::CollectCandidates()
 {
 	// Get Dynamic Meshes to render
-	if (render_camera_test != nullptr) {
-		render_camera_test->GetFrustumGameObjecs(dynamic_gameobjects, render_this);
+	App->camera->GetMainCamera()->GetFrustumGameObjecs(dynamic_gameobjects, render_this);
 
-		// Get Static Meshes to render
-		std::vector<GameObject*> candidates;
-		scene_octree.Intersect(candidates, this->render_camera_test->GetFrustum());
+	// Get Static Meshes to render
+	std::vector<GameObject*> candidates;
+	scene_octree.Intersect(candidates, App->camera->GetMainCamera()->GetFrustum());
 
-		for (uint i = 0; i < candidates.size(); i++) {
-			if (candidates[i]->IsActive()) {
-				MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
-				if (mesh != nullptr) render_this.push_back(mesh);
-			}
+	for (uint i = 0; i < candidates.size(); i++) {
+		if (candidates[i]->IsActive()) {
+			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
+			if (mesh != nullptr) render_this.push_back(mesh);
 		}
 	}
+	
 }
 
 bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
@@ -493,8 +491,8 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
 			{
 				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
-				if (loaded_components[i]->GetType() == COMP_CAMERA)
-					render_camera_test = (Camera*)loaded_components[i];
+				if (loaded_components[i]->GetType() == COMP_CAMERA && ((Camera*)loaded_components[i])->IsActive())
+					App->camera->SetMainCamera((Camera*)loaded_components[i], true);
 			}
 		}
 	}

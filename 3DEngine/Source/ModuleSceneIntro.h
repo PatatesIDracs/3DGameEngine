@@ -52,7 +52,6 @@ public:
 
 private:
 	GameObject* current_object = nullptr;
-	Camera* render_camera_test = nullptr;
 	
 	std::vector<GameObject*> static_gameobjects;
 	std::vector<GameObject*> dynamic_gameobjects;

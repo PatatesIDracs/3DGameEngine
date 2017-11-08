@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera3D.h"
 
 #include "Glew\include\glew.h"
 
@@ -68,8 +69,9 @@ void Camera::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		ImGui::Checkbox("Active", &active);
-
+		if (ImGui::Checkbox("Main Camera", &active)) {
+			App->camera->SetMainCamera(this, active);
+		}
 		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue)
 			|| ImGui::InputFloat("Far Plane", &far_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue))
 		{

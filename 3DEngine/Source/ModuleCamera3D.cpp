@@ -50,6 +50,21 @@ void ModuleCamera3D::SetCameraEditor()
 	camera_editor->SetNewFrame(Position, -Z, Y);
 }
 
+void ModuleCamera3D::SetMainCamera(Camera* comp_camera, bool active)
+{
+	if (active) {
+		if (main_camera != nullptr && main_camera != comp_camera) main_camera->Disable();
+		main_camera = comp_camera;
+	}
+	else if (main_camera == comp_camera) main_camera = nullptr;
+}
+
+const Camera * ModuleCamera3D::GetMainCamera() const
+{
+	if (main_camera != nullptr) return main_camera;
+	else return camera_editor;
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {	
