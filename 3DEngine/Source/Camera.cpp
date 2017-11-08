@@ -91,7 +91,8 @@ float4x4 Camera::GetProjMatrix() const
 
 float4x4 Camera::GetViewMatrix4x4() const
 {
-	return cfrustum->ViewProjMatrix().Transposed();
+	float4x4 mat = cfrustum->ViewMatrix();
+	return mat.Transposed();
 }
 
 float* Camera::GetViewMatrix() const

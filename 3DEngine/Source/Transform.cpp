@@ -97,27 +97,25 @@ void Transform::OnGuizmo()
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 		guizmo_op = ImGuizmo::OPERATION::SCALE;
 
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-	float4x4 viewmatrix = App->camera->GetViewMatrix4x4();
-	float4x4 projectionmatrix = App->camera->GetProjMatrix();
-
 	float4x4 matrix = transform.Transposed();
 
-	ImGuizmo::Manipulate(viewmatrix.ptr(), projectionmatrix.ptr(), guizmo_op, ImGuizmo::LOCAL, matrix.ptr());
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	ImGuizmo::Manipulate(App->camera->GetViewMatrix4x4().ptr(), App->camera->GetProjMatrix().ptr(), guizmo_op, ImGuizmo::LOCAL, matrix.ptr());
 
 	if (ImGuizmo::IsUsing()) {
+		matrix.Transpose();
+		matrix.Decompose(position, rotation, scale);
+		angle = rotation.ToEulerXYZ()*RADTODEG;
+
 		update_transform = true;
-	}
-	
+	}	
 }
 
 void Transform::SetTransform(float4x4 &transf)
 {
 	transform = transf.Transposed();
 	transform.Decompose(position, rotation, scale);
-	//scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
 	update_transform = true;
