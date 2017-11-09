@@ -97,6 +97,10 @@ update_status ModuleEditor::PreUpdate(float dt)
 update_status ModuleEditor::Update(float dt)
 {
 	
+	//-------PLAY DRAW-------
+	DrawPlayButton();
+
+	if (App->clock.state == APP_PLAY) return UPDATE_CONTINUE;
 	///--------------------------------------------------
 	//-----MAIN MENU-----
 	//Open a Gui window
@@ -342,6 +346,40 @@ void ModuleEditor::HardwareDetection()
 		ImGui::Text((const char*)glGetString(GL_VERSION));
 	}
 	
+}
+
+void ModuleEditor::DrawPlayButton()
+{
+	bool app_state = App->clock.state;
+
+	bool show_this = true;
+	ImGui::SetNextWindowPos(ImVec2((float)App->window->width*0.5 - 100.0f, 19.0f));
+	ImGui::SetNextWindowSize(ImVec2(200.f, 30.0f));
+	ImGui::Begin("Play Stop Tick", &show_this, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	
+		if (ImGui::Button("Play", ImVec2(56.f, 18.f))) {
+			if (app_state != APP_PLAY) {
+				App->clock.ChangeState(APPSTATE::APP_PLAY);
+				App->camera->ChangeCamera(false);
+				// Serialize Scene before first play;
+			}
+			else {
+				App->clock.ChangeState(APPSTATE::APP_PAUSE);
+				App->camera->ChangeCamera(true);
+				// Load Serialized Scene after play
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause", ImVec2(56.f, 18.f)) && app_state != APP_PAUSE) {
+			App->clock.ChangeState(APPSTATE::APP_PAUSE);
+			App->camera->ChangeCamera(true);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Tick", ImVec2(56.f, 18.f))) {
+			App->clock.ChangeState(APPSTATE::APP_TICK);
+		}
+
+	ImGui::End();
 }
 
 void ModuleEditor::DrawConsole()

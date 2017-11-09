@@ -16,14 +16,15 @@ public:
 
 	void SetCameraEditor();
 	void SetMainCamera(Camera* comp_camera, bool active);
-	const Camera* GetMainCamera() const;
+	void ChangeCamera(bool mode_editor);
+	Camera* GetMainCamera() const;
 
 	void Look(const vec &Position, const vec &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec &Spot);
 	void Move(const vec &Movement);
 	void MoveTo(const vec &Movement, float distance);
 	void RotateCamera(bool RotateAroundReference = true);
-	void MoveCamera(float dt);
+	void MoveCamera();
 
 	float4x4 GetProjMatrix() const;
 	float4x4 GetViewMatrix4x4() const;

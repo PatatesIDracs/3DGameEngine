@@ -102,57 +102,18 @@ float* Camera::GetViewMatrix() const
 	return cfrustum->ViewProjMatrix().Transposed().ptr();
 }
 
+void Camera::GetCameraVectors(float3 & position, float3 & front, float3 & up) const
+{
+	position = cfrustum->Pos();
+	front = -cfrustum->Front();
+	up = cfrustum->Up();
+}
+
 Frustum& Camera::GetFrustum() const
 {
 	return *cfrustum;
 }
 
-// Should not be used
-bool Camera::GetFrustumGameObjecs(GameObject* root, std::vector<MeshRenderer*>& render_this) const
-{
-	if (!active) return false;
-
-	cfrustum->GetPlanes(frustum_planes);
-
-	std::vector<GameObject*> check_list;
-	check_list.push_back(root);
-
-	int contains_gobj_result = 0;
-
-	uint curr_item = 0;
-	GameObject* curr_game_obj = nullptr;
-	while (curr_item < check_list.size())
-	{
-		contains_gobj_result = CONT_OUT;
-		curr_game_obj = check_list[curr_item];
-
-		// check if gameobject is inside frustum, only if gameobject is active
-		if (curr_game_obj->IsActive())
-			contains_gobj_result = ContainsAABB(curr_game_obj->boundary_box);
-		else {
-			curr_item++;
-			continue;
-		}
-
-		// Add GameObject to render_this
-		if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
-			MeshRenderer* mesh = (MeshRenderer*)curr_game_obj->FindFirstComponent(COMP_MESHRENDERER);
-
-			if(mesh != nullptr) render_this.push_back(mesh);
-		}
-
-		// Add Childs to Check List
-		for (uint i = 0; i < curr_game_obj->children.size(); i++)
-			check_list.push_back(curr_game_obj->children[i]);
-
-		curr_item++;
-	}
-	check_list.clear();
-
-	return true;
-}
-
-// Use this function instead -----------------
 bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::vector<MeshRenderer*>& render_this) const
 {
 	if (!active) return false;
@@ -163,12 +124,12 @@ bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::
 	for (uint curr_obj = 0; curr_obj < dynamic_array.size(); curr_obj++) {
 		contains_gobj_result = CONT_OUT;
 		if (dynamic_array[curr_obj]->IsActive()){
-			contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
+			//contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
 
 			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
-				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
+				//MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
 
-				if (mesh != nullptr) render_this.push_back(mesh);
+				//if (mesh != nullptr) render_this.push_back(mesh);
 			}
 		}
 	}

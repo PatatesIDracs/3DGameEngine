@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef __APPLICATION_H__
+#define __APPLICATION_H__
 
 #include <cstdlib>
 
@@ -18,6 +18,47 @@
 class Config_Json;
 class Profiler;
 
+enum APPSTATE
+{
+	APP_PLAY,
+	APP_PAUSE,
+	APP_TICK,
+};
+
+struct ApplicationTime
+{
+	// Update since app init
+	Timer real_time;
+
+	// Update only if game is playing
+	float game_time = 0.0f;
+
+	// Current App State
+	APPSTATE state = APP_PAUSE;
+
+	// 1 sec in Real Time == 1 sec Game
+	float time_scale = 1.0f;
+
+	void ChangeState(APPSTATE new_state) {
+		state = new_state;
+		
+		if (state == APP_PLAY) game_time = 0.0f;
+	};
+
+	void Updatedt(float& dt) {
+
+		if (state != APP_PAUSE) { 
+			dt = time_scale*dt; 
+			game_time += dt;
+
+			if (state == APP_TICK)
+				state = APP_PAUSE;
+		}
+		else dt = 0.0f;
+	}
+};
+
+// Application --------------------------
 class Application
 {
 public:
@@ -29,6 +70,7 @@ public:
 	ModuleCamera3D* camera;
 	ModuleEditor* editor;
 
+	ApplicationTime clock;
 	int fps = 60;
 
 private:
@@ -114,3 +156,5 @@ private:
 };
 
 extern Application* App;
+
+#endif // !__APPLICATION_H__

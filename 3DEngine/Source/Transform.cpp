@@ -244,7 +244,6 @@ void Transform::Load(const char * buffer_data, char * cursor, int & bytes_copied
 
 
 	transform.Decompose(position, rotation, scale);
-	//scale = float3(1.f, 1.f, 1.f);
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 	update_transform = true;
 

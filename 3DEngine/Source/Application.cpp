@@ -59,6 +59,9 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	// Realtime Start
+	clock.real_time.Start();
+
 	// Load Gloval Configuration
 	LoadConfig(JOPE_DATA_DIRECTORY JOPE_CONFIG_FILENAME);
 
@@ -222,7 +225,8 @@ void Application::PrepareUpdate()
 		SwitchProfilerState();
 		init_record = false;
 	}
-	dt = (float)ms_timer.Read() / 1000.0f;
+	dt = ((float)ms_timer.Read())/ 1000.0f;
+	clock.Updatedt(dt);
 	ms_timer.Start();
 }
 

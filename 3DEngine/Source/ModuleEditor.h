@@ -43,7 +43,8 @@ private:
 	// Draw Configuration ------------------
 	void ApplicationConfig();
 	void HardwareDetection();
-
+	
+	void DrawPlayButton();
 	void DrawConsole();
 	void DrawPropertiesWindow();
 	void DrawAboutWindow();

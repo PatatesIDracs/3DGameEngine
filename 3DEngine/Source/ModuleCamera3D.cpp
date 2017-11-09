@@ -3,6 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "ConfigJSON.h"
 #include "Imgui\imgui.h"
+#include "Imgui\ImGuizmo.h"
 
 #include "Glew\include\glew.h"
 
@@ -59,7 +60,22 @@ void ModuleCamera3D::SetMainCamera(Camera* comp_camera, bool active)
 	else if (main_camera == comp_camera) main_camera = nullptr;
 }
 
-const Camera * ModuleCamera3D::GetMainCamera() const
+void ModuleCamera3D::ChangeCamera(bool mode_editor)
+{
+	this->mode_editor = mode_editor;
+	if (mode_editor) {
+		camera_editor->GetCameraVectors(Position, Z, Y);
+	}
+	else {
+		GetMainCamera()->GetCameraVectors(Position, Z, Y);
+	}
+	Reference = Position;
+	X = Y.Cross(Z);
+
+	update_camera = true;
+}
+
+Camera * ModuleCamera3D::GetMainCamera() const
 {
 	if (main_camera != nullptr) return main_camera;
 	else return camera_editor;
@@ -69,14 +85,14 @@ const Camera * ModuleCamera3D::GetMainCamera() const
 update_status ModuleCamera3D::Update(float dt)
 {	
 	//If ImGui is using inputs don't use the camera
-	if (App->input->IsImGuiUsingInput()) return UPDATE_CONTINUE;
+	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
 
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		RotateCamera();
 	}	
-	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
+	else if (App->input->GetKey(SDL_SCANCODE_LALT) != KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
 		CameraRayCast();
 	}
@@ -85,10 +101,8 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		RotateCamera(false);
-		MoveCamera(dt);
+		MoveCamera();
 	}
-
-
 
 	// Zoom in and out
 	int wheelmotion = App->input->GetMouseZ();
@@ -101,8 +115,11 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Recalculate matrix -------------
-	if (mode_editor && update_camera) {
-		camera_editor->SetNewFrame(Position, -Z, Y);
+	if (update_camera) {
+		if (mode_editor) {
+			camera_editor->SetNewFrame(Position, -Z, Y);
+		}
+		else GetMainCamera()->SetNewFrame(Position, -Z, Y);
 		update_camera = false;
 	}
 
@@ -203,7 +220,7 @@ void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 	update_camera = true;
 }
 
-void ModuleCamera3D::MoveCamera(float dt)
+void ModuleCamera3D::MoveCamera()
 {
 	float dx = 0;
 	float dy = 0;
@@ -212,15 +229,16 @@ void ModuleCamera3D::MoveCamera(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 
+	float time = 0.016f;
 	if (dx != 0)
 	{
-		Position += X*dx*dt;
-		Reference += X*dx*dt;
+		Position += X*dx*time;
+		Reference += X*dx*time;
 	}
 	if (dy != 0)
 	{
-		Position += Z*dy*dt;
-		Reference += Z*dy*dt;
+		Position += Z*dy*time;
+		Reference += Z*dy*time;
 	}
 
 	update_camera = true;
@@ -228,7 +246,8 @@ void ModuleCamera3D::MoveCamera(float dt)
 
 float4x4 ModuleCamera3D::GetProjMatrix() const
 {
-	return camera_editor->GetProjMatrix();
+	if (mode_editor) return camera_editor->GetProjMatrix();
+	else return GetMainCamera()->GetProjMatrix();
 }
 
 float4x4 ModuleCamera3D::GetViewMatrix4x4() const
@@ -239,7 +258,8 @@ float4x4 ModuleCamera3D::GetViewMatrix4x4() const
 // -----------------------------------------------------------------
 float* ModuleCamera3D::GetViewMatrix() const
 {
-	 return camera_editor->GetViewMatrix();
+	if (mode_editor) return camera_editor->GetViewMatrix();
+	else return GetMainCamera()->GetViewMatrix();
 }
 
 void ModuleCamera3D::CameraRayCast()

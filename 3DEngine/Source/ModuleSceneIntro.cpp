@@ -125,30 +125,29 @@ void ModuleSceneIntro::Draw()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	if (App->clock.state != APP_PLAY) {
+		Primitive a;
+		a.axis = true;
+		a.Render();
 
-	Primitive a;
-	a.axis = true;
-	a.Render();
-		
-	oldPlane p(0, 1, 0, 0);
-	if (App->renderer3D->show_grid) p.Render();
+		oldPlane p(0, 1, 0, 0);
+		if (App->renderer3D->show_grid) p.Render();
 
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-	{
-		LookAtScene();
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			LookAtScene();
+		}
+
+		//Root should never be nullptr but check it just in case
+		if (root != nullptr) {
+
+			root->Update();
+			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
+		}
 	}
 
-	//Root should never be nullptr but check it just in case
-	if (root != nullptr) {
+	CollectCandidates();
 
-		root->Update();
-	
-		// Get Meshes to Render;
-		CollectCandidates();
-
-		scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
-	}
-	
 	return UPDATE_CONTINUE;
 }
 
