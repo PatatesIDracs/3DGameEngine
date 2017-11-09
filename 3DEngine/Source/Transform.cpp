@@ -97,7 +97,7 @@ void Transform::OnGuizmo()
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 		guizmo_op = ImGuizmo::OPERATION::SCALE;
 
-	float4x4 matrix = transform.Transposed();
+	float4x4 matrix = global_transform.Transposed();
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -105,6 +105,11 @@ void Transform::OnGuizmo()
 
 	if (ImGuizmo::IsUsing()) {
 		matrix.Transpose();
+		if (!parent->IsRoot()) {
+			float4x4 global = parent->parent->GetTransform()->GetGlobalTransform().Inverted();
+			matrix = global*matrix;
+		}
+		
 		matrix.Decompose(position, rotation, scale);
 		angle = rotation.ToEulerXYZ()*RADTODEG;
 
