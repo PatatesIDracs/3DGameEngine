@@ -39,14 +39,91 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 
 	if (mesh_root_node != nullptr)
 	{
+	//	ImportNode(mesh_root_node, scene, import_target);
 		aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
-		ImportNode(mesh_root_node, scene, import_target, node_transform);
+		ImportNodeChild(mesh_root_node, scene, import_target, node_transform);
 	}
 	else
 		LOGC("No meshes found");
 }
 
-void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform)
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target)
+{
+	GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
+
+	//Load node transform
+	aiMatrix4x4 curr_trans = to_import->mTransformation;
+	float4x4 new_transform(	curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
+							curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2,
+							curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3,
+							curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
+
+	node_go->GetTransform()->SetTransform(new_transform);
+
+	for (uint i = 0; i < to_import->mNumChildren; i++)
+	{
+		ImportNode(to_import->mChildren[i], scene, node_go);
+	}
+
+	if (to_import->mNumMeshes > 0)
+	{
+		uint num_meshes = to_import->mNumMeshes;
+
+		for (int j = 0; j < num_meshes; j++)
+		{
+
+			int mesh_id = to_import->mMeshes[j];
+			RenderData* mesh = new RenderData();
+			std::string file_name = to_import->mName.C_Str();
+			file_name.append(MESHFILEFORMAT);
+
+			//Indices data
+			mesh->num_indices = scene->mMeshes[mesh_id]->mNumFaces * 3;
+			mesh->indices = new uint[mesh->num_indices];
+			for (uint k = 0; k < scene->mMeshes[mesh_id]->mNumFaces; ++k)
+			{
+				if (scene->mMeshes[mesh_id]->mFaces[k].mNumIndices != 3)
+				{
+					LOGC("WARNING, geometry face with != 3 indices! %d", 0);
+				}
+				else {
+					memcpy(&mesh->indices[k * 3], scene->mMeshes[mesh_id]->mFaces[k].mIndices, 3 * sizeof(uint));
+				}
+			}
+
+			//Vertices data 
+			mesh->num_vertices = scene->mMeshes[mesh_id]->mNumVertices;
+			mesh->vertices = new float[mesh->num_vertices * 3];
+			memcpy(mesh->vertices, scene->mMeshes[mesh_id]->mVertices, sizeof(float) * mesh->num_vertices * 3);
+
+			//TextureCoords data
+			if (scene->mMeshes[mesh_id]->HasTextureCoords(0))
+			{
+				mesh->num_tex_vertices = scene->mMeshes[mesh_id]->mNumVertices;
+				mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
+				memcpy(mesh->tex_vertices, scene->mMeshes[mesh_id]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
+			}
+
+			//Normals data
+			mesh->num_normals = scene->mMeshes[mesh_id]->mNumVertices;
+			mesh->normals = new float[mesh->num_normals * 3];
+			memcpy(mesh->normals, scene->mMeshes[mesh_id]->mNormals, sizeof(float) * mesh->num_normals * 3);
+
+			SaveMesh(mesh, file_name.c_str());
+
+
+
+			GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(scene->mMeshes[mesh_id]->mName.C_Str(), node_go);
+
+			Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
+			mesh_holder->AddComponent(new_mesh_component);
+			mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
+		}
+	}
+
+}
+
+void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform)
 {
 
 	for (uint k = 0; k < to_import->mNumChildren; k++)
@@ -54,7 +131,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene* scene, GameObje
 		aiNode* child_node = to_import->mChildren[k];
 
 		if (child_node->mNumChildren > 0)
-			ImportNode(child_node, scene, import_target, (parent_transform * child_node->mTransformation));
+			ImportNodeChild(child_node, scene, import_target, (parent_transform * child_node->mTransformation));
 
 		if (child_node->mNumMeshes > 0)
 		{
