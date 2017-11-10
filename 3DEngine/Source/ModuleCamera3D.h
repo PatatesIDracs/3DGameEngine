@@ -48,6 +48,7 @@ private:
 
 	float distance = 0.5f;
 	float speed = 10.0f;
+	float last_dt = 0.017f;
 
 	Camera* camera_editor = nullptr;
 	Camera* main_camera = nullptr;

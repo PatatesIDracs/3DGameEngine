@@ -87,6 +87,10 @@ update_status ModuleCamera3D::Update(float dt)
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
 
+	if (dt != 0.0f) {
+		last_dt = dt;
+	}
+
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
@@ -229,16 +233,15 @@ void ModuleCamera3D::MoveCamera()
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 
-	float time = 0.016f;
 	if (dx != 0)
 	{
-		Position += X*dx*time;
-		Reference += X*dx*time;
+		Position += X*dx*last_dt;
+		Reference += X*dx*last_dt;
 	}
 	if (dy != 0)
 	{
-		Position += Z*dy*time;
-		Reference += Z*dy*time;
+		Position += Z*dy*last_dt;
+		Reference += Z*dy*last_dt;
 	}
 
 	update_camera = true;

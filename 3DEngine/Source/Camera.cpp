@@ -124,12 +124,12 @@ bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::
 	for (uint curr_obj = 0; curr_obj < dynamic_array.size(); curr_obj++) {
 		contains_gobj_result = CONT_OUT;
 		if (dynamic_array[curr_obj]->IsActive()){
-			//contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
+			contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
 
 			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
-				//MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
+				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
 
-				//if (mesh != nullptr) render_this.push_back(mesh);
+				if (mesh != nullptr) render_this.push_back(mesh);
 			}
 		}
 	}
@@ -152,7 +152,7 @@ int Camera::ContainsAABB(const AABB &box) const
 		int iPtIn = 1;
 		for (int i = 0; i < 8; ++i) {
 			// test this point against the planes
-			if (frustum_planes[p].IsOnPositiveSide(vCorner[i])) {
+			if(frustum_planes[p].normal.Dot(vCorner[i]) >= frustum_planes[p].d){
 				iPtIn = 0;
 				--iInCount;
 			}
