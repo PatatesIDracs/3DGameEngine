@@ -87,9 +87,7 @@ update_status ModuleCamera3D::Update(float dt)
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
 
-	if (dt != 0.0f) {
-		last_dt = dt;
-	}
+	last_dt = App->clock.real_delta_time;
 
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)

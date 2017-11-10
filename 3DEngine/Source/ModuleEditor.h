@@ -62,10 +62,11 @@ private:
 	bool	showconsole				= false;
 	bool	showpropertieswindow	= false;
 	bool	showhierarchy			= false;
+	bool	showclock				= false;
 
 	// Profiler
-	bool	showprofiler	= false;
-	bool	recordpaused	= true;
+	bool	showprofiler			= false;
+	bool	recordpaused			= true;
 
 	int		current_module  = 0;
 	const std::vector<Profiler*>* app_profiler = nullptr;

@@ -27,17 +27,18 @@ enum APPSTATE
 
 struct ApplicationTime
 {
-	// Update since app init
+	// Real Time
 	Timer real_time;
+	uint frame_count = 0;
+	float real_delta_time = 0.0f;
 
-	// Update only if game is playing
+	// Game Time
 	float game_time = 0.0f;
+	float time_scale = 1.0f;
+	float delta_time = 0.0f;
 
 	// Current App State
 	APPSTATE state = APP_PAUSE;
-
-	// 1 sec in Real Time == 1 sec Game
-	float time_scale = 1.0f;
 
 	void ChangeState(APPSTATE new_state) {
 		state = new_state;
@@ -47,6 +48,9 @@ struct ApplicationTime
 
 	void Updatedt(float& dt) {
 
+		real_delta_time = dt;
+		frame_count++;
+
 		if (state != APP_PAUSE) { 
 			dt = time_scale*dt; 
 			game_time += dt;
@@ -55,6 +59,8 @@ struct ApplicationTime
 				state = APP_PAUSE;
 		}
 		else dt = 0.0f;
+
+		delta_time = dt;
 	}
 };
 
