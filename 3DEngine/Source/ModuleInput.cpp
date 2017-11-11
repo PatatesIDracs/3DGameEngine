@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleResources.h"
 #include "Imgui\imgui.h"
 #include "Imgui\imgui_impl_sdl_gl3.h"
 
@@ -111,8 +112,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_DROPFILE:
 			{      
 				// In case if dropped file
-				jope_importer.Import(e.drop.file);
-				//App->assimp->LoadFile(e.drop.file);
+			//	jope_importer.Import(e.drop.file);
 				SDL_free(e.drop.file);
 				break;
 			}

@@ -3,6 +3,8 @@
 
 #include "Component.h"
 
+class ResourceMesh;
+
 struct RenderData
 {
 	~RenderData();
@@ -56,8 +58,9 @@ public:
 	void GetOwnBufferSize(uint& buffer_size);
 
 public:
+	ResourceMesh* mesh_resource = nullptr;
 
-	RenderData* render_data;
+	RenderData* render_data = nullptr;
 	Quat prev_rotation = Quat::identity;
 
 	math::AABB aabb_box;

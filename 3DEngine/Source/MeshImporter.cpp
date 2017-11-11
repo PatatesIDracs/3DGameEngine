@@ -202,6 +202,13 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 	}
 }
 
+void MeshImporter::ImportMeshResources(const aiScene * scene)
+{
+
+
+
+}
+
 
 RenderData * MeshImporter::Load(const char * full_path)
 {

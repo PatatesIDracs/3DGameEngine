@@ -15,8 +15,10 @@ enum RESOURCE_TYPE
 class Resource
 {
 public:
-	Resource(int uid, RESOURCE_TYPE type);
+	Resource(int uid);
 	virtual ~Resource();
+
+	int GetUID();
 
 protected:
 	int uid = 0;

@@ -24,7 +24,7 @@ TextureImporter::~TextureImporter()
 {
 }
 
-void TextureImporter::Import(const char * full_path, const char* name)
+void TextureImporter::Import(const char * full_path, const char* name, std::string& new_file_path)
 {
 	std::string file_name = name;
 	file_name.append(TEXFILEFORMAT);
@@ -52,6 +52,7 @@ void TextureImporter::Import(const char * full_path, const char* name)
 			new_file.write((char*)data, size);
 
 			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());
+			new_file_path = import_path + file_name;
 		}
 	}
 }

@@ -90,7 +90,7 @@ void Mesh::ChangeMesh()
 	std::string new_mesh_path;
 	if (App->editor->DrawFixedExplorer(new_mesh_path, JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
 	{
-		delete render_data;
+	/*	delete render_data;
 		render_data = App->input->jope_importer.GetNewMesh(new_mesh_path.c_str());
 
 		//Generate AABB/OBB boxes
@@ -101,7 +101,7 @@ void Mesh::ChangeMesh()
 		CreateBoxBuffers(aabb_box);
 		//if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
 		//else LOGC("WARNING: Mesh parent is NULL");
-
+		*/
 		changing_mesh = false;
 	}
 
@@ -228,7 +228,7 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	render_data = App->input->jope_importer.GetNewMesh(render_data->mesh_path);
+//	render_data = App->input->jope_importer.GetNewMesh(render_data->mesh_path);
 	if (render_data != nullptr)
 	{
 		//Generate AABB/OBB boxes

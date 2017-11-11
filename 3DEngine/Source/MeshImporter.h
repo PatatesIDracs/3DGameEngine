@@ -29,6 +29,8 @@ private:
 	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target);
 	void ImportNodeChild(aiNode* to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform);
 
+	void ImportMeshResources(const aiScene* scene);
+
 private:
 	std::string import_path;
 

@@ -13,7 +13,7 @@ public:
 	Importer();
 	~Importer();
 
-	void Import(char* full_path);
+	void Import(char* full_path, std::string& new_file);
 
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	

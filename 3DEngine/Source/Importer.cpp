@@ -21,7 +21,7 @@ Importer::~Importer()
 	delete text_importer;
 }
 
-void Importer::Import(char * full_path)
+void Importer::Import(char * full_path, std::string& new_file)
 {
 	//Chek path isn't a nullptr
 	if (full_path == nullptr) return;
@@ -43,7 +43,7 @@ void Importer::Import(char * full_path)
 	}
 	if (extension == ".png")
 	{
-		text_importer->Import(full_path, filename.c_str());
+		text_importer->Import(full_path, filename.c_str(), new_file);
 	}
 }
 

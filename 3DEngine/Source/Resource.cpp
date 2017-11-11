@@ -1,9 +1,14 @@
 #include "Resource.h"
 
-Resource::Resource(int uid, RESOURCE_TYPE type) : uid(uid), type(type)
+Resource::Resource(int uid) : uid(uid), type(RESOURCE_TYPE::RESOURCE_UNKNOW)
 {
 }
 
 Resource::~Resource()
 {
+}
+
+int Resource::GetUID()
+{
+	return uid;
 }
