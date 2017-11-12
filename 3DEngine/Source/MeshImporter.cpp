@@ -29,7 +29,7 @@ MeshImporter::~MeshImporter()
 {
 }
 
-void MeshImporter::Import(const char* full_path, GameObject* import_target)
+void MeshImporter::Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension, GameObject* import_target)
 {
 	if (full_path == nullptr) return;
 
@@ -41,6 +41,7 @@ void MeshImporter::Import(const char* full_path, GameObject* import_target)
 
 	if (mesh_root_node != nullptr)
 	{
+		ImportMeshResources(scene, file_name);
 	//	ImportNode(mesh_root_node, scene, import_target);
 		aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
 		ImportNodeChild(mesh_root_node, scene, import_target, node_transform);
@@ -204,7 +205,7 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 	}
 }
 
-std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene)
+std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std::string& file_name)
 {
 	std::map<int, int> ret;
 	std::pair<int, int> ret_pair;
@@ -245,14 +246,14 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene)
 		mesh->normals = new float[mesh->num_normals * 3];
 		memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
 
-
 		ResourceMesh* mesh_resource = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
+		mesh_resource->SetName((file_name + std::to_string(i)));
 
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
 
 		//Save file 
-		SaveMesh(mesh, file_name.c_str());
+		mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 	}
 
 	return &ret;
@@ -364,7 +365,7 @@ RenderData * MeshImporter::Load(const char * full_path)
 	return ret;
 }
 
-void MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
+const char* MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
 {
 	//NumIndices, NumVertices, NumTexCoords, NumNormals
 	uint ranges[4] = { mesh->num_indices, mesh->num_vertices,mesh->num_tex_vertices,  mesh->num_normals };
@@ -406,5 +407,6 @@ void MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)
 	LOGC("File Saved at: %s", (import_path + file_name).c_str());
 
 	delete[] buffer_data;
-}
 
+	return (import_path + file_name).c_str();
+}

@@ -39,7 +39,7 @@ void Importer::Import(char * full_path, std::string& new_file)
 		//Create a new gameobject to store the data
 		GameObject* imported_go = App->scene_intro->CreateNewGameObject(filename.c_str());
 
-		mesh_importer->Import(full_path, imported_go);
+		mesh_importer->Import(full_path, path, filename, extension, imported_go);
 	}
 	if (extension == ".png")
 	{

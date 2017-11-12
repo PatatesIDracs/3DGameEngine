@@ -19,19 +19,19 @@ public:
 	MeshImporter();
 	~MeshImporter();
 
-	void Import(const char* full_path, GameObject* import_target);
+	void Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension, GameObject* import_target);
 
 	RenderData* Load(const char* full_path);
 
 private:
 
-	void SaveMesh(RenderData* mesh, const char* file_name);
+	const char* SaveMesh(RenderData* mesh, const char* file_name);
 
 	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target);
 	void ImportNodeChild(aiNode* to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform);
 
 	//Return a map with assimpID/ResourceUID
-	std::map<int, int>* ImportMeshResources(const aiScene* scene);
+	std::map<int, int>* ImportMeshResources(const aiScene* scene, std::string& file_name);
 
 private:
 	std::string import_path;

@@ -20,12 +20,20 @@ public:
 
 	int GetUID();
 
-	void SetFolders(std::string assets_file, std::string library_file);
+	void SetFiles(std::string new_assets_file, std::string new_library_file);
+	void SetAssetFile(std::string new_assets_file);
+	void SetAssetFile(const char* new_assets_file);
+	void SetLibraryFile(std::string new_library_file);
+	void SetLibraryFile(const char* new_library_file);
+
+	void SetName(const char* new_name);
+	void SetName(std::string& new_name);
 
 protected:
 	int uid = 0;
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;
 	uint loaded = 0;
+	std::string name;				//Resource name displayed in the editor, different from the file name
 	std::string assets_file;
 	std::string library_file;
 

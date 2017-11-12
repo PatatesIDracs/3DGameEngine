@@ -7,6 +7,7 @@
 class Importer;
 class Resource;
 enum RESOURCE_TYPE;
+struct SDL_DropEvent;
 
 class ModuleResources : public Module
 {
