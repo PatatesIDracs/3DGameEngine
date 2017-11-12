@@ -10,25 +10,16 @@
 
 Mesh::Mesh(GameObject* parent, bool isactive) : Component(parent, COMP_MESH, isactive)
 {
-	
-/*	if (render_data != nullptr)
-	{
-	//	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
-
-		CreateBoxIndices();
-		CreateBoxBuffers(aabb_box);
-	}*/
-	if (parent != nullptr)
-		UpdateTransform();
 }
 
 Mesh::~Mesh()
 {
 }
 
-/*const RenderData* Mesh::GetRenderData()
+const RenderData* Mesh::GetRenderData() const
 {
-}*/
+	return mesh_resource->GetRenderData();
+}
 
 void Mesh::Update()
 {
@@ -52,10 +43,10 @@ void Mesh::DrawComponent()
 		if (ImGui::Button("Change")) changing_mesh = !changing_mesh;
 		if (changing_mesh) ChangeMesh();
 
-	//	ImGui::InputInt("Vertices:", (int*)&render_data->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Vertices:", (int*)&GetRenderData()->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
-	//	int faces = render_data->num_indices / 3;
-	//	ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		int faces = GetRenderData()->num_indices / 3;
+		ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
 	}
@@ -100,18 +91,9 @@ void Mesh::ChangeMesh()
 	std::string new_mesh_path;
 	if (App->editor->DrawFixedExplorer(new_mesh_path, JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
 	{
-	/*	delete render_data;
-		render_data = App->input->jope_importer.GetNewMesh(new_mesh_path.c_str());
-
-		//Generate AABB/OBB boxes
- 		aabb_box.SetNegativeInfinity();
-		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
-
-		CreateBoxIndices();
-		CreateBoxBuffers(aabb_box);
-		//if (parent != nullptr) RotateBoundingBox(parent->GetTransform()->GetRotQuat());
-		//else LOGC("WARNING: Mesh parent is NULL");
-		*/
+		// mesh_resource = App->resource->GetResource....
+		
+		UpdateTransform();
 		changing_mesh = false;
 	}
 
@@ -224,5 +206,3 @@ void Mesh::GetOwnBufferSize(uint & buffer_size)
 	buffer_size += sizeof(int);
 //	buffer_size += strlen(render_data->mesh_path);
 }
-
-

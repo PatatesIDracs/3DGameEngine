@@ -117,7 +117,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 
 			GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(scene->mMeshes[mesh_id]->mName.C_Str(), node_go);
 
-			Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
+			Mesh* new_mesh_component = new Mesh(mesh_holder, true);// Load((import_path + file_name).c_str()));
 			mesh_holder->AddComponent(new_mesh_component);
 			mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
 		}
@@ -195,7 +195,7 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
 
 				mesh_holder->GetTransform()->SetTransform(new_transform);
-				Mesh* new_mesh_component = new Mesh(mesh_holder, Load((import_path + file_name).c_str()));
+				Mesh* new_mesh_component = new Mesh(mesh_holder, true);// Load((import_path + file_name).c_str()));
 				mesh_holder->AddComponent(new_mesh_component);
 				mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
 
@@ -272,7 +272,7 @@ RenderData * MeshImporter::Load(const char * full_path)
 	if (loaded_file)
 	{
 		loaded_file.seekg(0, loaded_file.end);
-		int buffer_size = loaded_file.tellg();
+		int buffer_size = (int)loaded_file.tellg();
 		loaded_file.seekg(0, loaded_file.beg);
 
 		buffer_data = new char[buffer_size];
