@@ -32,6 +32,8 @@ public:
 	ResourceMesh(int uid);
 	~ResourceMesh();
 
+	void SetRenderData(RenderData* new_render_data);
+
 	const RenderData*	GetRenderData() const;
 	AABB				GetAABB() const;
 private:

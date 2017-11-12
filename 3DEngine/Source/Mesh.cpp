@@ -8,8 +8,10 @@
 
 #include "ResourceMesh.h"
 
-Mesh::Mesh(GameObject* parent, bool isactive) : Component(parent, COMP_MESH, isactive)
+Mesh::Mesh(GameObject* parent, ResourceMesh* mesh_resource, bool isactive) : Component(parent, COMP_MESH, isactive), mesh_resource(mesh_resource)
 {
+	if (parent != nullptr)
+		parent->AddComponent(this);
 }
 
 Mesh::~Mesh()
@@ -31,24 +33,25 @@ void Mesh::Update()
 
 void Mesh::UpdateTransform()
 {
-	parent->boundary_box = mesh_resource->GetAABB();
-	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
+//	parent->boundary_box = mesh_resource->GetAABB();
+//	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
 }
 
 void Mesh::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
-		ImGui::Text("the figure"); ImGui::SameLine();
+		ImGui::Text("%s", mesh_resource->GetName()); ImGui::SameLine();
 		if (ImGui::Button("Change")) changing_mesh = !changing_mesh;
 		if (changing_mesh) ChangeMesh();
 
-		ImGui::InputInt("Vertices:", (int*)&GetRenderData()->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Vertices", (int*)&GetRenderData()->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		int faces = GetRenderData()->num_indices / 3;
-		ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Faces", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
+
 	}
 }
 

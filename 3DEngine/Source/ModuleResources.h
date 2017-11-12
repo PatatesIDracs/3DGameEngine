@@ -23,9 +23,10 @@ public:
 	int Find(const char* file_in_assets) const;
 
 	int GenerateNewUID();
-	
+	Resource* GetFromUID(int uid) const;
 	Resource* CreateNewResource(RESOURCE_TYPE type, int force_uid = 0);
 	
+	const Importer* GetImporter()const;
 
 private:
 

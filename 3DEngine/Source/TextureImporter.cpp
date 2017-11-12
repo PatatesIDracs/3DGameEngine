@@ -29,6 +29,7 @@ TextureImporter::~TextureImporter()
 
 void TextureImporter::Import(ResourceTexture* resource, const char * full_path, const char* name)
 {
+	resource->SetName(name);
 	std::string file_name = name;
 	file_name.append(TEXFILEFORMAT);
 

@@ -39,7 +39,7 @@ void Importer::Import(char * full_path, std::string& new_file)
 	if (extension == ".fbx" || extension == ".obj")
 	{
 		//Create a new gameobject to store the data
-		GameObject* imported_go = App->scene_intro->CreateNewGameObject(filename.c_str());
+		GameObject* imported_go = new GameObject(nullptr, false);
 
 		mesh_importer->Import(full_path, path, filename, extension, imported_go);
 	}

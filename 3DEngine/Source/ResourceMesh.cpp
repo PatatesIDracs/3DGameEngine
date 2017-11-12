@@ -23,6 +23,14 @@ ResourceMesh::ResourceMesh(int uid) : Resource(uid)
 
 ResourceMesh::~ResourceMesh()
 {
+	delete render_data;
+}
+
+void ResourceMesh::SetRenderData(RenderData * new_render_data)
+{
+	if (render_data != nullptr)
+		delete render_data;
+	render_data = new_render_data;
 }
 
 const RenderData * ResourceMesh::GetRenderData() const

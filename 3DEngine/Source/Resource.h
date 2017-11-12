@@ -29,6 +29,8 @@ public:
 	void SetName(const char* new_name);
 	void SetName(std::string& new_name);
 
+	const char* GetName() const;
+
 protected:
 	int uid = 0;
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;

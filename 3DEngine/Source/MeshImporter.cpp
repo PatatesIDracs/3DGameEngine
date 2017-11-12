@@ -42,90 +42,71 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 	if (scene != nullptr)
 		mesh_root_node = scene->mRootNode;
 
+	std::map<int, int>* mesh_map = ImportMeshResources(scene, file_name);
 	std::map<int, int>* texture_map = ImportTextureResources(scene, path.c_str());
+
+	ImportScene(scene, mesh_map, file_name);
 
 	if (mesh_root_node != nullptr)
 	{
-		ImportMeshResources(scene, file_name);
 	//	ImportNode(mesh_root_node, scene, import_target);
-		aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
-		ImportNodeChild(mesh_root_node, scene, import_target, node_transform);
+	//	aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
+	//	ImportNodeChild(mesh_root_node, scene, import_target, node_transform);
 	}
 	else
 		LOGC("No meshes found");
 }
 
-void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target)
+void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::string& file_name)
+{
+	//Dummy game object to save scene
+	//GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
+	GameObject* scene_go = App->scene_intro->CreateNewGameObject(file_name.c_str());
+
+	aiNode* scene_root_node = scene->mRootNode;
+
+	for (uint i = 0; i < scene_root_node->mNumChildren; i++)
+	{
+		ImportNode(scene_root_node->mChildren[i], scene, scene_go, id_map);
+	}
+
+}
+
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, std::map<int, int>* id_map)
 {
 	GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
 
 	//Load node transform
 	aiMatrix4x4 curr_trans = to_import->mTransformation;
-	float4x4 new_transform(	curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
-							curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2,
-							curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3,
-							curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
+	float4x4 new_transform(curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
+		curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2,
+		curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3,
+		curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
 
 	node_go->GetTransform()->SetTransform(new_transform);
 
 	for (uint i = 0; i < to_import->mNumChildren; i++)
 	{
-		ImportNode(to_import->mChildren[i], scene, node_go);
+		ImportNode(to_import->mChildren[i], scene, node_go, id_map);
 	}
 
 	if (to_import->mNumMeshes > 0)
 	{
-		uint num_meshes = to_import->mNumMeshes;
-
-		for (uint j = 0; j < num_meshes; j++)
+		for (uint i = 0; i < to_import->mNumMeshes; i++)
 		{
+			int mesh_id = to_import->mMeshes[i];
 
-			int mesh_id = to_import->mMeshes[j];
-			RenderData* mesh = new RenderData();
-			std::string file_name = to_import->mName.C_Str();
-			file_name.append(MESHFILEFORMAT);
+			//Assimp id - Resource id map
+			std::map<int, int>::const_iterator it = id_map->find(mesh_id);
 
-			//Indices data
-			mesh->num_indices = scene->mMeshes[mesh_id]->mNumFaces * 3;
-			mesh->indices = new uint[mesh->num_indices];
-			for (uint k = 0; k < scene->mMeshes[mesh_id]->mNumFaces; ++k)
+			if (it == id_map->end())
 			{
-				if (scene->mMeshes[mesh_id]->mFaces[k].mNumIndices != 3)
-				{
-					LOGC("WARNING, geometry face with != 3 indices! %d", 0);
-				}
-				else {
-					memcpy(&mesh->indices[k * 3], scene->mMeshes[mesh_id]->mFaces[k].mIndices, 3 * sizeof(uint));
-				}
+				LOGC("Mesh resource for %s not found in the database", to_import->mName.C_Str());
+				continue;
 			}
+			int resource_id = it->second;
 
-			//Vertices data 
-			mesh->num_vertices = scene->mMeshes[mesh_id]->mNumVertices;
-			mesh->vertices = new float[mesh->num_vertices * 3];
-			memcpy(mesh->vertices, scene->mMeshes[mesh_id]->mVertices, sizeof(float) * mesh->num_vertices * 3);
-
-			//TextureCoords data
-			if (scene->mMeshes[mesh_id]->HasTextureCoords(0))
-			{
-				mesh->num_tex_vertices = scene->mMeshes[mesh_id]->mNumVertices;
-				mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
-				memcpy(mesh->tex_vertices, scene->mMeshes[mesh_id]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
-			}
-
-			//Normals data
-			mesh->num_normals = scene->mMeshes[mesh_id]->mNumVertices;
-			mesh->normals = new float[mesh->num_normals * 3];
-			memcpy(mesh->normals, scene->mMeshes[mesh_id]->mNormals, sizeof(float) * mesh->num_normals * 3);
-
-			SaveMesh(mesh, file_name.c_str());
-
-
-
-			GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(scene->mMeshes[mesh_id]->mName.C_Str(), node_go);
-
-			Mesh* new_mesh_component = new Mesh(mesh_holder, true);// Load((import_path + file_name).c_str()));
-			mesh_holder->AddComponent(new_mesh_component);
-			mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
+			Mesh* new_mesh_component = new Mesh(node_go, (ResourceMesh*)App->resources->GetFromUID(resource_id));
 		}
 	}
 
@@ -201,7 +182,7 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
 
 				mesh_holder->GetTransform()->SetTransform(new_transform);
-				Mesh* new_mesh_component = new Mesh(mesh_holder, true);// Load((import_path + file_name).c_str()));
+				Mesh* new_mesh_component = new Mesh(mesh_holder);// Load((import_path + file_name).c_str()));
 				mesh_holder->AddComponent(new_mesh_component);
 				mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
 
@@ -212,8 +193,8 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 
 std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std::string& file_name)
 {
-	std::map<int, int> ret;			//Assimp ID - Resource ID
-	std::pair<int, int> ret_pair;	//Assimp ID - Resource ID
+	std::map<int, int>* ret = new std::map<int,int>;	//Assimp ID - Resource ID
+	std::pair<int, int> ret_pair;						//Assimp ID - Resource ID
 
 	for (uint i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -253,6 +234,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 
 		ResourceMesh* mesh_resource = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
 		mesh_resource->SetName((file_name + std::to_string(i)));
+		mesh_resource->SetRenderData(mesh);
 
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
@@ -263,16 +245,16 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		//fill the id map
 		ret_pair.first = i;
 		ret_pair.second = mesh_resource->GetUID();
-		ret.insert(ret_pair);
+		ret->insert(ret_pair);
 	}
 
-	return &ret;
+	return ret;
 }
 
 std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, const char * full_path)
 {
-	std::map<int, int> ret;			//Assimp ID - Resource ID
-	std::pair<int, int> ret_pair;	//Assimp ID - Resource ID
+	std::map<int, int>* ret = new std::map<int, int>;	//Assimp ID - Resource ID
+	std::pair<int, int> ret_pair;						//Assimp ID - Resource ID
 
 	TextureImporter* text_importer =(TextureImporter*)App->resources->GetImporter()->GetTextImporter();
 
@@ -289,10 +271,10 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 
 		ret_pair.first = i;
 		ret_pair.second = new_texture->GetUID();
-		ret.insert(ret_pair);
+		ret->insert(ret_pair);
 	}
 
-	return &ret;
+	return ret;
 }
 
 

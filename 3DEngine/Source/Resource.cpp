@@ -49,3 +49,8 @@ void Resource::SetName(std::string& new_name)
 {
 	name = new_name;
 }
+
+const char* Resource::GetName() const
+{
+	return name.c_str();
+}

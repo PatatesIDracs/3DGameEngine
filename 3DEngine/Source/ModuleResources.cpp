@@ -52,6 +52,16 @@ int ModuleResources::GenerateNewUID()
 	return UUIDGen.Int();
 }
 
+Resource * ModuleResources::GetFromUID(int uid) const
+{
+	std::map<int, Resource*>::const_iterator it = resources_map.find(uid);
+
+	if (it == resources_map.end())
+		return nullptr;
+	else
+		return it._Ptr->_Myval.second;
+}
+
 Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 {
 	Resource* ret = nullptr;
@@ -69,6 +79,7 @@ Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 		ret = new ResourceMesh(new_UID);
 		break;
 	case RESOURCE_TEXTURE:
+		ret = new ResourceTexture(new_UID);
 		break;
 	case RESOURCE_SCENE:
 		break;
@@ -83,4 +94,9 @@ Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 	resources_map.insert(resource_pair);
 
 	return ret;
+}
+
+const Importer * ModuleResources::GetImporter() const
+{
+	return jope_importer;
 }

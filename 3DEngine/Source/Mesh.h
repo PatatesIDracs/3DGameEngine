@@ -10,7 +10,7 @@ class Mesh : public Component
 {
 public:
 
-	Mesh(GameObject* parent, bool isactive = true);
+	Mesh(GameObject* parent, ResourceMesh* mesh_resource = nullptr ,bool isactive = true);
 	~Mesh();
 
 	const RenderData* GetRenderData() const;

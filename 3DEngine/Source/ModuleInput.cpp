@@ -113,6 +113,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			{      
 				// In case if dropped file
 			//	jope_importer.Import(e.drop.file);
+				App->resources->HandleDropEvent(e.drop);
 				SDL_free(e.drop.file);
 				break;
 			}
