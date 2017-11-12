@@ -207,8 +207,8 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 
 std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std::string& file_name)
 {
-	std::map<int, int> ret;
-	std::pair<int, int> ret_pair;
+	std::map<int, int> ret;			//Assimp ID - Resource ID
+	std::pair<int, int> ret_pair;	//Assimp ID - Resource ID
 
 	for (uint i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -254,6 +254,11 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 
 		//Save file 
 		mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
+
+		//fill the id map
+		ret_pair.first = i;
+		ret_pair.second = mesh_resource->GetUID();
+		ret.insert(ret_pair);
 	}
 
 	return &ret;
