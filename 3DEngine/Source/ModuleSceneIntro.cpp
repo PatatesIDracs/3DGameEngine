@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "Mesh.h"
+#include "ResourceMesh.h"
 #include "MeshRenderer.h"
 #include "Material.h"
 
@@ -84,8 +85,8 @@ void ModuleSceneIntro::Draw()
 
 		if (object->mesh != nullptr && object->mesh->IsActive())
 		{
-			const RenderData* mesh_render_data = object->mesh->GetRenderData();
-
+		//	const RenderData* mesh_render_data = object->mesh->GetRenderData();
+			/*
 			glEnableClientState(GL_VERTEX_ARRAY);
 
 			if (mesh_render_data->tex_vertices != nullptr)
@@ -107,7 +108,7 @@ void ModuleSceneIntro::Draw()
 
 			//Disable opengl states
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);*/
 		}
 
 		// Clear possible Binded buffers
@@ -117,8 +118,6 @@ void ModuleSceneIntro::Draw()
 		glPopMatrix();
 	}
 	render_this.clear();
-
-	
 }
 
 
@@ -316,13 +315,13 @@ bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, fl
 	Ray local_ray = last_ray.ToRay();
 	local_ray.Transform(mesh->transform->GetGlobalTransform().Inverted());
 	
-	const RenderData* mesh_data = mesh->mesh->GetRenderData();
+	//const RenderData* mesh_data = mesh->mesh->GetRenderData();
 	
 	Triangle tri;
 	float best_dist = dist;
 	float3 intersect_point;
 
-	for (uint i = 0; i < mesh_data->num_indices; i +=3)
+/*	for (uint i = 0; i < mesh_data->num_indices; i +=3)
 	{
 		tri.a = float3(&mesh_data->vertices[mesh_data->indices[i] * 3]);
 		tri.b = float3(&mesh_data->vertices[mesh_data->indices[i + 1] * 3]);
@@ -336,7 +335,7 @@ bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, fl
 				ret = true;
 			}
 		}
-	}
+	}*/
 	
 	return ret;
 }

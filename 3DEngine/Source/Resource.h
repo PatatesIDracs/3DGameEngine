@@ -20,6 +20,8 @@ public:
 
 	int GetUID();
 
+	void SetFolders(std::string assets_file, std::string library_file);
+
 protected:
 	int uid = 0;
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;

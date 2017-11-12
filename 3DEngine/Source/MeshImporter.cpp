@@ -1,8 +1,10 @@
 #include "MeshImporter.h"
 #include "GameObject.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleResources.h"
 #include "Application.h"
 #include "Mesh.h"
+#include "ResourceMesh.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Globals.h"
@@ -202,11 +204,58 @@ void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, Gam
 	}
 }
 
-void MeshImporter::ImportMeshResources(const aiScene * scene)
+std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene)
 {
+	std::map<int, int> ret;
+	std::pair<int, int> ret_pair;
+
+	for (int i = 0; i < scene->mNumMeshes; i++)
+	{
+		RenderData* mesh = new RenderData();
+
+		//Indices data
+		mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
+		mesh->indices = new uint[mesh->num_indices];
+		for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
+		{
+			if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
+			{
+				LOGC("WARNING, geometry face with != 3 indices! %d", 0);
+			}
+			else {
+				memcpy(&mesh->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+			}
+		}
+
+		//Vertices data 
+		mesh->num_vertices = scene->mMeshes[i]->mNumVertices;
+		mesh->vertices = new float[mesh->num_vertices * 3];
+		memcpy(mesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertices * 3);
+
+		//TextureCoords data
+		if (scene->mMeshes[i]->HasTextureCoords(0))
+		{
+			mesh->num_tex_vertices = scene->mMeshes[i]->mNumVertices;
+			mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
+			memcpy(mesh->tex_vertices, scene->mMeshes[i]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
+		}
+
+		//Normals data
+		mesh->num_normals = scene->mMeshes[i]->mNumVertices;
+		mesh->normals = new float[mesh->num_normals * 3];
+		memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
 
 
+		ResourceMesh* mesh_resource = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
 
+		std::string file_name = std::to_string(mesh_resource->GetUID());
+		file_name.append(MESHFILEFORMAT);
+
+		//Save file 
+		SaveMesh(mesh, file_name.c_str());
+	}
+
+	return &ret;
 }
 
 
@@ -214,9 +263,9 @@ RenderData * MeshImporter::Load(const char * full_path)
 {
 	RenderData* ret = new RenderData;
 	std::string path = full_path;
-	ret->mesh_path = new char[path.size() + 1];
-	memcpy(ret->mesh_path, path.c_str(), path.size());
-	ret->mesh_path[path.size()] = 0x00;
+	//ret->mesh_path = new char[path.size() + 1];
+	//memcpy(ret->mesh_path, path.c_str(), path.size());
+	//ret->mesh_path[path.size()] = 0x00;
 	char* buffer_data = nullptr;
 
 	std::ifstream loaded_file(full_path, std::ifstream::binary);

@@ -29,7 +29,7 @@ void MeshRenderer::DrawComponent()
 		if (mesh == nullptr)
 			ImGui::Text("No mesh");
 		else
-			ImGui::Text("%s", mesh->render_data->mesh_path);
+			ImGui::Text("Some mesh"); //TODO: name of the mesh
 
 		if (ImGui::Button("Reload elements")) PrepareRenderer();
 	}

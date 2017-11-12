@@ -6,37 +6,34 @@
 #include "ModuleInput.h"
 #include "Transform.h"
 
-Mesh::Mesh(GameObject* parent, RenderData* render_data, bool isactive) : Component(parent, COMP_MESH, isactive), render_data(render_data)
+Mesh::Mesh(GameObject* parent, bool isactive) : Component(parent, COMP_MESH, isactive)
 {
 	
 	aabb_box.SetNegativeInfinity();
-	if (render_data != nullptr)
+/*	if (render_data != nullptr)
 	{
-		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
+	//	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 
 		CreateBoxIndices();
 		CreateBoxBuffers(aabb_box);
-	}
+	}*/
 	if (parent != nullptr)
 		UpdateTransform();
 }
 
 Mesh::~Mesh()
 {
-	delete render_data;
 }
 
-const RenderData* Mesh::GetRenderData()
+/*const RenderData* Mesh::GetRenderData()
 {
-	return render_data;
-}
+}*/
 
 void Mesh::Update()
 {
-	if (render_data == nullptr) return;
 	if (draw_aabb)
 	{
-		if (draw_aabb && render_data->aabb_vertex_id > 0)
+		/*if (draw_aabb && render_data->aabb_vertex_id > 0)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glLineWidth(2.0f);
@@ -51,7 +48,7 @@ void Mesh::Update()
 
 			glLineWidth(1.0f);
 			glDisableClientState(GL_VERTEX_ARRAY);
-		}
+		}*/
 	}
 }
 
@@ -76,10 +73,10 @@ void Mesh::DrawComponent()
 		if (ImGui::Button("Change")) changing_mesh = !changing_mesh;
 		if (changing_mesh) ChangeMesh();
 
-		ImGui::InputInt("Vertices:", (int*)&render_data->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+	//	ImGui::InputInt("Vertices:", (int*)&render_data->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
-		int faces = render_data->num_indices / 3;
-		ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
+	//	int faces = render_data->num_indices / 3;
+	//	ImGui::InputInt("Faces:", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
 	}
@@ -110,25 +107,25 @@ void Mesh::ChangeMesh()
 // Create box indices buffer (only once)
 void Mesh::CreateBoxIndices()
 {
-	if (render_data == nullptr) return;
+	/*if (render_data == nullptr) return;
 	if (render_data->box_indices_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->box_indices_id);
-	}
+	}*/
 
 	Primitive indices;
-	render_data->box_indices_id = indices.GenerateBBoxIndices();
+	//render_data->box_indices_id = indices.GenerateBBoxIndices();
 }
 
 // Generate AABB and OBB buffers
 void Mesh::CreateBoxBuffers(AABB &box)
 {
-	if (render_data == nullptr) return;
+//	if (render_data == nullptr) return;
 	// delete buffers;
-	if (render_data->aabb_vertex_id > 0)
+/*	if (render_data->aabb_vertex_id > 0)
 	{
 		glDeleteBuffers(1, &render_data->aabb_vertex_id);
-	}
+	}*/
 
 	float new_aabb[24]
 	{
@@ -143,14 +140,14 @@ void Mesh::CreateBoxBuffers(AABB &box)
 	};
 	
 	Primitive temporal_primitive;
-	render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
+	//render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
 }
 
 void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving mesh comp");
 
-	//identifier and type
+/*	//identifier and type
 	int identifier = COMPONENTIDENTIFIER;
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
@@ -191,10 +188,12 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	memcpy(cursor, render_data->mesh_path, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+	*/
 }
 
 void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 {
+	/*
 	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
@@ -240,6 +239,8 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	}
 	else
 		LOGC("Error: Unable to load the mesh, file not found in library please import again");
+
+		*/
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)
@@ -247,21 +248,7 @@ void Mesh::GetOwnBufferSize(uint & buffer_size)
 	Component::GetOwnBufferSize(buffer_size);
 
 	buffer_size += sizeof(int);
-	buffer_size += strlen(render_data->mesh_path);
+//	buffer_size += strlen(render_data->mesh_path);
 }
 
-RenderData::~RenderData()
-{
-	if (num_indices > 0)glDeleteBuffers(1, &id_indices);
-	if (num_vertices > 0)glDeleteBuffers(1, &id_vertices);
-	if (num_normals > 0)glDeleteBuffers(1, &id_normals);
-	if (num_tex_vertices > 0)	glDeleteBuffers(1, &id_tex_vertices);
-	if (aabb_vertex_id > 0) glDeleteBuffers(1, &aabb_vertex_id);
-	if (box_indices_id > 0) glDeleteBuffers(1, &box_indices_id);
 
-	delete[] indices;
-	delete[] vertices;
-	delete[] normals;
-	delete[] tex_vertices;
-	delete[] mesh_path;
-}
