@@ -5,10 +5,14 @@
 #include "Application.h"
 #include "Mesh.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Globals.h"
 #include "Glew\include\glew.h"
+
+#include "Importer.h"
+#include "TextureImporter.h"
 
 #include <fstream>
 
@@ -38,6 +42,7 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 	if (scene != nullptr)
 		mesh_root_node = scene->mRootNode;
 
+	std::map<int, int>* texture_map = ImportTextureResources(scene, path.c_str());
 
 	if (mesh_root_node != nullptr)
 	{
@@ -258,6 +263,32 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		//fill the id map
 		ret_pair.first = i;
 		ret_pair.second = mesh_resource->GetUID();
+		ret.insert(ret_pair);
+	}
+
+	return &ret;
+}
+
+std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, const char * full_path)
+{
+	std::map<int, int> ret;			//Assimp ID - Resource ID
+	std::pair<int, int> ret_pair;	//Assimp ID - Resource ID
+
+	TextureImporter* text_importer =(TextureImporter*)App->resources->GetImporter()->GetTextImporter();
+
+	std::string file_path = full_path;
+	for (uint i = 0; i < scene->mNumMaterials; i++)
+	{
+		ResourceTexture* new_texture = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TEXTURE);
+		aiString file_name;
+		
+		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
+		{
+			text_importer->Import(new_texture, (file_path + file_name.data).c_str(), file_name.data);
+		}
+
+		ret_pair.first = i;
+		ret_pair.second = new_texture->GetUID();
 		ret.insert(ret_pair);
 	}
 

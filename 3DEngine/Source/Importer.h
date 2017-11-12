@@ -18,6 +18,9 @@ public:
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	
 	void CheckDirectories();
+	
+	const MeshImporter* GetMeshImporter()const;
+	const TextureImporter* GetTextImporter()const;
 
 	//Mesh importing and loading methods
 	RenderData* GetNewMesh(const char* mesh_path) const;

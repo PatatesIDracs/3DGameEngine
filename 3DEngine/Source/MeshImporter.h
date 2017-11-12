@@ -33,6 +33,9 @@ private:
 	//Return a map with assimpID/ResourceUID
 	std::map<int, int>* ImportMeshResources(const aiScene* scene, std::string& file_name);
 
+	// Retrun a map with assimpID/ResourceUID Texture
+	std::map<int, int>* ImportTextureResources(const aiScene* scene, const char * full_path);
+
 private:
 	std::string import_path;
 

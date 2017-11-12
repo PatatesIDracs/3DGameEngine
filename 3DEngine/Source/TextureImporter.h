@@ -5,13 +5,15 @@
 
 #define TEXFILEFORMAT ".dds"
 
+class ResourceTexture;
+
 class TextureImporter
 {
 public:
 	TextureImporter();
 	~TextureImporter();
 
-	void Import(const char* full_path, const char* name, std::string& new_file);
+	void Import(ResourceTexture* resource, const char* full_path, const char* name);
 
 private:
 	std::string import_path;

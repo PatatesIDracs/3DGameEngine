@@ -6,6 +6,8 @@
 #include "ModuleSceneIntro.h"
 #include "Application.h"
 
+#include "Resource.h"
+
 #include <filesystem>
 
 Importer::Importer()
@@ -43,7 +45,8 @@ void Importer::Import(char * full_path, std::string& new_file)
 	}
 	if (extension == ".png")
 	{
-		text_importer->Import(full_path, filename.c_str(), new_file);
+		ResourceTexture* new_resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
+		text_importer->Import(new_resource, path.c_str(), filename.c_str());
 	}
 }
 
@@ -124,6 +127,16 @@ void Importer::CheckDirectories()
 		LOGC("Library meshes folder identified.");
 
 
+}
+
+const MeshImporter * Importer::GetMeshImporter() const
+{
+	return mesh_importer;
+}
+
+const TextureImporter * Importer::GetTextImporter() const
+{
+	return text_importer;
 }
 
 RenderData* Importer::GetNewMesh(const char* mesh_path) const

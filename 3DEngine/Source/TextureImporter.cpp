@@ -2,6 +2,9 @@
 #include "Globals.h"
 #include <fstream>
 
+#include "Resource.h"
+#include "ResourceTexture.h"
+
 #include "Devil\include\il.h"
 #include "Devil\include\ilu.h"
 #include "Devil\include\ilut.h"
@@ -24,7 +27,7 @@ TextureImporter::~TextureImporter()
 {
 }
 
-void TextureImporter::Import(const char * full_path, const char* name, std::string& new_file_path)
+void TextureImporter::Import(ResourceTexture* resource, const char * full_path, const char* name)
 {
 	std::string file_name = name;
 	file_name.append(TEXFILEFORMAT);
@@ -35,8 +38,6 @@ void TextureImporter::Import(const char * full_path, const char* name, std::stri
 	ilGenImages(1, &imgID);
 	ilBindImage(imgID);
 	ILboolean success = ilLoadImage(full_path);
-
-	
 
 	ILuint size;
 	ILubyte* data;
@@ -52,7 +53,19 @@ void TextureImporter::Import(const char * full_path, const char* name, std::stri
 			new_file.write((char*)data, size);
 
 			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());
-			new_file_path = import_path + file_name;
+
+			// Set Resource data
+			ILinfo info;
+			iluGetImageInfo(&info);
+			resource->width = info.Width;
+			resource->height = info.Height;
+			resource->depth = info.Depth;
+			resource->mips = info.NumMips;
+			resource->bytes = info.Bpp;		
+			resource->format = (FORMAT)((int)ilGetInteger(info.Format));
+
+			resource->SetLibraryFile((import_path + file_name).c_str());
 		}
 	}
+	resource->SetAssetFile((full_path + file_name).c_str());
 }
