@@ -186,7 +186,7 @@ void ModuleSceneIntro::CollectCandidates()
 bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 {
 	if (object != nullptr && object->isstatic) {
-		if (scene_octree.Insert((GameObject*)object, object->boundary_box)) {
+		if (scene_octree.Insert((GameObject*)object, object->GetBoundaryBox())) {
 			return true;
 		}
 	}
@@ -230,7 +230,7 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 
 	if (reset_octree && scene_octree.Reset()) {
 		for (uint i = 0; i < static_gameobjects.size(); i++) 
-			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->boundary_box);
+			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
 	}
 }
 
@@ -299,45 +299,13 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 		ndist = -1;
 		float3 intersection;
 		for (uint i = 0; i < order_size; i++) {
-			if (CheckRayVsMesh(meshes[i], ndist, intersection)) {
+			if (mesh[i].mesh->CheckRayCollision(last_ray, ndist, intersection)) {
 				current_object = meshes[i]->GetParent();
 			}
 		}
 		meshes.clear();
 	}
 
-}
-
-bool ModuleSceneIntro::CheckRayVsMesh(const MeshRenderer * mesh, float &dist, float3 &point) 
-{
-	bool ret = false;
-	
-	Ray local_ray = last_ray.ToRay();
-	local_ray.Transform(mesh->transform->GetGlobalTransform().Inverted());
-	
-	//const RenderData* mesh_data = mesh->mesh->GetRenderData();
-	
-	Triangle tri;
-	float best_dist = dist;
-	float3 intersect_point;
-
-/*	for (uint i = 0; i < mesh_data->num_indices; i +=3)
-	{
-		tri.a = float3(&mesh_data->vertices[mesh_data->indices[i] * 3]);
-		tri.b = float3(&mesh_data->vertices[mesh_data->indices[i + 1] * 3]);
-		tri.c = float3(&mesh_data->vertices[mesh_data->indices[i + 2] * 3]);
-
-		if (local_ray.Intersects(tri, &best_dist, &intersect_point)) {
-			if (dist == -1 || best_dist < dist)
-			{
-				dist = best_dist;
-				point = intersect_point;
-				ret = true;
-			}
-		}
-	}*/
-	
-	return ret;
 }
 
 void ModuleSceneIntro::LookAtScene() const

@@ -43,6 +43,8 @@
 
 #include "../Math/float4x4_neon.h"
 
+#include "../../Glew/include/glew.h"
+
 #ifdef MATH_GRAPHICSENGINE_INTEROP
 #include "VertexBuffer.h"
 #endif
@@ -160,6 +162,47 @@ Sphere AABB::MaximalContainedSphere() const
 {
 	vec halfSize = HalfSize();
 	return Sphere(CenterPoint(), Min(halfSize.x, halfSize.y, halfSize.z));
+}
+
+void AABB::Draw(float width, float4 color) const
+{
+	float3 vertices[8];
+	GetCornerPoints(vertices);
+
+	glBegin(GL_LINES);
+	glLineWidth(width);
+	glColor4f(color.x, color.y, color.z, color.w);
+
+	// Left to Right Plane lines ----------
+	for (int i = 0; i <= 2; i += 2)
+	{
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 4].x, vertices[i + 4].y, vertices[i + 4].z);
+
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+		glVertex3f(vertices[i + 5].x, vertices[i + 5].y, vertices[i + 5].z);
+	}
+
+	// Left and Right Planes ----------
+	for (int i = 0; i <= 4; i += 4)
+	{
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+		glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+
+		glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+		glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glLineWidth(1.0f);
+	glEnd();
+
 }
 
 bool AABB::IsFinite() const

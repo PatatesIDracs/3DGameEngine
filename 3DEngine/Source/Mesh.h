@@ -19,10 +19,9 @@ public:
 
 	void DrawComponent();
 
-	void ChangeMesh();
+	bool CheckRayCollision(const LineSegment ray, float &dist, float3 &point);
 
-	void CreateBoxIndices();
-	void CreateBoxBuffers(AABB &box);
+	void ChangeMesh();
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(const char* buffer_data, char* cursor, int& bytes_copied);
@@ -31,8 +30,7 @@ public:
 public:
 	ResourceMesh* mesh_resource = nullptr;
 
-	math::AABB aabb_box;
-	bool draw_aabb = true;
+	bool draw_aabb = false;
 
 	bool changing_mesh = false;
 };

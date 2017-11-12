@@ -23,10 +23,6 @@ struct RenderData
 	uint id_tex_vertices = 0;
 	uint num_tex_vertices = 0;
 	float* tex_vertices = nullptr;
-
-	// Draw AABB and OBB
-	uint aabb_vertex_id = 0;
-	uint box_indices_id = 0;
 };
 
 
@@ -36,7 +32,8 @@ public:
 	ResourceMesh(int uid);
 	~ResourceMesh();
 
-
+	const RenderData*	GetRenderData() const;
+	AABB				GetAABB() const;
 private:
 
 	RenderData* render_data = nullptr;

@@ -31,7 +31,6 @@ public:
 	void CheckStaticGameObjectsState();
 
 	void CheckRayCastCollision(LineSegment& camera_ray);
-	bool CheckRayVsMesh(const MeshRenderer* mesh, float &dist, float3 &intersection) ;
 
 	void LookAtScene() const;
 

@@ -4,8 +4,6 @@
 #include "Globals.h"
 #include "Math.h"
 
-#include "Glew\include\glew.h"
-
 #define MAX_NODES 8
 
 // Octree Item
@@ -62,39 +60,12 @@ public:
 public:
 	// Octree Node public methods ------------------
 
-	void Draw() const {
-		float3 vertices[8];
-		box.GetCornerPoints(vertices);
-
-		// Left to Right Plane lines ----------
-		for (uint i = 0; i <= 2; i += 2)
-		{
-			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-			glVertex3f(vertices[i + 4].x, vertices[i + 4].y, vertices[i + 4].z);
-
-			glVertex3f(vertices[i+1].x, vertices[i+1].y, vertices[i+1].z);
-			glVertex3f(vertices[i + 5].x, vertices[i + 5].y, vertices[i + 5].z);			
-		}
-
-		// Left and Right Planes ----------
-		for (uint i = 0; i <= 4; i += 4)
-		{
-			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-			glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
-
-			glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-			glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
-
-			glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
-			glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
-
-			glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
-			glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
-		}
+	void Draw(float width, float4 color) const {
+		box.Draw(width, color);
 
 		if (full) {
 			for (uint i = 0; i < MAX_NODES; i++)
-				childs[i]->Draw();
+				childs[i]->Draw(width,color);
 		}
 
 	}
@@ -269,17 +240,7 @@ public:
 
 	void Draw(float width, float4 color) {
 		if (root != nullptr) {
-
-			glBegin(GL_LINES);
-
-			glLineWidth(width);
-			glColor4f(color.x, color.y, color.z, color.w);
-
-			root->Draw();
-
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			glLineWidth(1.0f);
-			glEnd();
+			root->Draw(width,color);
 		}
 	}
 

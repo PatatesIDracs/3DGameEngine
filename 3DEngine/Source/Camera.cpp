@@ -124,7 +124,7 @@ bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::
 	for (uint curr_obj = 0; curr_obj < dynamic_array.size(); curr_obj++) {
 		contains_gobj_result = CONT_OUT;
 		if (dynamic_array[curr_obj]->IsActive()){
-			contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->boundary_box);
+			contains_gobj_result = ContainsAABB(dynamic_array[curr_obj]->GetBoundaryBox());
 
 			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
 				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);

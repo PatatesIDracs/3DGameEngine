@@ -6,10 +6,11 @@
 #include "ModuleInput.h"
 #include "Transform.h"
 
+#include "ResourceMesh.h"
+
 Mesh::Mesh(GameObject* parent, bool isactive) : Component(parent, COMP_MESH, isactive)
 {
 	
-	aabb_box.SetNegativeInfinity();
 /*	if (render_data != nullptr)
 	{
 	//	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
@@ -33,36 +34,14 @@ void Mesh::Update()
 {
 	if (draw_aabb)
 	{
-		/*if (draw_aabb && render_data->aabb_vertex_id > 0)
-		{
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glLineWidth(2.0f);
-
-			//Bind AABB vertex buffer
-			glBindBuffer(GL_ARRAY_BUFFER, render_data->aabb_vertex_id);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-			//Bind and draw with indices
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_data->box_indices_id);
-			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
-
-			glLineWidth(1.0f);
-			glDisableClientState(GL_VERTEX_ARRAY);
-		}*/
+		parent->GetBoundaryBox().Draw(3.0f, float4(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 }
 
 void Mesh::UpdateTransform()
 {
-	AABB temp = aabb_box;
-	if (parent != nullptr) {
-		temp.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
-		
-	}
-
-	CreateBoxBuffers(temp);
-
-	if (parent != nullptr) parent->boundary_box = temp;
+	parent->boundary_box = mesh_resource->GetAABB();
+	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
 }
 
 void Mesh::DrawComponent()
@@ -80,6 +59,40 @@ void Mesh::DrawComponent()
 
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
 	}
+}
+
+bool Mesh::CheckRayCollision(const LineSegment segment, float & dist, float3 & point)
+{
+	if (mesh_resource == nullptr) return false;
+
+	bool ret = false;
+	Ray ray = segment.ToRay();
+	ray.Transform(parent->GetTransform()->GetGlobalTransform().Inverted());
+	
+	const RenderData* mesh_data = mesh_resource->GetRenderData();
+
+	Triangle tri;
+
+	float best_dist = dist;
+	float3 intersect_point;
+
+	for (uint i = 0; i < mesh_data->num_indices; i += 3)
+	{
+		tri.a = float3(&mesh_data->vertices[mesh_data->indices[i] * 3]);
+		tri.b = float3(&mesh_data->vertices[mesh_data->indices[i + 1] * 3]);
+		tri.c = float3(&mesh_data->vertices[mesh_data->indices[i + 2] * 3]);
+
+		if (ray.Intersects(tri, &best_dist, &intersect_point)) {
+			if (dist == -1 || best_dist < dist)
+			{
+				dist = best_dist;
+				point = intersect_point;
+				ret = true;
+			}
+		}
+	}
+
+	return ret;
 }
 
 void Mesh::ChangeMesh()
@@ -102,45 +115,6 @@ void Mesh::ChangeMesh()
 		changing_mesh = false;
 	}
 
-}
-
-// Create box indices buffer (only once)
-void Mesh::CreateBoxIndices()
-{
-	/*if (render_data == nullptr) return;
-	if (render_data->box_indices_id > 0)
-	{
-		glDeleteBuffers(1, &render_data->box_indices_id);
-	}*/
-
-	Primitive indices;
-	//render_data->box_indices_id = indices.GenerateBBoxIndices();
-}
-
-// Generate AABB and OBB buffers
-void Mesh::CreateBoxBuffers(AABB &box)
-{
-//	if (render_data == nullptr) return;
-	// delete buffers;
-/*	if (render_data->aabb_vertex_id > 0)
-	{
-		glDeleteBuffers(1, &render_data->aabb_vertex_id);
-	}*/
-
-	float new_aabb[24]
-	{
-		box.CornerPoint(0).x, box.CornerPoint(0).y,	box.CornerPoint(0).z,
-		box.CornerPoint(1).x, box.CornerPoint(1).y,	box.CornerPoint(1).z,
-		box.CornerPoint(2).x, box.CornerPoint(2).y,	box.CornerPoint(2).z,
-		box.CornerPoint(3).x, box.CornerPoint(3).y,	box.CornerPoint(3).z,
-		box.CornerPoint(4).x, box.CornerPoint(4).y,	box.CornerPoint(4).z,
-		box.CornerPoint(5).x, box.CornerPoint(5).y,	box.CornerPoint(5).z,
-		box.CornerPoint(6).x, box.CornerPoint(6).y,	box.CornerPoint(6).z,
-		box.CornerPoint(7).x, box.CornerPoint(7).y,	box.CornerPoint(7).z,
-	};
-	
-	Primitive temporal_primitive;
-	//render_data->aabb_vertex_id = temporal_primitive.GenerateBBoxVertices(new_aabb);
 }
 
 void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)

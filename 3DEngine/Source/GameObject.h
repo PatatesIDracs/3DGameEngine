@@ -28,7 +28,7 @@ public:
 	bool IsActive()const;
 	bool IsRoot()const;
 	Transform* GetTransform() const;
-	AABB GetBoundaryBox();
+	AABB GetBoundaryBox() const;
 	Component* FindFirstComponent(COMP_TYPE type);
 	std::vector<Component*>* FindAllTypeComponents(COMP_TYPE type);
 

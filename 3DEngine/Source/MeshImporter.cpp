@@ -71,7 +71,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 	{
 		uint num_meshes = to_import->mNumMeshes;
 
-		for (int j = 0; j < num_meshes; j++)
+		for (uint j = 0; j < num_meshes; j++)
 		{
 
 			int mesh_id = to_import->mMeshes[j];
@@ -209,7 +209,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene)
 	std::map<int, int> ret;
 	std::pair<int, int> ret_pair;
 
-	for (int i = 0; i < scene->mNumMeshes; i++)
+	for (uint i = 0; i < scene->mNumMeshes; i++)
 	{
 		RenderData* mesh = new RenderData();
 

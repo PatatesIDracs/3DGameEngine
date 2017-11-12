@@ -350,10 +350,10 @@ void ModuleEditor::HardwareDetection()
 
 void ModuleEditor::DrawPlayButton()
 {
-	bool app_state = App->clock.state;
+	APPSTATE app_state = App->clock.state;
 
 	bool show_this = true;
-	ImGui::SetNextWindowPos(ImVec2((float)App->window->width*0.5 - 135.0f, 19.0f));
+	ImGui::SetNextWindowPos(ImVec2((float)App->window->width*0.5f - 135.0f, 19.0f));
 	ImGui::SetNextWindowSize(ImVec2(270.f, 30.0f));
 	ImGui::Begin("Play Stop Tick", &show_this, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 	
@@ -398,7 +398,7 @@ void ModuleEditor::DrawPlayButton()
 
 		ImGui::Begin("Clock Window", &show_this, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 		
-			float time = App->clock.real_time.ReadSec();
+			float time = (float)App->clock.real_time.Read()/1000.f;
 			ImGui::InputFloat("Time", &time, 0, 0, 2, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Frame", (int*)&App->clock.frame_count, 0, 0, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputFloat("Game Time", &App->clock.game_time, 0, 0, 2, ImGuiInputTextFlags_ReadOnly);

@@ -154,6 +154,9 @@ public:
 		@see MinimalEnclosingSphere(). */
 	Sphere MaximalContainedSphere() const;
 
+	/// Debug Draw of AABB box Using GL_LINES
+	void Draw(float width, float4 color) const;
+
 	/// Tests if this AABB is finite.
 	/** @return True if the member variables of this AABB are valid floats and do not contain NaNs or infs, and false otherwise.
 		@see IsDegenerate(), minPoint, maxPoint. */

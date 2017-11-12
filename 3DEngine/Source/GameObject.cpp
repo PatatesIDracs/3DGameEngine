@@ -133,25 +133,10 @@ Transform * GameObject::GetTransform() const
 	return (Transform*)components[0];
 }
 
-AABB GameObject::GetBoundaryBox()
+AABB GameObject::GetBoundaryBox() const
 {
-	math::AABB box;
-	box.SetNegativeInfinity();
-
-	for (uint i = 0; i < components.size(); i++)
-	{
-		if (components[i]->GetType() == COMP_MESH)
-			box.Enclose(((Mesh*)components[i])->aabb_box);
-	}
-
-	for (uint i = 0; i < children.size(); i++)
-	{
-		box.Enclose(children[i]->GetBoundaryBox());
-	}
-
-	return box;
+	return boundary_box;
 }
-
 
 Component* GameObject::FindFirstComponent(COMP_TYPE type)
 {
