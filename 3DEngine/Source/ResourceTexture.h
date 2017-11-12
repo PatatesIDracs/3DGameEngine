@@ -19,7 +19,7 @@ public:
 	ResourceTexture(int uid);
 	~ResourceTexture() {};
 
-	bool LoadInMemory();
+	void LoadToMemory();
 
 	uint GetTextureID()const;
 

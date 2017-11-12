@@ -43,10 +43,10 @@ void Importer::Import(char * full_path, std::string& new_file)
 
 		mesh_importer->Import(full_path, path, filename, extension, imported_go);
 	}
-	if (extension == ".png")
+	if (extension == ".png" || extension == ".tga")
 	{
 		ResourceTexture* new_resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
-		text_importer->Import(new_resource, path.c_str(), filename.c_str());
+		text_importer->Import(new_resource, full_path, filename.c_str());
 	}
 }
 

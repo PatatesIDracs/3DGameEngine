@@ -40,6 +40,18 @@ void TextureImporter::Import(ResourceTexture* resource, const char * full_path, 
 	ilBindImage(imgID);
 	ILboolean success = ilLoadImage(full_path);
 
+	// Set Resource data
+	ILinfo info;
+	iluGetImageInfo(&info);
+	resource->width = info.Width;
+	resource->height = info.Height;
+	resource->depth = info.Depth;
+	resource->mips = info.NumMips;
+	resource->bytes = info.Bpp;
+	resource->format = (FORMAT)((int)ilGetInteger(info.Format));
+	resource->SetLibraryFile((import_path + file_name).c_str());
+	resource->SetAssetFile((full_path + file_name).c_str());
+
 	ILuint size;
 	ILubyte* data;
 
@@ -53,20 +65,7 @@ void TextureImporter::Import(ResourceTexture* resource, const char * full_path, 
 			std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
 			new_file.write((char*)data, size);
 
-			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());
-
-			// Set Resource data
-			ILinfo info;
-			iluGetImageInfo(&info);
-			resource->width = info.Width;
-			resource->height = info.Height;
-			resource->depth = info.Depth;
-			resource->mips = info.NumMips;
-			resource->bytes = info.Bpp;		
-			resource->format = (FORMAT)((int)ilGetInteger(info.Format));
-
-			resource->SetLibraryFile((import_path + file_name).c_str());
+			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());			
 		}
 	}
-	resource->SetAssetFile((full_path + file_name).c_str());
 }

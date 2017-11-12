@@ -12,6 +12,9 @@ Material::Material(GameObject * parent, ResourceTexture* resource, bool isactive
 {
 	if (parent != nullptr)
 		parent->AddComponent(this);
+
+	if (resource != nullptr)
+		resource->UseThis();
 }
 
 Material::~Material()
