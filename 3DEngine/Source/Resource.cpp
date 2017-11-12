@@ -50,6 +50,18 @@ void Resource::SetName(std::string& new_name)
 	name = new_name;
 }
 
+void Resource::UseThis()
+{
+	if (loaded == 0) {
+		LoadToMemory();
+	}
+	loaded++;
+}
+
+void Resource::LoadToMemory()
+{
+}
+
 const char* Resource::GetName() const
 {
 	return name.c_str();

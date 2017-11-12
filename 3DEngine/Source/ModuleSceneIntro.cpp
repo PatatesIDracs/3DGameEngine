@@ -85,8 +85,8 @@ void ModuleSceneIntro::Draw()
 
 		if (object->mesh != nullptr && object->mesh->IsActive())
 		{
-		//	const RenderData* mesh_render_data = object->mesh->GetRenderData();
-			/*
+			const RenderData* mesh_render_data = object->mesh->GetRenderData();
+			
 			glEnableClientState(GL_VERTEX_ARRAY);
 
 			if (mesh_render_data->tex_vertices != nullptr)
@@ -108,7 +108,7 @@ void ModuleSceneIntro::Draw()
 
 			//Disable opengl states
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glDisableClientState(GL_VERTEX_ARRAY);*/
+			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 
 		// Clear possible Binded buffers

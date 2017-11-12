@@ -3,11 +3,13 @@
 
 #include "Component.h"
 
+class ResourceTexture;
+
 class Material : public Component
 {
 public:
 	Material();
-	Material(GameObject* parent, float3 ntexture_id = float3(0,0,0), bool isactive = true);
+	Material(GameObject* parent, ResourceTexture* resource, bool isactive = true);
 	~Material();
 
 	int GetTextureID() const;
@@ -19,10 +21,8 @@ public:
 	void GetOwnBufferSize(uint& buffer_size);
 
 private:
-	int id_texture = 0;
 
-	uint texture_width = 0;
-	uint texture_height = 0;
+	ResourceTexture* resource = nullptr;
 };
 
 #endif // !__MATERIAL_H__

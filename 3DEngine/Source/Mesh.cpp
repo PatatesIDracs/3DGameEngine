@@ -10,8 +10,13 @@
 
 Mesh::Mesh(GameObject* parent, ResourceMesh* mesh_resource, bool isactive) : Component(parent, COMP_MESH, isactive), mesh_resource(mesh_resource)
 {
-	if (parent != nullptr)
+	if (parent != nullptr) {
 		parent->AddComponent(this);
+		if (mesh_resource != nullptr) {
+			mesh_resource->UseThis();
+			UpdateTransform();
+		}
+	}
 }
 
 Mesh::~Mesh()
@@ -33,8 +38,8 @@ void Mesh::Update()
 
 void Mesh::UpdateTransform()
 {
-//	parent->boundary_box = mesh_resource->GetAABB();
-//	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
+	parent->boundary_box = mesh_resource->GetAABB();
+	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
 }
 
 void Mesh::DrawComponent()

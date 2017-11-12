@@ -33,6 +33,7 @@ public:
 	~ResourceMesh();
 
 	void SetRenderData(RenderData* new_render_data);
+	void LoadToMemory();
 
 	const RenderData*	GetRenderData() const;
 	AABB				GetAABB() const;

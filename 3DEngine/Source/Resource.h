@@ -29,6 +29,9 @@ public:
 	void SetName(const char* new_name);
 	void SetName(std::string& new_name);
 
+	void UseThis();
+	virtual void LoadToMemory();
+
 	const char* GetName() const;
 
 protected:

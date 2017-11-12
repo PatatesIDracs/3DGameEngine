@@ -205,6 +205,7 @@ void GameObject::DrawProperties()
 {
 	// Draw GameObject Properties
 	DrawGameObject();
+	boundary_box.Draw(3.0f, float4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	// Draw Components Properties
 	for (uint i = 0; i < components.size(); i++)
@@ -423,7 +424,7 @@ Component* GameObject::CreatComponent(COMP_TYPE new_comp_type)
 		ret = new Mesh(this, nullptr);
 		break;
 	case COMP_MATERIAL:
-		ret = new Material(this);
+		ret = new Material(this, nullptr);
 		break;
 	case COMP_MESHRENDERER:
 		ret = new MeshRenderer(this);

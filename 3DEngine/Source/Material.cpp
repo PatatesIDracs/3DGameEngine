@@ -1,13 +1,17 @@
 #include "Material.h"
 #include "Glew\include\glew.h"
 
+#include "Resource.h"
+#include "ResourceTexture.h"
+
 Material::Material()
 {
 }
 
-Material::Material(GameObject * parent, float3 texture, bool isactive) : Component(parent, COMP_MATERIAL, isactive), id_texture(texture.x),
-texture_width(texture.y), texture_height(texture.z)
+Material::Material(GameObject * parent, ResourceTexture* resource, bool isactive) : Component(parent, COMP_MATERIAL, isactive), resource(resource)
 {
+	if (parent != nullptr)
+		parent->AddComponent(this);
 }
 
 Material::~Material()
@@ -16,20 +20,23 @@ Material::~Material()
 
 int Material::GetTextureID() const
 {
-	return id_texture;
+	if(resource != nullptr)
+		return resource->GetTextureID();
+	else return 0;
 }
 
 void Material::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Texture"))
 	{
-		ImGui::InputInt("Width:", (int*)&texture_width, 0, 100, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputInt("Height:", (int*)&texture_height, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Width:", (int*)&resource->width, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputInt("Height:", (int*)&resource->height, 0, 100, ImGuiInputTextFlags_ReadOnly);
 	}
 }
 
 void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
+	/*
 	LOGC("Saving material comp");
 
 	//identifier and type
@@ -73,12 +80,12 @@ void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 	memcpy(cursor, &texture_height, bytes_to_copy);
 	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
+	bytes_copied += bytes_to_copy;*/
 }
 
 void Material::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 {
-	//UUID and parentUUID
+	/*//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -108,13 +115,13 @@ void Material::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 	memcpy(&texture_height, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
+	bytes_copied += bytes_to_copy;*/
 }
 
 void Material::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
 
-	buffer_size += sizeof(id_texture);
+	//buffer_size += sizeof(id_texture);
 	buffer_size += sizeof(uint) * 2;	//Texture height and width
 }

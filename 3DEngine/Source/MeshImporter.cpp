@@ -8,6 +8,7 @@
 #include "ResourceTexture.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
+#include "Material.h"
 #include "Globals.h"
 #include "Glew\include\glew.h"
 
@@ -45,7 +46,7 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 	std::map<int, int>* mesh_map = ImportMeshResources(scene, file_name);
 	std::map<int, int>* texture_map = ImportTextureResources(scene, path.c_str());
 
-	ImportScene(scene, mesh_map, file_name);
+	ImportScene(scene, mesh_map, texture_map, file_name);
 
 	if (mesh_root_node != nullptr)
 	{
@@ -57,7 +58,7 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 		LOGC("No meshes found");
 }
 
-void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::string& file_name)
+void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name)
 {
 	//Dummy game object to save scene
 	//GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
@@ -67,12 +68,12 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 
 	for (uint i = 0; i < scene_root_node->mNumChildren; i++)
 	{
-		ImportNode(scene_root_node->mChildren[i], scene, scene_go, id_map);
+		ImportNode(scene_root_node->mChildren[i], scene, scene_go, id_map, text_map);
 	}
 
 }
 
-void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, std::map<int, int>* id_map)
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, std::map<int, int>* id_map, std::map<int, int>* text_map)
 {
 	GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
 
@@ -87,7 +88,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 
 	for (uint i = 0; i < to_import->mNumChildren; i++)
 	{
-		ImportNode(to_import->mChildren[i], scene, node_go, id_map);
+		ImportNode(to_import->mChildren[i], scene, node_go, id_map, text_map);
 	}
 
 	if (to_import->mNumMeshes > 0)
@@ -107,6 +108,16 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 			int resource_id = it->second;
 
 			Mesh* new_mesh_component = new Mesh(node_go, (ResourceMesh*)App->resources->GetFromUID(resource_id));
+			
+
+			const aiMesh* mesh_material = scene->mMeshes[i];
+			if (mesh_material->HasTextureCoords(0))
+			{
+				it = text_map->find(mesh_material->mMaterialIndex);
+				Material* new_mat_component = new Material(node_go, (ResourceTexture*)App->resources->GetFromUID(it->second));
+			}
+			
+			MeshRenderer* render = new MeshRenderer(node_go);
 		}
 	}
 

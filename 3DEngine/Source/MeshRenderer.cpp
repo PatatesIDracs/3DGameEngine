@@ -7,8 +7,10 @@
 
 MeshRenderer::MeshRenderer(GameObject* parent) : Component(parent, COMP_MESHRENDERER)
 {
-	if (parent != nullptr)
+	if (parent != nullptr) {
+		parent->AddComponent(this);
 		PrepareRenderer();
+	}
 }
 
 MeshRenderer::~MeshRenderer()
