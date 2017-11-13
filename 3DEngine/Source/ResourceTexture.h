@@ -20,6 +20,7 @@ public:
 	~ResourceTexture() {};
 
 	void LoadToMemory();
+	void UnloadFromMemory();
 
 	uint GetTextureID()const;
 

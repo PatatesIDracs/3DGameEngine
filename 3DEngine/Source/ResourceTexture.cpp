@@ -16,6 +16,11 @@ void ResourceTexture::LoadToMemory()
 	}
 }
 
+void ResourceTexture::UnloadFromMemory()
+{
+	if (texture_id != 0)glDeleteTextures(1, &texture_id);
+}
+
 uint ResourceTexture::GetTextureID() const
 {
 	return texture_id;

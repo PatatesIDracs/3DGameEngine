@@ -21,6 +21,8 @@ Mesh::Mesh(GameObject* parent, ResourceMesh* mesh_resource, bool isactive) : Com
 
 Mesh::~Mesh()
 {
+	if (mesh_resource != nullptr)
+		mesh_resource->StopThis();
 }
 
 const RenderData* Mesh::GetRenderData() const

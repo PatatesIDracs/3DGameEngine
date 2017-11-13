@@ -19,6 +19,8 @@ Material::Material(GameObject * parent, ResourceTexture* resource, bool isactive
 
 Material::~Material()
 {
+	if (resource != nullptr)
+		resource->StopThis();
 }
 
 int Material::GetTextureID() const

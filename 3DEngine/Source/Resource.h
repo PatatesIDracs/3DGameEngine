@@ -31,6 +31,8 @@ public:
 
 	void UseThis();
 	virtual void LoadToMemory();
+	void StopThis();
+	virtual void UnloadFromMemory();
 
 	const char* GetName() const;
 

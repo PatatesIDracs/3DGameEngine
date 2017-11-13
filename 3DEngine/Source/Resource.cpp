@@ -62,6 +62,17 @@ void Resource::LoadToMemory()
 {
 }
 
+void Resource::StopThis()
+{
+	loaded--;
+	if (loaded == 0) {
+		UnloadFromMemory();
+	}
+}
+
+void UnloadFromMemory() {
+}
+
 const char* Resource::GetName() const
 {
 	return name.c_str();
