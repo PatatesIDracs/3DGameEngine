@@ -70,10 +70,25 @@ void Resource::StopThis()
 	}
 }
 
-void UnloadFromMemory() {
+void Resource::UnloadFromMemory() {
 }
 
 const char* Resource::GetName() const
 {
 	return name.c_str();
+}
+
+void Resource::GetBufferSize(uint & buffer_size)
+{
+	buffer_size += sizeof(RESOURCE_TYPE);
+	buffer_size += sizeof(int);
+	buffer_size += sizeof(uid);
+	buffer_size += sizeof(assets_file.c_str());
+	buffer_size += sizeof(library_file.c_str());
+}
+
+void Resource::SaveResource(std::string * library_path, std::string * assets_path)
+{
+	uint buffer_size = 0;
+	GetBufferSize(buffer_size);
 }

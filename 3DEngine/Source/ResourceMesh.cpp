@@ -1,5 +1,8 @@
 #include "ResourceMesh.h"
+#include "Globals.h"
 #include "Glew\include\glew.h"
+
+#include <fstream>
 
 RenderData::~RenderData()
 {
@@ -75,4 +78,51 @@ const RenderData * ResourceMesh::GetRenderData() const
 AABB ResourceMesh::GetAABB() const
 {
 	return aabb_box;
+}
+
+
+void ResourceMesh::SaveResource(std::string * library_path, std::string * assets_path)
+{
+	//NumIndices, NumVertices, NumTexCoords, NumNormals
+	uint ranges[4] = { render_data->num_indices, render_data->num_vertices,render_data->num_tex_vertices,  render_data->num_normals };
+
+
+	uint buffer_size = sizeof(ranges) +
+		(sizeof(uint) * render_data->num_indices) +				//Indices
+		(sizeof(float) * render_data->num_vertices * 3) +		//Vertices
+		(sizeof(float) * render_data->num_tex_vertices * 3) +	//Texture_coords
+		(sizeof(float) * render_data->num_normals * 3);			//Normals
+
+
+	char* buffer_data = new char[buffer_size];
+	char* cursor = buffer_data;
+
+	uint bytes_to_copy = sizeof(ranges);
+	memcpy(cursor, ranges, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(uint) * render_data->num_indices);
+	memcpy(cursor, render_data->indices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * render_data->num_vertices * 3);
+	memcpy(cursor, render_data->vertices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * render_data->num_tex_vertices * 3);
+	memcpy(cursor, render_data->tex_vertices, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = (sizeof(float) * render_data->num_normals * 3);
+	memcpy(cursor, render_data->normals, bytes_to_copy);
+
+	std::string file_name = *library_path + std::to_string(uid);
+	file_name.append(".mjope");
+	std::ofstream new_file(file_name.c_str(), std::ofstream::binary);
+	new_file.write(buffer_data, buffer_size);
+
+	LOGC("File Saved at: %s", file_name.c_str());
+
+	delete[] buffer_data;
+
 }

@@ -37,6 +37,8 @@ public:
 
 	const RenderData*	GetRenderData() const;
 	AABB				GetAABB() const;
+
+	void SaveResource(std::string* library_path, std::string* assets_path);
 private:
 
 	RenderData* render_data = nullptr;
