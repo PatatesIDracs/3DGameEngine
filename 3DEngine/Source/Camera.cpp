@@ -26,6 +26,9 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	}
 	frustum_planes = new Plane[6];
 	cfrustum->GetPlanes(frustum_planes);
+
+	if (active)
+		App->camera->SetMainCamera(this, true);
 }
 
 Camera::~Camera()
@@ -325,6 +328,9 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 
 	SetFrustumPlanes();
 	SetFrustumViewAngle();
+
+	if (active)
+		App->camera->SetMainCamera(this, );
 }
 
 void Camera::GetOwnBufferSize(uint & buffer_size)

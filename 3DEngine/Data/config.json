@@ -1,8 +1,8 @@
 {
     "Application": {
         "Name": "JoPe Engine",
-        "Is Capped": false,
-        "Capped FPS": 120,
+        "Is Capped": true,
+        "Capped FPS": 60,
         "Is Active": true
     },
     "Audio": {
@@ -34,7 +34,7 @@
         "Smooth": true,
         "Lighting": true,
         "Color material": true,
-        "Texture 2D": true,
+        "Texture 2D": false,
         "Red": 0.19215686619281769,
         "Green": 0,
         "Blue": 1,

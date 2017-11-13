@@ -299,7 +299,7 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 		ndist = -1;
 		float3 intersection;
 		for (uint i = 0; i < order_size; i++) {
-			if (mesh[i].mesh->CheckRayCollision(last_ray, ndist, intersection)) {
+			if (meshes[i]->mesh->CheckRayCollision(last_ray, ndist, intersection)) {
 				current_object = meshes[i]->GetParent();
 			}
 		}
