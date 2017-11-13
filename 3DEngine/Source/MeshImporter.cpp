@@ -68,38 +68,21 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 
 	for (uint i = 0; i < scene_root_node->mNumChildren; i++)
 	{
-		ImportNode(scene_root_node->mChildren[i], scene, scene_go, id_map, text_map);
+		ImportNode(scene_root_node->mChildren[i], scene, scene_go, scene_root_node->mTransformation, id_map, text_map);
 	}
-
 }
 
-void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, std::map<int, int>* id_map, std::map<int, int>* text_map)
+void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, aiMatrix4x4t<float> parent_transform, std::map<int, int>* id_map, std::map<int, int>* text_map)
 {
-	GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
-
-	//Load node transform
-	aiMatrix4x4 curr_trans = to_import->mTransformation;
-	float4x4 new_transform(curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
-		curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2,
-		curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3,
-		curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
-
-	node_go->GetTransform()->SetTransform(new_transform);
-
-	for (uint i = 0; i < to_import->mNumChildren; i++)
-	{
-		ImportNode(to_import->mChildren[i], scene, node_go, id_map, text_map);
-	}
-
 	if (to_import->mNumMeshes > 0)
 	{
 		for (uint i = 0; i < to_import->mNumMeshes; i++)
 		{
+			GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
 			int mesh_id = to_import->mMeshes[i];
 
 			//Assimp id - Resource id map
 			std::map<int, int>::const_iterator it = id_map->find(mesh_id);
-
 			if (it == id_map->end())
 			{
 				LOGC("Mesh resource for %s not found in the database", to_import->mName.C_Str());
@@ -107,9 +90,16 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 			}
 			int resource_id = it->second;
 
-			Mesh* new_mesh_component = new Mesh(node_go, (ResourceMesh*)App->resources->GetFromUID(resource_id));
-			
+			//Load node transform
+			aiMatrix4x4 curr_trans = parent_transform * to_import->mTransformation;
+			float4x4 new_transform(curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
+				curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2,
+				curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3,
+				curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
 
+			node_go->GetTransform()->SetTransform(new_transform);
+
+			Mesh* new_mesh_component = new Mesh(node_go, (ResourceMesh*)App->resources->GetFromUID(resource_id));
 			const aiMesh* mesh_material = scene->mMeshes[i];
 			if (mesh_material->HasTextureCoords(0))
 			{
@@ -118,6 +108,19 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 			}
 			
 			MeshRenderer* render = new MeshRenderer(node_go);
+		}
+
+		//Reset to transform to identidy (they will get the complete transform from the gameobjects parents)
+		for (uint i = 0; i < to_import->mNumChildren; i++)
+		{
+			ImportNode(to_import->mChildren[i], scene, import_target, aiMatrix4x4(), id_map, text_map);
+		}
+	}
+	else
+	{
+		for (uint i = 0; i < to_import->mNumChildren; i++)
+		{
+			ImportNode(to_import->mChildren[i], scene, import_target, parent_transform * to_import->mTransformation, id_map, text_map);
 		}
 	}
 
