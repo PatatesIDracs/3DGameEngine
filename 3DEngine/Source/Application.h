@@ -89,6 +89,8 @@ private:
 
 	std::string app_name;
 
+	LCG UUIDGen;
+
 	float avg_fps = 0;					//Average fps
 	float last_frame_time = 0.0f;		//ms of the last frame
 	Timer start_up_time;				//Time since startup
@@ -122,6 +124,8 @@ public:
 	bool CleanUp();
 
 	const char* GetAppName() const;
+
+	int GetIntUUID();
 
 	void OpenBrowser(const char* url);
 

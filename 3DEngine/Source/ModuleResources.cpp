@@ -48,8 +48,7 @@ int ModuleResources::Find(const char * file_in_assets) const
 
 int ModuleResources::GenerateNewUID()
 {
-	LCG UUIDGen;
-	return UUIDGen.Int();
+	return App->GetIntUUID();
 }
 
 Resource * ModuleResources::GetFromUID(int uid) const

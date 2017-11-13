@@ -14,8 +14,8 @@
 
 GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name("GameObject"), isactive(isactive)
 {
-	LCG UUIDGen;
-	UUID = UUIDGen.Int();
+	
+	UUID = App->GetIntUUID();
 	parent_active = true;
 	if (parent != nullptr)
 		parent->AddChildren(this);
@@ -28,8 +28,7 @@ GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name
 
 GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : parent(parent), name(name), isactive(isactive)
 {
-	LCG UUIDGen;
-	UUID = UUIDGen.Int();
+	UUID = App->GetIntUUID();
 	parent_active = true;
 	if (parent != nullptr)
 		parent->AddChildren(this);
@@ -98,7 +97,7 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 				{
 					delete components[i];
 					components[i] = new_component;
-					new_component->ChangeParent(this);
+					//new_component->ChangeParent(this);
 				}
 				else
 					LOGC("%s already has this component", name.c_str());
@@ -108,7 +107,7 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 	}
 
 	components.push_back(new_component);
-	new_component->ChangeParent(this);
+	//new_component->ChangeParent(this);
 }
 
 void GameObject::SetTransform(float4x4 &transform)

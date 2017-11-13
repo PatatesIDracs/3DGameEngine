@@ -265,6 +265,9 @@
     <ClCompile Include="ResourceTexture.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />

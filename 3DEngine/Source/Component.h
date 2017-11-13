@@ -25,18 +25,8 @@ enum COMP_TYPE
 class Component
 {
 public:
-	Component() : parent(nullptr), type(COMP_UNKNOWN), active(false) 
-	{
-		LCG UUIDGen;
-		UUID = UUIDGen.Int();
-	};
-	Component(GameObject* parent, COMP_TYPE type, bool isactive = true) : parent(parent), type(type), active(isactive) 
-	{
-		LCG UUIDGen;
-		UUID = UUIDGen.Int();
-		if (parent != nullptr)
-			parent_UUID = parent->UUID;
-	};
+	Component();
+	Component(GameObject* parent, COMP_TYPE type, bool isactive = true);
 	virtual ~Component() {};
 
 	virtual void Enable() { active = true; };
@@ -49,12 +39,7 @@ public:
 	//Save and Load methods
 	virtual void Save(const char* buffer_data, char* cursor, int& bytes_copied) {};
 	virtual void Load(const char* buffer_data, char* cursor, int& bytes_copied) {};
-	virtual void GetOwnBufferSize(uint& buffer_size)
-	{
-		buffer_size += sizeof(int) * 3;		//identifier + UUID + parentUUID
-		buffer_size += sizeof(COMP_TYPE);
-		buffer_size += sizeof(bool) * 2;	//active + unique
-	};
+	virtual void GetOwnBufferSize(uint& buffer_size);
 
 
 	COMP_TYPE GetType() const { return type; };

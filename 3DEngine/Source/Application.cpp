@@ -363,6 +363,11 @@ const char * Application::GetAppName() const
 	return app_name.c_str();
 }
 
+int Application::GetIntUUID()
+{
+	return UUIDGen.Int();
+}
+
 void Application::OpenBrowser(const char* url)
 {
 	ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWMAXIMIZED);
