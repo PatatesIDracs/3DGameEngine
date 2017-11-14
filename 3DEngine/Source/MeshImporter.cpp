@@ -96,7 +96,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 			node_go->GetTransform()->SetTransform(new_transform);
 
 			Mesh* new_mesh_component = new Mesh(node_go, (ResourceMesh*)App->resources->GetFromUID(resource_id));
-			const aiMesh* mesh_material = scene->mMeshes[i];
+			const aiMesh* mesh_material = scene->mMeshes[mesh_id];
 			if (mesh_material->HasTextureCoords(0))
 			{
 				it = text_map->find(mesh_material->mMaterialIndex);

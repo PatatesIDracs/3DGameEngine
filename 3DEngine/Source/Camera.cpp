@@ -119,8 +119,6 @@ Frustum& Camera::GetFrustum() const
 
 bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::vector<MeshRenderer*>& render_this) const
 {
-	if (!active) return false;
-
 	cfrustum->GetPlanes(frustum_planes);
 
 	int contains_gobj_result;

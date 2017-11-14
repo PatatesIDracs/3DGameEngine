@@ -1,7 +1,7 @@
 {
     "Application": {
         "Name": "JoPe Engine",
-        "Is Capped": true,
+        "Is Capped": false,
         "Capped FPS": 60,
         "Is Active": true
     },
