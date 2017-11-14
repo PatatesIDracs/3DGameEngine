@@ -104,15 +104,15 @@ void ResourceMesh::SaveResource()
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = sizeof(name.c_str());
+	bytes_to_copy = strlen(name.c_str());
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = sizeof(assets_file.c_str());
+	bytes_to_copy = strlen(assets_file.c_str());
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = sizeof(library_file.c_str());
+	bytes_to_copy = strlen(library_file.c_str());
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
@@ -135,7 +135,8 @@ void ResourceMesh::SaveResource()
 	cursor += bytes_to_copy; //Advance cursor
 
 	bytes_to_copy = (sizeof(float) * render_data->num_normals * 3);
-	memcpy(cursor, render_data->normals, bytes_to_copy);
+	//memcpy(cursor, render_data->normals, bytes_to_copy);
+	cursor += bytes_to_copy;
 
 	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
 	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
