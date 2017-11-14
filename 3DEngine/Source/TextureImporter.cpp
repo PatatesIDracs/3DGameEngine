@@ -27,10 +27,29 @@ TextureImporter::~TextureImporter()
 {
 }
 
-void TextureImporter::Import(ResourceTexture* resource, const char * full_path, const char* name)
+void TextureImporter::GetFileName(std::string& file_name)
 {
-	resource->SetName(name);
+	std::string result = "";
+	int i = 0;
+	bool copy = false;
+	while (file_name[i] != NULL) {
+		if (!copy && (file_name[i] == '.' || file_name[i] == '\\')) {
+			i++;
+		}
+		else {
+			copy = true;
+			result += file_name[i];
+			i++;
+		}
+	}
+	file_name = result;
+}
+
+void TextureImporter::Import(ResourceTexture* resource, const char * path, const char* name)
+{
 	std::string file_name = name;
+	GetFileName(file_name);
+	std::string full_path = path + file_name;
 	file_name.append(TEXFILEFORMAT);
 
 	//Generate file
@@ -38,7 +57,7 @@ void TextureImporter::Import(ResourceTexture* resource, const char * full_path, 
 	uint imgID = 0;
 	ilGenImages(1, &imgID);
 	ilBindImage(imgID);
-	ILboolean success = ilLoadImage(full_path);
+	ILboolean success = ilLoadImage(full_path.c_str());
 
 	// Set Resource data
 	ILinfo info;
@@ -49,8 +68,10 @@ void TextureImporter::Import(ResourceTexture* resource, const char * full_path, 
 	resource->mips = info.NumMips;
 	resource->bytes = info.Bpp;
 	resource->format = (FORMAT)((int)ilGetInteger(info.Format));
+
+	resource->SetName(name);
 	resource->SetLibraryFile((import_path + file_name).c_str());
-	resource->SetAssetFile((full_path + file_name).c_str());
+	resource->SetAssetFile(full_path.c_str());
 
 	ILuint size;
 	ILubyte* data;

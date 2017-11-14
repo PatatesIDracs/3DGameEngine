@@ -122,85 +122,6 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 
 }
 
-void MeshImporter::ImportNodeChild(aiNode * to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform)
-{
-
-	for (uint k = 0; k < to_import->mNumChildren; k++)
-	{
-		aiNode* child_node = to_import->mChildren[k];
-
-		if (child_node->mNumChildren > 0)
-			ImportNodeChild(child_node, scene, import_target, (parent_transform * child_node->mTransformation));
-
-		if (child_node->mNumMeshes > 0)
-		{
-
-			uint num_meshes = child_node->mNumMeshes;
-			if (num_meshes == 1)
-			{
-				//TODO: Save file one time (without creating child GameObjects), should make a function that puts mesh data in RenderData* and call it
-			}
-
-			for (uint i = 0; i < num_meshes; i++)
-			{
-				int mesh_id = child_node->mMeshes[i];
-				RenderData* mesh = new RenderData();
-				std::string file_name = child_node->mName.C_Str();
-				file_name.append(MESHFILEFORMAT);
-
-				//Indices data
-				mesh->num_indices = scene->mMeshes[mesh_id]->mNumFaces * 3;
-				mesh->indices = new uint[mesh->num_indices];
-				for (uint j = 0; j < scene->mMeshes[mesh_id]->mNumFaces; ++j)
-				{
-					if (scene->mMeshes[mesh_id]->mFaces[j].mNumIndices != 3)
-					{
-						LOGC("WARNING, geometry face with != 3 indices! %d", 0);
-					}
-					else {
-						memcpy(&mesh->indices[j * 3], scene->mMeshes[mesh_id]->mFaces[j].mIndices, 3 * sizeof(uint));
-					}
-				}
-
-				//Vertices data 
-				mesh->num_vertices = scene->mMeshes[mesh_id]->mNumVertices;
-				mesh->vertices = new float[mesh->num_vertices * 3];
-				memcpy(mesh->vertices, scene->mMeshes[mesh_id]->mVertices, sizeof(float) * mesh->num_vertices * 3);
-
-				//TextureCoords data
-				if (scene->mMeshes[mesh_id]->HasTextureCoords(0))
-				{
-					mesh->num_tex_vertices = scene->mMeshes[mesh_id]->mNumVertices;
-					mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
-					memcpy(mesh->tex_vertices, scene->mMeshes[mesh_id]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
-				}
-
-				//Normals data
-				mesh->num_normals = scene->mMeshes[mesh_id]->mNumVertices;
-				mesh->normals = new float[mesh->num_normals * 3];
-				memcpy(mesh->normals, scene->mMeshes[mesh_id]->mNormals, sizeof(float) * mesh->num_normals * 3);
-
-				//Save file 
-				SaveMesh(mesh, file_name.c_str());
-
-				aiMatrix4x4 curr_trans = parent_transform * child_node->mTransformation;
-				float4x4 new_transform(curr_trans.a1, curr_trans.b1, curr_trans.c1, curr_trans.d1,
-										curr_trans.a2, curr_trans.b2, curr_trans.c2, curr_trans.d2, 
-										curr_trans.a3, curr_trans.b3, curr_trans.c3, curr_trans.d3, 
-										curr_trans.a4, curr_trans.b4, curr_trans.c4, curr_trans.d4);
-
-				GameObject* mesh_holder = App->scene_intro->CreateNewGameObject(to_import->mChildren[mesh_id]->mName.C_Str(), import_target);
-
-				mesh_holder->GetTransform()->SetTransform(new_transform);
-				Mesh* new_mesh_component = new Mesh(mesh_holder);// Load((import_path + file_name).c_str()));
-				mesh_holder->AddComponent(new_mesh_component);
-				mesh_holder->AddComponent(new MeshRenderer(mesh_holder));
-
-			}
-		}
-	}
-}
-
 std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std::string& file_name)
 {
 	std::map<int, int>* ret = new std::map<int,int>;	//Assimp ID - Resource ID
@@ -217,6 +138,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		{
 			if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
 			{
+				mesh->num_indices -= 3;
 				LOGC("WARNING, geometry face with != 3 indices! %d", 0);
 			}
 			else {
@@ -249,7 +171,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
 
-		mesh_resource->SaveResource();
+		//mesh_resource->SaveResource();
 		//Save file 
 	//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 
@@ -277,7 +199,7 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 		
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
-			text_importer->Import(new_texture, (file_path + file_name.data).c_str(), file_name.data);
+			text_importer->Import(new_texture, file_path.c_str(), file_name.data);
 		}
 
 		ret_pair.first = i;

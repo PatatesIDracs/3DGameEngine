@@ -11,7 +11,7 @@ ResourceTexture::ResourceTexture(int uid): Resource(uid)
 
 void ResourceTexture::LoadToMemory()
 {
-	if (texture_id == 0 && library_file.size() > 0) {
+	if (texture_id == 0 && width > 1) {
 		texture_id = ilutGLLoadImage((char*)library_file.c_str());
 	}
 }

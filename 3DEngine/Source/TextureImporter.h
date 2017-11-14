@@ -13,6 +13,7 @@ public:
 	TextureImporter();
 	~TextureImporter();
 
+	void GetFileName(std::string& file_name);
 	void Import(ResourceTexture* resource, const char* full_path, const char* name);
 
 private:
