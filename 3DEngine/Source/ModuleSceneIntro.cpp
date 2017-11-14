@@ -132,11 +132,6 @@ update_status ModuleSceneIntro::Update(float dt)
 		oldPlane p(0, 1, 0, 0);
 		if (App->renderer3D->show_grid) p.Render();
 
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-		{
-			LookAtScene();
-		}
-
 		//Root should never be nullptr but check it just in case
 		if (root != nullptr) {
 
@@ -310,9 +305,9 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 
 void ModuleSceneIntro::LookAtScene() const
 {
-	if (root != nullptr)
+	if (current_object != nullptr)
 	{
-		math::AABB box = root->GetBoundaryBox();
+		math::AABB box = current_object->GetGlobalBoundaryBox();
 		if (box.IsFinite())
 		{
 			vec pos = box.CenterPoint();

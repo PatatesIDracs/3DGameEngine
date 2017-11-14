@@ -88,6 +88,11 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
 
 	last_dt = App->clock.real_delta_time;
+	
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		App->scene_intro->LookAtScene();
+	}
 
 	// Mouse motion ----------------
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)

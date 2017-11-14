@@ -137,6 +137,18 @@ AABB GameObject::GetBoundaryBox() const
 	return boundary_box;
 }
 
+AABB GameObject::GetGlobalBoundaryBox() const
+{
+	math::AABB box = boundary_box;
+
+	for (uint i = 0; i < children.size(); i++)
+	{
+		box.Enclose(children[i]->GetGlobalBoundaryBox());
+	}
+
+	return box;
+}
+
 Component* GameObject::FindFirstComponent(COMP_TYPE type)
 {
 	Component* ret = nullptr;

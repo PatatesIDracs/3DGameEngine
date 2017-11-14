@@ -29,6 +29,7 @@ public:
 	bool IsRoot()const;
 	Transform* GetTransform() const;
 	AABB GetBoundaryBox() const;
+	AABB GetGlobalBoundaryBox() const;
 	Component* FindFirstComponent(COMP_TYPE type);
 	std::vector<Component*>* FindAllTypeComponents(COMP_TYPE type);
 
