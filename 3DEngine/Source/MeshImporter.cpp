@@ -171,7 +171,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
 
-		//mesh_resource->SaveResource();
+		mesh_resource->SaveResource();
 		//Save file 
 	//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 
@@ -200,6 +200,10 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
 			text_importer->Import(new_texture, file_path.c_str(), file_name.data);
+		}
+		else
+		{
+			LOGC("Unable to get texture");
 		}
 
 		ret_pair.first = i;
