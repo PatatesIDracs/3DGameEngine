@@ -26,6 +26,7 @@ ResourceMesh::ResourceMesh(int uid) : Resource(uid)
 
 ResourceMesh::~ResourceMesh()
 {
+	Resource::~Resource();
 	delete render_data;
 }
 
@@ -144,7 +145,7 @@ void ResourceMesh::SaveResource()
 
 	LOGC("File Saved at: %s", library_file.c_str());
 
-//	delete buffer_data;
+	delete buffer_data;
 
 }
 

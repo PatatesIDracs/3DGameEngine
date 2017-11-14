@@ -34,7 +34,7 @@ MeshImporter::~MeshImporter()
 {
 }
 
-void MeshImporter::Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension, GameObject* import_target)
+void MeshImporter::Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension)
 {
 	if (full_path == nullptr) return;
 
@@ -51,7 +51,8 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 
 	ImportScene(scene, mesh_map, texture_map, file_name);
 
-	
+	delete mesh_map;
+	delete texture_map;
 }
 
 void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name)

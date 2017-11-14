@@ -75,6 +75,7 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 			resource->bytes = info.Bpp;
 			resource->format = (FORMAT)((int)ilGetInteger(info.Format));
 		}
+		delete[] data;
 	}
 	resource->SetName(name);
 	resource->SetLibraryFile((import_path + file_name).c_str());

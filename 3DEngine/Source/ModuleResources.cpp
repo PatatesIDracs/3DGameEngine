@@ -25,6 +25,12 @@ bool ModuleResources::Init()
 
 bool ModuleResources::CleanUp()
 {
+	//Delete all resources
+	for (std::map<int, Resource*>::const_iterator it = resources_map.begin(); it != resources_map.end(); it++)
+	{
+		delete it->second;
+	}
+
 	delete jope_importer;
 	return true;
 }

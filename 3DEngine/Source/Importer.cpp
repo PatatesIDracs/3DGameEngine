@@ -38,10 +38,7 @@ void Importer::Import(char * full_path, std::string& new_file)
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		//Create a new gameobject to store the data
-		GameObject* imported_go = new GameObject(nullptr, false);
-
-		mesh_importer->Import(full_path, path, filename, extension, imported_go);
+		mesh_importer->Import(full_path, path, filename, extension);
 	}
 	if (extension == ".png" || extension == ".tga")
 	{

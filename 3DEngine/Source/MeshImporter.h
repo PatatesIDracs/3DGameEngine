@@ -19,7 +19,7 @@ public:
 	MeshImporter();
 	~MeshImporter();
 
-	void Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension, GameObject* import_target);
+	void Import(const char* full_path, std::string& path, std::string& file_name, std::string& extension);
 
 	RenderData* Load(const char* full_path);
 

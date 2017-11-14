@@ -6,13 +6,20 @@ Drag the JoPe engine folder inside the .rar file to somewhere in your computer.
 Open the 3DEngine.exe file inside the data folder.
 
 ## Usage 
+IMPORTANT: "Save scene..." and "Load scene..." buttons **DO NOT** work right now due to changes in the code for the future release 
+
 Use left+alt click to rotate the camera    
 Use right click to rotate the camera and activate FPS movement    
-Drag and drop any .fbx or .obj file in the screen to load it, if the .fbx has a texture atached put the texture inside the Game folder. 
-Use the mouse wheel to zoom in and out, zoom is restricted so you can't go inside the object. If you need a more precise view of some parts we suggest on using the FPS camera
-[F] key will center the camera in the object    
-[C] key will center the camare in the origin    
-In some cases the object might be too big for the viewer to render, the viewer will try to rescale the object so it's visible, this process will be written in the console, we recommend checking both console and scale in properties to chack that the file has not been resized. This process doesn't always work, if you still can see the object try prressing [C] to go back to the origin and you may find it.   
+Drag and drop files to load them, current file soported: .fbx, .obj, .tga, .png        
+Use the mouse wheel to zoom in and out, zoom is restricted so you can't go inside the object. If you need a more precise view of some parts we suggest on using the FPS camera       
+//[F] key will center the camera in the object       
+//[C] key will center the camare in the origin        
+Click the Play button to turn on and off the game mode (currently there is no display, comming soon)      
+Click on a GameObject to select it     
+Use the guizmos to modify the selected object transform       
+[W] Activate translation guizmo
+[E] Activate rotation guizmo
+[R] Activate scale guizmo
 
 
 **FPS movement**   
@@ -20,6 +27,10 @@ In some cases the object might be too big for the viewer to render, the viewer w
 [A] move left   
 [S] move backwards   
 [D] move right   
+
+**Game mode**
+During game mode the camera selected as main camera will be the one used to render the scene, if there is no main camera selected the editor ghost camera will be used.
+In game mode objects can't be edited and almost all UI will be hidden.
 
 **Multiple texture**   
 Right now the viewer doesn't support multiple texture CHANNELS, this means that you can't load normal or specular maps.   
@@ -49,6 +60,20 @@ We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.ne
 
 
 ## Changelog
+### v0.1.2 - Assigment 2
+* Changed importing methods
+* Improved fbx importing
+* All usable imported files are now stored as resources in Library (currently only meshes and textures)
+* Added GameObject and components system
+* Added a hierarchy window for the scene
+* Added a properties window for the gameobjects
+* Added camera component
+* Added frustum culling for cameras	
+* Gameobjects can be selected by clicking on them (mouse picking)
+* Reference counting for resources added
+* Added Octree optimitzation for Static objects
+* Added time managment and Game/Editor mode (poor feedback right now)
+
 ### v0.1.1 - Mesh viewer
 * Removed non used primitives for release
 * Camera controls imporved
