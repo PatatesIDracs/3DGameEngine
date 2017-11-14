@@ -83,12 +83,36 @@ void Resource::GetBufferSize(uint & buffer_size)
 	buffer_size += sizeof(RESOURCE_TYPE);
 	buffer_size += sizeof(int);
 	buffer_size += sizeof(uid);
+	buffer_size += sizeof(name.c_str());
 	buffer_size += sizeof(assets_file.c_str());
 	buffer_size += sizeof(library_file.c_str());
 }
 
-void Resource::SaveResource(std::string * library_path, std::string * assets_path)
+void Resource::SaveResource()
 {
 	uint buffer_size = 0;
 	GetBufferSize(buffer_size);
+
+	char* buffer_data = new char[buffer_size];
+	char* cursor = buffer_data;
+
+	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(int);
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(name.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(assets_file.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(library_file.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
 }

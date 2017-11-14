@@ -37,11 +37,11 @@ public:
 	const char* GetName() const;
 
 	virtual void GetBufferSize(uint& buffer_size);
-	virtual void SaveResource(std::string* library_path, std::string* assets_path);
+	virtual void SaveResource();
 
 protected:
-	int uid = 0;
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;
+	int uid = 0;
 	uint loaded = 0;
 	std::string name;				//Resource name displayed in the editor, different from the file name
 	std::string assets_file;

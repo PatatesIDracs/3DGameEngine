@@ -81,23 +81,44 @@ AABB ResourceMesh::GetAABB() const
 }
 
 
-void ResourceMesh::SaveResource(std::string * library_path, std::string * assets_path)
+void ResourceMesh::SaveResource()
 {
-	//NumIndices, NumVertices, NumTexCoords, NumNormals
+	//Set names 
+	library_file = std::to_string(uid);
+	library_file.append(".mjope");
+
+	uint buffer_size;
+	GetBufferSize(buffer_size);
 	uint ranges[4] = { render_data->num_indices, render_data->num_vertices,render_data->num_tex_vertices,  render_data->num_normals };
-
-
-	uint buffer_size = sizeof(ranges) +
-		(sizeof(uint) * render_data->num_indices) +				//Indices
-		(sizeof(float) * render_data->num_vertices * 3) +		//Vertices
-		(sizeof(float) * render_data->num_tex_vertices * 3) +	//Texture_coords
-		(sizeof(float) * render_data->num_normals * 3);			//Normals
 
 
 	char* buffer_data = new char[buffer_size];
 	char* cursor = buffer_data;
 
-	uint bytes_to_copy = sizeof(ranges);
+	//Resource Copy
+	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(int);
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(name.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(assets_file.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(library_file.c_str());
+	memcpy(cursor, &uid, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+
+
+
+	bytes_to_copy = sizeof(ranges);
 	memcpy(cursor, ranges, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
@@ -116,13 +137,24 @@ void ResourceMesh::SaveResource(std::string * library_path, std::string * assets
 	bytes_to_copy = (sizeof(float) * render_data->num_normals * 3);
 	memcpy(cursor, render_data->normals, bytes_to_copy);
 
-	std::string file_name = *library_path + std::to_string(uid);
-	file_name.append(".mjope");
-	std::ofstream new_file(file_name.c_str(), std::ofstream::binary);
+	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
+	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
 	new_file.write(buffer_data, buffer_size);
 
-	LOGC("File Saved at: %s", file_name.c_str());
+	LOGC("File Saved at: %s", library_file.c_str());
 
-	delete[] buffer_data;
+	//delete[] buffer_data;
 
+}
+
+void ResourceMesh::GetBufferSize(uint & buffer_size)
+{
+	Resource::GetBufferSize(buffer_size);
+
+	uint ranges[4] = { render_data->num_indices, render_data->num_vertices,render_data->num_tex_vertices,  render_data->num_normals };
+	buffer_size = sizeof(ranges) +
+		(sizeof(uint) * render_data->num_indices) +				//Indices
+		(sizeof(float) * render_data->num_vertices * 3) +		//Vertices
+		(sizeof(float) * render_data->num_tex_vertices * 3) +	//Texture_coords
+		(sizeof(float) * render_data->num_normals * 3);			//Normals
 }

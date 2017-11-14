@@ -38,7 +38,8 @@ public:
 	const RenderData*	GetRenderData() const;
 	AABB				GetAABB() const;
 
-	void SaveResource(std::string* library_path, std::string* assets_path);
+	void SaveResource();
+	void GetBufferSize(uint & buffer_size);
 private:
 
 	RenderData* render_data = nullptr;

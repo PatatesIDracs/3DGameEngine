@@ -330,7 +330,7 @@ void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	SetFrustumViewAngle();
 
 	if (active)
-		App->camera->SetMainCamera(this, );
+		App->camera->SetMainCamera(this, true);
 }
 
 void Camera::GetOwnBufferSize(uint & buffer_size)

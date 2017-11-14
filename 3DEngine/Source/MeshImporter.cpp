@@ -253,8 +253,9 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
 
+		//mesh_resource->SaveResource();
 		//Save file 
-		mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
+	//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 
 		//fill the id map
 		ret_pair.first = i;
