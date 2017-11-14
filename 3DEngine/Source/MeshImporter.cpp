@@ -40,22 +40,18 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 
 	const aiScene* scene = aiImportFile(full_path , aiProcessPreset_TargetRealtime_MaxQuality);
 	aiNode* mesh_root_node = nullptr;
-	if (scene != nullptr)
-		mesh_root_node = scene->mRootNode;
-
+	if (scene == nullptr)
+	{
+		LOGC("Unable to load the file");
+		LOGC("Error: %s", aiGetErrorString());
+		return;
+	}
 	std::map<int, int>* mesh_map = ImportMeshResources(scene, file_name);
 	std::map<int, int>* texture_map = ImportTextureResources(scene, path.c_str());
 
 	ImportScene(scene, mesh_map, texture_map, file_name);
 
-	if (mesh_root_node != nullptr)
-	{
-	//	ImportNode(mesh_root_node, scene, import_target);
-	//	aiMatrix4x4 node_transform = mesh_root_node->mTransformation;
-	//	ImportNodeChild(mesh_root_node, scene, import_target, node_transform);
-	}
-	else
-		LOGC("No meshes found");
+	
 }
 
 void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name)
@@ -253,7 +249,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 		std::string file_name = std::to_string(mesh_resource->GetUID());
 		file_name.append(MESHFILEFORMAT);
 
-		//mesh_resource->SaveResource();
+		mesh_resource->SaveResource();
 		//Save file 
 	//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 

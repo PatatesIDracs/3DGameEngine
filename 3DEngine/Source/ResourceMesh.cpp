@@ -87,7 +87,7 @@ void ResourceMesh::SaveResource()
 	library_file = std::to_string(uid);
 	library_file.append(".mjope");
 
-	uint buffer_size;
+	uint buffer_size = 0;
 	GetBufferSize(buffer_size);
 	uint ranges[4] = { render_data->num_indices, render_data->num_vertices,render_data->num_tex_vertices,  render_data->num_normals };
 
@@ -143,7 +143,7 @@ void ResourceMesh::SaveResource()
 
 	LOGC("File Saved at: %s", library_file.c_str());
 
-	//delete[] buffer_data;
+//	delete buffer_data;
 
 }
 

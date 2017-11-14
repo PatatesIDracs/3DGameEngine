@@ -93,6 +93,14 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 //Create Assts and library directories if don't exist
 void Importer::CheckDirectories()
 {
+	//Data folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY))
+	{
+		LOGC("Data folder not detected, creating a new one...");
+	}
+	else
+		LOGC("Data folder identified.");
+
 	//Assets folder
 	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER))
 	{

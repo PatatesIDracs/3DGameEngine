@@ -83,9 +83,9 @@ void Resource::GetBufferSize(uint & buffer_size)
 	buffer_size += sizeof(RESOURCE_TYPE);
 	buffer_size += sizeof(int);
 	buffer_size += sizeof(uid);
-	buffer_size += sizeof(name.c_str());
-	buffer_size += sizeof(assets_file.c_str());
-	buffer_size += sizeof(library_file.c_str());
+	buffer_size += strlen(name.c_str());
+	buffer_size += strlen(assets_file.c_str());
+	buffer_size += strlen(library_file.c_str());
 }
 
 void Resource::SaveResource()
