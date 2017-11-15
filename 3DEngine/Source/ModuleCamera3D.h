@@ -43,6 +43,7 @@ public:
 	vec X, Y, Z, Position, Reference;
 
 	bool mode_editor = true;
+	bool update_camera = false;
 
 private:
 
@@ -52,7 +53,6 @@ private:
 
 	Camera* camera_editor = nullptr;
 	Camera* main_camera = nullptr;
-	bool update_camera = false;
 
 };
 

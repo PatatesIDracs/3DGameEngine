@@ -88,20 +88,14 @@ void Transform::EnableUpdateTransform()
 
 void Transform::OnGuizmo()
 {
-	ImGuizmo::Enable(true);
-
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-		guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
-		guizmo_op = ImGuizmo::OPERATION::ROTATE;
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-		guizmo_op = ImGuizmo::OPERATION::SCALE;
+	if (App->camera->update_camera) return;
+	else ImGuizmo::Enable(true);
 
 	float4x4 matrix = global_transform.Transposed();
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-	ImGuizmo::Manipulate(App->camera->GetViewMatrix4x4().ptr(), App->camera->GetProjMatrix().ptr(), guizmo_op, ImGuizmo::LOCAL, matrix.ptr());
+	ImGuizmo::Manipulate(App->camera->GetViewMatrix4x4().ptr(), App->camera->GetProjMatrix().ptr(), App->scene_intro->guizmo_op, ImGuizmo::LOCAL, matrix.ptr());
 
 	if (ImGuizmo::IsUsing()) {
 		matrix.Transpose();

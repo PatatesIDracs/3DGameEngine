@@ -5,6 +5,7 @@
 #include "Module.h"
 #include "Math.h"
 #include "OcTree.h"
+#include "Imgui\ImGuizmo.h"
 
 class GameObject;
 class MeshRenderer;
@@ -48,6 +49,8 @@ private:
 
 public:
 	GameObject* root = nullptr;
+	
+	ImGuizmo::OPERATION guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
 
 private:
 	GameObject* current_object = nullptr;

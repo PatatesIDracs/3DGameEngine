@@ -41,7 +41,6 @@ private:
 	Quat rotation = Quat::identity;
 
 	bool update_transform = false;
-	ImGuizmo::OPERATION guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
 
 	float3 position = {0.0f,0.0f,0.0f};
 	float3 angle = {0.0f, 0.0f, 0.0f};

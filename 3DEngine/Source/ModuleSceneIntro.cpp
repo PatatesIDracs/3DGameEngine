@@ -135,6 +135,13 @@ update_status ModuleSceneIntro::Update(float dt)
 		oldPlane p(0, 1, 0, 0);
 		if (App->renderer3D->show_grid) p.Render();
 
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+			guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+			guizmo_op = ImGuizmo::OPERATION::ROTATE;
+		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+			guizmo_op = ImGuizmo::OPERATION::SCALE;
+
 		//Root should never be nullptr but check it just in case
 		if (root != nullptr) {
 

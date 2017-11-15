@@ -86,6 +86,7 @@ update_status ModuleCamera3D::Update(float dt)
 {	
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
+	update_camera = false;
 
 	last_dt = App->clock.real_delta_time;
 	
@@ -99,10 +100,6 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		RotateCamera();
 	}	
-	else if (App->input->GetKey(SDL_SCANCODE_LALT) != KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		CameraRayCast();
-	}
 
 	// Right Click + WASD to Move like FPS 
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
@@ -115,10 +112,13 @@ update_status ModuleCamera3D::Update(float dt)
 	int wheelmotion = App->input->GetMouseZ();
 	if (wheelmotion != 0)
 	{
-		if (wheelmotion > 0 && ((Position - Reference)).Length() < distance) {}
-		else Position -= Z*(float)wheelmotion;
-
+		Position -= Z*(float)wheelmotion;
 		update_camera = true;
+	}
+
+	else if (!update_camera && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	{
+		CameraRayCast();
 	}
 
 	// Recalculate matrix -------------
@@ -127,7 +127,6 @@ update_status ModuleCamera3D::Update(float dt)
 			camera_editor->SetNewFrame(Position, -Z, Y);
 		}
 		else GetMainCamera()->SetNewFrame(Position, -Z, Y);
-		update_camera = false;
 	}
 
 	return UPDATE_CONTINUE;
