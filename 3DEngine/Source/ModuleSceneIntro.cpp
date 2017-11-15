@@ -80,6 +80,8 @@ void ModuleSceneIntro::Draw()
 
 		if (object->material != nullptr)
 		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glBindTexture(GL_TEXTURE_2D, object->material->GetTextureID());
 		}
 
@@ -109,6 +111,7 @@ void ModuleSceneIntro::Draw()
 			//Disable opengl states
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisable(GL_BLEND);
 		}
 
 		// Clear possible Binded buffers
@@ -191,6 +194,7 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 
 void ModuleSceneIntro::CheckDynamicGameObjectsState()
 {
+	bool update_octree = false;
 	GameObject* object = nullptr;
 	for (uint i = 0; i < dynamic_gameobjects.size(); i++)
 	{
@@ -200,8 +204,24 @@ void ModuleSceneIntro::CheckDynamicGameObjectsState()
 				dynamic_gameobjects[j] = dynamic_gameobjects[j + 1];
 			dynamic_gameobjects.pop_back();
 			static_gameobjects.push_back(object);
-			AddGameObjectToOctree(object);
+			update_octree = true;
 			i--;
+		}
+	}
+
+	if (update_octree) {
+		AABB new_box;
+		new_box.SetNegativeInfinity();
+
+		for (uint i = 0; i < static_gameobjects.size(); i++) {
+			new_box.Enclose(static_gameobjects[i]->GetBoundaryBox());
+		}
+
+		scene_octree.Clear();
+		scene_octree.Create(new_box, 2);
+
+		for (uint i = 0; i < static_gameobjects.size(); i++) {
+			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
 		}
 	}
 }
@@ -217,15 +237,26 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 				static_gameobjects[j] = static_gameobjects[j + 1];
 			static_gameobjects.pop_back();
 			dynamic_gameobjects.push_back(object);
-
 			reset_octree = true;
 			i--;
 		}
 	}
 
-	if (reset_octree && scene_octree.Reset()) {
-		for (uint i = 0; i < static_gameobjects.size(); i++) 
-			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
+	if (reset_octree) {
+		AABB new_box;
+		new_box.SetNegativeInfinity();
+
+		for (uint i = 0; i < static_gameobjects.size(); i++)
+			new_box.Enclose(static_gameobjects[i]->GetBoundaryBox());
+
+		scene_octree.Clear();
+
+		if (new_box.IsFinite()) {
+			scene_octree.Create(new_box, 2);
+
+			for (uint i = 0; i < static_gameobjects.size(); i++)
+				scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
+		}
 	}
 }
 

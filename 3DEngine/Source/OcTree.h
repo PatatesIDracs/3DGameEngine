@@ -72,7 +72,7 @@ public:
 
 	bool Insert(DATA_TYPE data, const AABB& box) {
 		
-		if (!box.IsFinite() || !ContainsAABB(box)){
+		if (!ContainsAABB(box)){
 			return false;
 		}
 
@@ -235,7 +235,10 @@ public:
 	}
 
 	void Clear() {
-		if (root != nullptr) delete root;
+		if (root != nullptr) {
+			delete root; 
+			root = nullptr;
+		}
 	}
 
 	void Draw(float width, float4 color) {
@@ -247,7 +250,8 @@ public:
 	bool Insert(const DATA_TYPE data, const AABB& box) {
 
 		if (root != nullptr) {
-			return root->Insert(data, box);
+			if(box.IsFinite())
+				return root->Insert(data, box);
 		}
 		return false; 
 	};

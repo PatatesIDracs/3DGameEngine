@@ -29,7 +29,7 @@ TextureImporter::~TextureImporter()
 
 void TextureImporter::GetFileName(std::string& file_name)
 {
-	for (int i = 0; i < file_name.size(); i++){
+	for (uint i = 0; i < file_name.size(); i++){
 		if (file_name[i] == '\\')
 			file_name[i] = '/';
 	}
