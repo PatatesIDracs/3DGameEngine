@@ -13,6 +13,7 @@
 #include "Importer.h"
 #include "Mesh.h"
 
+namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {

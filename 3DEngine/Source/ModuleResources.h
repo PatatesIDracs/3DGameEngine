@@ -18,7 +18,9 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	void HandleDropEvent(SDL_DropEvent drop_event);
+	void SearchForResources();						//Look at library for new resources
+//	void LoadResource(std::string file_path);		
+	void HandleDropEvent(SDL_DropEvent drop_event);	
 
 	int Find(const char* file_in_assets) const;
 
@@ -31,7 +33,6 @@ public:
 private:
 
 	std::map<int, Resource*> resources_map;
-
 	Importer* jope_importer;
 
 };

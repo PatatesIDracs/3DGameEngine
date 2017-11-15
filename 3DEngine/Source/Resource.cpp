@@ -82,7 +82,6 @@ void Resource::GetBufferSize(uint & buffer_size)
 {
 	buffer_size += sizeof(RESOURCE_TYPE);
 	buffer_size += sizeof(int);
-	buffer_size += sizeof(uid);
 	buffer_size += strlen(name.c_str());
 	buffer_size += strlen(assets_file.c_str());
 	buffer_size += strlen(library_file.c_str());
@@ -100,19 +99,19 @@ void Resource::SaveResource()
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = sizeof(int);
+	bytes_to_copy = sizeof(int);		//UID
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(name.c_str());
-	memcpy(cursor, &uid, bytes_to_copy);
+	bytes_to_copy = strlen(name.c_str()); //Resource name
+	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(assets_file.c_str());
-	memcpy(cursor, &uid, bytes_to_copy);
+	bytes_to_copy = strlen(assets_file.c_str()); //Assets file
+	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(library_file.c_str());
-	memcpy(cursor, &uid, bytes_to_copy);
+	bytes_to_copy = strlen(library_file.c_str()); //Library file
+	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 }

@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace fs = std::experimental::filesystem;
+
 ModuleResources::ModuleResources(Application* app, bool start_enabled) : Module(app, "Resources", start_enabled)
 {
 }
@@ -20,6 +22,7 @@ ModuleResources::~ModuleResources()
 bool ModuleResources::Init()
 {
 	jope_importer = new Importer();
+	SearchForResources();
 	return true;
 }
 
@@ -33,6 +36,25 @@ bool ModuleResources::CleanUp()
 
 	delete jope_importer;
 	return true;
+}
+
+void ModuleResources::SearchForResources()
+{
+	fs::recursive_directory_iterator it{JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER};
+	fs::recursive_directory_iterator end{};
+
+	for (; it != end; it++)
+	{
+		if (fs::is_directory(it->path()))
+		{
+			LOGC("Folder %S located", it->path().c_str());
+		}   
+		else
+		{
+			LOGC("File %S identified", it->path().c_str());
+		}
+
+	}
 }
 
 void ModuleResources::HandleDropEvent(SDL_DropEvent drop_event)

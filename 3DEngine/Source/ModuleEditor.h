@@ -13,8 +13,6 @@
 
 class Profiler;
 
-namespace fs = std::experimental::filesystem;
-
 class ModuleEditor : public Module
 {
 public:
