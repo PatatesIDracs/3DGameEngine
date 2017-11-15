@@ -9,6 +9,7 @@
 #include "Resource.h"
 
 #include <filesystem>
+#include <fstream>
 
 Importer::Importer()
 {
@@ -38,10 +39,12 @@ void Importer::Import(char * full_path, std::string& new_file)
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
+		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + filename + extension).c_str());
 		mesh_importer->Import(full_path, path, filename, extension);
 	}
 	if (extension == ".png" || extension == ".tga")
 	{
+		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + filename + extension).c_str());
 		ResourceTexture* new_resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
 		text_importer->Import(new_resource, full_path, filename.c_str());
 	}
@@ -132,6 +135,39 @@ void Importer::CheckDirectories()
 		LOGC("Library meshes folder identified.");
 
 
+}
+
+void Importer::CopyFileToFolder(const char * prev_folder, const char * folder)
+{
+	std::ifstream in(prev_folder, std::ofstream::binary);
+	if (in.good() && in.is_open()) {
+		
+		in.seekg(0, in.end);
+		int lenght = in.tellg();
+		in.seekg(0, in.beg);
+		
+		char* buffer = new char[lenght];
+
+		in.read(buffer, lenght);
+		in.close();
+
+		if (buffer == NULL) {
+			delete[] buffer;
+			return;
+		}
+
+		std::ofstream outfile(folder, std::ofstream::binary);
+
+		if (outfile.good())
+		{
+			// write to outfile
+			outfile.write(buffer, lenght);
+			outfile.close();
+		}
+
+		delete[] buffer;
+	}
+	
 }
 
 const MeshImporter * Importer::GetMeshImporter() const

@@ -18,6 +18,8 @@ public:
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	
 	void CheckDirectories();
+
+	void CopyFileToFolder(const char* prev_folder, const char* folder);
 	
 	const MeshImporter* GetMeshImporter()const;
 	const TextureImporter* GetTextImporter()const;
