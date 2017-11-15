@@ -175,6 +175,7 @@ void ModuleSceneIntro::CollectCandidates()
 	for (uint i = 0; i < candidates.size(); i++) {
 		if (candidates[i]->IsActive()) {
 			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
+		
 			if (mesh != nullptr) render_this.push_back(mesh);
 		}
 	}
@@ -204,24 +205,8 @@ void ModuleSceneIntro::CheckDynamicGameObjectsState()
 				dynamic_gameobjects[j] = dynamic_gameobjects[j + 1];
 			dynamic_gameobjects.pop_back();
 			static_gameobjects.push_back(object);
-			update_octree = true;
+			AddGameObjectToOctree(object);
 			i--;
-		}
-	}
-
-	if (update_octree) {
-		AABB new_box;
-		new_box.SetNegativeInfinity();
-
-		for (uint i = 0; i < static_gameobjects.size(); i++) {
-			new_box.Enclose(static_gameobjects[i]->GetBoundaryBox());
-		}
-
-		scene_octree.Clear();
-		scene_octree.Create(new_box, 2);
-
-		for (uint i = 0; i < static_gameobjects.size(); i++) {
-			scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
 		}
 	}
 }
@@ -243,20 +228,11 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 	}
 
 	if (reset_octree) {
-		AABB new_box;
-		new_box.SetNegativeInfinity();
-
+		scene_octree.Reset();
+			
 		for (uint i = 0; i < static_gameobjects.size(); i++)
-			new_box.Enclose(static_gameobjects[i]->GetBoundaryBox());
-
-		scene_octree.Clear();
-
-		if (new_box.IsFinite()) {
-			scene_octree.Create(new_box, 2);
-
-			for (uint i = 0; i < static_gameobjects.size(); i++)
 				scene_octree.Insert(static_gameobjects[i], static_gameobjects[i]->GetBoundaryBox());
-		}
+		
 	}
 }
 
@@ -268,9 +244,9 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 	float ndist = 0, fdist = 0;
 	// Test Dynamic GameObjects
 	for (uint i = 0; i < dynamic_gameobjects.size(); i++) {
-		if (dynamic_gameobjects[i]->IsActive() && dynamic_gameobjects[i]->boundary_box.IsFinite())
+		if (dynamic_gameobjects[i]->IsActive() && dynamic_gameobjects[i]->GetBoundaryBox().IsFinite())
 		{
-			if (camera_ray.Intersects(dynamic_gameobjects[i]->boundary_box, ndist, fdist))
+			if (camera_ray.Intersects(dynamic_gameobjects[i]->GetBoundaryBox(), ndist, fdist))
 				order.push_back(float3(ndist, (float)i, 0));
 		}
 	}
@@ -280,8 +256,8 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 	std::vector<float> hit_distance;
 	scene_octree.Intersect(static_hits, camera_ray, hit_distance);
 	
-	for (uint i = 0; i < hit_distance.size(); i++) {
-		order.push_back(float3(hit_distance[i], (float)i, 1));
+	for (uint i = 0; i < static_hits.size(); i++) {
+			order.push_back(float3(hit_distance[i], (float)i, 1));
 	}
 	hit_distance.clear();
 
