@@ -143,10 +143,9 @@ void ResourceMesh::SaveResource()
 	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
 	new_file.write(buffer_data, buffer_size);
 
-	LOGC("File Saved at: %s", library_file.c_str());
+	LOGC("Mesh Saved at: %s", library_file.c_str());
 
-	delete buffer_data;
-
+	delete[] buffer_data;
 }
 
 void ResourceMesh::GetBufferSize(uint & buffer_size)

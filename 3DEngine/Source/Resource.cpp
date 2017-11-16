@@ -81,7 +81,7 @@ const char* Resource::GetName() const
 void Resource::GetBufferSize(uint & buffer_size)
 {
 	buffer_size += sizeof(RESOURCE_TYPE);
-	buffer_size += sizeof(int);
+	buffer_size += sizeof(int) * 4;			//uid + 3 string lengths
 	buffer_size += strlen(name.c_str());
 	buffer_size += strlen(assets_file.c_str());
 	buffer_size += strlen(library_file.c_str());
@@ -103,15 +103,25 @@ void Resource::SaveResource()
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(name.c_str()); //Resource name
+	int str_size = strlen(name.c_str());
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+	bytes_to_copy = str_size; //Resource name
 	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(assets_file.c_str()); //Assets file
+	str_size = strlen(assets_file.c_str());
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(library_file.c_str()); //Library file
+	str_size = strlen(library_file.c_str());
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 }

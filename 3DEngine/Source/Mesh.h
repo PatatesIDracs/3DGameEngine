@@ -30,6 +30,7 @@ public:
 
 public:
 	ResourceMesh* mesh_resource = nullptr;
+	int resource_uid = 0;
 
 	bool draw_aabb = false;
 

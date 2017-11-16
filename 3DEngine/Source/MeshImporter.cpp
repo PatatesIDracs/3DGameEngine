@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "ResourceMesh.h"
 #include "ResourceTexture.h"
+#include "ResourceScene.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Material.h"
@@ -67,6 +68,8 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 	{
 		ImportNode(scene_root_node->mChildren[i], scene, scene_go, scene_root_node->mTransformation, id_map, text_map);
 	}
+	ResourceScene* scene_resource = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+	scene_resource->SaveResource(scene_go);
 }
 
 void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, aiMatrix4x4t<float> parent_transform, std::map<int, int>* id_map, std::map<int, int>* text_map)

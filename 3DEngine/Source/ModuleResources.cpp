@@ -109,6 +109,7 @@ Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 		ret = new ResourceTexture(new_UID);
 		break;
 	case RESOURCE_SCENE:
+		ret = new ResourceScene(new_UID);
 		break;
 	default:
 		break;

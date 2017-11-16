@@ -113,7 +113,7 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
 	LOGC("Saving mesh comp");
 
-/*	//identifier and type
+	//identifier and type
 	int identifier = COMPONENTIDENTIFIER;
 	uint bytes_to_copy = sizeof(identifier);
 	memcpy(cursor, &identifier, bytes_to_copy);
@@ -143,18 +143,10 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	//Path to load the mesh
-	int name_length = strlen(render_data->mesh_path);
 	bytes_to_copy = sizeof(int);
-	memcpy(cursor, &name_length, bytes_to_copy);
+	memcpy(cursor, &resource_uid, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
-
-	bytes_to_copy = name_length;
-	memcpy(cursor, render_data->mesh_path, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
-	*/
 }
 
 void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
@@ -212,7 +204,5 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 void Mesh::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
-
-	buffer_size += sizeof(int);
-//	buffer_size += strlen(render_data->mesh_path);
+	buffer_size += sizeof(int); //Resource id
 }

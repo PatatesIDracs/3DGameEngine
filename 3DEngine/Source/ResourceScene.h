@@ -8,7 +8,7 @@ class GameObject;
 class ResourceScene : public Resource
 {
 public:
-	ResourceScene(int uid, RESOURCE_TYPE type);
+	ResourceScene(int uid);
 	~ResourceScene();
 
 	void SaveResource(GameObject* scene_root_go);
