@@ -13,7 +13,7 @@ public:
 
 	void SaveResource(GameObject* scene_root_go);
 	void GetBufferSize(uint& buffer_size);
-
+	void LoadResource(char* cursor, int& bytes_copied);
 
 };
 

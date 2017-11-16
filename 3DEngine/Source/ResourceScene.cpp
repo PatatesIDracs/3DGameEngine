@@ -74,3 +74,8 @@ void ResourceScene::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
 }
+
+void ResourceScene::LoadResource(char * cursor, int & bytes_copied)
+{
+
+}

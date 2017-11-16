@@ -103,6 +103,7 @@ void Resource::SaveResource()
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
+	//Save name string
 	int str_size = strlen(name.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
@@ -111,6 +112,7 @@ void Resource::SaveResource()
 	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
+	//Save assets_file string
 	str_size = strlen(assets_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
@@ -118,10 +120,69 @@ void Resource::SaveResource()
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
+	//Save library_file string
 	str_size = strlen(library_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+}
+
+void Resource::LoadResource(char* cursor, int& bytes_copied)
+{
+	//Type is not loaded (shold be loaded externaly to know the Resource type), thats why its the first one to be saved
+	//Uid load
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&uid, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//load name size
+	int str_size = 0;
+	memcpy(&str_size, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	//load the name string
+	char* name_c_str = new char[str_size + 1];
+	bytes_to_copy = str_size;
+	memcpy(name_c_str, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	name_c_str[str_size] = 0x00;
+	name = name_c_str;
+	delete[] name_c_str;
+
+
+	//load assets_file size
+	bytes_to_copy = sizeof(int);
+	memcpy(&str_size, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	//load the assets_file string
+	char* assets_file_c_str = new char[str_size + 1];
+	bytes_to_copy = str_size;
+	memcpy(assets_file_c_str, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	assets_file_c_str[str_size] = 0x00;
+	name = assets_file_c_str;
+	delete[] assets_file_c_str;
+
+
+	//load library_file size
+	bytes_to_copy = sizeof(int);
+	memcpy(&str_size, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	//load the library_file string
+	char* library_file_c_str = new char[str_size + 1];
+	bytes_to_copy = str_size;
+	memcpy(library_file_c_str, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	library_file_c_str[str_size] = 0x00;
+	name = library_file_c_str;
+	delete[] library_file_c_str;
+
 }

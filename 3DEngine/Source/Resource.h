@@ -38,6 +38,7 @@ public:
 
 	virtual void GetBufferSize(uint& buffer_size);
 	virtual void SaveResource();
+	virtual void LoadResource(char* cursor, int& bytes_copied);
 
 protected:
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;

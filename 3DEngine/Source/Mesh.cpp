@@ -151,7 +151,7 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 
 void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 {
-	/*
+	
 	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
@@ -170,35 +170,10 @@ void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	//Load mesh.mjope path
-	render_data = new RenderData;
-	int name_lenght = 0;
 	bytes_to_copy = sizeof(int);
-	memcpy(&name_lenght, cursor, bytes_to_copy);
+	memcpy(&resource_uid, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
-
-	bytes_to_copy = name_lenght;
-	render_data->mesh_path = new char[name_lenght];
-	render_data->mesh_path[name_lenght] = 0x00;
-	memcpy(render_data->mesh_path, cursor, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
-
-//	render_data = App->input->jope_importer.GetNewMesh(render_data->mesh_path);
-	if (render_data != nullptr)
-	{
-		//Generate AABB/OBB boxes
-		aabb_box.SetNegativeInfinity();
-		aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
-
-		CreateBoxIndices();
-		CreateBoxBuffers(aabb_box);
-	}
-	else
-		LOGC("Error: Unable to load the mesh, file not found in library please import again");
-
-		*/
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)
