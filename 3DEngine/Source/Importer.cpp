@@ -39,14 +39,14 @@ void Importer::Import(char * full_path, std::string& new_file)
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + filename + extension).c_str());
+		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER + filename + extension).c_str());
 		mesh_importer->Import(full_path, path, filename, extension);
 	}
 	if (extension == ".png" || extension == ".tga")
 	{
-		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + filename + extension).c_str());
+		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER + filename + extension).c_str());
 		ResourceTexture* new_resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
-		text_importer->Import(new_resource, full_path, filename.c_str());
+		text_importer->Import(new_resource, path.c_str(), (filename + extension).c_str());
 	}
 }
 
@@ -109,6 +109,22 @@ void Importer::CheckDirectories()
 	else
 		LOGC("Assets folder identified.");
 
+	//Assets/Fbx folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER))
+	{
+		LOGC("Assets Fbx not detected, creating a new one...");
+	}
+	else
+		LOGC("Assets Fbx folder identified.");
+
+	//Assets/textures folder
+	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER))
+	{
+		LOGC("Assets textures not detected, creating a new one...");
+	}
+	else
+		LOGC("Assets textures folder identified.");
+
 
 	//Library folder
 	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER))
@@ -137,7 +153,7 @@ void Importer::CheckDirectories()
 
 }
 
-void Importer::CopyFileToFolder(const char * prev_folder, const char * folder)
+void Importer::CopyFileToFolder(const char * prev_folder, const char * folder) const
 {
 	std::ifstream in(prev_folder, std::ofstream::binary);
 	if (in.good() && in.is_open()) {

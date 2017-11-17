@@ -19,7 +19,7 @@ public:
 	
 	void CheckDirectories();
 
-	void CopyFileToFolder(const char* prev_folder, const char* folder);
+	void CopyFileToFolder(const char* prev_folder, const char* folder) const;
 	
 	const MeshImporter* GetMeshImporter()const;
 	const TextureImporter* GetTextImporter()const;

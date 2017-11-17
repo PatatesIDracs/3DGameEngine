@@ -32,6 +32,8 @@
 #define JOPE_LIBRARY_FOLDER "Library/"
 #define JOPE_MESHES_FOLDER "Meshes/"
 #define JOPE_TEXTURE_FOLDER "Textures/"
+#define JOPE_ASSETS_FBX_FOLDER "Fbx/"
+#define JOPE_ASSETS_TEXTURE_FOLDER "textures/"
 
 //Identifier for scene serialitzation
 #define GAMEOBJECTIDENTIFIER -1

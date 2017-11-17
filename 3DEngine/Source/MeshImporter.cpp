@@ -203,6 +203,8 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 		
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
+			std::string temp = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
+			App->resources->GetImporter()->CopyFileToFolder((file_path + file_name.data).c_str(), (temp + file_name.data).c_str());
 			text_importer->Import(new_texture, file_path.c_str(), file_name.data);
 		}
 		else
