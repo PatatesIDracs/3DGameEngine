@@ -193,19 +193,20 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 	std::map<int, int>* ret = new std::map<int, int>;	//Assimp ID - Resource ID
 	std::pair<int, int> ret_pair;						//Assimp ID - Resource ID
 
-	TextureImporter* text_importer =(TextureImporter*)App->resources->GetImporter()->GetTextImporter();
+	//TextureImporter* text_importer =(TextureImporter*)App->resources->GetImporter()->GetTextImporter();
 
 	std::string file_path = full_path;
 	for (uint i = 0; i < scene->mNumMaterials; i++)
 	{
-		ResourceTexture* new_texture = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TEXTURE);
+		//ResourceTexture* new_texture = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TEXTURE);
+		int uid = 0;
 		aiString file_name;
 		
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
-			std::string temp = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
-			App->resources->GetImporter()->CopyFileToFolder((file_path + file_name.data).c_str(), (temp + file_name.data).c_str());
-			text_importer->Import(new_texture, file_path.c_str(), file_name.data);
+			//std::string temp = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
+			//App->resources->GetImporter()->CopyFileToFolder((file_path + file_name.data).c_str(), (temp + file_name.data).c_str());
+			uid = App->resources->GetImporter()->ImportTexture((file_path + file_name.data).c_str(), file_name.data, true);
 		}
 		else
 		{
@@ -213,7 +214,7 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 		}
 
 		ret_pair.first = i;
-		ret_pair.second = new_texture->GetUID();
+		ret_pair.second = uid;
 		ret->insert(ret_pair);
 	}
 

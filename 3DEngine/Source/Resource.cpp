@@ -9,7 +9,7 @@ Resource::~Resource()
 {
 }
 
-int Resource::GetUID()
+int Resource::GetUID() const
 {
 	return uid;
 }
@@ -76,6 +76,16 @@ void Resource::UnloadFromMemory() {
 const char* Resource::GetName() const
 {
 	return name.c_str();
+}
+
+const char * Resource::GetAssetsPath() const
+{
+	return assets_file.c_str();
+}
+
+const char * Resource::GetLibraryPath() const
+{
+	return library_file.c_str();
 }
 
 void Resource::GetBufferSize(uint & buffer_size)

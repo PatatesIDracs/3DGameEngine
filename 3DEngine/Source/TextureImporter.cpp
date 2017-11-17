@@ -13,10 +13,13 @@
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
+#include "parson.h"
+#include "ConfigJSON.h"
 
 TextureImporter::TextureImporter()
 {
 	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER;
+	assets_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
 	ilInit();
 	iluInit();
 	ilutInit();
@@ -25,22 +28,17 @@ TextureImporter::TextureImporter()
 
 TextureImporter::~TextureImporter()
 {
+	import_path.clear();
+	assets_path.clear();
 }
 
-void TextureImporter::GetFileName(std::string& file_name)
+void TextureImporter::Import(ResourceTexture* resource, const char * path, const char* name, Config_Json& meta_file)
 {
-	for (uint i = 0; i < file_name.size(); i++){
-		if (file_name[i] == '\\')
-			file_name[i] = '/';
-	}
-}
-
-void TextureImporter::Import(ResourceTexture* resource, const char * path, const char* name)
-{
+	// Get Full Path
 	std::string file_name = name;
-	GetFileName(file_name);
-	std::string full_path = path;
-	full_path += file_name;
+	resource->SetName(name);
+
+	// Add .dds File Format
 	file_name.append(TEXFILEFORMAT);
 
 	//Generate file
@@ -48,7 +46,7 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 	uint imgID = 0;
 	ilGenImages(1, &imgID);
 	ilBindImage(imgID);
-	ILboolean success = ilLoadImage(full_path.c_str());
+	ILboolean success = ilLoadImage(path);
 
 	ILuint size;
 	ILubyte* data;
@@ -77,7 +75,14 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 		}
 		delete[] data;
 	}
-	resource->SetName(name);
 	resource->SetLibraryFile((import_path + file_name).c_str());
-	resource->SetAssetFile(full_path.c_str());
+	resource->SetAssetFile((assets_path + name).c_str());
+
+	// Write Texture Meta File
+	WriteMeta(meta_file, resource);
+}
+
+void TextureImporter::WriteMeta(Config_Json& meta_file, const ResourceTexture* resource) const
+{
+	meta_file.SetInt("UUID", resource->GetUID());
 }

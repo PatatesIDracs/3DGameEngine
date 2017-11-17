@@ -3,9 +3,12 @@
 
 #include <string>
 
+#define METAFORMAT ".meta"
+
 class MeshImporter;
 class TextureImporter;
 struct RenderData;
+class Config_Json;
 
 class Importer
 {
@@ -16,11 +19,20 @@ public:
 	void Import(char* full_path, std::string& new_file);
 
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
+	void NormalizePath(std::string& path);
+
+	void GetFileName(std::string& file_name);
 	
 	void CheckDirectories();
 
 	void CopyFileToFolder(const char* prev_folder, const char* folder) const;
-	
+
+	// meta methods
+	bool FoundMetaFile(const char* meta_path);
+	bool NeedReImport(const char* meta_path, Config_Json& meta_file);
+
+	int ImportTexture(const char* full_path, const char* file_name, bool from_scene = true);
+
 	const MeshImporter* GetMeshImporter()const;
 	const TextureImporter* GetTextImporter()const;
 
@@ -32,6 +44,9 @@ private:
 	//Specialized importers
 	MeshImporter* mesh_importer = nullptr;
 	TextureImporter* text_importer = nullptr;
+
+	std::string assets_fbx_path;
+	std::string assets_texture_path;
 };
 
 #endif // !__IMPORTER_H__

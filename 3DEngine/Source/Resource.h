@@ -18,7 +18,7 @@ public:
 	Resource(int uid);
 	virtual ~Resource();
 
-	int GetUID();
+	int GetUID() const;
 
 	void SetFiles(std::string new_assets_file, std::string new_library_file);
 	void SetAssetFile(std::string new_assets_file);
@@ -35,6 +35,8 @@ public:
 	virtual void UnloadFromMemory();
 
 	const char* GetName() const;
+	const char* GetAssetsPath() const;
+	const char* GetLibraryPath() const;
 
 	virtual void GetBufferSize(uint& buffer_size);
 	virtual void SaveResource();

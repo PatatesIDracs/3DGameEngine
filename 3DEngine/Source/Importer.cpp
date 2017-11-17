@@ -7,15 +7,20 @@
 #include "Application.h"
 
 #include "Resource.h"
+#include "ResourceTexture.h"
 
 #include <filesystem>
 #include <fstream>
+
+#include "parson.h"
+#include "ConfigJSON.h"
 
 Importer::Importer()
 {
 	CheckDirectories();
 	mesh_importer = new MeshImporter();
 	text_importer = new TextureImporter();
+
 }
 
 Importer::~Importer()
@@ -36,17 +41,21 @@ void Importer::Import(char * full_path, std::string& new_file)
 
 	DividePath(full_path, &path, &filename, &extension);
 
+	std::string assets_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER;
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER + filename + extension).c_str());
-		mesh_importer->Import(full_path, path, filename, extension);
+		assets_path += JOPE_ASSETS_FBX_FOLDER + filename + extension;
+		CopyFileToFolder(full_path, assets_path.c_str());
+		assets_path.append(METAFORMAT);
+
+		if (!FoundMetaFile(assets_path.c_str())) {
+			mesh_importer->Import(full_path, path, filename, extension);
+		}
 	}
 	if (extension == ".png" || extension == ".tga")
 	{
-		CopyFileToFolder(full_path, (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER + filename + extension).c_str());
-		ResourceTexture* new_resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
-		text_importer->Import(new_resource, path.c_str(), (filename + extension).c_str());
+		ImportTexture(full_path, (filename+extension).c_str(), false);
 	}
 }
 
@@ -90,6 +99,31 @@ void Importer::DividePath(char * full_path, std::string * path, std::string * fi
 
 }
 
+void Importer::NormalizePath(std::string& path)
+{
+	for (uint i = 0; i < path.size(); i++) {
+		if (path[i] == '\\')
+			path[i] = '/';
+	}
+}
+
+void Importer::GetFileName(std::string& file_name)
+{
+	std::string temp = "";
+
+	uint path_end = 0;
+	for (uint i = 0; i < file_name.size(); i++)
+	{
+		if (file_name[i] == '/') {
+			path_end = i;
+			temp.clear();
+		}
+		else temp += file_name[i];
+	}
+
+	file_name = temp;
+}
+
 //Create Assts and library directories if don't exist
 void Importer::CheckDirectories()
 {
@@ -110,7 +144,8 @@ void Importer::CheckDirectories()
 		LOGC("Assets folder identified.");
 
 	//Assets/Fbx folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER))
+	assets_fbx_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER;
+	if (std::experimental::filesystem::create_directory(assets_fbx_path.c_str()))
 	{
 		LOGC("Assets Fbx not detected, creating a new one...");
 	}
@@ -118,7 +153,8 @@ void Importer::CheckDirectories()
 		LOGC("Assets Fbx folder identified.");
 
 	//Assets/textures folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER))
+	assets_texture_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
+	if (std::experimental::filesystem::create_directory(assets_texture_path.c_str()))
 	{
 		LOGC("Assets textures not detected, creating a new one...");
 	}
@@ -159,7 +195,7 @@ void Importer::CopyFileToFolder(const char * prev_folder, const char * folder) c
 	if (in.good() && in.is_open()) {
 		
 		in.seekg(0, in.end);
-		int lenght = in.tellg();
+		int lenght = (int)in.tellg();
 		in.seekg(0, in.beg);
 		
 		char* buffer = new char[lenght];
@@ -184,6 +220,71 @@ void Importer::CopyFileToFolder(const char * prev_folder, const char * folder) c
 		delete[] buffer;
 	}
 	
+}
+
+bool Importer::FoundMetaFile(const char* meta_file)
+{
+	if (!std::experimental::filesystem::exists(meta_file)) {
+		std::ofstream new_file(meta_file, std::ofstream::binary);
+		if (new_file.good()) {
+			new_file.write("{}", 2);
+		}
+		return false;
+	}
+	return true;
+}
+
+bool Importer::NeedReImport(const char * file_path, Config_Json& meta_file)
+{
+	uint time = std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(file_path));
+	uint curr_time = meta_file.GetInt("Creation Time", 0);
+
+	// Add Default UUID if it's a new meta file
+	if (curr_time == 0)
+		meta_file.SetInt("UUID", 0);
+
+	// Check if file have changed
+	if (curr_time != time) {
+		meta_file.SetInt("Creation Time", time);
+		return true;
+	}
+	else return false;
+}
+
+int Importer::ImportTexture(const char * full_path, const char* name, bool from_scene)
+{
+	std::string path = full_path;
+	std::string file_name = name;
+
+	// Normalize Strings to use them
+	if (from_scene) {
+		NormalizePath(path);
+		GetFileName(file_name);
+	}
+
+	// Copy texture to Assets/textures folder 
+	std::string assets_path = assets_texture_path + file_name.c_str();
+	assets_path.append(METAFORMAT);
+
+	// Look for MetaFile/resource or create one if not found
+	ResourceTexture* resource = nullptr;
+	if (!FoundMetaFile(assets_path.c_str())) {
+		resource = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE);
+	} 
+
+	// if meta found get resource by UUID
+	Config_Json meta_file(assets_path.c_str());
+	if (resource == nullptr)
+		resource = (ResourceTexture*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
+
+	// Import texture and modify meta file
+	if (NeedReImport(path.c_str(), meta_file)) {
+		CopyFileToFolder(path.c_str(), (assets_texture_path + file_name).c_str());
+		text_importer->Import(resource, path.c_str(), file_name.c_str(), meta_file);
+		meta_file.SaveToFile(assets_path.c_str());
+	}
+	
+	return resource->GetUID();
 }
 
 const MeshImporter * Importer::GetMeshImporter() const

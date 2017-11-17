@@ -28,7 +28,7 @@ public:
 	Resource* GetFromUID(int uid) const;
 	Resource* CreateNewResource(RESOURCE_TYPE type, int force_uid = 0);
 	
-	const Importer* GetImporter()const;
+	Importer* GetImporter() const;
 
 private:
 

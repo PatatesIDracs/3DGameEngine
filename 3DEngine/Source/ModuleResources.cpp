@@ -124,7 +124,7 @@ Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 	return ret;
 }
 
-const Importer * ModuleResources::GetImporter() const
+Importer * ModuleResources::GetImporter() const
 {
 	return jope_importer;
 }
