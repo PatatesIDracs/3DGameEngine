@@ -65,8 +65,7 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name)
 {
 	//Dummy game object to save scene
-	//GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
-	GameObject* scene_go = App->scene_intro->CreateNewGameObject(file_name.c_str());
+	GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
 
 	aiNode* scene_root_node = scene->mRootNode;
 
@@ -76,6 +75,7 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 	}
 	ResourceScene* scene_resource = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
 	scene_resource->SaveResource(scene_go);
+	delete scene_go;
 }
 
 void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObject * import_target, aiMatrix4x4t<float> parent_transform, std::map<int, int>* id_map, std::map<int, int>* text_map)
@@ -84,7 +84,7 @@ void MeshImporter::ImportNode(aiNode * to_import, const aiScene * scene, GameObj
 	{
 		for (uint i = 0; i < to_import->mNumMeshes; i++)
 		{
-			GameObject* node_go = App->scene_intro->CreateNewGameObject(to_import->mName.C_Str(), import_target);
+			GameObject* node_go = new GameObject(import_target, to_import->mName.C_Str());
 			int mesh_id = to_import->mMeshes[i];
 
 			//Assimp id - Resource id map
