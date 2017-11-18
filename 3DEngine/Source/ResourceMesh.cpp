@@ -85,7 +85,7 @@ AABB ResourceMesh::GetAABB() const
 void ResourceMesh::SaveResource()
 {
 	//Set names 
-	library_file = std::to_string(uid);
+	library_file = JOPE_MESHES_FOLDER + std::to_string(uid);
 	library_file.append(MJOPE);
 
 	uint buffer_size = 0;
@@ -139,7 +139,7 @@ void ResourceMesh::SaveResource()
 	memcpy(cursor, render_data->normals, bytes_to_copy);
 	cursor += bytes_to_copy;
 
-	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
+	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
 	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
 	new_file.write(buffer_data, buffer_size);
 

@@ -16,7 +16,7 @@ public:
 	Importer();
 	~Importer();
 
-	void Import(char* full_path, std::string& new_file);
+	void Import(const char* full_path);
 
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	void NormalizePath(std::string& path);

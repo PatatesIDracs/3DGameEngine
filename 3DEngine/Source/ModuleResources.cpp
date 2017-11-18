@@ -7,6 +7,9 @@
 #include "ResourceScene.h"
 #include "ResourceTexture.h"
 
+#include "parson.h"
+#include "ConfigJSON.h"
+
 #include <string>
 
 namespace fs = std::experimental::filesystem;
@@ -23,6 +26,17 @@ bool ModuleResources::Init()
 {
 	jope_importer = new Importer();
 	SearchForResources();
+
+	return true;
+}
+
+bool ModuleResources::Start()
+{
+	// Update Library
+
+	// Load Assets
+	LoadFromAssets();
+
 	return true;
 }
 
@@ -63,10 +77,57 @@ void ModuleResources::SearchForResources()
 	}
 }
 
+void ModuleResources::LoadFromAssets()
+{
+	fs::recursive_directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER };
+	fs::recursive_directory_iterator end{};
+
+	std::string path;
+	std::string filename;
+	std::string extension;
+	std::string temp;
+	for (; it != end; it++)
+	{
+		if (fs::is_directory(it->path())) {
+			LOGC("Folder %S located", it->path().c_str());
+		}
+		else
+		{
+			temp = it->path().string();
+			jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
+			if (extension == METAFORMAT) {
+				CheckMetaFiles((path + filename), extension.c_str());
+				LOGC("Found Meta File %S File", it->path().c_str());
+			}
+		}
+		path.clear();
+		filename.clear();
+		extension.clear();
+
+	}
+}
+
+bool ModuleResources::CheckMetaFiles(std::string& file_path, const char* extension)
+{
+	Config_Json meta_file((file_path + extension).c_str());
+	Resource* meta_resource = GetFromUID(meta_file.GetInt("UUID"));
+
+	if (!fs::exists(file_path.c_str())) {
+		fs::remove((file_path + extension).c_str());
+		if (meta_resource != nullptr)
+			fs::remove(meta_resource->GetLibraryPath());
+	}
+	else {
+		if (meta_resource == nullptr) {
+			jope_importer->Import(file_path.c_str());
+		}
+	}
+	return true;
+}
+
 void ModuleResources::HandleDropEvent(SDL_DropEvent drop_event)
 {
-	std::string temp;
-	jope_importer->Import(drop_event.file, temp);
+	jope_importer->Import(drop_event.file);
 }
 
 int ModuleResources::Find(const char * file_in_assets) const

@@ -31,7 +31,7 @@ Importer::~Importer()
 	delete text_importer;
 }
 
-void Importer::Import(char * full_path, std::string& new_file)
+void Importer::Import(const char * full_path)
 {
 	//Chek path isn't a nullptr
 	if (full_path == nullptr) return;
@@ -41,7 +41,7 @@ void Importer::Import(char * full_path, std::string& new_file)
 	std::string filename;
 	std::string extension;
 
-	DividePath(full_path, &path, &filename, &extension);
+	DividePath((char*)full_path, &path, &filename, &extension);
 
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")

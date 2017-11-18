@@ -18,8 +18,8 @@
 
 TextureImporter::TextureImporter()
 {
-	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER;
-	assets_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
+	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+	assets_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER;
 	ilInit();
 	iluInit();
 	ilutInit();
@@ -75,8 +75,10 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 		}
 		delete[] data;
 	}
-	resource->SetLibraryFile((import_path + file_name).c_str());
-	resource->SetAssetFile((assets_path + name).c_str());
+	resource->SetLibraryFile((JOPE_TEXTURE_FOLDER + file_name).c_str());
+	
+	file_name = JOPE_ASSETS_TEXTURE_FOLDER;
+	resource->SetAssetFile((file_name + name).c_str());
 
 	// Write Texture Meta File
 	WriteTextureMeta(meta_file, resource);

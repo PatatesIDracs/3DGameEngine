@@ -16,10 +16,13 @@ public:
 	~ModuleResources();
 
 	bool Init();
+	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
 
 	void SearchForResources();						//Look at library for new resources
+	void LoadFromAssets();
+	bool CheckMetaFiles(std::string& file_path, const char* extension);
 //	void LoadResource(std::string file_path);		
 	void HandleDropEvent(SDL_DropEvent drop_event);	
 

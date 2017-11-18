@@ -141,6 +141,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 
 	Importer* importer = App->resources->GetImporter();
 	std::string mesh_path;
+	std::string library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
 	for (uint i = 0; i < scene->mNumMeshes; i++)
 	{
 		// Path to Assets/ Meshes / File
@@ -195,10 +196,10 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 			memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
 
 			mesh_resource->SetRenderData(mesh);
-
+			mesh_resource->SetAssetFile((file_name + std::to_string(i) + MJOPE).c_str());
 			mesh_resource->SaveResource();
-			mesh_resource->SetAssetFile(mesh_path.c_str());
-			importer->CopyFileToFolder((import_path + mesh_resource->GetLibraryPath()).c_str(), mesh_path.c_str());
+			
+			importer->CopyFileToFolder((library_path + mesh_resource->GetLibraryPath()).c_str(), mesh_path.c_str());
 			WriteMeshMeta(meta_file, mesh_resource);
 			meta_file.SaveToFile((mesh_path + METAFORMAT).c_str());
 			
@@ -250,7 +251,7 @@ void MeshImporter::WriteMeshMeta(Config_Json & meta_file, const ResourceMesh * r
 	// Update Creation Time if meta_file created
 	int creation_time = meta_file.GetInt("Creation Time");
 	if (creation_time == 0) {
-		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(resource->GetAssetsPath()));
+		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(assets_meshes_path + resource->GetAssetsPath()));
 		meta_file.SetInt("Creation Time", creation_time);
 	}
 
