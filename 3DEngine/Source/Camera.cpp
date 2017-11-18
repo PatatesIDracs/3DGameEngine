@@ -42,7 +42,7 @@ Camera::~Camera()
 
 void Camera::Update()
 {
-	if (fvertices_id != 0 && findices_id != 0)
+	if (active)
 	{
 		glLineWidth(2.0f);
 

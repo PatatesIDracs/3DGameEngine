@@ -56,6 +56,7 @@ void ModuleCamera3D::SetMainCamera(Camera* comp_camera, bool active)
 	if (active) {
 		if (main_camera != nullptr && main_camera != comp_camera) main_camera->Disable();
 		main_camera = comp_camera;
+		main_camera->SetFOVRatio(App->window->width, App->window->height);
 	}
 	else if (main_camera == comp_camera) main_camera = nullptr;
 }
@@ -73,6 +74,15 @@ void ModuleCamera3D::ChangeCamera(bool mode_editor)
 	X = Y.Cross(Z);
 
 	update_camera = true;
+}
+
+void ModuleCamera3D::UpdateFov(int width, int height)
+{
+
+	if (main_camera != nullptr) 
+		main_camera->SetFOVRatio(width, height);
+	if (camera_editor != nullptr)
+		camera_editor->SetFOVRatio(width, height);
 }
 
 Camera * ModuleCamera3D::GetMainCamera() const

@@ -17,6 +17,7 @@ public:
 	void SetCameraEditor();
 	void SetMainCamera(Camera* comp_camera, bool active);
 	void ChangeCamera(bool mode_editor);
+	void UpdateFov(int width, int height);
 	Camera* GetMainCamera() const;
 
 	void Look(const vec &Position, const vec &Reference, bool RotateAroundReference = false);

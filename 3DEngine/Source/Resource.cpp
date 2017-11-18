@@ -151,7 +151,7 @@ void Resource::LoadResource()
 	if (loaded_file)
 	{
 		loaded_file.seekg(0, loaded_file.end);
-		buffer_size = loaded_file.tellg();
+		buffer_size = (uint)loaded_file.tellg();
 		loaded_file.seekg(0, loaded_file.beg);
 
 		buffer_data = new char[buffer_size];

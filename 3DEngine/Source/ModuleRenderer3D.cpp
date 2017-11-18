@@ -168,6 +168,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 {
 	App->window->height = height;
 	App->window->width = width;
+	App->camera->UpdateFov(width,height);
+
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
