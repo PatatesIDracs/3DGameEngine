@@ -93,3 +93,8 @@ void TextureImporter::WriteTextureMeta(Config_Json& meta_file, const ResourceTex
 	//texture_importer.SetInt("DX compression", ilGetInteger(IL_DXTC_DATA_FORMAT));
 
 }
+
+int TextureImporter::GetDevilVersion()
+{
+	return IL_VERSION;
+}

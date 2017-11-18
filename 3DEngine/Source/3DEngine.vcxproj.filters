@@ -51,6 +51,9 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{edb6279d-4617-49b8-9019-1fc17c306839}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rd parties\mmgr">
+      <UniqueIdentifier>{16840871-ab2e-4020-9e13-0e05c478b516}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="j1PerfTimer.cpp">
@@ -270,6 +273,9 @@
     </ClCompile>
     <ClCompile Include="ResourceScene.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Fluid_Studios_Memory_Manager\mmgr.cpp">
+      <Filter>3rd parties\mmgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -719,6 +725,12 @@
     </ClInclude>
     <ClInclude Include="ResourceTexture.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Fluid_Studios_Memory_Manager\mmgr.h">
+      <Filter>3rd parties\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Fluid_Studios_Memory_Manager\nommgr.h">
+      <Filter>3rd parties\mmgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

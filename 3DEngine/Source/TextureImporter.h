@@ -18,6 +18,8 @@ public:
 	
 	void WriteTextureMeta(Config_Json& meta_file, const ResourceTexture* resource) const;
 
+	int GetDevilVersion();
+
 private:
 	std::string import_path;
 	std::string assets_path;

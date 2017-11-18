@@ -11,6 +11,7 @@
 #include "MeshRenderer.h"
 #include "Material.h"
 #include "Globals.h"
+#include "Math.h"
 #include "Glew\include\glew.h"
 
 #include "Importer.h"
@@ -26,6 +27,7 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
+#include "Assimp/include/version.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
@@ -361,6 +363,13 @@ RenderData * MeshImporter::Load(const char * full_path)
 
 	LOGC("Mesh loaded");
 	return ret;
+}
+
+void MeshImporter::GetAssimpVersion(int & major, int & minor, int & revision)
+{
+	major = aiGetVersionMajor();
+	minor = aiGetVersionMinor();
+	revision = aiGetVersionRevision();
 }
 
 const char* MeshImporter::SaveMesh(RenderData * mesh, const char* file_name)

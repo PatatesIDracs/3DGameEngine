@@ -11,7 +11,12 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Importer.h"
+#include "MeshImporter.h"
+#include "TextureImporter.h"
 #include "Mesh.h"
+
+#include "Fluid_Studios_Memory_Manager\mmgr.h"
+#include "Fluid_Studios_Memory_Manager\nommgr.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -235,8 +240,13 @@ void ModuleEditor::LogToConsole(std::string * log_string)
 //Small function just to make the code cleaner
 void ModuleEditor::LoadHardwareSoftwareInfo()
 {
-//	devil_version = App->assimp->GetDevilVersion();
+	//Dummy importers to get the version number
+	TextureImporter dummy_tex;
+	MeshImporter dummy_mesh;
 
+	dummy_mesh.GetAssimpVersion(assimp_major, assimp_minor, assimp_revision);
+	devil_version = dummy_tex.GetDevilVersion();
+	
 	cpu_cores = SDL_GetCPUCount();
 	cpu_cache_size = SDL_GetCPUCacheLineSize();
 	ram = ((float)SDL_GetSystemRAM() / 1024.0f);
@@ -301,17 +311,46 @@ void ModuleEditor::ApplicationConfig()
 		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
 		ImGui::PlotHistogram("Miliseconds", &App->GetMs()->front(), App->GetMs()->size(), 0, NULL, 0.0f, 50.0f, ImVec2(0, 80));
 
+		sMStats mem_stats = m_getMemoryStatistics();
+		ImGui::Text("Total Reported Mem: %u", mem_stats.totalReportedMemory);
+		ImGui::Text("Total Actual Mem: %u", mem_stats.totalActualMemory);
+		ImGui::Text("Peak Reported Mem: %u", mem_stats.peakReportedMemory);
+		ImGui::Text("Peak Actual Mem: %u", mem_stats.peakActualMemory);
+		ImGui::Text("Accumulated Reported Mem: %u", mem_stats.accumulatedReportedMemory);
+		ImGui::Text("Accumulated Actual Mem: %u", mem_stats.accumulatedActualMemory);
+		ImGui::Text("Accumulated Alloc Unit Count: %u", mem_stats.accumulatedAllocUnitCount);
+		ImGui::Text("Total Alloc Unit Count: %u", mem_stats.totalAllocUnitCount);
+		ImGui::Text("Peak Alloc Unit Count: %u", mem_stats.peakAllocUnitCount);
+
 	}
 }
 
 void ModuleEditor::HardwareDetection()
 {
 
-	if (ImGui::CollapsingHeader("Hardware"))
+	if (ImGui::CollapsingHeader("Hardware & software"))
 	{
 		ImVec4	cyan(0.0f, 1.0f, 1.0f, 1.0f);
 
-		//----------------------
+		//SDL info--------------
+		ImGui::Text("SDL version: %i.%i.%i", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+
+		//Assimp info-----------
+		ImGui::Text("Assimp version: %i.%i.%i", assimp_major, assimp_minor, assimp_revision);
+
+		//Devil info
+		ImGui::Text("Devil version: %i", devil_version);
+
+		ImGui::Separator();
+		//CPU info--------------
+		ImGui::Text("CPU: "); ImGui::SameLine();
+		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
+		ImGui::TextColored(cyan, "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
+
+		ImGui::Text("System RAM: "); ImGui::SameLine();
+		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
+		
+		ImGui::Separator();
 		//CPU info--------------
 		ImGui::Text("CPU: "); ImGui::SameLine();
 		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
@@ -321,21 +360,22 @@ void ModuleEditor::HardwareDetection()
 		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
 
 		ImGui::Text("Caps: "); ImGui::SameLine();
-		if (SDL_Has3DNow() == SDL_TRUE)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
-		if (SDL_HasAVX() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
-	//	if (SDL_HasAVX2() == SDL_TRUE)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
-		if (SDL_HasAltiVec() == SDL_TRUE)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
-		if (SDL_HasMMX() == SDL_TRUE)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
-		if (SDL_HasRDTSC() == SDL_TRUE)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
-		if (SDL_HasSSE() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD, ");		ImGui::SameLine();
-		if (SDL_HasSSE2() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD2, ");		ImGui::SameLine();
-		if (SDL_HasSSE3() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD3, ");		ImGui::SameLine();
-		if (SDL_HasSSE41() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD41, ");	ImGui::SameLine();
-		if (SDL_HasSSE42() == SDL_TRUE)		ImGui::TextColored(cyan, "SSD42, ");
+		if (has_3Dnow)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
+		if (has_AVX)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
+		if (has_AVX2)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
+		if (has_AltiVec)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
+		if (has_MMX)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
+		if (has_RDTSC)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
+		if (has_SSE)		ImGui::TextColored(cyan, "SSE, ");		ImGui::SameLine();
+		if (has_SSE2)		ImGui::TextColored(cyan, "SSE2, ");		ImGui::SameLine();
+		if (has_SSE3)		ImGui::TextColored(cyan, "SSE3, ");		ImGui::SameLine();
+		if (has_SSE41)		ImGui::TextColored(cyan, "SSE41, ");	ImGui::SameLine();
+		if (has_SSE42)		ImGui::TextColored(cyan, "SSE42, ");
+
 
 
 		ImGui::Separator();
-		//---------------------
+
 		//GPU info-------------
 		ImGui::Text("Vendor: "); ImGui::SameLine();
 		ImGui::Text((const char*)glGetString(GL_VENDOR));

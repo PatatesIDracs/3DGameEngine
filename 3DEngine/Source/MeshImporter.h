@@ -23,6 +23,8 @@ public:
 
 	RenderData* Load(const char* full_path);
 
+	void GetAssimpVersion(int& major, int& minor, int& revision);
+
 private:
 
 	const char* SaveMesh(RenderData* mesh, const char* file_name);
