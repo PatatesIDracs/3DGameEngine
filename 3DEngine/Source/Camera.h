@@ -44,7 +44,7 @@ public:
 	void ChangeParent(GameObject* new_parent);
 
 	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
-	void Load(const char* buffer_data, char* cursor, int& bytes_copied);
+	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
 private:

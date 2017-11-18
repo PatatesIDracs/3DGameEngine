@@ -1,4 +1,5 @@
 #include "Resource.h"
+#include <fstream>
 
 Resource::Resource(int uid) : uid(uid), type(RESOURCE_TYPE::RESOURCE_UNKNOW)
 {
@@ -139,11 +140,46 @@ void Resource::SaveResource()
 	cursor += bytes_to_copy; //Advance cursor
 }
 
-void Resource::LoadResource(char* cursor, int& bytes_copied)
+//Load the library file to a buffer and pass it to the LoadResourceFromBuffer method
+void Resource::LoadResource()
 {
-	//Type is not loaded (shold be loaded externaly to know the Resource type), thats why its the first one to be saved
+	LOGC("Loading Resource from %s", library_file.c_str());
+
+	char* buffer_data = nullptr;
+	uint buffer_size = 0;
+	std::ifstream loaded_file(library_file.c_str(), std::fstream::binary);
+	if (loaded_file)
+	{
+		loaded_file.seekg(0, loaded_file.end);
+		buffer_size = loaded_file.tellg();
+		loaded_file.seekg(0, loaded_file.beg);
+
+		buffer_data = new char[buffer_size];
+
+		loaded_file.read(buffer_data, buffer_size);
+		loaded_file.close();
+	}
+	if (buffer_data == nullptr)
+	{
+		LOGC("File %s couldn't be loaded from library", library_file.c_str());
+		return;
+	}
+	char* cursor = buffer_data;
+	int bytes_copied;
+
+	LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
+}
+
+void Resource::LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size)
+{
+	//Type load
+	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
+	memcpy(&type, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//Uid load
-	uint bytes_to_copy = sizeof(int);
+	bytes_to_copy = sizeof(int);
 	memcpy(&uid, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;

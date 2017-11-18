@@ -305,7 +305,7 @@ void GameObject::Save(const char* buffer_data, char* cursor, int& bytes_copied)
 	}
 }
 
-void GameObject::Load(const char * buffer_data, char* cursor, int& bytes_copied)
+void GameObject::Load(char* cursor, int& bytes_copied)
 {
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
@@ -378,7 +378,7 @@ void GameObject::DrawAddComponentWindow()
 
 	if (new_comp_type != COMP_TYPE::COMP_UNKNOWN)
 	{
-		AddComponent( CreatComponent(new_comp_type));
+		AddComponent(CreatComponent(new_comp_type));
 		creating_component = false;
 	}
 }
@@ -419,6 +419,7 @@ void GameObject::ChangeChildsStatic(bool state)
 		children[i]->ChangeChildsStatic(state);
 	}
 }
+
 
 //TODO: Factory in a dummy file, module? but not here (too much includes)
 Component* GameObject::CreatComponent(COMP_TYPE new_comp_type)

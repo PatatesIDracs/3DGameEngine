@@ -170,6 +170,17 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 	return ret;
 }
 
+void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array)
+{
+	for (uint i = 0; i < new_go_array->size(); i++)
+	{
+		dynamic_gameobjects.push_back((*new_go_array)[i]);
+		if ((*new_go_array)[i]->parent == nullptr)
+			root->AddChildren((*new_go_array)[i]);
+	}
+	CheckDynamicGameObjectsState();
+}
+
 void ModuleSceneIntro::CollectCandidates()
 {
 	// Get Dynamic Meshes to render
@@ -202,7 +213,6 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 
 void ModuleSceneIntro::CheckDynamicGameObjectsState()
 {
-	bool update_octree = false;
 	GameObject* object = nullptr;
 	for (uint i = 0; i < dynamic_gameobjects.size(); i++)
 	{
@@ -424,7 +434,7 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 			{
 			GameObject* new_gameobject = new GameObject(nullptr);
 			int bytes_advanced = 0;
-			new_gameobject->Load(buffer_data, cursor, bytes_advanced);
+			new_gameobject->Load(cursor, bytes_advanced);
 			cursor += bytes_advanced;
 			bytes_copied += bytes_advanced;
 			loaded_gameobjects.push_back(new_gameobject);
@@ -442,9 +452,9 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 			cursor += bytes_to_copy;
 			bytes_copied += bytes_to_copy;
 			
-			Component* new_component = ComponentToLoad(new_comp_type);
+			Component* new_component = NewOrphanComponent(new_comp_type);
 			int bytes_advanced = 0;
-			new_component->Load(buffer_data, cursor, bytes_advanced);
+			new_component->Load(cursor, bytes_advanced);
 			cursor += bytes_advanced;
 			bytes_copied += bytes_advanced;
 			loaded_components.push_back(new_component);
@@ -481,7 +491,6 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		}
 	}
 
-	GameObject* new_root = nullptr;
 	for (uint i = 0; i < loaded_gameobjects.size(); i++)
 	{
 		if (loaded_gameobjects[i]->parent == nullptr)
@@ -494,7 +503,7 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 
 }
 
-Component * ModuleSceneIntro::ComponentToLoad(COMP_TYPE new_comp_type)
+Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
 {
 	Component* ret = nullptr;
 

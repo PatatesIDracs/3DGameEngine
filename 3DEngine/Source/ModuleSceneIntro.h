@@ -25,6 +25,7 @@ public:
 	void Draw();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
+	void LoadGameObjects(std::vector<GameObject*>* new_go_array);
 
 	void CollectCandidates();
 	bool AddGameObjectToOctree(const GameObject* object);
@@ -44,8 +45,7 @@ public:
 	void SaveScene();
 	void LoadScene(const char* file_path);
 
-private:
-	Component* ComponentToLoad(COMP_TYPE new_comp_type);
+	Component* NewOrphanComponent(COMP_TYPE new_comp_type);
 
 public:
 	GameObject* root = nullptr;

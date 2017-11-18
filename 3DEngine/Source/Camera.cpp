@@ -287,7 +287,7 @@ void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 }
 
-void Camera::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+void Camera::Load(char * cursor, int & bytes_copied)
 {
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);

@@ -1,5 +1,7 @@
 #include "ResourceScene.h"
 #include "GameObject.h"
+#include "Component.h"
+#include "Application.h"
 
 #include <fstream>
 
@@ -75,7 +77,93 @@ void ResourceScene::GetBufferSize(uint & buffer_size)
 	Resource::GetBufferSize(buffer_size);
 }
 
-void ResourceScene::LoadResource(char * cursor, int & bytes_copied)
+void ResourceScene::LoadResource()
 {
+}
+
+void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
+{
+	//Load the base properties
+	Resource::LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
+	cursor += bytes_copied;
+
+	uint bytes_to_copy;
+	int next_identifier;
+	std::vector<GameObject*> loaded_gameobjects;
+	std::vector<Component*> loaded_components;
+
+	while (bytes_copied < buffer_size)
+	{
+		bytes_to_copy = sizeof(int);
+		memcpy(&next_identifier, cursor, bytes_to_copy);
+		cursor += bytes_to_copy;
+		bytes_copied += bytes_to_copy;
+
+		switch (next_identifier)
+		{
+		case GAMEOBJECTIDENTIFIER:
+		{
+			GameObject* new_gameobject = new GameObject(nullptr);
+			int bytes_advanced = 0;
+			new_gameobject->Load(cursor, bytes_advanced);
+			cursor += bytes_advanced;
+			bytes_copied += bytes_advanced;
+			loaded_gameobjects.push_back(new_gameobject);
+		}
+			break;
+		case COMPONENTIDENTIFIER:
+		{
+			COMP_TYPE new_comp_type = COMP_TYPE::COMP_UNKNOWN;
+			bytes_to_copy = sizeof(COMP_TYPE);
+			memcpy(&new_comp_type, cursor, bytes_to_copy);
+			cursor += bytes_to_copy;
+			bytes_copied += bytes_to_copy;
+
+			Component* new_component = App->scene_intro->NewOrphanComponent(new_comp_type);
+			int bytes_advanced = 0;
+			new_component->Load(cursor, bytes_advanced);
+			cursor += bytes_advanced;
+			bytes_copied += bytes_advanced;
+			loaded_components.push_back(new_component);
+		}
+			break;
+		case ENDFILEIDENTIFIER:
+			LOGC("%s scene succesfully loaded", name.c_str());
+			break;
+		default:
+			LOGC("File seems corrupted");
+			break;
+		}
+
+	}
+
+	GameObject* scene_root = nullptr;
+	for (uint i = 0; i < loaded_components.size(); i++)
+	{
+		for (uint j = 0; j < loaded_gameobjects.size(); j++)
+		{
+			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
+			{
+				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
+				if (loaded_components[i]->GetType() == COMP_CAMERA && ((Camera*)loaded_components[i])->IsActive())
+					App->camera->SetMainCamera((Camera*)loaded_components[i], true);
+			}
+		}
+	}
+
+	for (uint i = 0; i < loaded_gameobjects.size(); i++)
+	{
+		if (loaded_gameobjects[i]->parent_UUID == 0) //Scene root has no parent so parent UUID is 0
+		{
+			scene_root = loaded_gameobjects[i];
+			continue;
+		}
+		for (uint j = 0; j < loaded_gameobjects.size(); j++)
+		{
+			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
+				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
+		}
+	}
+
 
 }

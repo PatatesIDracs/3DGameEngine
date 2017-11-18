@@ -193,7 +193,7 @@ void Transform::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 }
 
-void Transform::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+void Transform::Load(char * cursor, int & bytes_copied)
 {
 	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);

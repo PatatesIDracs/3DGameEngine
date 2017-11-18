@@ -40,7 +40,8 @@ public:
 
 	virtual void GetBufferSize(uint& buffer_size);
 	virtual void SaveResource();
-	virtual void LoadResource(char* cursor, int& bytes_copied);
+	virtual void LoadResource();
+	virtual void LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 
 protected:
 	RESOURCE_TYPE type = RESOURCE_UNKNOW;

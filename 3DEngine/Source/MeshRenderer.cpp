@@ -79,7 +79,7 @@ void MeshRenderer::Save(const char * buffer_data, char * cursor, int& bytes_copi
 	bytes_copied += bytes_to_copy;
 }
 
-void MeshRenderer::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+void MeshRenderer::Load(char * cursor, int & bytes_copied)
 {
 	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);

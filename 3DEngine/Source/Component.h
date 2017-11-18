@@ -38,7 +38,7 @@ public:
 
 	//Save and Load methods
 	virtual void Save(const char* buffer_data, char* cursor, int& bytes_copied) {};
-	virtual void Load(const char* buffer_data, char* cursor, int& bytes_copied) {};
+	virtual void Load(char* cursor, int& bytes_copied) {};
 	virtual void GetOwnBufferSize(uint& buffer_size);
 
 

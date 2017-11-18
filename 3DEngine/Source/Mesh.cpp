@@ -149,7 +149,7 @@ void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 }
 
-void Mesh::Load(const char * buffer_data, char * cursor, int & bytes_copied)
+void Mesh::Load(char * cursor, int & bytes_copied)
 {
 	
 	//UUID and parentUUID
