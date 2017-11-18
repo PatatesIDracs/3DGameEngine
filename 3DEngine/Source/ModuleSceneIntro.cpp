@@ -539,6 +539,7 @@ void ModuleSceneIntro::LoadToStop()
 	//Load the scene
 	ResourceScene* play_save = (ResourceScene*)App->resources->GetFromUID(temp_save_uid);
 	play_save->LoadResource();
+	App->resources->DeleteFileFromUID(temp_save_uid);
 	int temp_save_id = 0;
 }
 

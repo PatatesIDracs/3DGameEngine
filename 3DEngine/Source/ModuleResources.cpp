@@ -130,6 +130,24 @@ void ModuleResources::HandleDropEvent(SDL_DropEvent drop_event)
 	jope_importer->Import(drop_event.file);
 }
 
+void ModuleResources::DeleteFileFromUID(int uid)
+{
+	std::map<int, Resource*>::const_iterator it = resources_map.find(uid);
+	if (it == resources_map.end())
+		return;
+
+	std::string to_erase = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER;
+	to_erase.append(it->second->GetAssetsPath());
+	if (fs::exists(to_erase.c_str()) && fs::is_regular_file(to_erase.c_str()))
+		fs::remove(to_erase.c_str());
+	to_erase = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+	to_erase.append(it->second->GetLibraryPath());
+	if (fs::exists(to_erase.c_str()) && fs::is_regular_file(to_erase.c_str()))
+		fs::remove(to_erase.c_str());
+
+	//TODO: Check Meta
+}
+
 int ModuleResources::Find(const char * file_in_assets) const
 {
 	//TODO: to method

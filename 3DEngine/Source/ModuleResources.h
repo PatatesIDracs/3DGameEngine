@@ -31,6 +31,7 @@ public:
 	int GenerateNewUID();
 	Resource* GetFromUID(int uid) const;
 	Resource* CreateNewResource(RESOURCE_TYPE type, int force_uid = 0);
+	void DeleteFileFromUID(int uid);
 	
 	Importer* GetImporter() const;
 
