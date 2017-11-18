@@ -43,6 +43,7 @@ private:
 	void HardwareDetection();
 	
 	void DrawPlayButton();
+	void DrawClock();
 	void DrawConsole();
 	void DrawPropertiesWindow();
 	void DrawAboutWindow();

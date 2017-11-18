@@ -24,6 +24,7 @@ enum APPSTATE
 	APP_PLAY,
 	APP_PAUSE,
 	APP_TICK,
+	APP_STOP
 };
 
 struct ApplicationTime
@@ -39,7 +40,7 @@ struct ApplicationTime
 	float delta_time = 0.0f;
 
 	// Current App State
-	APPSTATE state = APP_PAUSE;
+	APPSTATE state = APP_STOP;
 
 	void ChangeState(APPSTATE new_state) {
 		state = new_state;
@@ -52,7 +53,7 @@ struct ApplicationTime
 		real_delta_time = dt;
 		frame_count++;
 
-		if (state != APP_PAUSE) { 
+		if (state != APP_PAUSE && state != APP_STOP) { 
 			dt = time_scale*dt; 
 			game_time += dt;
 
