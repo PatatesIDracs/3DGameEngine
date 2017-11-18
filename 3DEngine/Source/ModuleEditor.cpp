@@ -405,11 +405,13 @@ void ModuleEditor::DrawPlayButton()
 				App->clock.ChangeState(APP_PLAY);
 				App->camera->ChangeCamera(false);
 				// Serialize Scene before first play;
+				App->scene_intro->SaveToPlay();
 			}
 			else {
 				App->clock.ChangeState(APP_STOP);
 				App->camera->ChangeCamera(true);
 				// Load Serialized Scene after play
+				App->scene_intro->LoadToStop();
 			}
 		}
 		if (app_state == APP_PLAY || app_state == APP_PAUSE)

@@ -97,7 +97,7 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 				{
 					delete components[i];
 					components[i] = new_component;
-					//new_component->ChangeParent(this);
+					new_component->ChangeParent(this);
 				}
 				else
 					LOGC("%s already has this component", name.c_str());
@@ -107,7 +107,7 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 	}
 
 	components.push_back(new_component);
-	//new_component->ChangeParent(this);
+	new_component->ChangeParent(this);
 }
 
 void GameObject::SetTransform(float4x4 &transform)

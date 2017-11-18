@@ -46,6 +46,7 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 	str_size = strlen(assets_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy;
 	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -53,6 +54,7 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 	str_size = strlen(library_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy;
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -75,10 +77,6 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 void ResourceScene::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
-}
-
-void ResourceScene::LoadResource()
-{
 }
 
 void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
@@ -137,7 +135,6 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 
 	}
 
-	GameObject* scene_root = nullptr;
 	for (uint i = 0; i < loaded_components.size(); i++)
 	{
 		for (uint j = 0; j < loaded_gameobjects.size(); j++)
@@ -153,11 +150,6 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 
 	for (uint i = 0; i < loaded_gameobjects.size(); i++)
 	{
-		if (loaded_gameobjects[i]->parent_UUID == 0) //Scene root has no parent so parent UUID is 0
-		{
-			scene_root = loaded_gameobjects[i];
-			continue;
-		}
 		for (uint j = 0; j < loaded_gameobjects.size(); j++)
 		{
 			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
@@ -165,5 +157,11 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 		}
 	}
 
+	App->scene_intro->LoadGameObjects(&loaded_gameobjects, root_scene);
+}
 
+//False will be loaded as a prefab, true will be loaded as a new scene in the editor
+void ResourceScene::SetAsRoot(bool new_state)
+{
+	root_scene = new_state;
 }

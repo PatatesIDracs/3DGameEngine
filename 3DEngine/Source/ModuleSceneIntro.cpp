@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "ResourceMesh.h"
+#include "ResourceScene.h"
 #include "MeshRenderer.h"
 #include "Material.h"
 
@@ -170,14 +171,36 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 	return ret;
 }
 
-void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array)
+void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, bool new_scene)
 {
+	GameObject* loaded_root = nullptr;
+
+	//If it's a new scene delete the current scene and load the new one
+	//All objects from the vectors will be deleted when root is deleted
+	if (new_scene)
+	{
+		dynamic_gameobjects.clear();
+		static_gameobjects.clear();
+		if (root != nullptr)
+			delete root;		
+	}
+
+
 	for (uint i = 0; i < new_go_array->size(); i++)
 	{
 		dynamic_gameobjects.push_back((*new_go_array)[i]);
-		if ((*new_go_array)[i]->parent == nullptr)
-			root->AddChildren((*new_go_array)[i]);
+		if ((*new_go_array)[i]->parent == nullptr || (*new_go_array)[i]->parent_UUID == 0)
+			loaded_root = (*new_go_array)[i];
 	}
+
+	if (new_scene)
+	{
+		root = loaded_root;
+	}
+	else
+		root->AddChildren(loaded_root);
+
+	current_object = nullptr;
 	CheckDynamicGameObjectsState();
 }
 
@@ -501,6 +524,22 @@ void ModuleSceneIntro::LoadScene(const char * file_path)
 		}
 	}
 
+}
+
+void ModuleSceneIntro::SaveToPlay()
+{
+	ResourceScene* play_save = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+	play_save->SetAsRoot(true);
+	play_save->SaveResource(root);
+	temp_save_uid = play_save->GetUID();
+}
+
+void ModuleSceneIntro::LoadToStop()
+{
+	//Load the scene
+	ResourceScene* play_save = (ResourceScene*)App->resources->GetFromUID(temp_save_uid);
+	play_save->LoadResource();
+	int temp_save_id = 0;
 }
 
 Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)

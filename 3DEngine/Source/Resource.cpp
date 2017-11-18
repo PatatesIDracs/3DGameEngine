@@ -115,7 +115,7 @@ void Resource::SaveResource()
 	cursor += bytes_to_copy; //Advance cursor
 
 	//Save name string
-	int str_size = strlen(name.c_str());
+	int str_size = name.size();
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -143,11 +143,12 @@ void Resource::SaveResource()
 //Load the library file to a buffer and pass it to the LoadResourceFromBuffer method
 void Resource::LoadResource()
 {
-	LOGC("Loading Resource from %s", library_file.c_str());
+	std::string file_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER + library_file;
+	LOGC("Loading Resource from %s", file_path.c_str());
 
 	char* buffer_data = nullptr;
 	uint buffer_size = 0;
-	std::ifstream loaded_file(library_file.c_str(), std::fstream::binary);
+	std::ifstream loaded_file((file_path).c_str(), std::fstream::binary);
 	if (loaded_file)
 	{
 		loaded_file.seekg(0, loaded_file.end);
@@ -165,9 +166,12 @@ void Resource::LoadResource()
 		return;
 	}
 	char* cursor = buffer_data;
-	int bytes_copied;
+	int bytes_copied = 0;
 
 	LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
+
+	if (buffer_data != nullptr)
+		delete[] buffer_data;
 }
 
 void Resource::LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size)

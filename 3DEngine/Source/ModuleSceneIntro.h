@@ -25,7 +25,7 @@ public:
 	void Draw();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
-	void LoadGameObjects(std::vector<GameObject*>* new_go_array);
+	void LoadGameObjects(std::vector<GameObject*>* new_go_array, bool new_scene = false);
 
 	void CollectCandidates();
 	bool AddGameObjectToOctree(const GameObject* object);
@@ -45,6 +45,9 @@ public:
 	void SaveScene();
 	void LoadScene(const char* file_path);
 
+	void SaveToPlay();
+	void LoadToStop();
+
 	Component* NewOrphanComponent(COMP_TYPE new_comp_type);
 
 public:
@@ -63,6 +66,9 @@ private:
 	Octree<GameObject*>	scene_octree;
 
 	LineSegment last_ray;
+
+	//Simple id to store the resource for to play
+	int temp_save_uid = 0;
 };
 
 #endif // !__MODULESCENEINTRO_H__
