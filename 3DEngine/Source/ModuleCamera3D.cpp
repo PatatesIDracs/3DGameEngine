@@ -85,7 +85,7 @@ Camera * ModuleCamera3D::GetMainCamera() const
 update_status ModuleCamera3D::Update(float dt)
 {	
 	//If ImGui is using inputs don't use the camera
-	if (App->input->IsImGuiUsingInput() && !ImGuizmo::IsOver()) return UPDATE_CONTINUE;
+	if (App->input->IsImGuiUsingInput() || ImGuizmo::IsOver()) return UPDATE_CONTINUE;
 	update_camera = false;
 
 	last_dt = App->clock.real_delta_time;

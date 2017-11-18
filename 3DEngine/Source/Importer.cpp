@@ -15,6 +15,8 @@
 #include "parson.h"
 #include "ConfigJSON.h"
 
+namespace fs = std::experimental::filesystem;
+
 Importer::Importer()
 {
 	CheckDirectories();
@@ -41,17 +43,16 @@ void Importer::Import(char * full_path, std::string& new_file)
 
 	DividePath(full_path, &path, &filename, &extension);
 
-	std::string assets_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER;
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		assets_path += JOPE_ASSETS_FBX_FOLDER + filename + extension;
+		std::string assets_path = assets_fbx_path + filename + extension;
 		CopyFileToFolder(full_path, assets_path.c_str());
 		assets_path.append(METAFORMAT);
 
-		if (!FoundMetaFile(assets_path.c_str())) {
+		//if (!FoundMetaFile(assets_path.c_str())) {
 			mesh_importer->Import(full_path, path, filename, extension);
-		}
+		//}
 	}
 	if (extension == ".png" || extension == ".tga")
 	{
@@ -128,7 +129,7 @@ void Importer::GetFileName(std::string& file_name)
 void Importer::CheckDirectories()
 {
 	//Data folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY))
+	if (fs::create_directory(JOPE_DATA_DIRECTORY))
 	{
 		LOGC("Data folder not detected, creating a new one...");
 	}
@@ -136,7 +137,7 @@ void Importer::CheckDirectories()
 		LOGC("Data folder identified.");
 
 	//Assets folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER))
+	if (fs::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER))
 	{
 		LOGC("Assets not detected, creating a new one...");
 	}
@@ -145,16 +146,26 @@ void Importer::CheckDirectories()
 
 	//Assets/Fbx folder
 	assets_fbx_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER;
-	if (std::experimental::filesystem::create_directory(assets_fbx_path.c_str()))
+	if (fs::create_directory(assets_fbx_path.c_str()))
 	{
 		LOGC("Assets Fbx not detected, creating a new one...");
 	}
 	else
 		LOGC("Assets Fbx folder identified.");
+	
+	
+	//Assets/Meshes folder
+	if (fs::create_directory(JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_MESH_FOLDER))
+	{
+		LOGC("Assets Meshes not detected, creating a new one...");
+	}
+	else
+		LOGC("Assets Meshes folder identified.");
 
+	
 	//Assets/textures folder
 	assets_texture_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
-	if (std::experimental::filesystem::create_directory(assets_texture_path.c_str()))
+	if (fs::create_directory(assets_texture_path.c_str()))
 	{
 		LOGC("Assets textures not detected, creating a new one...");
 	}
@@ -163,7 +174,7 @@ void Importer::CheckDirectories()
 
 
 	//Library folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER))
+	if (fs::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER))
 	{
 		LOGC("Library not detected, creating a new one...");
 	}
@@ -171,7 +182,7 @@ void Importer::CheckDirectories()
 		LOGC("Library folder identified.");
 
 	//Library/Meshes folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
+	if (fs::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
 	{
 		LOGC("Library meshes not detected, creating a new one...");
 	}
@@ -179,7 +190,7 @@ void Importer::CheckDirectories()
 		LOGC("Library meshes folder identified.");
 
 	//Library/Textures folder
-	if (std::experimental::filesystem::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER))
+	if (fs::create_directory(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_TEXTURE_FOLDER))
 	{
 		LOGC("Library textures not detected, creating a new one...");
 	}
@@ -236,7 +247,7 @@ bool Importer::FoundMetaFile(const char* meta_file)
 
 bool Importer::NeedReImport(const char * file_path, Config_Json& meta_file)
 {
-	uint time = std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(file_path));
+	uint time = (uint)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(file_path));
 	uint curr_time = meta_file.GetInt("Creation Time", 0);
 
 	// Add Default UUID if it's a new meta file
@@ -285,16 +296,6 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 	}
 	
 	return resource->GetUID();
-}
-
-const MeshImporter * Importer::GetMeshImporter() const
-{
-	return mesh_importer;
-}
-
-const TextureImporter * Importer::GetTextImporter() const
-{
-	return text_importer;
 }
 
 RenderData* Importer::GetNewMesh(const char* mesh_path) const

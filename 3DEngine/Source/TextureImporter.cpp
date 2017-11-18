@@ -79,10 +79,17 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 	resource->SetAssetFile((assets_path + name).c_str());
 
 	// Write Texture Meta File
-	WriteMeta(meta_file, resource);
+	WriteTextureMeta(meta_file, resource);
 }
 
-void TextureImporter::WriteMeta(Config_Json& meta_file, const ResourceTexture* resource) const
+void TextureImporter::WriteTextureMeta(Config_Json& meta_file, const ResourceTexture* resource) const
 {
 	meta_file.SetInt("UUID", resource->GetUID());
+	
+	Config_Json texture_importer = meta_file.GetJsonObject("TextureImporter");
+	if (texture_importer.config_obj == NULL)
+		texture_importer = meta_file.AddJsonObject("TextureImporter");
+
+	//texture_importer.SetInt("DX compression", ilGetInteger(IL_DXTC_DATA_FORMAT));
+
 }

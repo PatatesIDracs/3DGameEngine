@@ -86,7 +86,7 @@ void ResourceMesh::SaveResource()
 {
 	//Set names 
 	library_file = std::to_string(uid);
-	library_file.append(".mjope");
+	library_file.append(MJOPE);
 
 	uint buffer_size = 0;
 	GetBufferSize(buffer_size);

@@ -16,6 +16,7 @@ public:
 	~ModuleResources();
 
 	bool Init();
+	update_status Update(float dt);
 	bool CleanUp();
 
 	void SearchForResources();						//Look at library for new resources

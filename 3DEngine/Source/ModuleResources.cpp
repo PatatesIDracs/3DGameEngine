@@ -26,6 +26,12 @@ bool ModuleResources::Init()
 	return true;
 }
 
+update_status ModuleResources::Update(float dt)
+{
+
+	return UPDATE_CONTINUE;
+}
+
 bool ModuleResources::CleanUp()
 {
 	//Delete all resources

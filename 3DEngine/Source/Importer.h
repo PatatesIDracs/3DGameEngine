@@ -33,9 +33,6 @@ public:
 
 	int ImportTexture(const char* full_path, const char* file_name, bool from_scene = true);
 
-	const MeshImporter* GetMeshImporter()const;
-	const TextureImporter* GetTextImporter()const;
-
 	//Mesh importing and loading methods
 	RenderData* GetNewMesh(const char* mesh_path) const;
 

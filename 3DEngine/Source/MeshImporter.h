@@ -4,14 +4,14 @@
 #include <string>
 #include <map>
 
-#define MESHFILEFORMAT ".mjope"
-
-struct RenderData;
 class GameObject;
-struct aiNode;
-struct aiScene;
+class ResourceMesh;
+class Config_Json;
 template <class T>
 class aiMatrix4x4t;
+struct aiNode;
+struct aiScene;
+struct RenderData;
 
 class MeshImporter
 {
@@ -36,8 +36,11 @@ private:
 	// Retrun a map with assimpID/ResourceUID Texture
 	std::map<int, int>* ImportTextureResources(const aiScene* scene, const char * full_path);
 
+	void WriteMeshMeta(Config_Json& meta_file, const ResourceMesh* resource) const;
+
 private:
 	std::string import_path;
+	std::string assets_meshes_path;
 
 };
 

@@ -16,6 +16,10 @@
 #include "Importer.h"
 #include "TextureImporter.h"
 
+#include "parson.h"
+#include "ConfigJSON.h"
+
+#include <filesystem>
 #include <fstream>
 
 #include "Assimp/include/cimport.h"
@@ -29,6 +33,8 @@ MeshImporter::MeshImporter()
 {
 	//Set the path where all the meshes would be imported
 	import_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER;
+	assets_meshes_path = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_MESH_FOLDER;
+
 }
 
 MeshImporter::~MeshImporter()
@@ -131,53 +137,72 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 	std::map<int, int>* ret = new std::map<int,int>;	//Assimp ID - Resource ID
 	std::pair<int, int> ret_pair;						//Assimp ID - Resource ID
 
+	Importer* importer = App->resources->GetImporter();
+	std::string mesh_path;
 	for (uint i = 0; i < scene->mNumMeshes; i++)
 	{
-		RenderData* mesh = new RenderData();
+		// Path to Assets/ Meshes / File
+		mesh_path = assets_meshes_path + file_name + std::to_string(i) + MJOPE;
 
-		//Indices data
-		mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
-		mesh->indices = new uint[mesh->num_indices];
-		for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
-		{
-			if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
+		ResourceMesh* mesh_resource = nullptr;
+		bool meta_found = true;
+		if (!importer->FoundMetaFile((mesh_path + METAFORMAT).c_str())) {
+			meta_found = false;
+			mesh_resource = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
+			mesh_resource->SetName((file_name + std::to_string(i)));
+		}
+		
+		Config_Json meta_file((mesh_path + METAFORMAT).c_str());
+		if (mesh_resource == nullptr)
+			mesh_resource = (ResourceMesh*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
+		
+		if (!meta_found || importer->NeedReImport(mesh_path.c_str(), meta_file)) {
+			RenderData* mesh = new RenderData();
+
+			//Indices data
+			mesh->num_indices = scene->mMeshes[i]->mNumFaces * 3;
+			mesh->indices = new uint[mesh->num_indices];
+			for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 			{
-				mesh->num_indices -= 3;
-				LOGC("WARNING, geometry face with != 3 indices! %d", 0);
+				if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
+				{
+					mesh->num_indices -= 3;
+					LOGC("WARNING, geometry face with != 3 indices! %d", 0);
+				}
+				else {
+					memcpy(&mesh->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+				}
 			}
-			else {
-				memcpy(&mesh->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+
+			//Vertices data 
+			mesh->num_vertices = scene->mMeshes[i]->mNumVertices;
+			mesh->vertices = new float[mesh->num_vertices * 3];
+			memcpy(mesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertices * 3);
+
+			//TextureCoords data
+			if (scene->mMeshes[i]->HasTextureCoords(0))
+			{
+				mesh->num_tex_vertices = scene->mMeshes[i]->mNumVertices;
+				mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
+				memcpy(mesh->tex_vertices, scene->mMeshes[i]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
 			}
+
+			//Normals data
+			mesh->num_normals = scene->mMeshes[i]->mNumVertices;
+			mesh->normals = new float[mesh->num_normals * 3];
+			memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
+
+			mesh_resource->SetRenderData(mesh);
+
+			mesh_resource->SaveResource();
+			mesh_resource->SetAssetFile(mesh_path.c_str());
+			importer->CopyFileToFolder((import_path + mesh_resource->GetLibraryPath()).c_str(), mesh_path.c_str());
+			WriteMeshMeta(meta_file, mesh_resource);
+			meta_file.SaveToFile((mesh_path + METAFORMAT).c_str());
+			
 		}
-
-		//Vertices data 
-		mesh->num_vertices = scene->mMeshes[i]->mNumVertices;
-		mesh->vertices = new float[mesh->num_vertices * 3];
-		memcpy(mesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertices * 3);
-
-		//TextureCoords data
-		if (scene->mMeshes[i]->HasTextureCoords(0))
-		{
-			mesh->num_tex_vertices = scene->mMeshes[i]->mNumVertices;
-			mesh->tex_vertices = new float[mesh->num_tex_vertices * 3];
-			memcpy(mesh->tex_vertices, scene->mMeshes[i]->mTextureCoords[0], sizeof(float) * mesh->num_tex_vertices * 3);
-		}
-
-		//Normals data
-		mesh->num_normals = scene->mMeshes[i]->mNumVertices;
-		mesh->normals = new float[mesh->num_normals * 3];
-		memcpy(mesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * mesh->num_normals * 3);
-
-		ResourceMesh* mesh_resource = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
-		mesh_resource->SetName((file_name + std::to_string(i)));
-		mesh_resource->SetRenderData(mesh);
-
-		std::string file_name = std::to_string(mesh_resource->GetUID());
-		file_name.append(MESHFILEFORMAT);
-
-		mesh_resource->SaveResource();
 		//Save file 
-	//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
+		//	mesh_resource->SetLibraryFile(SaveMesh(mesh, file_name.c_str()));
 
 		//fill the id map
 		ret_pair.first = i;
@@ -193,19 +218,14 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 	std::map<int, int>* ret = new std::map<int, int>;	//Assimp ID - Resource ID
 	std::pair<int, int> ret_pair;						//Assimp ID - Resource ID
 
-	//TextureImporter* text_importer =(TextureImporter*)App->resources->GetImporter()->GetTextImporter();
-
 	std::string file_path = full_path;
 	for (uint i = 0; i < scene->mNumMaterials; i++)
 	{
-		//ResourceTexture* new_texture = (ResourceTexture*)App->resources->CreateNewResource(RESOURCE_TEXTURE);
 		int uid = 0;
 		aiString file_name;
 		
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
-			//std::string temp = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_TEXTURE_FOLDER;
-			//App->resources->GetImporter()->CopyFileToFolder((file_path + file_name.data).c_str(), (temp + file_name.data).c_str());
 			uid = App->resources->GetImporter()->ImportTexture((file_path + file_name.data).c_str(), file_name.data, true);
 		}
 		else
@@ -219,6 +239,22 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 	}
 
 	return ret;
+}
+
+void MeshImporter::WriteMeshMeta(Config_Json & meta_file, const ResourceMesh * resource) const
+{
+	meta_file.SetInt("UUID", resource->GetUID());
+
+	// Update Creation Time if meta_file created
+	int creation_time = meta_file.GetInt("Creation Time");
+	if (creation_time == 0) {
+		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(resource->GetAssetsPath()));
+		meta_file.SetInt("Creation Time", creation_time);
+	}
+
+	Config_Json texture_importer = meta_file.GetJsonObject("MeshImporter");
+	if (texture_importer.config_obj == NULL)
+		texture_importer = meta_file.AddJsonObject("MeshImporter");
 }
 
 
