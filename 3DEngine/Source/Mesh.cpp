@@ -189,6 +189,8 @@ void Mesh::Load(char * cursor, int & bytes_copied)
 	memcpy(&resource_uid, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	mesh_resource = (ResourceMesh*)App->resources->GetFromUID(resource_uid);
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)
