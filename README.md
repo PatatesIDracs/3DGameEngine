@@ -21,9 +21,13 @@ Use the guizmos to modify the selected object transform
 [R] Activate scale guizmo       
 To save a scene go to File->Save and input the name of the new file, and finally click Save       
 To load a scene go to File->Load select a file (the selected file will be displayed below) and click load      
+Use the same method to load files from assets window (only meshes(.mjope) and scenes (.jope) can be loaded)        
+Meshes will be loaded as a GameObject with a Mesh component (plus a mesh renderer to render it)     
+To switch from console or assets window click on the buttons at the bottom of the screen, the selected mode will be highlighted      
 Open the tabs in the properties window to open the gameobject components options    
 Camera culling is calculated with the MainCamera by default assigned to the camera created in the default scene, to see all objects in the scene select the camera and turn off the main 
-camera button, this will deactivate the camera culling for that camera and all objects will be visible   
+camera button, this will deactivate the camera culling for that camera and all objects will be visible       
+Click on File->Load_default_scene to clean the scene       
 
 **FPS movement**   
 [W] move forwards   
@@ -69,6 +73,11 @@ We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.ne
 
 
 ## Changelog
+### v0.2.1 - Assigment 2
+* Added simple assets window to Load scenes and meshes        
+* Added an octree render option in the render config        
+* Added a clean scene button on File Main menu     
+
 ### v0.2 - Assigment 2
 * Polished fbx importing     
 * Added .meta files to resources loaded     
