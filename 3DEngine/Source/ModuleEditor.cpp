@@ -122,6 +122,7 @@ update_status ModuleEditor::Update(float dt)
 		//Save and Load Scene
 		if (ImGui::MenuItem("Save scene ...")) savewindow = !savewindow;
 		if (ImGui::MenuItem("Load scene ...")) loadwindow = !loadwindow;
+		if (ImGui::MenuItem("Load Default Scene...")) App->scene_intro->LoadDefaultScene();
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
 		ImGui::EndMenu();
@@ -330,7 +331,7 @@ void ModuleEditor::DrawAboutWindow()
 void ModuleEditor::DrawSaveWindow()
 {
 	ImGui::OpenPopup("Save File");
-	if (ImGui::BeginPopupModal("Save File", &savewindow), ImGuiWindowFlags_AlwaysAutoResize)
+	if (ImGui::BeginPopupModal("Save File", &savewindow))
 	{
 		static char file_name[200];
 		ImGui::BeginChild("test", ImVec2(300,300),true);
@@ -597,6 +598,7 @@ void ModuleEditor::DrawConsole()
 	ImGui::End();
 }
 
+// Did Assets Window in 1 HOUR!! Forgive us (for the code) xD
 void ModuleEditor::DrawAssets()
 {
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;

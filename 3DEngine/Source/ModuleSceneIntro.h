@@ -45,6 +45,8 @@ public:
 	void SaveScene(const char* file_name);
 	void LoadScene(int file_id);
 
+	void LoadDefaultScene();
+
 	void SaveToPlay();
 	void LoadToStop();
 

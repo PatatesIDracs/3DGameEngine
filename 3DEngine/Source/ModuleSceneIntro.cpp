@@ -201,6 +201,7 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, b
 	{
 		dynamic_gameobjects.clear();
 		static_gameobjects.clear();
+		scene_octree.Reset();
 		if (root != nullptr)
 			delete root;		
 	}
@@ -434,6 +435,29 @@ void ModuleSceneIntro::LoadScene(int file_id)
 	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(file_id);
 	load_scene->LoadResource();
 
+}
+
+void ModuleSceneIntro::LoadDefaultScene()
+{
+	if (root != nullptr) {
+		delete root;
+		
+		scene_octree.Reset();
+		dynamic_gameobjects.clear();
+		static_gameobjects.clear();
+		render_this.clear();
+
+		//Create the root GameObject
+		root = new GameObject(nullptr, "root");
+
+		//Set Up current object to show its properties
+		current_object = root;
+
+		GameObject* camera = CreateNewGameObject("Camera", nullptr);
+		Camera* camera_test = new Camera(camera, true);
+		camera_test->SetFrustumViewAngle();
+		camera->AddComponent(camera_test);
+	}
 }
 
 void ModuleSceneIntro::SaveToPlay()
