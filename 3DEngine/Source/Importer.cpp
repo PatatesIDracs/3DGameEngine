@@ -109,7 +109,7 @@ void Importer::GetFileName(std::string& file_name)
 	uint path_end = 0;
 	for (uint i = 0; i < file_name.size(); i++)
 	{
-		if (file_name[i] == '/' || file_name[i] =='\\') {
+		if (file_name[i] == '/') {
 			path_end = i;
 			temp.clear();
 		}
@@ -281,7 +281,9 @@ bool Importer::NeedReImport(const char * file_path, Config_Json& meta_file)
 
 int Importer::GetLastTimeWritten(const char * assets_file)
 {
-	return  (int)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(assets_file));
+	if(fs::exists(assets_file))
+		return  (int)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(assets_file));
+	else return 0;
 }
 
 int Importer::ImportTexture(const char * full_path, const char* name, bool from_scene)
@@ -290,10 +292,16 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 	std::string file_name = name;
 
 	// Normalize Strings to use them
+	bool found_file = false;
 	if (from_scene) {
 		NormalizePath(path);
-		GetFileName(file_name);
+		NormalizePath(file_name);
+		if (!fs::exists((path + file_name).c_str())) {
+			GetFileName(file_name);
+			path = path + file_name;
+		}
 	}
+	
 
 	// Copy texture to Assets/textures folder 
 	std::string assets_path = assets_texture_path + file_name.c_str();
@@ -319,7 +327,7 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 		text_importer->Import(resource, (assets_texture_path + file_name).c_str(), file_name.c_str(), meta_file);
 	}
 	meta_file.SetInt("Creation Time", GetLastTimeWritten((assets_texture_path + file_name).c_str()));
-
+	
 	meta_file.SaveToFile(assets_path.c_str());
 	
 	return resource->GetUID();

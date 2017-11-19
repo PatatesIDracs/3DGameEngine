@@ -250,7 +250,7 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 		
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file_name) == AI_SUCCESS)
 		{
-			uid = App->resources->GetImporter()->ImportTexture((file_path + file_name.data).c_str(), file_name.data, true);
+			uid = App->resources->GetImporter()->ImportTexture((file_path).c_str(), file_name.data, true);
 		}
 		else
 		{
