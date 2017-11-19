@@ -603,7 +603,7 @@ void ModuleEditor::DrawAssets()
 {
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
 
-	ImGui::Begin("Console", &showassets);
+	ImGui::Begin("Assets", &showassets);
 	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
 	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 
