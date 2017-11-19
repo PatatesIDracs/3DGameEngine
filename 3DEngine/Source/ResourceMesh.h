@@ -39,6 +39,7 @@ public:
 	AABB				GetAABB() const;
 
 	void SaveResource();
+	void LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 	void GetBufferSize(uint & buffer_size);
 private:
 

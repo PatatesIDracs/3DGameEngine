@@ -40,6 +40,12 @@ void ResourceMesh::SetRenderData(RenderData * new_render_data)
 
 void ResourceMesh::LoadToMemory()
 {
+	if (render_data == nullptr)
+	{
+		LOGC("Unable to load resource %s", name.c_str());
+		return;
+	}
+
 	// Load Vertices and Indices To Buffer and Set ID
 	if (render_data->vertices != nullptr)
 	{
@@ -105,15 +111,28 @@ void ResourceMesh::SaveResource()
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(name.c_str()); //Resource name
+	//Save name string
+	int str_size = name.size();
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
+	bytes_to_copy = str_size; //Resource name
 	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(assets_file.c_str()); //Assets file
+	//Save assets_file string
+	str_size = strlen(assets_file.c_str());
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
-	bytes_to_copy = strlen(library_file.c_str()); //Library file
+	//Save library_file string
+	str_size = strlen(library_file.c_str());
+	bytes_to_copy = sizeof(int); //Resource name
+	memcpy(cursor, &str_size, bytes_to_copy);
+	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
 
@@ -146,6 +165,51 @@ void ResourceMesh::SaveResource()
 	LOGC("Mesh Saved at: %s", library_file.c_str());
 
 	delete[] buffer_data;
+}
+
+void ResourceMesh::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
+{
+	Resource::LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
+	cursor += bytes_copied;
+
+	render_data = new RenderData();
+
+	//Load ranges
+	uint bytes_to_copy = sizeof(uint);
+	memcpy(&render_data->num_indices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&render_data->num_vertices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&render_data->num_tex_vertices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&render_data->num_normals, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Load indices
+	bytes_to_copy = (sizeof(uint) * render_data->num_indices);
+	memcpy(render_data->indices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = (sizeof(float) * render_data->num_vertices);
+	memcpy(render_data->vertices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = (sizeof(float) * render_data->num_tex_vertices);
+	memcpy(render_data->tex_vertices, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = (sizeof(float) * render_data->num_normals);
+	memcpy(render_data->normals, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 }
 
 void ResourceMesh::GetBufferSize(uint & buffer_size)
