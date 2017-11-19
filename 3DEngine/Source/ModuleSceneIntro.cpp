@@ -149,8 +149,10 @@ update_status ModuleSceneIntro::Update(float dt)
 		if (root != nullptr) {
 
 			root->Update();
-			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
+			
 		}
+		if(App->renderer3D->show_octree)
+			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
 
 	CollectCandidates();

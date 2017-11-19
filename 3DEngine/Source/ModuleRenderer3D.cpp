@@ -228,6 +228,7 @@ void ModuleRenderer3D::DrawConfig()
 	ImGui::RadioButton("Vertex", (int*)&render_mode, (int)RENDER_MODE::VERTEX); ImGui::Separator();
 
 	ImGui::Checkbox("Show Grid", &show_grid);
+	ImGui::Checkbox("Draw Octree", &show_octree);
 	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) SetDepthTest();

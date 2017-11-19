@@ -100,7 +100,7 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 	std::vector<GameObject*> loaded_gameobjects;
 	std::vector<Component*> loaded_components;
 
-	while (bytes_copied < buffer_size)
+	while (bytes_copied < (int)buffer_size)
 	{
 		bytes_to_copy = sizeof(int);
 		memcpy(&next_identifier, cursor, bytes_to_copy);

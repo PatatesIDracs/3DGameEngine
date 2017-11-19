@@ -60,6 +60,7 @@ public:
 
 	bool vertex_normals = false;
 	bool show_grid = true;
+	bool show_octree = true;
 
 private:
 

@@ -25,11 +25,8 @@ public:
 	void LoadFromAssets();
 	void UpdateAssetsFiles();
 	bool CheckMetaFiles(std::string& file_path, const char* extension);
-//	void LoadResource(std::string file_path);		
 	void HandleDropEvent(SDL_DropEvent drop_event);	
 	void GotFocus(bool focus_app);
-
-	int Find(const char* file_in_assets) const;
 
 	int GenerateNewUID();
 	Resource* GetFromUID(int uid) const;

@@ -121,7 +121,7 @@ void ModuleResources::SearchForResources()
 		}
 
 	}
-	for (int i = 0; i < scenes_to_load.size(); i++)
+	for (uint i = 0; i < scenes_to_load.size(); i++)
 	{
 		scenes_to_load[i]->LoadResource();
 	}
@@ -288,18 +288,6 @@ void ModuleResources::DeleteFileFromUID(int uid)
 	if (fs::exists(to_erase.c_str()) && fs::is_regular_file(to_erase.c_str()))
 		fs::remove(to_erase.c_str());
 
-	//TODO: Check Meta
-}
-
-int ModuleResources::Find(const char * file_in_assets) const
-{
-	//TODO: to method
-	for (std::map<int, Resource*>::const_iterator it = resources_map.begin(); it != resources_map.end(); it++)
-	{
-		
-	}
-
-	return 0;
 }
 
 int ModuleResources::GenerateNewUID()
