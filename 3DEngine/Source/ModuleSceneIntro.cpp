@@ -10,6 +10,8 @@
 #include "ResourceScene.h"
 #include "MeshRenderer.h"
 #include "Material.h"
+#include "ConfigJSON.h"
+#include "parson.h"
 
 #include "Glew\include\glew.h"
 
@@ -129,7 +131,7 @@ void ModuleSceneIntro::Draw()
 update_status ModuleSceneIntro::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
-		LoadScene("sad");
+		SaveScene("Shame");
 
 	if (App->clock.state != APP_PLAY) {
 		Primitive a;
@@ -412,7 +414,17 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 	save_file_name.append(SCENEFORMAT);
 	ResourceScene* save_scene = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
 	save_scene->SetAsRoot(true);
-	std::ofstream new_file(save_file_name.c_str(), std::ofstream::binary);
+	//std::ofstream new_file(save_file_name.c_str(), std::ofstream::binary);
+	save_scene->SetAssetFile(save_file_name);
+	save_scene->SaveResource(root);
+	save_file_name = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + save_file_name;
+	App->resources->GetImporter()->CopyFileToFolder((JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER + std::to_string(save_scene->GetUID()) + SCENEFORMAT).c_str(),save_file_name.c_str());
+
+	App->resources->GetImporter()->FoundMetaFile((save_file_name + METAFORMAT).c_str());
+	Config_Json meta_file((save_file_name + METAFORMAT).c_str());
+	meta_file.SetInt("UUID", save_scene->GetUID());
+	meta_file.SetInt("Creation Time", App->resources->GetImporter()->GetLastTimeWritten(save_file_name.c_str()));
+	meta_file.SaveToFile((save_file_name + METAFORMAT).c_str());
 }
 
 void ModuleSceneIntro::LoadScene(const char * assets_file_path)
