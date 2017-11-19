@@ -58,25 +58,43 @@ void MeshImporter::Import(const char* full_path, std::string& path, std::string&
 	std::map<int, int>* mesh_map = ImportMeshResources(scene, file_name);
 	std::map<int, int>* texture_map = ImportTextureResources(scene, path.c_str());
 
-	ImportScene(scene, mesh_map, texture_map, file_name);
+	ImportScene(scene, mesh_map, texture_map, (file_name + extension), full_path);
 
 	delete mesh_map;
 	delete texture_map;
 }
 
-void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name)
+void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name, const char* full_path)
 {
+	
+	Importer* jope_importer = App->resources->GetImporter();
+	
 	//Dummy game object to save scene
 	GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
+	
+	ResourceScene* scene_resource = nullptr;
+	std::string meta_filename = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER + file_name;
+	if (!jope_importer->FoundMetaFile((meta_filename + METAFORMAT).c_str())) {
+		jope_importer->CopyFileToFolder(full_path, meta_filename.c_str());
+		scene_resource = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+	}
+	
+	Config_Json meta_file((meta_filename + METAFORMAT).c_str());
+	if (scene_resource == nullptr)
+		scene_resource = (ResourceScene*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
 
 	aiNode* scene_root_node = scene->mRootNode;
 
-	for (uint i = 0; i < scene_root_node->mNumChildren; i++)
-	{
-		ImportNode(scene_root_node->mChildren[i], scene, scene_go, scene_root_node->mTransformation, id_map, text_map);
+	if (jope_importer->NeedReImport(full_path, meta_file)) {
+		for (uint i = 0; i < scene_root_node->mNumChildren; i++)
+		{
+			ImportNode(scene_root_node->mChildren[i], scene, scene_go, scene_root_node->mTransformation, id_map, text_map);
+		}
+		scene_resource->SaveResource(scene_go);
+
+		WriteSceneMeta(meta_file, scene_resource);
+		meta_file.SaveToFile((meta_filename + METAFORMAT).c_str());
 	}
-	ResourceScene* scene_resource = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
-	scene_resource->SaveResource(scene_go);
 	delete scene_go;
 }
 
@@ -242,6 +260,22 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 	}
 
 	return ret;
+}
+
+void MeshImporter::WriteSceneMeta(Config_Json & meta_file, const ResourceScene * resource) const
+{
+	meta_file.SetInt("UUID", resource->GetUID());
+
+	// Update Creation Time if meta_file created
+	int creation_time = meta_file.GetInt("Creation Time");
+	if (creation_time == 0) {
+		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(assets_meshes_path + resource->GetAssetsPath()));
+		meta_file.SetInt("Creation Time", creation_time);
+	}
+
+	Config_Json texture_importer = meta_file.GetJsonObject("SceneImporter");
+	if (texture_importer.config_obj == NULL)
+		texture_importer = meta_file.AddJsonObject("SceneImporter");
 }
 
 void MeshImporter::WriteMeshMeta(Config_Json & meta_file, const ResourceMesh * resource) const
