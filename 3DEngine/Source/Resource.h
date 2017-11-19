@@ -19,6 +19,7 @@ public:
 	virtual ~Resource();
 
 	int GetUID() const;
+	RESOURCE_TYPE GetType()const;
 
 	void SetFiles(std::string new_assets_file, std::string new_library_file);
 	void SetAssetFile(std::string new_assets_file);

@@ -15,6 +15,11 @@ int Resource::GetUID() const
 	return uid;
 }
 
+RESOURCE_TYPE Resource::GetType() const
+{
+	return type;
+}
+
 void Resource::SetFiles(std::string new_assets_file, std::string new_library_file)
 {
 	assets_file = new_assets_file;

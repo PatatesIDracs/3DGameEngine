@@ -12,6 +12,7 @@
 #include "Component.h"
 #include "Importer.h"
 #include "Resource.h"
+#include "ResourceMesh.h"
 #include "MeshImporter.h"
 #include "TextureImporter.h"
 #include "Mesh.h"
@@ -195,7 +196,40 @@ update_status ModuleEditor::Update(float dt)
 	if (showtestwindow) ImGui::ShowTestWindow();
 	//Draw about window when requested
 	if (showaboutwindow) DrawAboutWindow();
-	if (showconsole) DrawConsole();
+
+	if (showassets || showconsole) {
+		ImGui::SetNextWindowPos(ImVec2(250.f, (float)App->window->height - 230), 0);
+		ImGui::SetNextWindowSize(ImVec2((float)App->window->width - 500, 30.f), 0);
+		ImGui::Begin("Assets/Console Bar", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+		bool change = showassets;
+		if (change)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 1.00f, 0.00f, 1.00f));
+		if (ImGui::Button("Assets", ImVec2(56.f, 18.f))) {
+			showassets = !showassets;
+			showconsole = !showconsole;
+		}
+		if (change)
+			ImGui::PopStyleColor();
+		ImGui::SameLine();
+		change = showconsole;
+		if (change)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 1.00f, 0.00f, 1.00f));
+		if (ImGui::Button("Console", ImVec2(56.f, 18.f))) {
+			showassets = !showassets;
+			showconsole = !showconsole;
+		}
+		if (change)
+			ImGui::PopStyleColor();
+
+		if (showassets) on_assets = true;
+		else on_assets = false;
+
+		ImGui::End();
+	}
+
+	if (on_assets && showassets) DrawAssets();
+	else if (showconsole) DrawConsole();
+
 	//Draw Profiler
 	if (showprofiler) DrawProfilerWindow();
 	//Show Game Object properties
@@ -322,9 +356,6 @@ void ModuleEditor::DrawSaveWindow()
 
 void ModuleEditor::DrawLoadWindow()
 {
-	fs::directory_iterator it{ it_library_path.c_str() };
-	fs::directory_iterator end{};
-
 	std::vector<Resource*>* to_show = &App->resources->resources_vec;
 
 	ImGui::OpenPopup("Load File");
@@ -563,6 +594,59 @@ void ModuleEditor::DrawConsole()
 		ImGui::Text(console_string[count].c_str());
 	}
 	
+	ImGui::End();
+}
+
+void ModuleEditor::DrawAssets()
+{
+	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
+
+	ImGui::Begin("Console", &showassets);
+	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
+	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
+
+	static int file_uid = -1;
+	static std::string file_name;
+	ImGui::BeginChild("test", ImVec2(App->window->width - 550.f, 140), true);
+
+	for (uint i = 0; i < to_show->size(); i++)
+	{
+		if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
+		{
+			file_uid = (*to_show)[i]->GetUID();
+			file_name = (*to_show)[i]->GetAssetsPath();
+		};
+	}
+
+	ImGui::EndChild();
+
+	ImGui::InputText("", (char*)file_name.c_str(), file_name.size(), ImGuiInputTextFlags_ReadOnly);
+	ImGui::SameLine();
+
+	if (ImGui::Button("Load"))
+	{
+		if (file_uid != -1) {
+			Resource* load_this = App->resources->GetFromUID(file_uid);
+			RESOURCE_TYPE type = load_this->GetType();
+
+			if(type == RESOURCE_SCENE)		
+				App->LoadScene(file_uid);
+			else if (type == RESOURCE_MESH) {
+				GameObject* object = App->scene_intro->CreateNewGameObject((load_this->GetName()+std::to_string(App->resources->all_resources_vec.size())).c_str());
+				Mesh* mesh = new Mesh(object, (ResourceMesh*)load_this);
+				MeshRenderer* mesh_render = new MeshRenderer(object);
+			}
+		}
+		else
+			LOGC("Please select a file to load");
+		loadwindow = false;
+	}
+	
+	ImGui::SameLine();
+	if (ImGui::Button("Cancel"))
+	{
+		loadwindow = false;
+	}
 	ImGui::End();
 }
 

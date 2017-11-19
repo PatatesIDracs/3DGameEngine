@@ -51,6 +51,9 @@ update_status ModuleResources::Update(float dt)
 
 bool ModuleResources::CleanUp()
 {
+	all_resources_vec.clear();
+	resources_vec.clear();
+
 	//Delete all resources
 	for (std::map<int, Resource*>::const_iterator it = resources_map.begin(); it != resources_map.end(); it++)
 	{
@@ -202,6 +205,8 @@ void ModuleResources::UpdateAssetsFiles()
 	fs::recursive_directory_iterator end{};
 
 	resources_vec.clear();
+	all_resources_vec.clear();
+
 	std::string path;
 	std::string filename;
 	std::string extension;
@@ -229,12 +234,17 @@ void ModuleResources::UpdateAssetsFiles()
 						jope_importer->Import((path + filename + extension).c_str());
 					}
 					LOGC("Updated %s File ", temp.c_str());
-				}				
+				}			
+				Resource* load_this = GetFromUID(meta_file.GetInt("UUID"));
+				if (load_this != nullptr) {
+					all_resources_vec.push_back(load_this);
+				}
 			}
 			else if (extension == SCENEFORMAT && fs::exists((temp + METAFORMAT).c_str())) {
 				Config_Json meta_file((temp + METAFORMAT).c_str());
 				// Add to Current scenes
-				resources_vec.push_back(GetFromUID(meta_file.GetInt("UUID")));
+				Resource* load_this = GetFromUID(meta_file.GetInt("UUID"));
+				resources_vec.push_back(load_this);
 			}
 			path.clear();
 			filename.clear();

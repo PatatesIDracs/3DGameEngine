@@ -37,6 +37,7 @@ public:
 
 public:
 	std::vector<Resource*> resources_vec;
+	std::vector<Resource*> all_resources_vec;
 
 private:
 

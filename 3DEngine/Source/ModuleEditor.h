@@ -45,6 +45,7 @@ private:
 	void DrawPlayButton();
 	void DrawClock();
 	void DrawConsole();
+	void DrawAssets();
 	void DrawPropertiesWindow();
 	void DrawAboutWindow();
 	void DrawSaveWindow();
@@ -66,6 +67,10 @@ private:
 	bool	showclock				= false;
 	bool	savewindow				= false;
 	bool	loadwindow				= false;
+	bool	showassets				= false;
+
+	bool	on_assets				= false;
+
 
 	// Profiler
 	bool	showprofiler			= false;
