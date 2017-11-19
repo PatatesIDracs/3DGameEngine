@@ -25,7 +25,6 @@ ModuleResources::~ModuleResources()
 bool ModuleResources::Init()
 {
 	jope_importer = new Importer();
-	SearchForResources();
 
 	return true;
 }
@@ -33,6 +32,7 @@ bool ModuleResources::Init()
 bool ModuleResources::Start()
 {
 	// Update Library
+	SearchForResources();
 
 	// Load Assets
 	LoadFromAssets();
@@ -63,6 +63,10 @@ void ModuleResources::SearchForResources()
 	fs::recursive_directory_iterator it{JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER};
 	fs::recursive_directory_iterator end{};
 
+	std::string path;
+	std::string filename;
+	std::string extension;
+	std::string temp;
 	for (; it != end; it++)
 	{
 		if (fs::is_directory(it->path()))
@@ -71,7 +75,38 @@ void ModuleResources::SearchForResources()
 		}   
 		else
 		{
+			temp = it->path().string();
+			jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
+
+			//Load scene resource
+			if (extension == SCENEFORMAT)
+			{
+				ResourceScene* new_scene = (ResourceScene*)CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+				new_scene->SetLibraryFile(filename + extension);
+				new_scene->LoadResource();
+				LOGC("Scene %s loaded", it->path().c_str());
+			}
+
+			//Load mesh resource
+			if (extension == MJOPE)
+			{
+				ResourceMesh* new_mesh = (ResourceMesh*)CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
+				new_mesh->SetLibraryFile(JOPE_MESHES_FOLDER + filename + extension);
+				new_mesh->LoadResource();
+				LOGC("Mesh %s loaded", it->path().c_str());
+			}
+
+			//Load textures resource
+			if (extension == TEXFORMAT)
+			{
+				//TODO: Save and load
+			}
+
+
 			LOGC("File %S identified", it->path().c_str());
+			path.clear();
+			filename.clear();
+			extension.clear();
 		}
 
 	}
@@ -114,8 +149,10 @@ bool ModuleResources::CheckMetaFiles(std::string& file_path, const char* extensi
 
 	if (!fs::exists(file_path.c_str())) {
 		fs::remove((file_path + extension).c_str());
-		if (meta_resource != nullptr)
-			fs::remove(meta_resource->GetLibraryPath());
+		if (meta_resource != nullptr) {
+			file_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+			fs::remove((file_path + meta_resource->GetLibraryPath()).c_str());
+		}
 	}
 	else {
 		if (meta_resource == nullptr) {

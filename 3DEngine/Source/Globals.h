@@ -37,6 +37,9 @@
 #define JOPE_ASSETS_TEXTURE_FOLDER "textures/"
 
 #define MJOPE ".mjope"
+#define TEXFORMAT ".dds"
+#define SCENEFORMAT ".jope"
+#define METAFORMAT ".meta"
 
 //Identifier for scene serialitzation
 #define GAMEOBJECTIDENTIFIER -1

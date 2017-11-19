@@ -30,7 +30,7 @@ Application::Application()
 	AddModule(camera);
 	AddModule(input);
 	AddModule(audio);
-	AddModule(resources);
+	AddModule(resources);	//Must be loaded before scene
 
 	// Scenes
 	AddModule(scene_intro);

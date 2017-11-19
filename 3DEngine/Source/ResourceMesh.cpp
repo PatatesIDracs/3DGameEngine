@@ -124,6 +124,7 @@ void ResourceMesh::SaveResource()
 	str_size = strlen(assets_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
 	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -132,6 +133,7 @@ void ResourceMesh::SaveResource()
 	str_size = strlen(library_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -191,21 +193,25 @@ void ResourceMesh::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uin
 
 	//Load indices
 	bytes_to_copy = (sizeof(uint) * render_data->num_indices);
+	render_data->indices = new uint[render_data->num_indices];
 	memcpy(render_data->indices, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = (sizeof(float) * render_data->num_vertices);
+	bytes_to_copy = (sizeof(float) * render_data->num_vertices*3);
+	render_data->vertices = new float[render_data->num_vertices * 3];
 	memcpy(render_data->vertices, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = (sizeof(float) * render_data->num_tex_vertices);
+	bytes_to_copy = (sizeof(float) * render_data->num_tex_vertices*3);
+	render_data->tex_vertices = new float[render_data->num_tex_vertices * 3];
 	memcpy(render_data->tex_vertices, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = (sizeof(float) * render_data->num_normals);
+	bytes_to_copy = (sizeof(float) * render_data->num_normals*3);
+	render_data->normals = new float[render_data->num_normals * 3];
 	memcpy(render_data->normals, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;

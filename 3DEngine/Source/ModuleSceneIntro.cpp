@@ -173,8 +173,13 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 
 void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, bool new_scene)
 {
-	GameObject* loaded_root = nullptr;
+	//If root is nullptr don't load, scene is probably not ready yet
+	//This may happen when opening the software, when the scene resources are loaded to the map they will try
+	//to load their gameobjects to scene, this will prevent it. We still want to load it to check the file is not corrupted
+	if (root == nullptr)
+		return;
 
+	GameObject* loaded_root = nullptr;
 	//If it's a new scene delete the current scene and load the new one
 	//All objects from the vectors will be deleted when root is deleted
 	if (new_scene)

@@ -3,8 +3,6 @@
 
 #include <string>
 
-#define METAFORMAT ".meta"
-
 class MeshImporter;
 class TextureImporter;
 struct RenderData;

@@ -127,6 +127,7 @@ void Resource::SaveResource()
 	str_size = strlen(assets_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
 	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
@@ -135,6 +136,7 @@ void Resource::SaveResource()
 	str_size = strlen(library_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
+	cursor += bytes_to_copy; //Advance cursor
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
