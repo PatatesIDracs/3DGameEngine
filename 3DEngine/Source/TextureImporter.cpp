@@ -72,13 +72,15 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 			resource->mips = info.NumMips;
 			resource->bytes = info.Bpp;
 			resource->format = (FORMAT)((int)ilGetInteger(info.Format));
+			resource->path_to_dds = JOPE_TEXTURE_FOLDER + file_name;
 		}
 		delete[] data;
-	}
-	resource->SetLibraryFile((JOPE_TEXTURE_FOLDER + file_name).c_str());
-	
+	}	
 	file_name = JOPE_ASSETS_TEXTURE_FOLDER;
 	resource->SetAssetFile((file_name + name).c_str());
+
+	//Save resource
+	resource->SaveResource();
 
 	// Write Texture Meta File
 	WriteTextureMeta(meta_file, resource);

@@ -22,6 +22,10 @@ public:
 	void LoadToMemory();
 	void UnloadFromMemory();
 
+	void SaveResource();
+	void LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size);
+	void GetBufferSize(uint & buffer_size);
+
 	uint GetTextureID()const;
 
 public:
@@ -32,6 +36,8 @@ public:
 	uint bytes = 0;
 	uint texture_id = 0;
 	FORMAT format = FORM_UNKNOWN;
+
+	std::string path_to_dds;
 };
 
 #endif // !__RESOURCESCENE_H__
