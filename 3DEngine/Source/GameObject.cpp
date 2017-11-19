@@ -378,7 +378,7 @@ void GameObject::DrawAddComponentWindow()
 
 	if (new_comp_type != COMP_TYPE::COMP_UNKNOWN)
 	{
-		AddComponent(CreatComponent(new_comp_type));
+		AddComponent(App->scene_intro->NewOrphanComponent(new_comp_type));
 		creating_component = false;
 	}
 }
@@ -418,34 +418,4 @@ void GameObject::ChangeChildsStatic(bool state)
 	{
 		children[i]->ChangeChildsStatic(state);
 	}
-}
-
-
-//TODO: Factory in a dummy file, module? but not here (too much includes)
-Component* GameObject::CreatComponent(COMP_TYPE new_comp_type)
-{
-	Component* ret = nullptr;
-	switch (new_comp_type)
-	{
-	case COMP_UNKNOWN:
-		break;
-	case COMP_TRANSFORM:
-		ret = new Transform(this);
-		break;
-	case COMP_MESH:
-		ret = new Mesh(this, nullptr);
-		break;
-	case COMP_MATERIAL:
-		ret = new Material(this, nullptr);
-		break;
-	case COMP_MESHRENDERER:
-		ret = new MeshRenderer(this);
-		break;
-	case COMP_CAMERA:
-		ret = new Camera(this);
-		break;
-	default:
-		break;
-	}
-	return ret;
 }

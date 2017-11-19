@@ -27,7 +27,10 @@ Mesh::~Mesh()
 
 const RenderData* Mesh::GetRenderData() const
 {
-	return mesh_resource->GetRenderData();
+	if (mesh_resource != nullptr)
+		return mesh_resource->GetRenderData();
+	else
+		return nullptr;
 }
 
 void Mesh::Update()
@@ -40,26 +43,38 @@ void Mesh::Update()
 
 void Mesh::UpdateTransform()
 {
-	parent->boundary_box = mesh_resource->GetAABB();
+	if (mesh_resource)
+		parent->boundary_box = mesh_resource->GetAABB();
 	parent->boundary_box.TransformAsAABB(parent->GetTransform()->GetGlobalTransform());
 }
 
 void Mesh::DrawComponent()
 {
+	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
-		ImGui::Text("%s", mesh_resource->GetName()); ImGui::SameLine();
+		if (mesh_resource != nullptr)
+		{
+			ImGui::Text("%s", mesh_resource->GetName());
+		}
+		else
+			ImGui::Text("No resource");
+
+		ImGui::SameLine();
 		if (ImGui::Button("Change")) changing_mesh = !changing_mesh;
 		if (changing_mesh) ChangeMesh();
 
-		ImGui::InputInt("Vertices", (int*)&GetRenderData()->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		if (mesh_resource != nullptr)
+		{
+			ImGui::InputInt("Vertices", (int*)&GetRenderData()->num_vertices, 0, 100, ImGuiInputTextFlags_ReadOnly);
 
-		int faces = GetRenderData()->num_indices / 3;
-		ImGui::InputInt("Faces", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
-
+			int faces = GetRenderData()->num_indices / 3;
+			ImGui::InputInt("Faces", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		}
 		ImGui::Checkbox("Draw AABB", &draw_aabb);
 
 	}
+	ImGui::PopID();
 }
 
 bool Mesh::CheckRayCollision(const LineSegment segment, float & dist, float3 & point)
