@@ -20,7 +20,7 @@ public:
 
 	void DrawComponent();
 
-	bool CheckRayCollision(const LineSegment ray, float &dist, float3 &point);
+	bool CheckRayCollision(const LineSegment ray, float &dist, float3 &point)const;
 
 	void ChangeMesh();
 

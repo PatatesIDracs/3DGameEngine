@@ -41,6 +41,10 @@ void Material::DrawComponent()
 		{
 			ImGui::InputInt("Width:", (int*)&resource->width, 0, 100, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Height:", (int*)&resource->height, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputInt("Bpp:", (int*)&resource->bytes, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputInt("Depth:", (int*)&resource->depth, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputInt("Mips:", (int*)&resource->mips, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputInt("Texture ID:", (int*)&resource->texture_id, 0, 100, ImGuiInputTextFlags_ReadOnly);
 		}
 		else
 		{

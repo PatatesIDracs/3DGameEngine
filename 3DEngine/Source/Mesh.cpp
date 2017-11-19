@@ -78,7 +78,7 @@ void Mesh::DrawComponent()
 	ImGui::PopID();
 }
 
-bool Mesh::CheckRayCollision(const LineSegment segment, float & dist, float3 & point)
+bool Mesh::CheckRayCollision(const LineSegment segment, float & dist, float3 & point) const
 {
 	if (mesh_resource == nullptr) return false;
 
