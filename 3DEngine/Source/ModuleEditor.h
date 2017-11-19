@@ -109,6 +109,7 @@ private:
 
 	//Explorer
 	std::string it_library_path;
+	std::string it_assets_path;
 };
 
 #endif // !__MODULE_EDITOR_H__

@@ -195,26 +195,28 @@ void Application::SetFpsCap(bool fps_uncapped)
 		capped_ms = (1000 / fps);
 }
 
-void Application::SaveScene()
+void Application::SaveScene(const char* file_name)
 {
+	file_to_save = file_name;
 	want_to_save_scene = true;
 }
 
-void Application::LoadScene(const char* path_to_load)
+void Application::LoadScene(int file_id)
 {
-	file_to_load = path_to_load;
+	file_to_load_uid = file_id;
 	want_to_load_scene = true;
 }
 
 void Application::LoadSceneNow()
 {
-	scene_intro->LoadScene(file_to_load.c_str());
+	scene_intro->LoadScene(file_to_load_uid);
 	want_to_load_scene = false;
 }
 
 void Application::SaveSceneNow()
 {
-	scene_intro->SaveScene("Dsa");	//TODO: set the name
+	if (!file_to_save.empty())
+		scene_intro->SaveScene(file_to_save.c_str());
 	want_to_save_scene = false;
 }
 

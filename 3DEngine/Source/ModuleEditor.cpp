@@ -11,6 +11,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Importer.h"
+#include "Resource.h"
 #include "MeshImporter.h"
 #include "TextureImporter.h"
 #include "Mesh.h"
@@ -306,7 +307,10 @@ void ModuleEditor::DrawSaveWindow()
 		ImGui::SameLine();
 
 		if (ImGui::Button("Save"))
-			App->SaveScene();
+		{
+			App->SaveScene(file_name);
+			savewindow = false;
+		}
 
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
@@ -318,15 +322,37 @@ void ModuleEditor::DrawSaveWindow()
 
 void ModuleEditor::DrawLoadWindow()
 {
+	fs::directory_iterator it{ it_library_path.c_str() };
+	fs::directory_iterator end{};
+
+	std::vector<Resource*>* to_show = &App->resources->resources_vec;
+
 	ImGui::OpenPopup("Load File");
 	if (ImGui::BeginPopupModal("Load File", &loadwindow))
 	{
 		ImGui::BeginChild("test", ImVec2(250, 300), true);
+	
+		for (int i = 0; i < to_show->size(); i++)
+		{
+			if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
+			{
+				App->LoadScene((*to_show)[i]->GetUID());
+			};
+		}
 
 		ImGui::EndChild();
 
 		if (ImGui::Button("Load"))
-			App->LoadScene("../Data/Assets/TestScene.jope");
+		{
+			//App->LoadScene("../Data/Assets/TestScene.jope");
+			loadwindow = false;
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			loadwindow = false;
+		}
 
 		ImGui::EndPopup();
 	}

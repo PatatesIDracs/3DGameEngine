@@ -37,8 +37,15 @@ void Material::DrawComponent()
 {
 	if (ImGui::CollapsingHeader("Texture"))
 	{
-		ImGui::InputInt("Width:", (int*)&resource->width, 0, 100, ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputInt("Height:", (int*)&resource->height, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		if (resource != nullptr)
+		{
+			ImGui::InputInt("Width:", (int*)&resource->width, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputInt("Height:", (int*)&resource->height, 0, 100, ImGuiInputTextFlags_ReadOnly);
+		}
+		else
+		{
+			ImGui::Text("No texture found");
+		}
 	}
 }
 

@@ -226,7 +226,7 @@ void Resource::LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buff
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 	assets_file_c_str[str_size] = 0x00;
-	name = assets_file_c_str;
+	assets_file = assets_file_c_str;
 	delete[] assets_file_c_str;
 
 
@@ -242,7 +242,7 @@ void Resource::LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buff
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 	library_file_c_str[str_size] = 0x00;
-	name = library_file_c_str;
+	library_file = library_file_c_str;
 	delete[] library_file_c_str;
 
 }

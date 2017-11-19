@@ -43,7 +43,7 @@ public:
 	void DrawProperties() const;
 
 	void SaveScene(const char* file_name);
-	void LoadScene(const char* file_path);
+	void LoadScene(int file_id);
 
 	void SaveToPlay();
 	void LoadToStop();

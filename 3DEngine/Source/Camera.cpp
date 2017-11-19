@@ -33,6 +33,9 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 
 Camera::~Camera()
 {
+	if (active)
+		App->camera->SetMainCamera(this, false);
+
 	delete cfrustum;
 	delete[] frustum_planes;
 

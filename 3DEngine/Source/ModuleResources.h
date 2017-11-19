@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include <map>
+#include <vector>
 
 class Importer;
 class Resource;
@@ -37,13 +38,15 @@ public:
 	
 	Importer* GetImporter() const;
 
+public:
+	std::vector<Resource*> resources_vec;
+
 private:
 
 	std::map<int, Resource*> resources_map;
 	Importer* jope_importer;
 
 	bool update_assets = false;
-
 };
 
 

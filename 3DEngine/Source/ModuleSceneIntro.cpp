@@ -130,9 +130,6 @@ void ModuleSceneIntro::Draw()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
-	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
-		LoadScene("Shame");
-
 	if (App->clock.state != APP_PLAY) {
 		Primitive a;
 		a.axis = true;
@@ -425,12 +422,14 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 	meta_file.SetInt("UUID", save_scene->GetUID());
 	meta_file.SetInt("Creation Time", App->resources->GetImporter()->GetLastTimeWritten(save_file_name.c_str()));
 	meta_file.SaveToFile((save_file_name + METAFORMAT).c_str());
+
+	App->resources->GotFocus(true);
 }
 
-void ModuleSceneIntro::LoadScene(const char * assets_file_path)
+void ModuleSceneIntro::LoadScene(int file_id)
 {
 	LOGC("Loading the scene ...");
-	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(1169667521);
+	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(file_id);
 	load_scene->LoadResource();
 
 }

@@ -201,6 +201,7 @@ void ModuleResources::UpdateAssetsFiles()
 	fs::recursive_directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER };
 	fs::recursive_directory_iterator end{};
 
+	resources_vec.clear();
 	std::string path;
 	std::string filename;
 	std::string extension;
@@ -229,7 +230,12 @@ void ModuleResources::UpdateAssetsFiles()
 					}
 					LOGC("Updated %s File ", temp.c_str());
 				}				
-			}	
+			}
+			else if (extension == SCENEFORMAT && fs::exists((temp + METAFORMAT).c_str())) {
+				Config_Json meta_file((temp + METAFORMAT).c_str());
+				// Add to Current scenes
+				resources_vec.push_back(GetFromUID(meta_file.GetInt("UUID")));
+			}
 			path.clear();
 			filename.clear();
 			extension.clear();

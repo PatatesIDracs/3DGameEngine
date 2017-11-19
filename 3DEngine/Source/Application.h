@@ -113,7 +113,8 @@ private:
 
 	bool want_to_save_scene = false;
 	bool want_to_load_scene = false;
-	std::string file_to_load;
+	std::string file_to_save;
+	int file_to_load_uid;
 
 public:
 
@@ -147,8 +148,8 @@ public:
 	bool AreFpsCapped();
 	void SetFpsCap(bool fps_uncapped);
 
-	void SaveScene();
-	void LoadScene(const char* path_to_load);
+	void SaveScene(const char* file_name);
+	void LoadScene(int file_id);
 
 private:
 
