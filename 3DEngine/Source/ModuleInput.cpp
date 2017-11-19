@@ -122,6 +122,8 @@ update_status ModuleInput::PreUpdate(float dt)
 			{
 				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
 					App->renderer3D->OnResize(e.window.data1, e.window.data2);
+				if (e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+					App->resources->GotFocus(true);
 			}		
 		}
 	}

@@ -29,6 +29,7 @@ public:
 	// meta methods
 	bool FoundMetaFile(const char* meta_path);
 	bool NeedReImport(const char* meta_path, Config_Json& meta_file);
+	int GetLastTimeWritten(const char* assets_file);
 
 	int ImportTexture(const char* full_path, const char* file_name, bool from_scene = true);
 

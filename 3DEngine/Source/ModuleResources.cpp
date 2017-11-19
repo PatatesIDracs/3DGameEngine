@@ -42,7 +42,10 @@ bool ModuleResources::Start()
 
 update_status ModuleResources::Update(float dt)
 {
-
+	if (update_assets) {
+		UpdateAssetsFiles();
+		update_assets = false;
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -172,7 +175,7 @@ void ModuleResources::LoadFromAssets()
 
 					// Write to Meta
 					meta_file.SetInt("UUID", new_mesh->GetUID());
-					meta_file.SetInt("Creation Time", std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(path + filename + extension)));
+					meta_file.SetInt("Creation Time",jope_importer->GetLastTimeWritten((path + filename + extension).c_str()));
 					meta_file.AddJsonObject("MeshImporter");
 					meta_file.SaveToFile(meta_path.c_str());
 				}
@@ -182,6 +185,47 @@ void ModuleResources::LoadFromAssets()
 		filename.clear();
 		extension.clear();
 
+	}
+}
+
+void ModuleResources::UpdateAssetsFiles()
+{
+	fs::recursive_directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER };
+	fs::recursive_directory_iterator end{};
+
+	std::string path;
+	std::string filename;
+	std::string extension;
+	std::string temp;
+	for (; it != end; it++)
+	{
+		temp = it->path().string();
+		if (!fs::is_directory(temp.c_str())) {
+			
+			jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
+
+			if (extension == METAFORMAT) {
+				//CheckMetaFiles((path + filename), extension.c_str());
+				Config_Json meta_file(temp.c_str());
+				int creation_time = jope_importer->GetLastTimeWritten((path + filename).c_str());
+				int time = meta_file.GetInt("Creation Time");
+				if (fs::exists(path + filename) && time != creation_time) {
+					temp = path + filename;
+					path.clear();
+					filename.clear();
+					extension.clear();
+					jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
+
+					if (extension == ".fbx" || extension == ".obj" || extension == ".png" || extension == ".tga") {
+						jope_importer->Import((path + filename + extension).c_str());
+					}
+					LOGC("Updated %s File ", temp.c_str());
+				}				
+			}	
+			path.clear();
+			filename.clear();
+			extension.clear();
+		}
 	}
 }
 
@@ -208,6 +252,11 @@ bool ModuleResources::CheckMetaFiles(std::string& file_path, const char* extensi
 void ModuleResources::HandleDropEvent(SDL_DropEvent drop_event)
 {
 	jope_importer->Import(drop_event.file);
+}
+
+void ModuleResources::GotFocus(bool focus_app)
+{
+	update_assets = focus_app;
 }
 
 void ModuleResources::DeleteFileFromUID(int uid)

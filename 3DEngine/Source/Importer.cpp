@@ -269,15 +269,19 @@ bool Importer::NeedReImport(const char * file_path, Config_Json& meta_file)
 {
 	if (!fs::exists(file_path)) return false;
 
-	uint time = (uint)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(file_path));
+	uint time = GetLastTimeWritten(file_path);
 	uint curr_time = meta_file.GetInt("Creation Time", 0);
 
 	// Check if file have changed
 	if (curr_time != time) {
-		meta_file.SetInt("Creation Time", time);
 		return true;
 	}
 	else return false;
+}
+
+int Importer::GetLastTimeWritten(const char * assets_file)
+{
+	return  (int)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(assets_file));
 }
 
 int Importer::ImportTexture(const char * full_path, const char* name, bool from_scene)
@@ -308,13 +312,14 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 
 	// Add Default UUID, and Creation Time if it's a new meta file
 	meta_file.SetInt("UUID", resource->GetUID());
-	meta_file.SetInt("Creation Time", meta_file.GetInt("Creation Time"));
 
 	// Import texture and modify meta file
 	if (NeedReImport(path.c_str(), meta_file)) {
 		CopyFileToFolder(path.c_str(), (assets_texture_path + file_name).c_str());
-		text_importer->Import(resource, path.c_str(), file_name.c_str(), meta_file);
+		text_importer->Import(resource, (assets_texture_path + file_name).c_str(), file_name.c_str(), meta_file);
 	}
+	meta_file.SetInt("Creation Time", GetLastTimeWritten((assets_texture_path + file_name).c_str()));
+
 	meta_file.SaveToFile(assets_path.c_str());
 	
 	return resource->GetUID();

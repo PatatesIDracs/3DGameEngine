@@ -93,8 +93,10 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 		scene_resource->SaveResource(scene_go);
 
 		WriteSceneMeta(meta_file, scene_resource);
-		meta_file.SaveToFile((meta_filename + METAFORMAT).c_str());
 	}
+	meta_file.SetInt("Creation Time", jope_importer->GetLastTimeWritten(full_path));
+	meta_file.SaveToFile((meta_filename + METAFORMAT).c_str());
+
 	delete scene_go;
 }
 
@@ -219,6 +221,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 			
 			importer->CopyFileToFolder((library_path + mesh_resource->GetLibraryPath()).c_str(), mesh_path.c_str());
 			WriteMeshMeta(meta_file, mesh_resource);
+			meta_file.SetInt("Creation Time", importer->GetLastTimeWritten(mesh_path.c_str()));
 			meta_file.SaveToFile((mesh_path + METAFORMAT).c_str());
 			
 		}
@@ -267,11 +270,7 @@ void MeshImporter::WriteSceneMeta(Config_Json & meta_file, const ResourceScene *
 	meta_file.SetInt("UUID", resource->GetUID());
 
 	// Update Creation Time if meta_file created
-	int creation_time = meta_file.GetInt("Creation Time");
-	if (creation_time == 0) {
-		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(assets_meshes_path + resource->GetAssetsPath()));
-		meta_file.SetInt("Creation Time", creation_time);
-	}
+	meta_file.SetInt("Creation Time", 0);
 
 	Config_Json texture_importer = meta_file.GetJsonObject("SceneImporter");
 	if (texture_importer.config_obj == NULL)
@@ -283,11 +282,8 @@ void MeshImporter::WriteMeshMeta(Config_Json & meta_file, const ResourceMesh * r
 	meta_file.SetInt("UUID", resource->GetUID());
 
 	// Update Creation Time if meta_file created
-	int creation_time = meta_file.GetInt("Creation Time");
-	if (creation_time == 0) {
-		creation_time = (uint)std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(assets_meshes_path + resource->GetAssetsPath()));
-		meta_file.SetInt("Creation Time", creation_time);
-	}
+	meta_file.SetInt("Creation Time", 0);
+	
 
 	Config_Json texture_importer = meta_file.GetJsonObject("MeshImporter");
 	if (texture_importer.config_obj == NULL)
