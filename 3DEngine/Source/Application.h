@@ -148,7 +148,7 @@ public:
 	void SetFpsCap(bool fps_uncapped);
 
 	void SaveScene();
-	void LoadScene();
+	void LoadScene(const char* path_to_load);
 
 private:
 

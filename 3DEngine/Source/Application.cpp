@@ -200,14 +200,15 @@ void Application::SaveScene()
 	want_to_save_scene = true;
 }
 
-void Application::LoadScene()
+void Application::LoadScene(const char* path_to_load)
 {
+	file_to_load = path_to_load;
 	want_to_load_scene = true;
 }
 
 void Application::LoadSceneNow()
 {
-	scene_intro->LoadScene("../Data/Assets/TestScene.jope");
+	scene_intro->LoadScene(file_to_load.c_str());
 	want_to_load_scene = false;
 }
 

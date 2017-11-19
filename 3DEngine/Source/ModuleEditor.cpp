@@ -118,8 +118,8 @@ update_status ModuleEditor::Update(float dt)
 		//Open Setting window
 		if (ImGui::MenuItem("Configuration")) showconfig = !showconfig;
 		//Save and Load Scene
-		if (ImGui::MenuItem("Save scene ...")) App->SaveScene();
-		if (ImGui::MenuItem("Load scene ...")) App->LoadScene();
+		if (ImGui::MenuItem("Save scene ...")) savewindow = !savewindow;
+		if (ImGui::MenuItem("Load scene ...")) loadwindow = !loadwindow;
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
 		ImGui::EndMenu();
@@ -131,6 +131,13 @@ update_status ModuleEditor::Update(float dt)
 		if (ImGui::MenuItem("Properties")) showpropertieswindow = !showpropertieswindow;
 		if (ImGui::MenuItem("Hierachy")) showhierarchy = !showhierarchy;
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
+		ImGui::EndMenu();
+	}
+
+	//GameObject Menu
+	if (ImGui::BeginMenu("GameObject"))
+	{
+		if (ImGui::MenuItem("Create Empty")) App->scene_intro->CreateNewGameObject("GameObject");
 		ImGui::EndMenu();
 	}
 
@@ -194,7 +201,9 @@ update_status ModuleEditor::Update(float dt)
 	if (showpropertieswindow) DrawPropertiesWindow();
 	if (showhierarchy) DrawHierarchy();
 
-	
+	//Save and load
+	if (savewindow) DrawSaveWindow();
+	if (loadwindow) DrawLoadWindow();
 	
 	return UPDATE_CONTINUE;
 }
@@ -281,6 +290,38 @@ void ModuleEditor::DrawAboutWindow()
 	ImGui::Text("\nLicensed under the MIT license");
 
 	ImGui::End();
+}
+
+void ModuleEditor::DrawSaveWindow()
+{
+	ImGui::OpenPopup("Save File");
+	if (ImGui::BeginPopupModal("Save File", &savewindow))
+	{
+		ImGui::BeginChild("test", ImVec2(250,300),true);
+
+		ImGui::EndChild();
+
+		if (ImGui::Button("Save"))
+			App->SaveScene();
+
+		ImGui::EndPopup();		
+	}
+}
+
+void ModuleEditor::DrawLoadWindow()
+{
+	ImGui::OpenPopup("Load File");
+	if (ImGui::BeginPopupModal("Load File", &loadwindow))
+	{
+		ImGui::BeginChild("test", ImVec2(250, 300), true);
+
+		ImGui::EndChild();
+
+		if (ImGui::Button("Load"))
+			App->LoadScene("../Data/Assets/TestScene.jope");
+
+		ImGui::EndPopup();
+	}
 }
 
 void ModuleEditor::DrawHierarchy()
@@ -557,11 +598,6 @@ bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
 	fs::directory_iterator end{};
 	
 	ImGui::Begin("Explorer");
-	ImGui::Columns(2);
-	ImGui::Text("directory explorer test");
-	
-	
-	ImGui::NextColumn();
 	ImGui::Text("Other files test");
 	for (; it != end; it++)
 	{

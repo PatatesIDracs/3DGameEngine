@@ -47,6 +47,8 @@ private:
 	void DrawConsole();
 	void DrawPropertiesWindow();
 	void DrawAboutWindow();
+	void DrawSaveWindow();
+	void DrawLoadWindow();
 
 	void DrawHierarchy();
 
@@ -62,6 +64,8 @@ private:
 	bool	showpropertieswindow	= false;
 	bool	showhierarchy			= false;
 	bool	showclock				= false;
+	bool	savewindow				= false;
+	bool	loadwindow				= false;
 
 	// Profiler
 	bool	showprofiler			= false;
