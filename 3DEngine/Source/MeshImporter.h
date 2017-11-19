@@ -6,6 +6,7 @@
 
 class GameObject;
 class ResourceMesh;
+class ResourceScene;
 class Config_Json;
 template <class T>
 class aiMatrix4x4t;
@@ -29,7 +30,7 @@ private:
 
 	const char* SaveMesh(RenderData* mesh, const char* file_name);
 
-	void ImportScene(const aiScene* scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name);
+	void ImportScene(const aiScene* scene, std::map<int, int>* id_map, std::map<int, int>* text_map, std::string& file_name, const char* full_path);
 	void ImportNode(aiNode* to_import, const aiScene* scene, GameObject* import_target, aiMatrix4x4t<float> parent_transform, std::map<int, int>* id_map, std::map<int, int>* text_map);
 
 	//Return a map with assimpID/ResourceUID
@@ -38,8 +39,9 @@ private:
 	// Retrun a map with assimpID/ResourceUID Texture
 	std::map<int, int>* ImportTextureResources(const aiScene* scene, const char * full_path);
 
+	void WriteSceneMeta(Config_Json& meta_file, const ResourceScene* resource) const;
 	void WriteMeshMeta(Config_Json& meta_file, const ResourceMesh* resource) const;
-
+	
 private:
 	std::string import_path;
 	std::string assets_meshes_path;

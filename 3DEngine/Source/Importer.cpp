@@ -46,13 +46,7 @@ void Importer::Import(const char * full_path)
 	//Depending on which file it is decide which importer is needed
 	if (extension == ".fbx" || extension == ".obj")
 	{
-		std::string assets_path = assets_fbx_path + filename + extension;
-		CopyFileToFolder(full_path, assets_path.c_str());
-		assets_path.append(METAFORMAT);
-
-		//if (!FoundMetaFile(assets_path.c_str())) {
-			mesh_importer->Import(full_path, path, filename, extension);
-		//}
+		mesh_importer->Import(full_path, path, filename, extension);
 	}
 	if (extension == ".png" || extension == ".tga")
 	{
