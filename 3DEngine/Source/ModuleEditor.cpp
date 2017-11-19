@@ -330,21 +330,30 @@ void ModuleEditor::DrawLoadWindow()
 	ImGui::OpenPopup("Load File");
 	if (ImGui::BeginPopupModal("Load File", &loadwindow))
 	{
+		static int file_uid = -1;
+		static std::string file_name;
 		ImGui::BeginChild("test", ImVec2(250, 300), true);
 	
-		for (int i = 0; i < to_show->size(); i++)
+		for (uint i = 0; i < to_show->size(); i++)
 		{
 			if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
 			{
-				App->LoadScene((*to_show)[i]->GetUID());
+				file_uid = (*to_show)[i]->GetUID();
+				file_name = (*to_show)[i]->GetAssetsPath();
 			};
 		}
 
 		ImGui::EndChild();
 
+		ImGui::InputText("", (char*)file_name.c_str(), file_name.size(), ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+
 		if (ImGui::Button("Load"))
 		{
-			//App->LoadScene("../Data/Assets/TestScene.jope");
+			if (file_uid != -1)
+				App->LoadScene(file_uid);
+			else
+				LOGC("Please select a file to load");
 			loadwindow = false;
 		}
 
