@@ -33,6 +33,7 @@ public:
 	virtual void LoadToMemory();
 	void StopThis();
 	virtual void UnloadFromMemory();
+	virtual void ResourceModified();
 
 	const char* GetName() const;
 	const char* GetAssetsPath() const;

@@ -131,7 +131,7 @@ void ModuleSceneIntro::Draw()
 update_status ModuleSceneIntro::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
-		SaveScene("Shame");
+		LoadScene("Shame");
 
 	if (App->clock.state != APP_PLAY) {
 		Primitive a;
@@ -430,7 +430,7 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 void ModuleSceneIntro::LoadScene(const char * assets_file_path)
 {
 	LOGC("Loading the scene ...");
-	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(588905684);
+	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(1169667521);
 	load_scene->LoadResource();
 
 }

@@ -301,7 +301,6 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 			path = path + file_name;
 		}
 	}
-	
 
 	// Copy texture to Assets/textures folder 
 	std::string assets_path = assets_texture_path + file_name.c_str();
@@ -325,6 +324,7 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 	if (NeedReImport(path.c_str(), meta_file)) {
 		CopyFileToFolder(path.c_str(), (assets_texture_path + file_name).c_str());
 		text_importer->Import(resource, (assets_texture_path + file_name).c_str(), file_name.c_str(), meta_file);
+		resource->ResourceModified();
 	}
 	meta_file.SetInt("Creation Time", GetLastTimeWritten((assets_texture_path + file_name).c_str()));
 	

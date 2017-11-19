@@ -217,6 +217,7 @@ std::map<int, int>* MeshImporter::ImportMeshResources(const aiScene * scene, std
 
 			mesh_resource->SetRenderData(mesh);
 			mesh_resource->SetAssetFile((file_name + std::to_string(i) + MJOPE).c_str());
+			mesh_resource->ResourceModified();
 			mesh_resource->SaveResource();
 			
 			importer->CopyFileToFolder((library_path + mesh_resource->GetLibraryPath()).c_str(), mesh_path.c_str());
