@@ -77,6 +77,14 @@ void ResourceMesh::LoadToMemory()
 	}
 }
 
+void ResourceMesh::UnloadFromMemory()
+{
+	if (render_data->num_indices > 0)		glDeleteBuffers(1, &render_data->id_indices);
+	if (render_data->num_vertices > 0)		glDeleteBuffers(1, &render_data->id_vertices);
+	if (render_data->num_normals > 0)		glDeleteBuffers(1, &render_data->id_normals);
+	if (render_data->num_tex_vertices > 0)	glDeleteBuffers(1, &render_data->id_tex_vertices);
+}
+
 const RenderData * ResourceMesh::GetRenderData() const
 {
 	return render_data;
@@ -216,6 +224,8 @@ void ResourceMesh::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uin
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	aabb_box.SetNegativeInfinity();
+	aabb_box.Enclose((float3*)render_data->vertices, render_data->num_vertices);
 }
 
 void ResourceMesh::GetBufferSize(uint & buffer_size)

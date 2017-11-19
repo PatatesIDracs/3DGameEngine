@@ -295,14 +295,22 @@ void ModuleEditor::DrawAboutWindow()
 void ModuleEditor::DrawSaveWindow()
 {
 	ImGui::OpenPopup("Save File");
-	if (ImGui::BeginPopupModal("Save File", &savewindow))
+	if (ImGui::BeginPopupModal("Save File", &savewindow), ImGuiWindowFlags_AlwaysAutoResize)
 	{
-		ImGui::BeginChild("test", ImVec2(250,300),true);
+		static char file_name[200];
+		ImGui::BeginChild("test", ImVec2(300,300),true);
 
 		ImGui::EndChild();
 
+		ImGui::InputText("", file_name, (int)sizeof(file_name));
+		ImGui::SameLine();
+
 		if (ImGui::Button("Save"))
 			App->SaveScene();
+
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+			savewindow = false;
 
 		ImGui::EndPopup();		
 	}

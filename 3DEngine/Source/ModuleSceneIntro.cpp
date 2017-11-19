@@ -128,6 +128,9 @@ void ModuleSceneIntro::Draw()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+		LoadScene("sad");
+
 	if (App->clock.state != APP_PLAY) {
 		Primitive a;
 		a.axis = true;
@@ -177,7 +180,18 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, b
 	//This may happen when opening the software, when the scene resources are loaded to the map they will try
 	//to load their gameobjects to scene, this will prevent it. We still want to load it to check the file is not corrupted
 	if (root == nullptr)
+	{
+		for (uint i = 0; i < new_go_array->size(); i++)
+		{
+			if ((*new_go_array)[i]->parent == nullptr || (*new_go_array)[i]->parent_UUID == 0)
+			{
+				delete (*new_go_array)[i];
+				break;
+			}
+		}
+
 		return;
+	}
 
 	GameObject* loaded_root = nullptr;
 	//If it's a new scene delete the current scene and load the new one
@@ -391,143 +405,21 @@ void ModuleSceneIntro::DrawProperties() const
 	if (current_object != nullptr) current_object->DrawProperties();
 }
 
-void ModuleSceneIntro::SaveScene()
+void ModuleSceneIntro::SaveScene(const char* file_name)
 {
 	LOGC("Saving the scene...");
-
-	//TODO: Get the buffer size
-	uint buffer_size = 0;
-	root->GetOwnBufferSize(buffer_size);
-	buffer_size += sizeof(int);
-	LOGC("Buffer size is %i", buffer_size);
-
-	//TODO: Create the buffer and cursor
-	char* buffer_data = new char[buffer_size];
-	char* cursor = buffer_data;
-
-	//Pass the buffer and cursor and go saving data
-	int bytes_copied = 0;
-	root->Save(buffer_data, cursor, bytes_copied);
-	cursor += bytes_copied;
-	int identifier = ENDFILEIDENTIFIER;
-	memcpy(cursor, &identifier, sizeof(identifier));
-	
-	std::ofstream new_file("../Data/Assets/TestScene.jope", std::ofstream::binary);
-	new_file.write(buffer_data, buffer_size);
+	std::string save_file_name = file_name;
+	save_file_name.append(SCENEFORMAT);
+	ResourceScene* save_scene = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+	save_scene->SetAsRoot(true);
+	std::ofstream new_file(save_file_name.c_str(), std::ofstream::binary);
 }
 
-void ModuleSceneIntro::LoadScene(const char * file_path)
+void ModuleSceneIntro::LoadScene(const char * assets_file_path)
 {
-	LOGC("Loading the scence from %s", file_path);
-	static_gameobjects.clear();
-	dynamic_gameobjects.clear();
-
-	char* buffer_data = nullptr;
-	int buffer_size = 0;
-	std::ifstream loaded_file(file_path, std::fstream::binary);
-	if (loaded_file)
-	{
-		loaded_file.seekg(0, loaded_file.end);
-		buffer_size = (int)loaded_file.tellg();
-		loaded_file.seekg(0, loaded_file.beg);
-
-		buffer_data = new char[buffer_size];
-
-		loaded_file.read(buffer_data, buffer_size);
-		loaded_file.close();
-	}
-	if (buffer_data == nullptr)
-	{
-		LOGC("Couldn't load file from %s", file_path);
-		return;
-	}
-	char* cursor = buffer_data;
-	int bytes_copied = 0;
-	uint bytes_to_copy = 0;
-	int next_identifier = 0;
-
-	std::vector<GameObject*> loaded_gameobjects;
-	std::vector<Component*>  loaded_components;
-
-	while (bytes_copied < buffer_size)
-	{
-		bytes_to_copy = sizeof(int);
-		memcpy(&next_identifier, cursor, bytes_to_copy);
-		cursor += bytes_to_copy;
-		bytes_copied += bytes_to_copy;
-
-		switch (next_identifier)
-		{
-		case GAMEOBJECTIDENTIFIER:
-			{
-			GameObject* new_gameobject = new GameObject(nullptr);
-			int bytes_advanced = 0;
-			new_gameobject->Load(cursor, bytes_advanced);
-			cursor += bytes_advanced;
-			bytes_copied += bytes_advanced;
-			loaded_gameobjects.push_back(new_gameobject);
-			if (new_gameobject->isstatic)
-				static_gameobjects.push_back(new_gameobject);
-			else
-				dynamic_gameobjects.push_back(new_gameobject);
-			}
-			break;
-		case COMPONENTIDENTIFIER:
-			{
-			COMP_TYPE new_comp_type = COMP_TYPE::COMP_UNKNOWN;
-			bytes_to_copy = sizeof(COMP_TYPE);
-			memcpy(&new_comp_type, cursor, bytes_to_copy);
-			cursor += bytes_to_copy;
-			bytes_copied += bytes_to_copy;
-			
-			Component* new_component = NewOrphanComponent(new_comp_type);
-			int bytes_advanced = 0;
-			new_component->Load(cursor, bytes_advanced);
-			cursor += bytes_advanced;
-			bytes_copied += bytes_advanced;
-			loaded_components.push_back(new_component);
-			}
-			break;
-		case ENDFILEIDENTIFIER:
-			LOGC("File loaded from %s", file_path);
-			break;
-		default:
-			LOGC("File seems corrupted");
-			break;
-		}
-	}
-
-	for (uint i = 0; i < loaded_components.size(); i++)
-	{
-		for (uint j = 0; j < loaded_gameobjects.size(); j++)
-		{
-			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
-			{
-				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
-				if (loaded_components[i]->GetType() == COMP_CAMERA && ((Camera*)loaded_components[i])->IsActive())
-					App->camera->SetMainCamera((Camera*)loaded_components[i], true);
-			}
-		}
-	}
-
-	for (uint i = 0; i < loaded_gameobjects.size(); i++)
-	{
-		for (uint j = 0; j < loaded_gameobjects.size(); j++)
-		{
-			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
-				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
-		}
-	}
-
-	for (uint i = 0; i < loaded_gameobjects.size(); i++)
-	{
-		if (loaded_gameobjects[i]->parent == nullptr)
-		{
-			
-			root = loaded_gameobjects[i];
-			break;
-		}
-	}
+	LOGC("Loading the scene ...");
+	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(1803921464);
+	load_scene->LoadResource();
 
 }
 

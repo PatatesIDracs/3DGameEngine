@@ -70,6 +70,10 @@ void ModuleResources::SearchForResources()
 	std::string filename;
 	std::string extension;
 	std::string temp;
+
+	//Stored and loaded at the end
+	std::vector<ResourceScene*> scenes_to_load;
+
 	for (; it != end; it++)
 	{
 		if (fs::is_directory(it->path()))
@@ -86,7 +90,7 @@ void ModuleResources::SearchForResources()
 			{
 				ResourceScene* new_scene = (ResourceScene*)CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE, std::stoi(filename));
 				new_scene->SetLibraryFile(filename + extension);
-				new_scene->LoadResource();
+				scenes_to_load.push_back(new_scene);
 				LOGC("Scene %s loaded", it->path().c_str());
 			}
 
@@ -116,6 +120,10 @@ void ModuleResources::SearchForResources()
 			extension.clear();
 		}
 
+	}
+	for (int i = 0; i < scenes_to_load.size(); i++)
+	{
+		scenes_to_load[i]->LoadResource();
 	}
 }
 

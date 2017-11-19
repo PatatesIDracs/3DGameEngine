@@ -12,14 +12,15 @@ ResourceTexture::ResourceTexture(int uid): Resource(uid)
 
 void ResourceTexture::LoadToMemory()
 {
-	if (texture_id == 0 && width > 1 && library_file.size() >0) {
-		texture_id = ilutGLLoadImage((char*)(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER + library_file).c_str());
+	if (texture_id == 0 && width > 1 && path_to_dds.size() >0) {
+		texture_id = ilutGLLoadImage((char*)(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER + path_to_dds).c_str());
 	}
 }
 
 void ResourceTexture::UnloadFromMemory()
 {
 	if (texture_id != 0)glDeleteTextures(1, &texture_id);
+	texture_id = 0;
 }
 
 void ResourceTexture::SaveResource()

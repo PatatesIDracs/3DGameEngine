@@ -14,6 +14,7 @@ Mesh::Mesh(GameObject* parent, ResourceMesh* mesh_resource, bool isactive) : Com
 		parent->AddComponent(this);
 		if (mesh_resource != nullptr) {
 			mesh_resource->UseThis();
+			resource_uid = mesh_resource->GetUID();
 			UpdateTransform();
 		}
 	}
@@ -191,6 +192,8 @@ void Mesh::Load(char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	mesh_resource = (ResourceMesh*)App->resources->GetFromUID(resource_uid);
+	if (mesh_resource != nullptr)
+		mesh_resource->UseThis();
 }
 
 void Mesh::GetOwnBufferSize(uint & buffer_size)

@@ -214,7 +214,7 @@ void Application::LoadSceneNow()
 
 void Application::SaveSceneNow()
 {
-	scene_intro->SaveScene();
+	scene_intro->SaveScene("Dsa");	//TODO: set the name
 	want_to_save_scene = false;
 }
 

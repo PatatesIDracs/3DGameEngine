@@ -14,7 +14,10 @@ Material::Material(GameObject * parent, ResourceTexture* resource, bool isactive
 		parent->AddComponent(this);
 
 	if (resource != nullptr)
+	{
 		resource->UseThis();
+		resource_id = resource->GetUID();
+	}
 }
 
 Material::~Material()
@@ -109,6 +112,8 @@ void Material::Load(char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	resource = (ResourceTexture*)App->resources->GetFromUID(resource_id);
+	if (resource != nullptr)
+		resource->UseThis();
 }
 
 void Material::GetOwnBufferSize(uint & buffer_size)

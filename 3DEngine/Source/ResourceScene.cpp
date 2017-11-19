@@ -44,7 +44,7 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 	cursor += bytes_to_copy; //Advance cursor
 
 	str_size = strlen(assets_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource name
+	bytes_to_copy = sizeof(int); //Resource assets file
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_to_copy = str_size; //Assets file
@@ -52,12 +52,16 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 	cursor += bytes_to_copy; //Advance cursor
 
 	str_size = strlen(library_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource name
+	bytes_to_copy = sizeof(int); //Resource library file
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &root_scene, bytes_to_copy);
+	cursor += bytes_to_copy;
 
 	int bytes_copied = 0;
 	scene_root_go->Save(buffer_data, cursor, bytes_copied);
@@ -77,6 +81,7 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 void ResourceScene::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
+	buffer_size += sizeof(bool);
 }
 
 void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
@@ -85,7 +90,12 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 	Resource::LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
 	cursor += bytes_copied;
 
-	uint bytes_to_copy;
+	uint bytes_to_copy = sizeof(bool);
+	memcpy(&root_scene, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+
 	int next_identifier;
 	std::vector<GameObject*> loaded_gameobjects;
 	std::vector<Component*> loaded_components;

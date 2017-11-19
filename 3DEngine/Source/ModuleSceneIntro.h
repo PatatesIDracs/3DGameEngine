@@ -42,7 +42,7 @@ public:
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;
 
-	void SaveScene();
+	void SaveScene(const char* file_name);
 	void LoadScene(const char* file_path);
 
 	void SaveToPlay();

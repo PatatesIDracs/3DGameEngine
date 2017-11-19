@@ -34,6 +34,7 @@ public:
 
 	void SetRenderData(RenderData* new_render_data);
 	void LoadToMemory();
+	void UnloadFromMemory();
 
 	const RenderData*	GetRenderData() const;
 	AABB				GetAABB() const;
