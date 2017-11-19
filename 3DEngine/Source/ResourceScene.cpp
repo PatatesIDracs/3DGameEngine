@@ -154,6 +154,8 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
 				if (loaded_components[i]->GetType() == COMP_CAMERA && ((Camera*)loaded_components[i])->IsActive())
 					App->camera->SetMainCamera((Camera*)loaded_components[i], true);
+				if (loaded_components[i]->GetType() == COMP_MESHRENDERER)
+					((MeshRenderer*)loaded_components[i])->PrepareRenderer();
 			}
 		}
 	}

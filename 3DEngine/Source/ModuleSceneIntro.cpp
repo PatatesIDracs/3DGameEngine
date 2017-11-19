@@ -418,7 +418,7 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 void ModuleSceneIntro::LoadScene(const char * assets_file_path)
 {
 	LOGC("Loading the scene ...");
-	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(1803921464);
+	ResourceScene* load_scene = (ResourceScene*)App->resources->GetFromUID(588905684);
 	load_scene->LoadResource();
 
 }
@@ -429,6 +429,7 @@ void ModuleSceneIntro::SaveToPlay()
 	play_save->SetAsRoot(true);
 	play_save->SaveResource(root);
 	temp_save_uid = play_save->GetUID();
+	render_this.clear();
 }
 
 void ModuleSceneIntro::LoadToStop()
@@ -438,6 +439,7 @@ void ModuleSceneIntro::LoadToStop()
 	play_save->LoadResource();
 	App->resources->DeleteFileFromUID(temp_save_uid);
 	int temp_save_id = 0;
+	render_this.clear();
 }
 
 Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
@@ -456,7 +458,7 @@ Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
 		ret = new Mesh(nullptr, nullptr);
 		break;
 	case COMP_MATERIAL:
-		ret = new Material();
+		ret = new Material(nullptr, nullptr);
 		break;
 	case COMP_MESHRENDERER:
 		ret = new MeshRenderer(nullptr);
