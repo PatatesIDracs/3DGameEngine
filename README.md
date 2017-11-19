@@ -8,8 +8,8 @@ Open the 3DEngine.exe file inside the data folder.
 ## Usage 
 
 Use left+alt click to rotate the camera    
-Use right click to rotate the camera and activate FPS movement    
-Drag and drop files to load them, current file soported: .fbx, .obj, .tga, .png        
+Use right click to rotate the camera and activate FPS movement      
+Drag and drop files to import them, current file soported: .fbx, .obj, .tga, .png. Scenes imported must be loaded from File->Load           
 Use the mouse wheel to zoom in and out, zoom is restricted so you can't go inside the object. If you need a more precise view of some parts we suggest on using the FPS camera       
 [F] key will center the camera in the object              
 Click the Play button to turn on and off the game mode, click again to stop. When in play mode the Play button will turn green    
@@ -20,7 +20,7 @@ Use the guizmos to modify the selected object transform
 [R] Activate scale guizmo       
 To save a scene go to File->Save and input the name of the new file, and finally click Save       
 To load a scene go to File->Load select a file (the selected file will be displayed below) and click load      
-Open the tabs in the properties window to open the gameobject components options      
+Open the tabs in the properties window to open the gameobject components options       
 
 **FPS movement**   
 [W] move forwards   

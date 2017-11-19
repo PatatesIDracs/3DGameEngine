@@ -298,8 +298,8 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 		NormalizePath(file_name);
 		if (!fs::exists((path + file_name).c_str())) {
 			GetFileName(file_name);
-			path = path + file_name;
 		}
+		path = path + file_name;
 	}
 
 	// Copy texture to Assets/textures folder 
