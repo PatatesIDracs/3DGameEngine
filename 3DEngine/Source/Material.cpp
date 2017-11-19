@@ -1,6 +1,6 @@
 #include "Material.h"
 #include "Glew\include\glew.h"
-
+#include "Application.h"
 #include "Resource.h"
 #include "ResourceTexture.h"
 
@@ -41,7 +41,7 @@ void Material::DrawComponent()
 
 void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 {
-	/*
+	
 	LOGC("Saving material comp");
 
 	//identifier and type
@@ -74,23 +74,17 @@ void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = sizeof(id_texture);
-	memcpy(cursor, &id_texture, bytes_to_copy);
+	bytes_to_copy = sizeof(int);
+	memcpy(cursor, &resource_id, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	bytes_to_copy = sizeof(uint);
-	memcpy(cursor, &texture_width, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
-	memcpy(cursor, &texture_height, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;*/
+
 }
 
 void Material::Load(char * cursor, int & bytes_copied)
 {
-	/*//UUID and parentUUID
+	//UUID and parentUUID
 	uint bytes_to_copy = sizeof(int);
 	memcpy(&UUID, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -107,26 +101,18 @@ void Material::Load(char * cursor, int & bytes_copied)
 	memcpy(&unique, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
-
+	
 	//Texture id
-	memcpy(&id_texture, cursor, bytes_to_copy);
+	bytes_to_copy = sizeof(int);
+	memcpy(&resource_id, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	//height and width
-	bytes_to_copy = sizeof(uint);
-	memcpy(&texture_width, cursor, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;
-	memcpy(&texture_height, cursor, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_copied += bytes_to_copy;*/
+	resource = (ResourceTexture*)App->resources->GetFromUID(resource_id);
 }
 
 void Material::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
-
-	//buffer_size += sizeof(id_texture);
-	buffer_size += sizeof(uint) * 2;	//Texture height and width
+	buffer_size += sizeof(int); //Resource id
 }

@@ -23,6 +23,7 @@ public:
 private:
 
 	ResourceTexture* resource = nullptr;
+	int resource_id = 0;
 };
 
 #endif // !__MATERIAL_H__
