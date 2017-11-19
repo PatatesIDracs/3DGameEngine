@@ -6,21 +6,21 @@ Drag the JoPe engine folder inside the .rar file to somewhere in your computer.
 Open the 3DEngine.exe file inside the data folder.
 
 ## Usage 
-IMPORTANT: "Save scene..." and "Load scene..." buttons **DO NOT** work right now due to changes in the code for the future release 
 
 Use left+alt click to rotate the camera    
 Use right click to rotate the camera and activate FPS movement    
 Drag and drop files to load them, current file soported: .fbx, .obj, .tga, .png        
 Use the mouse wheel to zoom in and out, zoom is restricted so you can't go inside the object. If you need a more precise view of some parts we suggest on using the FPS camera       
-//[F] key will center the camera in the object       
-//[C] key will center the camare in the origin        
-Click the Play button to turn on and off the game mode (currently there is no display, comming soon)      
+[F] key will center the camera in the object              
+Click the Play button to turn on and off the game mode, click again to stop. When in play mode the Play button will turn green    
 Click on a GameObject to select it     
 Use the guizmos to modify the selected object transform       
-[W] Activate translation guizmo
-[E] Activate rotation guizmo
-[R] Activate scale guizmo
-
+[W] Activate translation guizmo    
+[E] Activate rotation guizmo      
+[R] Activate scale guizmo       
+To save a scene go to File->Save and input the name of the new file, and finally click Save       
+To load a scene go to File->Load select a file (the selected file will be displayed below) and click load      
+Open the tabs in the properties window to open the gameobject components options      
 
 **FPS movement**   
 [W] move forwards   
@@ -31,6 +31,10 @@ Use the guizmos to modify the selected object transform
 **Game mode**
 During game mode the camera selected as main camera will be the one used to render the scene, if there is no main camera selected the editor ghost camera will be used.
 In game mode objects can't be edited and almost all UI will be hidden.
+
+**Innovation**
+Scene is serialized in own binary format      
+Guizmos added to edit GameObjects      
 
 **Multiple texture**   
 Right now the viewer doesn't support multiple texture CHANNELS, this means that you can't load normal or specular maps.   
@@ -60,6 +64,15 @@ We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.ne
 
 
 ## Changelog
+### v0.2 - Assigment 2
+* Polished fbx importing     
+* Added .meta files to resources loaded     
+* All resources and components that use them do a correct save and load      
+* Load and Save scene UI elements are functional      
+* Contenents in assets are imported to library if they weren't yet imported        
+* Editing a texture in assets during runtime will change it's resource when the user goes back to the engine, only textures supported do not try with other files      
+
+
 ### v0.1.2 - Assigment 2
 * Changed importing methods
 * Improved fbx importing
