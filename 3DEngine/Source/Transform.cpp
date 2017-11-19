@@ -123,6 +123,7 @@ void Transform::SetTransform(float4x4 &transf)
 
 void Transform::DrawComponent()
 {
+	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
@@ -132,6 +133,7 @@ void Transform::DrawComponent()
 		}
 		if(ImGui::InputFloat3("Scale", &scale.x, 2, ImGuiInputTextFlags_EnterReturnsTrue)) update_transform = true;
 	}
+	ImGui::PopID();
 }
 
 void Transform::NormalizeRotationAngle()

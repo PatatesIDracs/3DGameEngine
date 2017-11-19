@@ -26,6 +26,7 @@ void MeshRenderer::PrepareRenderer()
 
 void MeshRenderer::DrawComponent()
 {
+	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Mesh Renderer"))
 	{
 		if (mesh == nullptr)
@@ -35,6 +36,7 @@ void MeshRenderer::DrawComponent()
 
 		if (ImGui::Button("Reload elements")) PrepareRenderer();
 	}
+	ImGui::PopID();
 }
 
 void MeshRenderer::ChangeParent(GameObject * new_parent)

@@ -35,6 +35,7 @@ int Material::GetTextureID() const
 
 void Material::DrawComponent()
 {
+	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		if (resource != nullptr)
@@ -51,6 +52,7 @@ void Material::DrawComponent()
 			ImGui::Text("No texture found");
 		}
 	}
+	ImGui::PopID();
 }
 
 void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)

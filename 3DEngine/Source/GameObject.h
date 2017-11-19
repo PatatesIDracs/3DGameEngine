@@ -48,8 +48,6 @@ private:
 	void DrawSetStaticGObjWindow();
 	void ChangeChildsStatic(bool state);
 
-	Component* CreatComponent(COMP_TYPE new_comp_type);
-
 public:
 	int UUID = 0;
 	int parent_UUID = 0;

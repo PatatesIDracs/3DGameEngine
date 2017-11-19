@@ -73,6 +73,7 @@ void Camera::UpdateTransform()
 
 void Camera::DrawComponent()
 {
+	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		if (ImGui::Checkbox("Main Camera", &active)) {
@@ -90,6 +91,7 @@ void Camera::DrawComponent()
 		}
 		ImGui::InputFloat("Aspect Ratio", &aspect_ratio, 0, 100, 3, ImGuiInputTextFlags_ReadOnly);
 	}
+	ImGui::PopID();
 }
 
 float4x4 Camera::GetProjMatrix() const

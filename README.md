@@ -1,4 +1,4 @@
-# 3DGameEngine
+﻿# 3DGameEngine
 Simple 3D Engine made for learning purposes
 
 ## Instalation
@@ -9,7 +9,8 @@ Open the 3DEngine.exe file inside the data folder.
 
 Use left+alt click to rotate the camera    
 Use right click to rotate the camera and activate FPS movement      
-Drag and drop files to import them, current file soported: .fbx, .obj, .tga, .png. Scenes imported must be loaded from File->Load           
+Drag and drop files to import them, current file soported: .fbx, .obj, .tga, .png. Scenes imported must be loaded from File->Load      
+Scene files (.fbx, .obj) will only trye to load textures that are in the same folder as the .fbx            
 Use the mouse wheel to zoom in and out, zoom is restricted so you can't go inside the object. If you need a more precise view of some parts we suggest on using the FPS camera       
 [F] key will center the camera in the object              
 Click the Play button to turn on and off the game mode, click again to stop. When in play mode the Play button will turn green    
@@ -20,7 +21,9 @@ Use the guizmos to modify the selected object transform
 [R] Activate scale guizmo       
 To save a scene go to File->Save and input the name of the new file, and finally click Save       
 To load a scene go to File->Load select a file (the selected file will be displayed below) and click load      
-Open the tabs in the properties window to open the gameobject components options       
+Open the tabs in the properties window to open the gameobject components options    
+Camera culling is calculated with the MainCamera by default assigned to the camera created in the default scene, to see all objects in the scene select the camera and turn off the main 
+camera button, this will deactivate the camera culling for that camera and all objects will be visible   
 
 **FPS movement**   
 [W] move forwards   
@@ -41,9 +44,8 @@ Right now the viewer doesn't support multiple texture CHANNELS, this means that 
 However if your model is made of diferent meshes and each one has a diferent texture, the textures will be applied to the correct mesh, note that in this case the path to the texture must be defined correctly, if it isn't you won't be able to load textures correctly since the drag & drop PNG functionality doesn't support this method and the same texture will be loaded to all the meshes.   
 
 **Sample Geometry**    
-Some sample geometry is provided to test the viewer, below you can find the original sources.    
-[Sci-fi Spacechip](https://www.cgtrader.com/free-3d-models/space/spaceship/sf-imperial-corvette-f3)     
-[Troll](https://www.cgtrader.com/free-3d-models/character/fantasy/earthborn-troll)   
+Some sample geometry is provided to test the viewer, below you can find the original sources.     
+[Troll](https://www.cgtrader.com/free-3d-models/character/fantasy/earthborn-troll)    
 [Megalodon](https://free3d.com/3d-model/megalodon-battlefield-4-67390.html)
 
 ## Credits 
@@ -53,10 +55,13 @@ You can check our github page [here](https://github.com/PatatesIDracs/3DGameEngi
 **Libraires**    
 This software was developed thanks to the opensource libraries listed below, we do not take credit for any functionality provided by these libraries.     
 This software was made using [SDL](https://www.libsdl.org/) libraries.      
-We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.net/) for our 3D render.     
+We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.net/) for our 3D render.        
+[MathGeoLib](http://clb.demon.fi/MathGeoLib/nightly/) used for logic calculations         
 [Assimp](http://assimp.sourceforge.net/) was used to load .fbx data.      
 [Devil](http://openil.sourceforge.net/) was used to read texture files.     
 [MMGR](http://www.paulnettle.com/) memory manager was used to monitor memory usage in runtime.    
+[ImGui](https://github.com/ocornut/imgui) used for all UI elements       
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) used to create the guizmos     
 
   
 **Tools**    
