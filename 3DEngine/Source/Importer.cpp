@@ -48,7 +48,7 @@ void Importer::Import(const char * full_path)
 	{
 		mesh_importer->Import(full_path, path, filename, extension);
 	}
-	if (extension == ".png" || extension == ".tga")
+	if (extension == ".png" || extension == ".tga" || extension == ".jpg")
 	{
 		ImportTexture(full_path, (filename+extension).c_str(), false);
 	}
@@ -296,9 +296,7 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 	if (from_scene) {
 		NormalizePath(path);
 		NormalizePath(file_name);
-		if (!fs::exists((path + file_name).c_str())) {
-			GetFileName(file_name);
-		}
+		GetFileName(file_name);
 		path = path + file_name;
 	}
 

@@ -225,7 +225,7 @@ void ModuleResources::UpdateAssetsFiles()
 					extension.clear();
 					jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
 
-					if (extension == ".fbx" || extension == ".obj" || extension == ".png" || extension == ".tga") {
+					if (extension == ".fbx" || extension == ".obj" || extension == ".png" || extension == ".tga" ||extension == ".jpg") {
 						jope_importer->Import((path + filename + extension).c_str());
 					}
 					LOGC("Updated %s File ", temp.c_str());
