@@ -12,7 +12,7 @@ ResourceTexture::ResourceTexture(int uid): Resource(uid)
 void ResourceTexture::LoadToMemory()
 {
 	if (texture_id == 0 && width > 1) {
-		texture_id = ilutGLLoadImage((char*)library_file.c_str());
+		texture_id = ilutGLLoadImage((char*)(JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER + library_file).c_str());
 	}
 }
 

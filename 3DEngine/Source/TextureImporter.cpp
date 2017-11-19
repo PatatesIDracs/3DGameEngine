@@ -58,7 +58,7 @@ void TextureImporter::Import(ResourceTexture* resource, const char * path, const
 		data = new ILubyte[size];
 		if (ilSaveL(IL_DDS, data, size) > 0)
 		{
-			std::ofstream new_file((import_path + file_name).c_str(), std::ofstream::binary);
+			std::ofstream new_file((import_path + JOPE_TEXTURE_FOLDER + file_name).c_str(), std::ofstream::binary);
 			new_file.write((char*)data, size);
 
 			LOGC("Imported texture as %s", file_name.c_str(), import_path.c_str());			

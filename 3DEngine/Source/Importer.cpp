@@ -109,7 +109,7 @@ void Importer::GetFileName(std::string& file_name)
 	uint path_end = 0;
 	for (uint i = 0; i < file_name.size(); i++)
 	{
-		if (file_name[i] == '/') {
+		if (file_name[i] == '/' || file_name[i] =='\\') {
 			path_end = i;
 			temp.clear();
 		}
@@ -241,12 +241,10 @@ bool Importer::FoundMetaFile(const char* meta_file)
 
 bool Importer::NeedReImport(const char * file_path, Config_Json& meta_file)
 {
+	if (!fs::exists(file_path)) return false;
+
 	uint time = (uint)std::chrono::system_clock::to_time_t(fs::v1::last_write_time(file_path));
 	uint curr_time = meta_file.GetInt("Creation Time", 0);
-
-	// Add Default UUID if it's a new meta file
-	if (curr_time == 0)
-		meta_file.SetInt("UUID", 0);
 
 	// Check if file have changed
 	if (curr_time != time) {
@@ -282,12 +280,16 @@ int Importer::ImportTexture(const char * full_path, const char* name, bool from_
 	if (resource == nullptr)
 		resource = (ResourceTexture*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
 
+	// Add Default UUID, and Creation Time if it's a new meta file
+	meta_file.SetInt("UUID", resource->GetUID());
+	meta_file.SetInt("Creation Time", meta_file.GetInt("Creation Time"));
+
 	// Import texture and modify meta file
 	if (NeedReImport(path.c_str(), meta_file)) {
 		CopyFileToFolder(path.c_str(), (assets_texture_path + file_name).c_str());
 		text_importer->Import(resource, path.c_str(), file_name.c_str(), meta_file);
-		meta_file.SaveToFile(assets_path.c_str());
 	}
+	meta_file.SaveToFile(assets_path.c_str());
 	
 	return resource->GetUID();
 }
