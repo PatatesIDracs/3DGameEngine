@@ -21,7 +21,9 @@ Use the guizmos to modify the selected object transform
 [R] Activate scale guizmo       
 To save a scene go to File->Save and input the name of the new file, and finally click Save       
 To load a scene go to File->Load select a file (the selected file will be displayed below) and click load      
-Open the tabs in the properties window to open the gameobject components options       
+Open the tabs in the properties window to open the gameobject components options    
+Camera culling is calculated with the MainCamera by default assigned to the camera created in the default scene, to see all objects in the scene select the camera and turn off the main 
+camera button, this will deactivate the camera culling for that camera and all objects will be visible   
 
 **FPS movement**   
 [W] move forwards   
