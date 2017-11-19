@@ -119,6 +119,32 @@ void Importer::GetFileName(std::string& file_name)
 	file_name = temp;
 }
 
+int Importer::GetMjopeUID(const char* file_path)
+{
+	int uid = 0;
+	int buffer_size = 0;
+	char* buffer_data = nullptr;
+	std::ifstream loaded_file(file_path, std::fstream::binary);
+	if (loaded_file.good())
+	{
+		loaded_file.seekg(0, loaded_file.end);
+		buffer_size = (uint)loaded_file.tellg();
+		loaded_file.seekg(0, loaded_file.beg);
+
+		buffer_data = new char[buffer_size];
+
+		loaded_file.read(buffer_data, buffer_size);
+		loaded_file.close();
+	}
+	else return 0;
+	
+	char* cursor = buffer_data;
+	cursor += 4;
+	memcpy(&uid, cursor, sizeof(int));
+	delete[] buffer_data;
+	return uid;
+}
+
 //Create Assts and library directories if don't exist
 void Importer::CheckDirectories()
 {

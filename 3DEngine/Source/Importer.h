@@ -20,6 +20,7 @@ public:
 	void NormalizePath(std::string& path);
 
 	void GetFileName(std::string& file_name);
+	int GetMjopeUID(const char* file_path);
 	
 	void CheckDirectories();
 

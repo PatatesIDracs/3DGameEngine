@@ -81,7 +81,7 @@ void ModuleResources::SearchForResources()
 			//Load scene resource
 			if (extension == SCENEFORMAT)
 			{
-				ResourceScene* new_scene = (ResourceScene*)CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+				ResourceScene* new_scene = (ResourceScene*)CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE, std::stoi(filename));
 				new_scene->SetLibraryFile(filename + extension);
 				new_scene->LoadResource();
 				LOGC("Scene %s loaded", it->path().c_str());
@@ -90,7 +90,7 @@ void ModuleResources::SearchForResources()
 			//Load mesh resource
 			if (extension == MJOPE)
 			{
-				ResourceMesh* new_mesh = (ResourceMesh*)CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
+				ResourceMesh* new_mesh = (ResourceMesh*)CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH, std::stoi(filename));
 				new_mesh->SetLibraryFile(JOPE_MESHES_FOLDER + filename + extension);
 				new_mesh->LoadResource();
 				LOGC("Mesh %s loaded", it->path().c_str());
@@ -99,7 +99,11 @@ void ModuleResources::SearchForResources()
 			//Load textures resource
 			if (extension == TEXFORMAT)
 			{
-				//TODO: Save and load
+				//Save and load
+				ResourceTexture* new_texture = (ResourceTexture*)CreateNewResource(RESOURCE_TYPE::RESOURCE_TEXTURE, std::stoi(filename));
+				new_texture->SetLibraryFile(JOPE_TEXTURE_FOLDER + filename + extension);
+				new_texture->LoadResource();
+				LOGC("Texture %s loaded", it->path().c_str());
 			}
 
 
@@ -120,6 +124,7 @@ void ModuleResources::LoadFromAssets()
 	std::string path;
 	std::string filename;
 	std::string extension;
+	std::string meta_path;
 	std::string temp;
 	for (; it != end; it++)
 	{
@@ -130,9 +135,47 @@ void ModuleResources::LoadFromAssets()
 		{
 			temp = it->path().string();
 			jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
+
+			meta_path = (path + filename + extension + METAFORMAT).c_str();
+
 			if (extension == METAFORMAT) {
 				CheckMetaFiles((path + filename), extension.c_str());
 				LOGC("Found Meta File %S File", it->path().c_str());
+			}
+			else if (!fs::exists(meta_path.c_str())) {
+				if(extension != MJOPE)
+					jope_importer->Import((path + filename + extension).c_str());
+				else {
+					int UUID = jope_importer->GetMjopeUID((path + filename + extension).c_str());
+					temp = std::to_string(UUID);
+
+					// Create Meta file
+					jope_importer->FoundMetaFile(meta_path.c_str());
+					Config_Json meta_file(meta_path.c_str());
+					
+					ResourceMesh* new_mesh = nullptr;
+					if (!fs::exists((JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER + temp + extension))) {
+						// copy file to library
+						jope_importer->CopyFileToFolder((path + filename + extension).c_str(), (JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER + temp + extension).c_str());
+
+						// Load Resource
+						ResourceMesh* new_mesh = (ResourceMesh*)CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH);
+						new_mesh->SetLibraryFile(JOPE_MESHES_FOLDER + temp + extension);
+						new_mesh->SetAssetFile(JOPE_ASSETS_MESH_FOLDER + filename + extension);
+						new_mesh->LoadResource();
+		
+						LOGC("Mesh %s loaded", it->path().c_str());
+					}
+					else {
+						new_mesh = (ResourceMesh*)GetFromUID(UUID);
+					}
+
+					// Write to Meta
+					meta_file.SetInt("UUID", new_mesh->GetUID());
+					meta_file.SetInt("Creation Time", std::chrono::system_clock::to_time_t(std::experimental::filesystem::v1::last_write_time(path + filename + extension)));
+					meta_file.AddJsonObject("MeshImporter");
+					meta_file.SaveToFile(meta_path.c_str());
+				}
 			}
 		}
 		path.clear();
