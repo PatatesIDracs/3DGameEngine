@@ -2,9 +2,6 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
-#include "Imgui\imgui.h"
-#include "Imgui\imgui_impl_sdl_gl3.h"
-
 #include "Glew\include\glew.h"
 
 #include "MeshImporter.h"
@@ -15,7 +12,8 @@
 
 PanelConfig::PanelConfig()
 {
-
+	name = "Configuration";
+	active = true;
 
 	//Load Hardware and software info
 	///Dummy importers to get the version number

@@ -13,21 +13,18 @@
 #include "Importer.h"
 #include "Resource.h"
 #include "ResourceMesh.h"
-#include "MeshImporter.h"
-#include "TextureImporter.h"
 #include "Mesh.h"
 
 #include "Panel.h"
 #include "PanelConfig.h"
-
-#include "Fluid_Studios_Memory_Manager\mmgr.h"
-#include "Fluid_Studios_Memory_Manager\nommgr.h"
+#include "PanelAbout.h"
 
 namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
 	panel_array.push_back(new PanelConfig());
+	panel_array.push_back(new PanelAbout());
 }
 
 ModuleEditor::~ModuleEditor()
@@ -45,9 +42,6 @@ bool ModuleEditor::Start()
 
 	app_profiler = App->GetProfilerVect();
 
-	LoadHardwareSoftwareInfo();
-
-	showconfig = true;
 	showpropertieswindow = true;
 	showhierarchy = true;
 
@@ -121,7 +115,7 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("File"))
 	{
 		//Open Setting window
-		if (ImGui::MenuItem("Configuration")) showconfig = !showconfig;
+		if (ImGui::MenuItem("Configuration")) ChangePanelState("Configuration");
 		//Save and Load Scene
 		if (ImGui::MenuItem("Save scene ...")) savewindow = !savewindow;
 		if (ImGui::MenuItem("Load scene ...")) loadwindow = !loadwindow;
@@ -158,7 +152,7 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Help"))
 	{
 		//Show about info 
-		if (ImGui::MenuItem("About")) showaboutwindow = !showaboutwindow;
+		if (ImGui::MenuItem("About")) ChangePanelState("About");
 		//Show ImGui demo
 		if (ImGui::MenuItem("Show Demo")) showtestwindow = !showtestwindow;
 		if (ImGui::MenuItem("Documentation(WIP)")) App->OpenBrowser("https://github.com/PatatesIDracs/3DGameEngine/wiki");
@@ -170,36 +164,8 @@ update_status ModuleEditor::Update(float dt)
 	ImGui::EndMainMenuBar();
 	///--------------------------------------------------------------
 
-	//------CONFIG DRAW------
-	//Get a const module list from app
-	//We'll do it regardless of the showconfig value since we may need the list for other Draw methods
-	const std::list<Module*>* module_list = App->GetModulesList();
-	std::list<Module*>::const_iterator item = module_list->begin();
-
-/*	//Check if we need to draw the UI
-	if (showconfig)
-	{
-		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
-		ImGui::SetWindowPos(ImVec2((float)App->window->width - 250, (float)App->window->height * 2 / 5 + 19), 0);
-		ImGui::SetWindowSize(ImVec2((float)250, (float)App->window->height * 3 / 5 - 19), 0);
-
-		ApplicationConfig();
-
-		while (item != module_list->end())
-		{
-			if (ImGui::CollapsingHeader(item._Ptr->_Myval->GetName()))
-				item._Ptr->_Myval->DrawConfig();
-	
-			item++;
-		}
-		HardwareDetection();
-		ImGui::End();
-	}*/
-
 	//Show the ImGui test window if requested
 	if (showtestwindow) ImGui::ShowTestWindow();
-	//Draw about window when requested
-	if (showaboutwindow) DrawAboutWindow();
 
 	if (showassets || showconsole) {
 		ImGui::SetNextWindowPos(ImVec2(250.f, (float)App->window->height - 230), 0);
@@ -246,7 +212,8 @@ update_status ModuleEditor::Update(float dt)
 	
 	for (uint i = 0; i < panel_array.size(); i++)
 	{
-		panel_array[i]->Draw();
+		if (panel_array[i]->IsActive())
+			panel_array[i]->Draw();
 	}
 
 	return UPDATE_CONTINUE;
@@ -288,52 +255,6 @@ void ModuleEditor::LogToConsole(std::string * log_string)
 		console_string.pop_back();
 	}
 	console_string.push_back(*log_string);
-}
-
-//Small function just to make the code cleaner
-void ModuleEditor::LoadHardwareSoftwareInfo()
-{
-	//Dummy importers to get the version number
-	TextureImporter dummy_tex;
-	MeshImporter dummy_mesh;
-
-	dummy_mesh.GetAssimpVersion(assimp_major, assimp_minor, assimp_revision);
-	devil_version = dummy_tex.GetDevilVersion();
-	
-	cpu_cores = SDL_GetCPUCount();
-	cpu_cache_size = SDL_GetCPUCacheLineSize();
-	ram = ((float)SDL_GetSystemRAM() / 1024.0f);
-	has_3Dnow = SDL_Has3DNow();
-	has_AVX = SDL_HasAVX();
-	has_AVX2 = SDL_HasAVX2();
-	has_AltiVec = SDL_HasAltiVec();
-	has_MMX = SDL_HasMMX();
-	has_RDTSC = SDL_HasRDTSC();
-	has_SSE = SDL_HasSSE();
-	has_SSE2 = SDL_HasSSE2();
-	has_SSE3 = SDL_HasSSE3();
-	has_SSE41 = SDL_HasSSE41();
-	has_SSE42 = SDL_HasSSE42();
-}
-
-
-//About Window 
-void ModuleEditor::DrawAboutWindow()
-{
-
-	ImGui::Begin("About JoPe", &showaboutwindow, ImGuiWindowFlags_NoResize);
-
-	ImGui::Text("JoPe Engine");
-	ImGui::Text("Very simple and limited game engine,\nmade for educational purposes");
-
-	ImGui::Text("\nMade by: Joan Pareja, Pere Rifa");
-
-	//Libraries: bullet, SDL, glew, glut, dear imgui, json(Parson), MathGeoLib
-	ImGui::Text("\nMade with: SDL, glew, dear imgui, Parson, MathGeoLib");
-
-	ImGui::Text("\nLicensed under the MIT license");
-
-	ImGui::End();
 }
 
 void ModuleEditor::DrawSaveWindow()
@@ -416,101 +337,6 @@ void ModuleEditor::DrawHierarchy()
 	App->scene_intro->DrawRootHierarchy();
 
 	ImGui::End();
-}
-
-void ModuleEditor::ApplicationConfig()
-{
-	if (ImGui::CollapsingHeader("Application"))
-	{
-		if (ImGui::InputText("App name", str_name, (int)sizeof(str_name),ImGuiInputTextFlags_EnterReturnsTrue))
-			App->window->SetTitle(str_name);
-
-		static char str_org[150] = "Patates i Dracs";
-		ImGui::InputText("Organitzation", str_org, (int)sizeof(str_org));
-
-		if (ImGui::Checkbox("Unlimited", &uncapped_fps)) App->SetFpsCap(uncapped_fps);
-		if (ImGui::SliderInt("Max FPS", &App->fps, 15, 120)) App->SetFpsCap(uncapped_fps);
-
-
-		ImGui::PlotHistogram("Framerate", &App->GetFPS()->front(), App->GetFPS()->size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 80));
-		ImGui::PlotHistogram("Miliseconds", &App->GetMs()->front(), App->GetMs()->size(), 0, NULL, 0.0f, 50.0f, ImVec2(0, 80));
-
-		sMStats mem_stats = m_getMemoryStatistics();
-		ImGui::Text("Total Reported Mem: %u", mem_stats.totalReportedMemory);
-		ImGui::Text("Total Actual Mem: %u", mem_stats.totalActualMemory);
-		ImGui::Text("Peak Reported Mem: %u", mem_stats.peakReportedMemory);
-		ImGui::Text("Peak Actual Mem: %u", mem_stats.peakActualMemory);
-		ImGui::Text("Accumulated Reported Mem: %u", mem_stats.accumulatedReportedMemory);
-		ImGui::Text("Accumulated Actual Mem: %u", mem_stats.accumulatedActualMemory);
-		ImGui::Text("Accumulated Alloc Unit Count: %u", mem_stats.accumulatedAllocUnitCount);
-		ImGui::Text("Total Alloc Unit Count: %u", mem_stats.totalAllocUnitCount);
-		ImGui::Text("Peak Alloc Unit Count: %u", mem_stats.peakAllocUnitCount);
-
-	}
-}
-
-void ModuleEditor::HardwareDetection()
-{
-
-	if (ImGui::CollapsingHeader("Hardware & software"))
-	{
-		ImVec4	cyan(0.0f, 1.0f, 1.0f, 1.0f);
-
-		//SDL info--------------
-		ImGui::Text("SDL version: %i.%i.%i", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
-
-		//Assimp info-----------
-		ImGui::Text("Assimp version: %i.%i.%i", assimp_major, assimp_minor, assimp_revision);
-
-		//Devil info
-		ImGui::Text("Devil version: %i", devil_version);
-
-		ImGui::Separator();
-		//CPU info--------------
-		ImGui::Text("CPU: "); ImGui::SameLine();
-		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
-		ImGui::TextColored(cyan, "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
-
-		ImGui::Text("System RAM: "); ImGui::SameLine();
-		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
-		
-		ImGui::Separator();
-		//CPU info--------------
-		ImGui::Text("CPU: "); ImGui::SameLine();
-		ImGui::TextColored(cyan, "%i cores", SDL_GetCPUCount());  ImGui::SameLine();
-		ImGui::TextColored(cyan, "(cache: %i bytes)", SDL_GetCPUCacheLineSize());
-
-		ImGui::Text("System RAM: "); ImGui::SameLine();
-		ImGui::TextColored(cyan, "%0.1f Gb", ((float)SDL_GetSystemRAM() / 1024.0f));
-
-		ImGui::Text("Caps: "); ImGui::SameLine();
-		if (has_3Dnow)		ImGui::TextColored(cyan, "3DNow!, ");	ImGui::SameLine();
-		if (has_AVX)		ImGui::TextColored(cyan, "AVX, ");		ImGui::SameLine();
-		if (has_AVX2)		ImGui::TextColored(cyan, "AVX2, ");		ImGui::SameLine();
-		if (has_AltiVec)	ImGui::TextColored(cyan, "AltiVec, ");	ImGui::SameLine();
-		if (has_MMX)		ImGui::TextColored(cyan, "MMX, ");		ImGui::SameLine();
-		if (has_RDTSC)		ImGui::TextColored(cyan, "RDTSC, ");	ImGui::SameLine();
-		if (has_SSE)		ImGui::TextColored(cyan, "SSE, ");		ImGui::SameLine();
-		if (has_SSE2)		ImGui::TextColored(cyan, "SSE2, ");		ImGui::SameLine();
-		if (has_SSE3)		ImGui::TextColored(cyan, "SSE3, ");		ImGui::SameLine();
-		if (has_SSE41)		ImGui::TextColored(cyan, "SSE41, ");	ImGui::SameLine();
-		if (has_SSE42)		ImGui::TextColored(cyan, "SSE42, ");
-
-
-
-		ImGui::Separator();
-
-		//GPU info-------------
-		ImGui::Text("Vendor: "); ImGui::SameLine();
-		ImGui::Text((const char*)glGetString(GL_VENDOR));
-
-		ImGui::Text("Brand: "); ImGui::SameLine();
-		ImGui::Text((const char*)glGetString(GL_RENDERER));
-
-		ImGui::Text("OpenGL Supported: "); ImGui::SameLine();
-		ImGui::Text((const char*)glGetString(GL_VERSION));
-	}
-	
 }
 
 void ModuleEditor::DrawPlayButton()
@@ -727,6 +553,15 @@ void ModuleEditor::DrawProfilerWindow()
 
 }
 
+void ModuleEditor::ChangePanelState(const char * panel_name)
+{
+	for (uint i = 0; i < panel_array.size(); i++)
+	{
+		if (strcmp( panel_array[i]->GetName(),panel_name) == 0)
+			panel_array[i]->ChangeState();
+	}
+}
+
 bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
 {
 	bool ret = false;
@@ -806,4 +641,3 @@ bool ModuleEditor::DrawExplorer(std::string* output_file)
 
 	return ret;
 }
-

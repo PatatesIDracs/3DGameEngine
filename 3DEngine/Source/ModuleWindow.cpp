@@ -132,10 +132,10 @@ void ModuleWindow::LoadModuleConfig(Config_Json & config)
 	width = config.GetInt("Width", SCREEN_WIDTH);
 	height = config.GetInt("Height", SCREEN_HEIGHT);
 	resolution = config.GetInt("Resolution", 1);
-	fullscreen = config.GetBool("Fullscreen", false);
-	resizable = config.GetBool("Resizable", false);
-	borderless = config.GetBool("Borderless", false);
-	fullscreen_desktop = config.GetBool("Fullscreen Descktop", false);
+	fullscreen = config.GetBool("Fullscreen", WIN_FULLSCREEN);
+	resizable = config.GetBool("Resizable", WIN_RESIZABLE);
+	borderless = config.GetBool("Borderless", WIN_BORDERLESS);
+	fullscreen_desktop = config.GetBool("Fullscreen Descktop", WIN_FULLSCREEN_DESKTOP);
 }
 
 void ModuleWindow::SaveModuleConfig(Config_Json & config)

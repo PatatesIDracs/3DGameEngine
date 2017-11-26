@@ -31,24 +31,17 @@ public:
 
 	void LogToConsole(std::string* log_string);
 
-	void LoadHardwareSoftwareInfo();
-
 	//Return true when a file is selected
 	bool DrawFixedExplorer(std::string& output, const char* path);
 	bool DrawExplorer(std::string* output_file);
 
 private:
 
-	// Draw Configuration ------------------
-	void ApplicationConfig();
-	void HardwareDetection();
-	
 	void DrawPlayButton();
 	void DrawClock();
 	void DrawConsole();
 	void DrawAssets();
 	void DrawPropertiesWindow();
-	void DrawAboutWindow();
 	void DrawSaveWindow();
 	void DrawLoadWindow();
 
@@ -57,14 +50,13 @@ private:
 	// Draw Profiler -----------------------
 	void DrawProfilerWindow();
 
+	void ChangePanelState(const char* panel_name);
 
 private:
 	//Panel List
 	std::vector<Panel*> panel_array;
 
 	bool	showtestwindow			= false;
-	bool	showaboutwindow			= false;
-	bool	showconfig				= false;
 	bool	showconsole				= false;
 	bool	showpropertieswindow	= false;
 	bool	showhierarchy			= false;
