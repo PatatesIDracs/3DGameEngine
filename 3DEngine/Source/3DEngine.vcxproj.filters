@@ -54,6 +54,9 @@
     <Filter Include="3rd parties\mmgr">
       <UniqueIdentifier>{16840871-ab2e-4020-9e13-0e05c478b516}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Panel">
+      <UniqueIdentifier>{0c2eb48a-f1f8-41ee-9ab2-c8f37b871ae3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="j1PerfTimer.cpp">
@@ -276,6 +279,12 @@
     </ClCompile>
     <ClCompile Include="Fluid_Studios_Memory_Manager\mmgr.cpp">
       <Filter>3rd parties\mmgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelConfig.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -731,6 +740,12 @@
     </ClInclude>
     <ClInclude Include="Fluid_Studios_Memory_Manager\nommgr.h">
       <Filter>3rd parties\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelConfig.h">
+      <Filter>Panel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

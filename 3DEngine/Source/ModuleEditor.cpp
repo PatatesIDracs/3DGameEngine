@@ -17,6 +17,9 @@
 #include "TextureImporter.h"
 #include "Mesh.h"
 
+#include "Panel.h"
+#include "PanelConfig.h"
+
 #include "Fluid_Studios_Memory_Manager\mmgr.h"
 #include "Fluid_Studios_Memory_Manager\nommgr.h"
 
@@ -24,6 +27,7 @@ namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
+	panel_array.push_back(new PanelConfig());
 }
 
 ModuleEditor::~ModuleEditor()
@@ -172,7 +176,7 @@ update_status ModuleEditor::Update(float dt)
 	const std::list<Module*>* module_list = App->GetModulesList();
 	std::list<Module*>::const_iterator item = module_list->begin();
 
-	//Check if we need to draw the UI
+/*	//Check if we need to draw the UI
 	if (showconfig)
 	{
 		ImGui::Begin("Configuration", &showconfig, ImGuiWindowFlags_NoMove);
@@ -190,7 +194,7 @@ update_status ModuleEditor::Update(float dt)
 		}
 		HardwareDetection();
 		ImGui::End();
-	}
+	}*/
 
 	//Show the ImGui test window if requested
 	if (showtestwindow) ImGui::ShowTestWindow();
@@ -240,6 +244,11 @@ update_status ModuleEditor::Update(float dt)
 	if (savewindow) DrawSaveWindow();
 	if (loadwindow) DrawLoadWindow();
 	
+	for (uint i = 0; i < panel_array.size(); i++)
+	{
+		panel_array[i]->Draw();
+	}
+
 	return UPDATE_CONTINUE;
 }
 

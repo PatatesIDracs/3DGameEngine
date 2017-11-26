@@ -12,6 +12,7 @@
 #define CONSOLE_LIMIT 500
 
 class Profiler;
+class Panel;
 
 class ModuleEditor : public Module
 {
@@ -58,6 +59,9 @@ private:
 
 
 private:
+	//Panel List
+	std::vector<Panel*> panel_array;
+
 	bool	showtestwindow			= false;
 	bool	showaboutwindow			= false;
 	bool	showconfig				= false;
