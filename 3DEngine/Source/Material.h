@@ -13,6 +13,7 @@ public:
 	~Material();
 
 	int GetTextureID() const;
+	int GetResourceLoaded() const;
 
 	void DrawComponent();
 

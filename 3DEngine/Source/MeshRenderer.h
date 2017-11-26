@@ -28,6 +28,8 @@ public:
 	Mesh* mesh;
 	Material* material;
 
+	bool ready_to_draw = false;
+
 };
 
 

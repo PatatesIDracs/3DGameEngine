@@ -102,6 +102,11 @@ const char * Resource::GetLibraryPath() const
 	return library_file.c_str();
 }
 
+uint Resource::GetTimesLoaded() const
+{
+	return loaded;
+}
+
 void Resource::GetBufferSize(uint & buffer_size)
 {
 	buffer_size += sizeof(RESOURCE_TYPE);

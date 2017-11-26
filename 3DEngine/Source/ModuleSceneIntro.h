@@ -28,6 +28,7 @@ public:
 	void LoadGameObjects(std::vector<GameObject*>* new_go_array, GameObject* array_root = nullptr, bool new_scene = false);
 
 	void CollectCandidates();
+	void OrderCandidatesByTexture();
 	bool AddGameObjectToOctree(const GameObject* object);
 	void CheckDynamicGameObjectsState();
 	void CheckStaticGameObjectsState();

@@ -33,6 +33,14 @@ int Material::GetTextureID() const
 	else return 0;
 }
 
+int Material::GetResourceLoaded() const
+{
+	if (resource) {
+		return resource->GetTimesLoaded();
+	}
+	return -1;
+}
+
 void Material::DrawComponent()
 {
 	ImGui::PushID(UUID);

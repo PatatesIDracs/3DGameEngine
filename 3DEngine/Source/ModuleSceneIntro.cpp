@@ -71,6 +71,8 @@ bool ModuleSceneIntro::CleanUp()
 
 void ModuleSceneIntro::Draw()
 {
+	uint texture_buffer = 0;
+
 	MeshRenderer* object = nullptr;
 	for (uint i = 0; i < render_this.size(); i++)
 	{
@@ -83,9 +85,19 @@ void ModuleSceneIntro::Draw()
 
 		if (object->material != nullptr)
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glBindTexture(GL_TEXTURE_2D, object->material->GetTextureID());
+			if (texture_buffer != object->material->GetTextureID()) {
+				// Clear texture buffer;
+				glBindTexture(GL_TEXTURE_2D, 0);
+				texture_buffer = object->material->GetTextureID();
+
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glBindTexture(GL_TEXTURE_2D, texture_buffer);
+			}
+		}
+		else if (texture_buffer > 0){
+			glBindTexture(GL_TEXTURE_2D, 0);
+			texture_buffer = 0;
 		}
 
 		if (object->mesh != nullptr && object->mesh->IsActive())
@@ -118,11 +130,11 @@ void ModuleSceneIntro::Draw()
 		}
 
 		// Clear possible Binded buffers
-		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glPopMatrix();
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
 	render_this.clear();
 }
 
@@ -216,6 +228,8 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, G
 		dynamic_gameobjects.clear();
 		static_gameobjects.clear();
 		scene_octree.Reset();
+		render_this.clear();
+
 		if (root != nullptr)
 			delete root;		
 	}
@@ -231,6 +245,8 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, G
 		root->AddChildren(loaded_root);
 
 	current_object = nullptr;
+
+	loaded_root->Update();
 	CheckDynamicGameObjectsState();
 }
 
@@ -247,10 +263,58 @@ void ModuleSceneIntro::CollectCandidates()
 		if (candidates[i]->IsActive()) {
 			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
 		
-			if (mesh != nullptr) render_this.push_back(mesh);
+			if (mesh != nullptr) {
+				mesh->ready_to_draw = false;
+				render_this.push_back(mesh);
+			}
 		}
 	}
 	
+	OrderCandidatesByTexture();
+}
+
+void ModuleSceneIntro::OrderCandidatesByTexture()
+{
+	int count = 0;
+	uint texture_id = 0;
+	uint render_size = render_this.size();
+
+	MeshRenderer* object_i = nullptr;
+	MeshRenderer* object_j = nullptr;
+
+	std::vector<MeshRenderer*> render_order;
+	render_order.reserve(render_size);
+	render_order = render_this;
+
+	for (uint i = 0; i < render_size; i++) {
+		object_i = render_order[i];
+		if (!object_i->ready_to_draw) {
+			
+			// Add object to temporal render vector
+			render_this[count] = object_i;
+			object_i->ready_to_draw = true;
+			count++;
+
+			// If resource Loaded only once skip next step
+			if (object_i->material != nullptr && object_i->material->GetResourceLoaded() != 1) {
+				// Set current texture id
+				texture_id = object_i->material->GetTextureID();
+
+				// Look for objects that share same texture
+				for (uint j = 0; j < render_size; j++) {
+					object_j = render_order[j];
+					if (object_j->ready_to_draw) continue;
+					
+					if ((object_j->material && texture_id == object_j->material->GetTextureID())|| (!object_j->material && texture_id == 0)) {
+						render_this[count] = object_j;
+						object_j->ready_to_draw = true;
+						count++;
+					}
+				}
+			}
+		}
+	}
+	render_order.clear();
 }
 
 bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)

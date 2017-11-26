@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Transform.h"
+#include "MeshRenderer.h"
 
 #include "Application.h"
 #include "ModuleWindow.h"
@@ -135,7 +136,10 @@ bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::
 			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
 				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
 
-				if (mesh != nullptr) render_this.push_back(mesh);
+				if (mesh != nullptr) {
+					mesh->ready_to_draw = false;
+					render_this.push_back(mesh);
+				}
 			}
 		}
 	}

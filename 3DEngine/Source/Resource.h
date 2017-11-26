@@ -39,7 +39,7 @@ public:
 	const char* GetName() const;
 	const char* GetAssetsPath() const;
 	const char* GetLibraryPath() const;
-
+	uint			GetTimesLoaded() const;
 	virtual void GetBufferSize(uint& buffer_size);
 	virtual void SaveResource();
 	virtual void LoadResource();
