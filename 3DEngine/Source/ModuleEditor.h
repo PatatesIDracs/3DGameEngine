@@ -67,9 +67,9 @@ private:
 	bool	showclock				= false;
 	bool	savewindow				= false;
 	bool	loadwindow				= false;
-	bool	showassets				= false;
+	bool	showassets				= true;
 
-	bool	on_assets				= false;
+	bool	on_assets				= true;
 
 
 	// Profiler

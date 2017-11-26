@@ -267,7 +267,7 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 void ModuleSceneIntro::CheckDynamicGameObjectsState()
 {
 	GameObject* object = nullptr;
-	for (uint i = 0; i < dynamic_gameobjects.size(); i++)
+	for (uint i = dynamic_gameobjects.size() - 1; i > 0; i--)
 	{
 		object = dynamic_gameobjects[i];
 		if (object->isstatic) {
@@ -276,7 +276,6 @@ void ModuleSceneIntro::CheckDynamicGameObjectsState()
 			dynamic_gameobjects.pop_back();
 			static_gameobjects.push_back(object);
 			AddGameObjectToOctree(object);
-			i--;
 		}
 	}
 }
@@ -285,7 +284,8 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 {
 	bool reset_octree = false;
 	GameObject* object = nullptr;
-	for (uint i = 0; i < static_gameobjects.size(); i++) {
+	for (uint i = static_gameobjects.size() - 1; i > 0; i--) 
+	{
 		object = static_gameobjects[i];
 		if (!object->isstatic) {
 			for (uint j = i; j + 1 < static_gameobjects.size(); j++)
@@ -293,7 +293,6 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 			static_gameobjects.pop_back();
 			dynamic_gameobjects.push_back(object);
 			reset_octree = true;
-			i--;
 		}
 	}
 

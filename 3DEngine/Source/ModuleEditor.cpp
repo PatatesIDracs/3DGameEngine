@@ -44,7 +44,6 @@ bool ModuleEditor::Start()
 	LoadHardwareSoftwareInfo();
 
 	showconfig = true;
-	showconsole = true;
 	showpropertieswindow = true;
 	showhierarchy = true;
 
@@ -537,11 +536,11 @@ void ModuleEditor::DrawPlayButton()
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 1.00f, 0.00f, 1.00f));
 		ImGui::SameLine();
 		if (ImGui::Button("Pause", ImVec2(56.f, 18.f))) {
-			if (app_state == APP_PAUSE && App->clock.game_time != 0.0f) {
+			if (app_state == APP_PAUSE) {
 				App->clock.state = APP_PLAY;
 				App->camera->ChangeCamera(false);
 			}
-			else {
+			else if(app_state == APP_PLAY) {
 				App->clock.state = APP_PAUSE;
 				App->camera->ChangeCamera(true);
 			}
