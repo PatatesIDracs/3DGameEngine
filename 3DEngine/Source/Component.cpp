@@ -11,7 +11,7 @@ Component::Component(GameObject * parent, COMP_TYPE type, bool isactive) : paren
 	LCG UUIDGen;
 	UUID = UUIDGen.Int();
 	if (parent != nullptr)
-		parent_UUID = parent->UUID;
+		parent_UUID = parent->GetUUID();
 }
 
 void Component::GetOwnBufferSize(uint & buffer_size)
@@ -19,4 +19,14 @@ void Component::GetOwnBufferSize(uint & buffer_size)
 	buffer_size += sizeof(int) * 3;		//identifier + UUID + parentUUID
 	buffer_size += sizeof(COMP_TYPE);
 	buffer_size += sizeof(bool) * 2;	//active + unique
-};
+}
+
+
+void Component::ReloadUUID()
+{
+	UUID = App->GetIntUUID();
+	if (parent != nullptr)
+		parent_UUID = parent->GetUUID();
+	else
+		parent_UUID = 0;
+}

@@ -42,6 +42,10 @@ public:
 	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
+	void ReloadUUID();
+
+	int GetparentUUID() const;
+	int GetUUID() const;
 
 private:
 	void DrawAddComponentWindow();
@@ -49,8 +53,6 @@ private:
 	void ChangeChildsStatic(bool state);
 
 public:
-	int UUID = 0;
-	int parent_UUID = 0;
 	std::string name;
 	bool isactive = true;
 	bool parent_active = true;
@@ -63,6 +65,8 @@ public:
 	AABB boundary_box;
 
 private:
+	int UUID = 0;
+	int parent_UUID = 0;
 	bool creating_component = false;
 	bool change_static = false;
 };

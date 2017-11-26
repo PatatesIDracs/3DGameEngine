@@ -192,6 +192,7 @@ GameObject* GameObject::DrawHierarchy()
 	else
 		game_object_node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
+	ImGui::PushID(UUID);
 	//Draw the node
 	if (ImGui::TreeNodeEx(name.c_str(), game_object_node_flags))
 	{
@@ -207,6 +208,7 @@ GameObject* GameObject::DrawHierarchy()
 		if (children.size() != 0)
 			ImGui::TreePop();
 	}
+	ImGui::PopID();
 	
 	// Return GameObject Selected
 	return ret;
@@ -361,6 +363,37 @@ void GameObject::GetOwnBufferSize(uint& buffer_size)
 		components[i]->GetOwnBufferSize(buffer_size);
 	}
 }
+
+void GameObject::ReloadUUID()
+{
+	UUID = App->GetIntUUID();
+
+	if (parent != nullptr)
+		parent_UUID = parent->UUID;
+	else
+		parent_UUID = 0;
+
+	for (uint i = 0; i < children.size(); i++)
+	{
+		children[i]->ReloadUUID();
+	}
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->ReloadUUID();
+	}
+}
+
+int GameObject::GetparentUUID() const
+{
+	return parent_UUID;
+}
+
+int GameObject::GetUUID() const
+{
+	return UUID;
+}
+
+
 
 void GameObject::DrawAddComponentWindow()
 {

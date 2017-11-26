@@ -149,7 +149,7 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 	{
 		for (uint j = 0; j < loaded_gameobjects.size(); j++)
 		{
-			if (loaded_gameobjects[j]->UUID == loaded_components[i]->GetParentUUID())
+			if (loaded_gameobjects[j]->GetUUID() == loaded_components[i]->GetParentUUID())
 			{
 				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
 				if (loaded_components[i]->GetType() == COMP_CAMERA && ((Camera*)loaded_components[i])->IsActive())
@@ -164,12 +164,12 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 	{
 		for (uint j = 0; j < loaded_gameobjects.size(); j++)
 		{
-			if (loaded_gameobjects[j]->UUID == loaded_gameobjects[i]->parent_UUID)
+			if (loaded_gameobjects[j]->GetUUID() == loaded_gameobjects[i]->GetparentUUID())
 				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
 		}
 	}
 
-	App->scene_intro->LoadGameObjects(&loaded_gameobjects, root_scene);
+	App->scene_intro->LoadGameObjects(&loaded_gameobjects, nullptr, root_scene);
 }
 
 //False will be loaded as a prefab, true will be loaded as a new scene in the editor

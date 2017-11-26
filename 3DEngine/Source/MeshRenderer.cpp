@@ -42,7 +42,7 @@ void MeshRenderer::DrawComponent()
 void MeshRenderer::ChangeParent(GameObject * new_parent)
 {
 	parent = new_parent;
-	parent_UUID = new_parent->UUID;
+	parent_UUID = new_parent->GetUUID();
 	PrepareRenderer();
 }
 

@@ -175,26 +175,40 @@ GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject*
 	return ret;
 }
 
-void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, bool new_scene)
+void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, GameObject* array_root, bool new_scene)
 {
+	//Get the root of the array, if it's not provided try to fin one
+	GameObject* loaded_root = array_root;
+	if (loaded_root == nullptr)
+	{
+		for (uint i = 0; i < new_go_array->size(); i++)
+		{
+			if ((*new_go_array)[i]->parent == nullptr || (*new_go_array)[i]->GetparentUUID() == 0)
+			{
+				loaded_root = (*new_go_array)[i];
+				break;
+			}
+		}
+	}
+	//if we didn't find a loaded root, do not continue loading the scene/prefab
+	if (loaded_root == nullptr)
+	{
+		LOGC("Unable to load scene/prefab root GameObject not found");
+		return;
+	}
+
 	//If root is nullptr don't load, scene is probably not ready yet
 	//This may happen when opening the software, when the scene resources are loaded to the map they will try
 	//to load their gameobjects to scene, this will prevent it. We still want to load it to check the file is not corrupted
 	if (root == nullptr)
 	{
-		for (uint i = 0; i < new_go_array->size(); i++)
-		{
-			if ((*new_go_array)[i]->parent == nullptr || (*new_go_array)[i]->parent_UUID == 0)
-			{
-				delete (*new_go_array)[i];
-				break;
-			}
-		}
-
+		delete loaded_root;
 		return;
 	}
 
-	GameObject* loaded_root = nullptr;
+	//Reload the GameObjects UUID to avoid having the same id in multiple objects when loading more than 1 prefabs
+	loaded_root->ReloadUUID();
+
 	//If it's a new scene delete the current scene and load the new one
 	//All objects from the vectors will be deleted when root is deleted
 	if (new_scene)
@@ -206,18 +220,13 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, b
 			delete root;		
 	}
 
-
 	for (uint i = 0; i < new_go_array->size(); i++)
 	{
 		dynamic_gameobjects.push_back((*new_go_array)[i]);
-		if ((*new_go_array)[i]->parent == nullptr || (*new_go_array)[i]->parent_UUID == 0)
-			loaded_root = (*new_go_array)[i];
 	}
 
 	if (new_scene)
-	{
 		root = loaded_root;
-	}
 	else
 		root->AddChildren(loaded_root);
 

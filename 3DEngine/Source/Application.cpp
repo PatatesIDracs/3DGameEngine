@@ -366,6 +366,7 @@ const char * Application::GetAppName() const
 	return app_name.c_str();
 }
 
+//Get a new UUID
 int Application::GetIntUUID()
 {
 	return UUIDGen.Int();

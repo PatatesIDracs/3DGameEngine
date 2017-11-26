@@ -25,7 +25,7 @@ public:
 	void Draw();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
-	void LoadGameObjects(std::vector<GameObject*>* new_go_array, bool new_scene = false);
+	void LoadGameObjects(std::vector<GameObject*>* new_go_array, GameObject* array_root = nullptr, bool new_scene = false);
 
 	void CollectCandidates();
 	bool AddGameObjectToOctree(const GameObject* object);
