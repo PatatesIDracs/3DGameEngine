@@ -95,13 +95,11 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 		WriteSceneMeta(meta_file, scene_resource);
 		
 		std::string temp = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
-		App->resources->GetImporter()->CopyFileToFolder((temp + scene_resource->GetLibraryPath()).c_str(), (JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + file_name + SCENEFORMAT).c_str());
 		App->resources->GotFocus(true);
 	}
 	meta_file.SetInt("Creation Time", jope_importer->GetLastTimeWritten(full_path));
 	meta_file.SaveToFile((meta_filename + METAFORMAT).c_str());
-	meta_file.SaveToFile((JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER + file_name + SCENEFORMAT + METAFORMAT).c_str());
-
+	
 	delete scene_go;
 }
 

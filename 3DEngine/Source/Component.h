@@ -46,7 +46,7 @@ public:
 	bool IsActive() const { return active; };
 	bool IsUnique() const { return unique; };
 
-	virtual void ChangeParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->GetparentUUID(); };
+	virtual void ChangeParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->GetUUID(); };
 
 	int GetParentUUID() const { return parent_UUID; };
 	GameObject* GetParent() const { return parent; };

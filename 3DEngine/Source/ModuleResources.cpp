@@ -219,7 +219,6 @@ void ModuleResources::UpdateAssetsFiles()
 			jope_importer->DividePath((char*)temp.c_str(), &path, &filename, &extension);
 
 			if (extension == METAFORMAT) {
-				//CheckMetaFiles((path + filename), extension.c_str());
 				Config_Json meta_file(temp.c_str());
 				int creation_time = jope_importer->GetLastTimeWritten((path + filename).c_str());
 				int time = meta_file.GetInt("Creation Time");
@@ -234,14 +233,17 @@ void ModuleResources::UpdateAssetsFiles()
 						jope_importer->Import((path + filename + extension).c_str());
 					}
 					LOGC("Updated %s File ", temp.c_str());
-				}			
+				}	
+
+				// Add resource to Assets window
 				Resource* load_this = GetFromUID(meta_file.GetInt("UUID"));
 				if (load_this != nullptr) {
 					all_resources_vec.push_back(load_this);
 				}
 			}
-			else if (extension == SCENEFORMAT && fs::exists((temp + METAFORMAT).c_str())) {
+			else if ((extension == SCENEFORMAT || extension == ".fbx")&& fs::exists((temp + METAFORMAT).c_str())) {
 				Config_Json meta_file((temp + METAFORMAT).c_str());
+				
 				// Add to Current scenes
 				Resource* load_this = GetFromUID(meta_file.GetInt("UUID"));
 				resources_vec.push_back(load_this);
