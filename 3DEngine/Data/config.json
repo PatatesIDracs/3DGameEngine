@@ -27,17 +27,17 @@
     "Renderer": {
         "Is Active": true,
         "Render mode": 0,
-        "Show Grid": false,
+        "Show Grid": true,
         "Depth Test": true,
         "Cull face": true,
         "Cull face mode": 0,
         "Smooth": true,
         "Lighting": true,
         "Color material": true,
-        "Texture 2D": true,
-        "Red": 0.19215686619281769,
+        "Texture 2D": false,
+        "Red": 0,
         "Green": 0,
         "Blue": 1,
-        "Alpha": 0.75686275959014893
+        "Alpha": 1
     }
 }

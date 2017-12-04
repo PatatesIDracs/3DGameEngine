@@ -106,6 +106,13 @@ void ModuleSceneIntro::Draw()
 			
 			glEnableClientState(GL_VERTEX_ARRAY);
 
+			if (mesh_render_data->normals != nullptr)
+			{
+				glEnableClientState(GL_NORMAL_ARRAY);
+				glBindBuffer(GL_ARRAY_BUFFER, mesh_render_data->id_normals);
+				glNormalPointer(GL_FLOAT, 0, NULL);
+			}
+
 			if (mesh_render_data->tex_vertices != nullptr)
 			{
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
