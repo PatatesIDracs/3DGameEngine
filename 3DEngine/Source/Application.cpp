@@ -1,4 +1,6 @@
 #include "Application.h"
+#include <filesystem>
+#include <fstream>
 
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
@@ -9,6 +11,7 @@
 #include "ConfigJSON.h"
 
 #include "Profiler.h"
+
 
 Application::Application()
 {
@@ -102,6 +105,14 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::LoadConfig(const char* filename)
 {
+	// Create Config File if not found
+	if (!std::experimental::filesystem::exists(filename)) {
+		std::ofstream new_config(filename, std::ofstream::binary);
+		if (new_config.good()) {
+			new_config.write("{}", 2);
+		}
+	}
+		
 	Config_Json config(filename);
 
 	LoadModuleConfig(config.GetJsonObject("Application"));

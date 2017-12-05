@@ -5,15 +5,12 @@
         "Capped FPS": 60,
         "Is Active": true
     },
-    "Audio": {
-        "Is Active": true
-    },
     "Window": {
         "Width": 1280,
         "Height": 720,
         "Resolution": 1,
         "Fullscreen": false,
-        "Resizable": false,
+        "Resizable": true,
         "Borderless": false,
         "Fullscreen Descktop": false
     },
@@ -21,7 +18,7 @@
         "Is Active": true,
         "Speed": 10
     },
-    "Physics": {
+    "Audio": {
         "Is Active": true
     },
     "Renderer": {
@@ -34,10 +31,10 @@
         "Smooth": true,
         "Lighting": true,
         "Color material": true,
-        "Texture 2D": false,
+        "Texture 2D": true,
         "Red": 0,
         "Green": 0,
-        "Blue": 1,
+        "Blue": 0,
         "Alpha": 1
     }
 }
