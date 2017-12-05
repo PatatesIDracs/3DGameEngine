@@ -19,6 +19,8 @@
 #include "PanelConfig.h"
 #include "PanelAbout.h"
 #include "PanelProfiler.h"
+#include "PanelHierarchy.h"
+#include "PanelProperties.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -45,9 +47,8 @@ bool ModuleEditor::Start()
 	panel_array.push_back(new PanelConfig());
 	panel_array.push_back(new PanelAbout());
 	panel_array.push_back(new PanelProfiler());
-
-	showpropertieswindow = true;
-	showhierarchy = true;
+	panel_array.push_back(new PanelHierarchy());
+	panel_array.push_back(new PanelProperties());
 
 	// Define IMGUI Style
 	ImGuiStyle * style = &ImGui::GetStyle();
@@ -135,8 +136,8 @@ update_status ModuleEditor::Update(float dt)
 
 	if (ImGui::BeginMenu("Workspace"))
 	{
-		if (ImGui::MenuItem("Properties")) showpropertieswindow = !showpropertieswindow;
-		if (ImGui::MenuItem("Hierachy")) showhierarchy = !showhierarchy;
+		if (ImGui::MenuItem("Properties")) ChangePanelState("Properties");
+		if (ImGui::MenuItem("Hierarchy")) ChangePanelState("Hierarchy");
 		if (ImGui::MenuItem("Console")) showconsole = !showconsole;
 		ImGui::EndMenu();
 	}
@@ -207,10 +208,6 @@ update_status ModuleEditor::Update(float dt)
 	if (on_assets && showassets) DrawAssets();
 	else if (showconsole) DrawConsole();
 
-	//Show Game Object properties
-	if (showpropertieswindow) DrawPropertiesWindow();
-	if (showhierarchy) DrawHierarchy();
-
 	//Save and load
 	if (savewindow) DrawSaveWindow();
 	if (loadwindow) DrawLoadWindow();
@@ -236,8 +233,6 @@ void ModuleEditor::Draw()
 	ImGui::Render();
 
 }
-
-
 
 bool ModuleEditor::CleanUp()
 {
@@ -331,17 +326,6 @@ void ModuleEditor::DrawLoadWindow()
 
 		ImGui::EndPopup();
 	}
-}
-
-void ModuleEditor::DrawHierarchy()
-{
-	ImGui::Begin("Game Object hierarchy", &showhierarchy);
-	ImGui::SetWindowPos(ImVec2(0.f, 19.f), 0);
-	ImGui::SetWindowSize(ImVec2((float)250, (float)App->window->height - 19), 0);
-
-	App->scene_intro->DrawRootHierarchy();
-
-	ImGui::End();
 }
 
 void ModuleEditor::DrawPlayButton()
@@ -491,16 +475,6 @@ void ModuleEditor::DrawAssets()
 	ImGui::End();
 }
 
-void ModuleEditor::DrawPropertiesWindow()
-{
-	ImGui::Begin("Properties", &showpropertieswindow, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::SetWindowPos(ImVec2((float)App->window->width - 250, 19.f), 0);
-	ImGui::SetWindowSize(ImVec2(250.f, (float)App->window->height * 2 / 5), 0);
-
-	App->scene_intro->DrawProperties();
-
-	ImGui::End();
-}
 
 void ModuleEditor::ChangePanelState(const char * panel_name)
 {
@@ -539,54 +513,5 @@ bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
 		}
 	}
 	ImGui::End();
-	return ret;
-}
-
-bool ModuleEditor::DrawExplorer(std::string* output_file)
-{
-	bool ret = false;
-	//Get to the library path
-	fs::directory_iterator it{ it_library_path.c_str() };
-	fs::directory_iterator end{};
-
-	ImGui::Begin("test");
-	ImGui::Columns(2);
-	ImGui::Text("directory explorer test");
-
-
-	ImGui::NextColumn();
-	ImGui::Text("Other files test");
-	for (; it != end; it++)
-	{
-		if (fs::is_directory(it->path()))
-		{
-			static char dir_name[150];
-			std::wcstombs(dir_name, it->path().filename().c_str(), sizeof(dir_name));
-			if (ImGui::Button(dir_name))
-			{
-				static char new_path[150];
-				std::wcstombs(new_path, it->path().c_str(), 150);
-				it_library_path = new_path;
-			}
-		}
-		else
-		{
-			static char file_name[150];
-			std::wcstombs(file_name, it->path().filename().c_str(), sizeof(file_name));
-			if (ImGui::Button(file_name))
-			{
-				char file[150];
-				std::wcstombs(file, it->path().c_str(), 150);
-				//output = file;
-				LOGC("Loaded file from: %s\\%S", it_library_path.c_str(), it->path().filename().c_str());
-				it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
-				ret = true;
-				break;
-			}
-		}
-	}
-	ImGui::End();
-
-
 	return ret;
 }

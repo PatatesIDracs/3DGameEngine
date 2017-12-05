@@ -1,9 +1,5 @@
 #include "PanelProfiler.h"
 #include "Application.h"
-
-#include "Imgui\imgui.h"
-#include "Imgui\imgui_impl_sdl_gl3.h"
-
 #include "Profiler.h"
 
 PanelProfiler::PanelProfiler()

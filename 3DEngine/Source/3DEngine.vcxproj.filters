@@ -292,6 +292,12 @@
     <ClCompile Include="PanelProfiler.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
+    <ClCompile Include="PanelHierarchy.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelProperties.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -757,6 +763,12 @@
       <Filter>Panel</Filter>
     </ClInclude>
     <ClInclude Include="PanelProfiler.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelHierarchy.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelProperties.h">
       <Filter>Panel</Filter>
     </ClInclude>
   </ItemGroup>

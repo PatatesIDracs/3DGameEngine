@@ -42,11 +42,8 @@ private:
 	void DrawClock();
 	void DrawConsole();
 	void DrawAssets();
-	void DrawPropertiesWindow();
 	void DrawSaveWindow();
 	void DrawLoadWindow();
-
-	void DrawHierarchy();
 
 	void ChangePanelState(const char* panel_name);
 
@@ -56,8 +53,6 @@ private:
 
 	bool	showtestwindow			= false;
 	bool	showconsole				= false;
-	bool	showpropertieswindow	= false;
-	bool	showhierarchy			= false;
 	bool	showclock				= false;
 	bool	savewindow				= false;
 	bool	loadwindow				= false;
