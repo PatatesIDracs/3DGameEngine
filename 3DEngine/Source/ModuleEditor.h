@@ -35,6 +35,8 @@ public:
 	//Return true when a file is selected
 	bool DrawFixedExplorer(std::string& output, const char* path);
 
+	Panel* GetUIPanel(const char* panel_name) const;
+
 private:
 
 	void DrawConsole();

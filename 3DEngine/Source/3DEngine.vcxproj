@@ -192,6 +192,7 @@
     <ClCompile Include="PanelPlayButton.cpp" />
     <ClCompile Include="PanelProfiler.cpp" />
     <ClCompile Include="PanelProperties.cpp" />
+    <ClCompile Include="PanelResourceExplorer.cpp" />
     <ClCompile Include="PanelSaveScene.cpp" />
     <ClCompile Include="parson.c" />
     <ClCompile Include="Primitive.cpp" />
@@ -356,6 +357,7 @@
     <ClInclude Include="PanelPlayButton.h" />
     <ClInclude Include="PanelProfiler.h" />
     <ClInclude Include="PanelProperties.h" />
+    <ClInclude Include="PanelResourceExplorer.h" />
     <ClInclude Include="PanelSaveScene.h" />
     <ClInclude Include="parson.h" />
     <ClInclude Include="Primitive.h" />

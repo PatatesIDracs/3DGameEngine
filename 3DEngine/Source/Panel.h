@@ -14,7 +14,8 @@ public:
 
 	virtual void Draw();
 
-	void ChangeState();
+	//virtual since some panels might want to load data when they are activated
+	virtual void ChangeState();
 	bool IsActive() const;
 
 	const char* GetName() const;

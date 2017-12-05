@@ -24,6 +24,7 @@
 #include "PanelPlayButton.h"
 #include "PanelSaveScene.h"
 #include "PanelLoadScene.h"
+#include "PanelResourceExplorer.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -55,6 +56,7 @@ bool ModuleEditor::Start()
 	panel_array.push_back(new PanelPlayButton());
 	panel_array.push_back(new PanelSaveScene());
 	panel_array.push_back(new PanelLoadScene());
+	panel_array.push_back(new PanelResourceExplorer());
 
 	// Define IMGUI Style
 	ImGuiStyle * style = &ImGui::GetStyle();
@@ -164,6 +166,12 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("Tools"))
 	{
 		if (ImGui::MenuItem("Profiler")) ChangePanelState("Profiler");
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Debug"))
+	{
+		if (ImGui::MenuItem("ResourceExplorer")) ChangePanelState("ResourceExplorer");
 		ImGui::EndMenu();
 	}
 
@@ -331,6 +339,16 @@ void ModuleEditor::ChangePanelState(const char * panel_name)
 		if (strcmp(panel_array[i]->GetName(),panel_name) == 0)
 			panel_array[i]->ChangeState();
 	}
+}
+
+Panel * ModuleEditor::GetUIPanel(const char* panel_name) const
+{
+	for (uint i = 0; i < panel_array.size(); i++)
+	{
+		if (strcmp(panel_array[i]->GetName(), panel_name) == 0)
+			return panel_array[i];
+	}
+	return nullptr;
 }
 
 bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
