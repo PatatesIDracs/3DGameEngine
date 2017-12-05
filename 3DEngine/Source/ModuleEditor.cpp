@@ -18,29 +18,40 @@
 #include "Panel.h"
 #include "PanelConfig.h"
 #include "PanelAbout.h"
+#include "PanelProfiler.h"
 
 namespace fs = std::experimental::filesystem;
 
 ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, "UI Editor", start_enabled)
 {
-	panel_array.push_back(new PanelConfig());
-	panel_array.push_back(new PanelAbout());
 }
 
 ModuleEditor::~ModuleEditor()
 {
 }
 
+bool ModuleEditor::Init()
+{
+	glewInit();
+	ImGui_ImplSdlGL3_Init(App->window->window);
+	return true;
+}
+
 bool ModuleEditor::Start()
 {
+	//Load all panels
+	//Done here so the panels are able to get variables from the modules they need
+	panel_array.push_back(new PanelConfig());
+	panel_array.push_back(new PanelAbout());
+	panel_array.push_back(new PanelProfiler());
+
+
 	Importer test_imp;
 
 
 	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
 	ImGuiIO& io = ImGui::GetIO();
-
-	app_profiler = App->GetProfilerVect();
 
 	showpropertieswindow = true;
 	showhierarchy = true;
@@ -144,7 +155,7 @@ update_status ModuleEditor::Update(float dt)
 	//Tools Menu: Profiler
 	if (ImGui::BeginMenu("Tools"))
 	{
-		if (ImGui::MenuItem("Profiler")) showprofiler = !showprofiler;
+		if (ImGui::MenuItem("Profiler")) ChangePanelState("Profiler");
 		ImGui::EndMenu();
 	}
 
@@ -200,8 +211,6 @@ update_status ModuleEditor::Update(float dt)
 	if (on_assets && showassets) DrawAssets();
 	else if (showconsole) DrawConsole();
 
-	//Draw Profiler
-	if (showprofiler) DrawProfilerWindow();
 	//Show Game Object properties
 	if (showpropertieswindow) DrawPropertiesWindow();
 	if (showhierarchy) DrawHierarchy();
@@ -420,7 +429,7 @@ void ModuleEditor::DrawClock()
 
 void ModuleEditor::DrawConsole()
 {
-	ImGui::Begin("Console", &showconsole);
+	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoTitleBar);
 	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
 	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 	
@@ -437,7 +446,7 @@ void ModuleEditor::DrawAssets()
 {
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
 
-	ImGui::Begin("Assets", &showassets);
+	ImGui::Begin("Assets", &showassets, ImGuiWindowFlags_NoTitleBar);
 	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
 	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 
@@ -497,67 +506,11 @@ void ModuleEditor::DrawPropertiesWindow()
 	ImGui::End();
 }
 
-// Profiler Interface ==============================
-void ModuleEditor::DrawProfilerWindow()
-{
-	ImGui::Begin("Profiler Test", &showprofiler, ImGuiWindowFlags_NoResize);
-	{
-		if (ImGui::Button("Start Profiler")) {
-			if (recordpaused)
-			{
-				recordpaused = false;
-				App->DoRecord();
-			}
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause Profiler"))
-		{
-			if (!recordpaused) App->DoRecord();
-			recordpaused = true;
-			
-		}
-		
-		//Show Ms from functions Real Time
-		ImGui::Separator();
-		
-			ImGui::Text("Modules: ");
-			const std::list<Module*>* app = App->GetModulesList();
-			std::list<Module*>::const_iterator app_modules = app->begin();
-			
-			int count = 0;
-			for (; app_modules != app->end(); app_modules++)
-			{
-				ImGui::RadioButton(app_modules._Ptr->_Myval->GetName(), (int*)&current_module, count);
-				count++;
-			}
-			ImGui::Separator();
-
-			std::vector<char*>* fnames = app_profiler->begin()[current_module]->GetFunctionNames();
-			std::vector<float>* item = nullptr;
-
-			for (uint i = 0; i < fnames->size(); i++)
-			{
-				item = app_profiler->begin()[current_module]->GetFunctionTimeline(fnames->at(i));
-				ImGui::PlotHistogram(fnames->at(i), &item->at(0), 60, 0, NULL, 0.0f, 5.0f, ImVec2(0, 80));
-			}	
-		
-	}
-	ImGui::End();
-
-	// When Closing DrawProfilerWindow Stops Profiler
-	if (!showprofiler && !recordpaused)
-	{
-		recordpaused = !recordpaused;
-		App->DoRecord();
-	}
-
-}
-
 void ModuleEditor::ChangePanelState(const char * panel_name)
 {
 	for (uint i = 0; i < panel_array.size(); i++)
 	{
-		if (strcmp( panel_array[i]->GetName(),panel_name) == 0)
+		if (strcmp(panel_array[i]->GetName(),panel_name) == 0)
 			panel_array[i]->ChangeState();
 	}
 }

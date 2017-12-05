@@ -289,6 +289,9 @@
     <ClCompile Include="PanelAbout.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
+    <ClCompile Include="PanelProfiler.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -751,6 +754,9 @@
       <Filter>Panel</Filter>
     </ClInclude>
     <ClInclude Include="PanelAbout.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelProfiler.h">
       <Filter>Panel</Filter>
     </ClInclude>
   </ItemGroup>

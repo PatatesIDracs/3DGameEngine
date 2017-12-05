@@ -20,6 +20,7 @@ public:
 	ModuleEditor(Application* app, bool start_enabled = true);
 	~ModuleEditor();
 
+	bool Init();
 	bool Start();
 
 	update_status PreUpdate(float dt);
@@ -47,9 +48,6 @@ private:
 
 	void DrawHierarchy();
 
-	// Draw Profiler -----------------------
-	void DrawProfilerWindow();
-
 	void ChangePanelState(const char* panel_name);
 
 private:
@@ -66,14 +64,6 @@ private:
 	bool	showassets				= true;
 
 	bool	on_assets				= true;
-
-
-	// Profiler
-	bool	showprofiler			= false;
-	bool	recordpaused			= true;
-
-	int		current_module  = 0;
-	const std::vector<Profiler*>* app_profiler = nullptr;
 
 	std::vector<std::string>	console_string;
 
