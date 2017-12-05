@@ -25,16 +25,6 @@ ModuleCamera3D::~ModuleCamera3D()
 }
 
 // -----------------------------------------------------------------
-bool ModuleCamera3D::Start()
-{
-	LOGC("Setting up the camera");
-	bool ret = true;
-	glewInit();
-
-	return ret;
-}
-
-// -----------------------------------------------------------------
 bool ModuleCamera3D::CleanUp()
 {
 	LOGC("Cleaning camera");

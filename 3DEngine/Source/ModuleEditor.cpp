@@ -34,6 +34,7 @@ bool ModuleEditor::Init()
 {
 	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
+	
 	return true;
 }
 
@@ -44,14 +45,6 @@ bool ModuleEditor::Start()
 	panel_array.push_back(new PanelConfig());
 	panel_array.push_back(new PanelAbout());
 	panel_array.push_back(new PanelProfiler());
-
-
-	Importer test_imp;
-
-
-	glewInit();
-	ImGui_ImplSdlGL3_Init(App->window->window);
-	ImGuiIO& io = ImGui::GetIO();
 
 	showpropertieswindow = true;
 	showhierarchy = true;
@@ -99,6 +92,9 @@ bool ModuleEditor::Start()
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 
 	it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+
+	App->renderer3D->CheckConfig();
+
 	return true;
 }
 

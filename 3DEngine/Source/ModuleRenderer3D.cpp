@@ -92,17 +92,17 @@ bool ModuleRenderer3D::Init()
 
 
 		lights[0].Active(true);
-		CheckConfig();
-
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-	// Projection matrix for
-	//OnResize(App->window->width, App->window->height);
-
 	return ret;
+}
+
+bool ModuleRenderer3D::Start()
+{
+	// Projection matrix for
+	OnResize(App->window->width, App->window->height);
+
+	return true;
 }
 
 // PreUpdate: clear buffer
@@ -117,7 +117,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
@@ -144,8 +143,10 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	default:
 		break;
 	}
-
+	
+	SetLight();
 	App->scene_intro->Draw();
+	glDisable(GL_LIGHTING);
 
 	App->editor->Draw();
 
@@ -229,11 +230,10 @@ void ModuleRenderer3D::DrawConfig()
 
 	ImGui::Checkbox("Show Grid", &show_grid);
 	ImGui::Checkbox("Draw Octree", &show_octree);
-	ImGui::Checkbox("Vertex Normals", &vertex_normals);
 
 	if (ImGui::Checkbox("Depth test", &depth_test)) SetDepthTest();
 
-	if (ImGui::Checkbox("Face culling", &cull_face)) SetFaceCulling(); ImGui::SameLine();
+	if (ImGui::Checkbox("Face culling", &cull_face)) SetFaceCulling();
 	if (ImGui::RadioButton("GL_CCW", &cull_face_mode, 0)) SetFaceCulling(); ImGui::SameLine();
 	if (ImGui::RadioButton("GL_CW", &cull_face_mode, 1)) SetFaceCulling();
 
@@ -246,7 +246,6 @@ void ModuleRenderer3D::DrawConfig()
 	if (ImGui::Checkbox("Color material", &color_material)) SetColorMaterial();
 	if (ImGui::Checkbox("2D texture", &texture_2d)) Set2DTexture();
 
-	CheckConfig();
 }
 
 //Check all variables form config and set it right
@@ -256,7 +255,7 @@ void ModuleRenderer3D::CheckConfig()
 	SetDepthTest();
 	SetFaceCulling();
 	SetSmooth();
-	SetLight();
+	//SetLight();
 	SetLightColor();
 	SetColorMaterial();
 	Set2DTexture();

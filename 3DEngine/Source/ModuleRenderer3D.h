@@ -24,6 +24,7 @@ public:
 	~ModuleRenderer3D();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
@@ -36,10 +37,9 @@ public:
 
 
 	void DrawConfig();
+	void CheckConfig();
 
 private:
-
-	void CheckConfig();
 
 	void SetDepthTest();
 	void SetFaceCulling();
@@ -58,7 +58,6 @@ public:
 	float3x3 NormalMatrix;
 	float4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	bool vertex_normals = false;
 	bool show_grid = true;
 	bool show_octree = true;
 
@@ -70,7 +69,7 @@ private:
 	int	 cull_face_mode = 0;
 	bool lighting = false;
 	bool color_material = false;
-	bool texture_2d = false;
+	bool texture_2d = true;
 	bool smooth = true;
 
 	RENDER_MODE render_mode = RENDER_MODE::FILL;
