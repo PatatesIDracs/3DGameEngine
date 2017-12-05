@@ -301,6 +301,12 @@
     <ClCompile Include="PanelPlayButton.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
+    <ClCompile Include="PanelSaveScene.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelLoadScene.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -775,6 +781,12 @@
       <Filter>Panel</Filter>
     </ClInclude>
     <ClInclude Include="PanelPlayButton.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelSaveScene.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelLoadScene.h">
       <Filter>Panel</Filter>
     </ClInclude>
   </ItemGroup>

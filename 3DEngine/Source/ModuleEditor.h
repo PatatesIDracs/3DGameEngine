@@ -39,8 +39,6 @@ private:
 
 	void DrawConsole();
 	void DrawAssets();
-	void DrawSaveWindow();
-	void DrawLoadWindow();
 
 	void ChangePanelState(const char* panel_name);
 
@@ -50,8 +48,6 @@ private:
 
 	bool	showtestwindow			= false;
 	bool	showconsole				= false;
-	bool	savewindow				= false;
-	bool	loadwindow				= false;
 	bool	showassets				= true;
 
 	bool	on_assets				= true;

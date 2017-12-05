@@ -22,6 +22,8 @@
 #include "PanelHierarchy.h"
 #include "PanelProperties.h"
 #include "PanelPlayButton.h"
+#include "PanelSaveScene.h"
+#include "PanelLoadScene.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -51,6 +53,8 @@ bool ModuleEditor::Start()
 	panel_array.push_back(new PanelHierarchy());
 	panel_array.push_back(new PanelProperties());
 	panel_array.push_back(new PanelPlayButton());
+	panel_array.push_back(new PanelSaveScene());
+	panel_array.push_back(new PanelLoadScene());
 
 	// Define IMGUI Style
 	ImGuiStyle * style = &ImGui::GetStyle();
@@ -132,8 +136,8 @@ update_status ModuleEditor::Update(float dt)
 		//Open Setting window
 		if (ImGui::MenuItem("Configuration")) ChangePanelState("Configuration");
 		//Save and Load Scene
-		if (ImGui::MenuItem("Save scene ...")) savewindow = !savewindow;
-		if (ImGui::MenuItem("Load scene ...")) loadwindow = !loadwindow;
+		if (ImGui::MenuItem("Save scene ...")) ChangePanelState("SaveScene");
+		if (ImGui::MenuItem("Load scene ...")) ChangePanelState("LoadScene");
 		if (ImGui::MenuItem("Load Default Scene...")) App->scene_intro->LoadDefaultScene();
 		//Interrupt update and close the app
 		if (ImGui::MenuItem("Exit")) return UPDATE_STOP;
@@ -214,10 +218,6 @@ update_status ModuleEditor::Update(float dt)
 
 	if (on_assets && showassets) DrawAssets();
 	else if (showconsole) DrawConsole();
-
-	//Save and load
-	if (savewindow) DrawSaveWindow();
-	if (loadwindow) DrawLoadWindow();
 	
 	for (uint i = 0; i < panel_array.size(); i++)
 	{
@@ -262,77 +262,6 @@ void ModuleEditor::LogToConsole(std::string * log_string)
 	console_string.push_back(*log_string);
 }
 
-void ModuleEditor::DrawSaveWindow()
-{
-	ImGui::OpenPopup("Save File");
-	if (ImGui::BeginPopupModal("Save File", &savewindow))
-	{
-		static char file_name[200];
-		ImGui::BeginChild("test", ImVec2(300,300),true);
-
-		ImGui::EndChild();
-
-		ImGui::InputText("", file_name, (int)sizeof(file_name));
-		ImGui::SameLine();
-
-		if (ImGui::Button("Save"))
-		{
-			App->SaveScene(file_name);
-			savewindow = false;
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-			savewindow = false;
-
-		ImGui::EndPopup();		
-	}
-}
-
-void ModuleEditor::DrawLoadWindow()
-{
-	std::vector<Resource*>* to_show = &App->resources->resources_vec;
-
-	ImGui::OpenPopup("Load File");
-	if (ImGui::BeginPopupModal("Load File", &loadwindow))
-	{
-		static int file_uid = -1;
-		static std::string file_name;
-		ImGui::BeginChild("test", ImVec2(250, 300), true);
-	
-		for (uint i = 0; i < to_show->size(); i++)
-		{
-			if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
-			{
-				file_uid = (*to_show)[i]->GetUID();
-				file_name = (*to_show)[i]->GetAssetsPath();
-			};
-		}
-
-		ImGui::EndChild();
-
-		ImGui::InputText("", (char*)file_name.c_str(), file_name.size(), ImGuiInputTextFlags_ReadOnly);
-		ImGui::SameLine();
-
-		if (ImGui::Button("Load"))
-		{
-			if (file_uid != -1)
-				App->LoadScene(file_uid);
-			else
-				LOGC("Please select a file to load");
-			loadwindow = false;
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			loadwindow = false;
-		}
-
-		ImGui::EndPopup();
-	}
-}
-
 void ModuleEditor::DrawConsole()
 {
 	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoTitleBar);
@@ -347,7 +276,6 @@ void ModuleEditor::DrawConsole()
 	ImGui::End();
 }
 
-// Did Assets Window in 1 HOUR!! Forgive us (for the code) xD
 void ModuleEditor::DrawAssets()
 {
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
@@ -390,14 +318,8 @@ void ModuleEditor::DrawAssets()
 		}
 		else
 			LOGC("Please select a file to load");
-		loadwindow = false;
 	}
 	
-	ImGui::SameLine();
-	if (ImGui::Button("Cancel"))
-	{
-		loadwindow = false;
-	}
 	ImGui::End();
 }
 
