@@ -26,10 +26,13 @@ public:
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
 	void LoadGameObjects(std::vector<GameObject*>* new_go_array, GameObject* array_root = nullptr, bool new_scene = false);
+	bool DeleteGameObject(GameObject* to_delete);
 
 	void CollectCandidates();
 	void OrderCandidatesByTexture();
+
 	bool AddGameObjectToOctree(const GameObject* object);
+	void AddGameObjectToDynamic(const GameObject* object);
 	void CheckDynamicGameObjectsState();
 	void CheckStaticGameObjectsState();
 

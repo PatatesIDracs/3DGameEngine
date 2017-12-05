@@ -20,9 +20,12 @@ public:
 	void Update();
 
 	//Set methods
+	void AddToScene() const;
 	void AddChildren(GameObject* new_child);
 	void AddComponent(Component* new_component, bool overwrite = false);
 	void SetTransform(float4x4 &transform);
+
+	void RemoveChildren(GameObject* remove_child);
 
 	//Get/Check state methods
 	bool IsActive()const;

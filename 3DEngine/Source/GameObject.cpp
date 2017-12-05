@@ -41,6 +41,9 @@ GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : p
 
 GameObject::~GameObject()
 {
+	if (parent != nullptr)
+		parent->RemoveChildren(this);
+
 	for (uint i = 0; i < children.size(); i++)
 	{
 		delete	children[i];
@@ -74,6 +77,14 @@ void GameObject::Update()
 	{
 		components[i]->Update();
 	}
+}
+
+void GameObject::AddToScene() const
+{
+	App->scene_intro->AddGameObjectToDynamic(this);
+
+	for (uint i = 0; i < children.size(); i++)
+		children[i]->AddToScene();
 }
 
 //Set methods
@@ -113,6 +124,18 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 void GameObject::SetTransform(float4x4 &transform)
 {
 	((Transform*)components[0])->SetTransform(transform);
+}
+
+void GameObject::RemoveChildren(GameObject * remove_child)
+{
+	for (uint i = 0; i < children.size(); i++) {
+		if (children[i] == remove_child) {
+			for (uint j = i; j < children.size() - 1; j++) {
+				children[j] = children[j + 1];
+			}
+			children.pop_back();
+		}
+	}
 }
 
 

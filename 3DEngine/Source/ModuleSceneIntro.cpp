@@ -174,6 +174,11 @@ update_status ModuleSceneIntro::Update(float dt)
 			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && current_object != root) {
+		DeleteGameObject(current_object);
+		current_object = nullptr;
+	}
+
 	CollectCandidates();
 
 	return UPDATE_CONTINUE;
@@ -257,6 +262,22 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, G
 	CheckDynamicGameObjectsState();
 }
 
+bool ModuleSceneIntro::DeleteGameObject(GameObject* to_delete) {
+	
+	if (to_delete != nullptr) {
+		delete to_delete;
+
+		dynamic_gameobjects.clear();
+		static_gameobjects.clear();
+		scene_octree.Reset();
+
+		root->AddToScene();
+		CheckDynamicGameObjectsState();
+		return true;
+	}
+	else return false;
+}
+
 void ModuleSceneIntro::CollectCandidates()
 {
 	// Get Dynamic Meshes to render
@@ -332,6 +353,12 @@ bool ModuleSceneIntro::AddGameObjectToOctree(const GameObject* object)
 		}
 	}
 	return false;
+}
+
+void ModuleSceneIntro::AddGameObjectToDynamic(const GameObject * object)
+{
+	if(object != nullptr)
+		dynamic_gameobjects.push_back((GameObject*)object);
 }
 
 
