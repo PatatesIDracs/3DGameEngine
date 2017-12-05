@@ -34,12 +34,9 @@ public:
 
 	//Return true when a file is selected
 	bool DrawFixedExplorer(std::string& output, const char* path);
-	bool DrawExplorer(std::string* output_file);
 
 private:
 
-	void DrawPlayButton();
-	void DrawClock();
 	void DrawConsole();
 	void DrawAssets();
 	void DrawSaveWindow();
@@ -53,7 +50,6 @@ private:
 
 	bool	showtestwindow			= false;
 	bool	showconsole				= false;
-	bool	showclock				= false;
 	bool	savewindow				= false;
 	bool	loadwindow				= false;
 	bool	showassets				= true;

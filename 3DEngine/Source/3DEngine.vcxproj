@@ -188,6 +188,7 @@
     <ClCompile Include="PanelAbout.cpp" />
     <ClCompile Include="PanelConfig.cpp" />
     <ClCompile Include="PanelHierarchy.cpp" />
+    <ClCompile Include="PanelPlayButton.cpp" />
     <ClCompile Include="PanelProfiler.cpp" />
     <ClCompile Include="PanelProperties.cpp" />
     <ClCompile Include="parson.c" />
@@ -349,6 +350,7 @@
     <ClInclude Include="PanelAbout.h" />
     <ClInclude Include="PanelConfig.h" />
     <ClInclude Include="PanelHierarchy.h" />
+    <ClInclude Include="PanelPlayButton.h" />
     <ClInclude Include="PanelProfiler.h" />
     <ClInclude Include="PanelProperties.h" />
     <ClInclude Include="parson.h" />
