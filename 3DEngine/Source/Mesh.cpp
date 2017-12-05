@@ -114,15 +114,19 @@ bool Mesh::CheckRayCollision(const LineSegment segment, float & dist, float3 & p
 
 void Mesh::ChangeMesh()
 {
-	std::string new_mesh_path;
-	if (App->editor->DrawFixedExplorer(new_mesh_path, JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER JOPE_MESHES_FOLDER))
+	ResourceMesh* new_mesh = (ResourceMesh*)App->editor->DrawResourceExplorer(RESOURCE_MESH, "Mesh Folder");
+
+	if (new_mesh)
 	{
-		// mesh_resource = App->resource->GetResource....
-		
+		if (mesh_resource != nullptr) {
+			mesh_resource->StopThis();
+		}
+		mesh_resource = new_mesh;
+		mesh_resource->UseThis();
+
 		UpdateTransform();
 		changing_mesh = false;
 	}
-
 }
 
 void Mesh::Save(const char * buffer_data, char * cursor, int& bytes_copied)

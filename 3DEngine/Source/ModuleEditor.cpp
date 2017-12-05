@@ -351,33 +351,36 @@ Panel * ModuleEditor::GetUIPanel(const char* panel_name) const
 	return nullptr;
 }
 
-bool ModuleEditor::DrawFixedExplorer(std::string& output, const char* path)
+Resource* ModuleEditor::DrawResourceExplorer(RESOURCE_TYPE type, const char* folder)
 {
-	bool ret = false;
-	//Get to the library path
-	fs::directory_iterator it{ path };
-	fs::directory_iterator end{};
-	
-	ImGui::Begin("Explorer");
-	ImGui::Text("Other files test");
-	for (; it != end; it++)
+	Resource* ret = nullptr;
+
+	std::vector<Resource*>* to_show = nullptr;
+	switch (type)
 	{
-		if (fs::is_regular_file(it->path()))
+	case RESOURCE_MESH: to_show = &App->resources->mesh_vec;
+		break;
+	case RESOURCE_TEXTURE: to_show = &App->resources->texture_vec;
+		break;
+	case RESOURCE_SCENE: to_show = &App->resources->scene_vec;
+		break;
+	default: return nullptr;
+	}
+
+	ImGui::SetNextWindowSize(ImVec2(330.f, 430.f));
+	ImGui::Begin(folder, 0, ImGuiWindowFlags_NoResize);
+	ImGui::BeginChild("Files:", ImVec2(300.f, 400.f), true);
+
+	for (uint i = 0; i < to_show->size(); i++)
+	{
+		if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
 		{
-			static char file_name[150];
-			std::wcstombs(file_name, it->path().filename().c_str(), sizeof(file_name));
-			if (ImGui::Button(file_name))
-			{
-				char file[150];
-				std::wcstombs(file, it->path().c_str(), 150);
-				output = file;
-				LOGC("Loaded file from: %s\\%S", it_library_path.c_str(), it->path().filename().c_str());
-				it_library_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
-				ret = true;
-				break;
-			}
+			ret = (*to_show)[i];
 		}
 	}
+
+	ImGui::EndChild();
 	ImGui::End();
+
 	return ret;
 }

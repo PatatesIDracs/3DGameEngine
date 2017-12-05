@@ -206,6 +206,9 @@ void ModuleResources::UpdateAssetsFiles()
 
 	resources_vec.clear();
 	all_resources_vec.clear();
+	scene_vec.clear();
+	mesh_vec.clear();
+	texture_vec.clear();
 
 	std::string path;
 	std::string filename;
@@ -241,12 +244,21 @@ void ModuleResources::UpdateAssetsFiles()
 					all_resources_vec.push_back(load_this);
 				}
 			}
-			else if ((extension == SCENEFORMAT || extension == ".fbx")&& fs::exists((temp + METAFORMAT).c_str())) {
+			else if (fs::exists((temp + METAFORMAT).c_str())) {
+				// Add resource to Assets window
 				Config_Json meta_file((temp + METAFORMAT).c_str());
-				
-				// Add to Current scenes
 				Resource* load_this = GetFromUID(meta_file.GetInt("UUID"));
-				resources_vec.push_back(load_this);
+				
+				if (load_this == nullptr) continue;
+				if (extension == MJOPE) {
+					mesh_vec.push_back(load_this);
+				}
+				else if (extension == TEXFORMAT) {
+					texture_vec.push_back((ResourceTexture*)load_this);
+				}
+				else if (extension == SCENEFORMAT || extension == ".fbx") {
+					scene_vec.push_back(load_this);
+				}
 			}
 			path.clear();
 			filename.clear();
