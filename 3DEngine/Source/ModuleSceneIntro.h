@@ -41,6 +41,8 @@ public:
 	void LookAtScene() const;
 
 	void DrawRootHierarchy();
+	const char* GetRootName() const;
+	bool ImSelected(int go_uuid) const;
 	GameObject* GetSelectedGameObject() const;
 
 	void SetProperties(GameObject* show_this);
@@ -63,6 +65,7 @@ public:
 
 private:
 	GameObject* current_object = nullptr;
+	int selected_go_uuid = -1;
 	
 	std::vector<GameObject*> static_gameobjects;
 	std::vector<GameObject*> dynamic_gameobjects;

@@ -211,9 +211,9 @@ GameObject* GameObject::DrawHierarchy()
 
 	//Set which flags will be used (Has children or not)
 	if (children.size() != 0)
-		game_object_node_flags = 0;
+		game_object_node_flags = (App->scene_intro->ImSelected(GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0);
 	else
-		game_object_node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		game_object_node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | (App->scene_intro->ImSelected(GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0 );
 
 	ImGui::PushID(UUID);
 	//Draw the node

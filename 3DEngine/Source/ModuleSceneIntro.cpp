@@ -39,7 +39,7 @@ bool ModuleSceneIntro::Start()
 	App->camera->LookAt(vec(0, 0, 0));
 	
 	//Create the root GameObject
-	root = new GameObject(nullptr, "root");
+	root = new GameObject(nullptr, "Untitled Scene");
 
 	//Set Up current object to show its properties
 	current_object = root;
@@ -494,8 +494,30 @@ void ModuleSceneIntro::LookAtScene() const
 
 void ModuleSceneIntro::DrawRootHierarchy()
 {
-	GameObject* ret = root->DrawHierarchy();
-	if (ret != nullptr) current_object = ret;
+	GameObject* ret = nullptr;
+
+	for (uint i = 0; i < root->children.size(); i++)
+	{
+		ret = root->children[i]->DrawHierarchy();
+		if (ret != nullptr)
+		{
+			current_object = ret;
+			selected_go_uuid = current_object->GetUUID();
+		}
+	}
+}
+
+const char * ModuleSceneIntro::GetRootName() const
+{
+	return root->name.c_str();
+}
+
+bool ModuleSceneIntro::ImSelected(int go_uuid) const
+{
+	if (go_uuid == selected_go_uuid)
+		return true;
+	else
+		return false;
 }
 
 GameObject * ModuleSceneIntro::GetSelectedGameObject() const
@@ -517,6 +539,7 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 {
 	LOGC("Saving the scene...");
 	std::string save_file_name = file_name;
+	root->name = file_name;
 	save_file_name.append(SCENEFORMAT);
 	ResourceScene* save_scene = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
 	save_scene->SetAsRoot(true);
@@ -557,7 +580,8 @@ void ModuleSceneIntro::LoadDefaultScene()
 		root = new GameObject(nullptr, "root");
 
 		//Set Up current object to show its properties
-		current_object = root;
+		current_object = nullptr;
+		selected_go_uuid = -1;
 
 		GameObject* camera = CreateNewGameObject("Camera", nullptr);
 		Camera* camera_test = new Camera(camera, true);
