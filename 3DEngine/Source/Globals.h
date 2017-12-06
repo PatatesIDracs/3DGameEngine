@@ -38,6 +38,7 @@
 #define JOPE_ASSETS_TEXTURE_FOLDER "textures/"
 
 #define MJOPE ".mjope"
+#define PREFABFORMAT ".pjope"
 #define TEXFORMAT ".tjope"
 #define SCENEFORMAT ".jope"
 #define METAFORMAT ".meta"

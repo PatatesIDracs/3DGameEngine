@@ -44,6 +44,8 @@ public:
 	std::vector<Resource*> scene_vec;
 	std::vector<Resource*> mesh_vec;
 	std::vector<Resource*> texture_vec;
+	std::vector<Resource*> prefab_vec;
+
 
 	uint mesh_icon_id = 0;
 	uint text_icon_id = 0;

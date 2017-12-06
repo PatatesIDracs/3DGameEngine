@@ -7,6 +7,7 @@
 #include "ResourceMesh.h"
 #include "ResourceScene.h"
 #include "ResourceTexture.h"
+#include "ResourcePrefab.h"
 
 #include "parson.h"
 #include "ConfigJSON.h"
@@ -136,6 +137,14 @@ void ModuleResources::SearchForResources()
 				LOGC("Texture %s loaded", it->path().c_str());
 			}
 
+			//Load prefabs resource
+			if (extension == PREFABFORMAT)
+			{
+				ResourcePrefab* new_prefab = (ResourcePrefab*)CreateNewResource(RESOURCE_TYPE::RESOURCE_PREFAB, std::stoi(filename));
+				new_prefab->SetLibraryFile(filename + extension);
+				new_prefab->LoadResource();
+				LOGC("Prefab %s loaded", it->path().c_str());
+			}
 
 			LOGC("File %S identified", it->path().c_str());
 			path.clear();
@@ -228,6 +237,7 @@ void ModuleResources::UpdateAssetsFiles()
 	scene_vec.clear();
 	mesh_vec.clear();
 	texture_vec.clear();
+	prefab_vec.clear();
 
 	std::string path;
 	std::string filename;
@@ -273,10 +283,13 @@ void ModuleResources::UpdateAssetsFiles()
 					mesh_vec.push_back(load_this);
 				}
 				else if (extension == ".png" || extension == ".tga" || extension == ".jpg") {
-					texture_vec.push_back((ResourceTexture*)load_this);
+					texture_vec.push_back(load_this);
 				}
-				else if (extension == SCENEFORMAT || extension == ".fbx") {
+				else if (extension == SCENEFORMAT) {
 					scene_vec.push_back(load_this);
+				}
+				else if (extension == PREFABFORMAT || extension == ".fbx") {
+					prefab_vec.push_back(load_this);
 				}
 			}
 			path.clear();
@@ -366,6 +379,9 @@ Resource * ModuleResources::CreateNewResource(RESOURCE_TYPE type, int force_uid)
 		break;
 	case RESOURCE_TEXTURE:
 		ret = new ResourceTexture(new_UID);
+		break;
+	case RESOURCE_PREFAB:
+		ret = new ResourcePrefab(new_UID);
 		break;
 	case RESOURCE_SCENE:
 		ret = new ResourceScene(new_UID);

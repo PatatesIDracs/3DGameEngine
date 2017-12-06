@@ -542,7 +542,6 @@ void ModuleSceneIntro::SaveScene(const char* file_name)
 	root->name = file_name;
 	save_file_name.append(SCENEFORMAT);
 	ResourceScene* save_scene = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
-	save_scene->SetAsRoot(true);
 	//std::ofstream new_file(save_file_name.c_str(), std::ofstream::binary);
 	save_scene->SetAssetFile(save_file_name);
 	save_scene->SaveResource(root);
@@ -593,7 +592,6 @@ void ModuleSceneIntro::LoadDefaultScene()
 void ModuleSceneIntro::SaveToPlay()
 {
 	ResourceScene* play_save = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
-	play_save->SetAsRoot(true);
 	play_save->SaveResource(root);
 	temp_save_uid = play_save->GetUID();
 	render_this.clear();

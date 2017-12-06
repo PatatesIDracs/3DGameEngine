@@ -1,23 +1,22 @@
-#include "ResourceScene.h"
+#include "ResourcePrefab.h"
 #include "GameObject.h"
 #include "Component.h"
 #include "Application.h"
 
 #include <fstream>
 
-ResourceScene::ResourceScene(int uid) : Resource(uid)
-{
-	type = RESOURCE_TYPE::RESOURCE_SCENE;
-}
-
-ResourceScene::~ResourceScene()
+ResourcePrefab::ResourcePrefab(int uid) : Resource(uid)
 {
 }
 
-void ResourceScene::SaveResource(GameObject* scene_root_go)
+ResourcePrefab::~ResourcePrefab()
+{
+}
+
+void ResourcePrefab::SaveResource(GameObject * scene_root_go)
 {
 	library_file = std::to_string(uid);
-	library_file.append(".jope");
+	library_file.append(PREFABFORMAT);
 
 	uint buffer_size = 0;
 	GetBufferSize(buffer_size);
@@ -71,16 +70,16 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 
 	LOGC("Scene Saved as: %s", library_file.c_str());
 
-	delete[] buffer_data;	
+	delete[] buffer_data;
 }
 
-void ResourceScene::GetBufferSize(uint & buffer_size)
+void ResourcePrefab::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
 	buffer_size += sizeof(bool);
 }
 
-void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
+void ResourcePrefab::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
 {
 	//Load the base properties
 	Resource::LoadResourceFromBuffer(cursor, bytes_copied, buffer_size);
@@ -110,7 +109,7 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 			bytes_copied += bytes_advanced;
 			loaded_gameobjects.push_back(new_gameobject);
 		}
-			break;
+		break;
 		case COMPONENTIDENTIFIER:
 		{
 			COMP_TYPE new_comp_type = COMP_TYPE::COMP_UNKNOWN;
@@ -126,7 +125,7 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 			bytes_copied += bytes_advanced;
 			loaded_components.push_back(new_component);
 		}
-			break;
+		break;
 		case ENDFILEIDENTIFIER:
 			LOGC("%s scene succesfully loaded", name.c_str());
 			break;
@@ -161,6 +160,5 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 		}
 	}
 
-	App->scene_intro->LoadGameObjects(&loaded_gameobjects, nullptr, true);
+	App->scene_intro->LoadGameObjects(&loaded_gameobjects, nullptr, false);
 }
-

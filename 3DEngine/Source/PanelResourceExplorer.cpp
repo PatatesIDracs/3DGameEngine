@@ -55,6 +55,9 @@ void PanelResourceExplorer::LoadResourcesArray()
 	case RESOURCE_TEXTURE:
 		//TODO: Get all texture resources
 		break;
+	case RESOURCE_PREFAB:
+		//TODO: Get all prefab resources
+		break;
 	case RESOURCE_SCENE:
 		//TODO: Get all scene resources
 		break;
@@ -81,6 +84,9 @@ const char * PanelResourceExplorer::ResourceTypeToString(RESOURCE_TYPE type)
 		break;
 	case RESOURCE_TEXTURE:
 		ret = "Textures";
+		break;
+	case RESOURCE_PREFAB:
+		ret = "Prefabs";
 		break;
 	case RESOURCE_SCENE:
 		ret = "Scenes";

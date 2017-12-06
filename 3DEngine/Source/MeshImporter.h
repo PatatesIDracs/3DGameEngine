@@ -7,6 +7,7 @@
 class GameObject;
 class ResourceMesh;
 class ResourceScene;
+class ResourcePrefab;
 class Config_Json;
 template <class T>
 class aiMatrix4x4t;
@@ -39,7 +40,7 @@ private:
 	// Retrun a map with assimpID/ResourceUID Texture
 	std::map<int, int>* ImportTextureResources(const aiScene* scene, const char * full_path);
 
-	void WriteSceneMeta(Config_Json& meta_file, const ResourceScene* resource) const;
+	void WriteSceneMeta(Config_Json& meta_file, const ResourcePrefab* resource) const;
 	void WriteMeshMeta(Config_Json& meta_file, const ResourceMesh* resource) const;
 	
 private:

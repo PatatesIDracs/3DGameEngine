@@ -7,6 +7,7 @@
 #include "ResourceMesh.h"
 #include "ResourceTexture.h"
 #include "ResourceScene.h"
+#include "ResourcePrefab.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Material.h"
@@ -72,16 +73,16 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 	//Dummy game object to save scene
 	GameObject* scene_go = new GameObject(nullptr, file_name.c_str());
 	
-	ResourceScene* scene_resource = nullptr;
+	ResourcePrefab* scene_resource = nullptr;
 	std::string meta_filename = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER + file_name;
 	if (!jope_importer->FoundMetaFile((meta_filename + METAFORMAT).c_str())) {
 		jope_importer->CopyFileToFolder(full_path, meta_filename.c_str());
-		scene_resource = (ResourceScene*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+		scene_resource = (ResourcePrefab*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
 	}
 	
 	Config_Json meta_file((meta_filename + METAFORMAT).c_str());
 	if (scene_resource == nullptr)
-		scene_resource = (ResourceScene*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
+		scene_resource = (ResourcePrefab*)App->resources->GetFromUID(meta_file.GetInt("UUID"));
 
 	aiNode* scene_root_node = scene->mRootNode;
 
@@ -90,7 +91,7 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 		{
 			ImportNode(scene_root_node->mChildren[i], scene, scene_go, scene_root_node->mTransformation, id_map, text_map);
 		}
-		scene_resource->SetAssetFile((file_name + SCENEFORMAT).c_str());
+		scene_resource->SetAssetFile((file_name + PREFABFORMAT).c_str());
 		scene_resource->SaveResource(scene_go);
 		WriteSceneMeta(meta_file, scene_resource);
 		
@@ -269,7 +270,7 @@ std::map<int, int>* MeshImporter::ImportTextureResources(const aiScene* scene, c
 	return ret;
 }
 
-void MeshImporter::WriteSceneMeta(Config_Json & meta_file, const ResourceScene * resource) const
+void MeshImporter::WriteSceneMeta(Config_Json & meta_file, const ResourcePrefab * resource) const
 {
 	meta_file.SetInt("UUID", resource->GetUID());
 

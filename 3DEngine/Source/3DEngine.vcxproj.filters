@@ -310,6 +310,9 @@
     <ClCompile Include="PanelResourceExplorer.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
+    <ClCompile Include="ResourcePrefab.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -794,6 +797,9 @@
     </ClInclude>
     <ClInclude Include="PanelResourceExplorer.h">
       <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcePrefab.h">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
