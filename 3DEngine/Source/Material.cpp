@@ -46,6 +46,10 @@ void Material::DrawComponent()
 	ImGui::PushID(UUID);
 	if (ImGui::CollapsingHeader("Texture"))
 	{
+		if (ImGui::Button("Change")) changing_text = !changing_text;
+
+		if (changing_text) ChangeTexture();
+
 		if (resource != nullptr)
 		{
 			ImGui::InputInt("Width:", (int*)&resource->width, 0, 100, ImGuiInputTextFlags_ReadOnly);
@@ -53,8 +57,8 @@ void Material::DrawComponent()
 			ImGui::InputInt("Bpp:", (int*)&resource->bytes, 0, 100, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Depth:", (int*)&resource->depth, 0, 100, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Mips:", (int*)&resource->mips, 0, 100, ImGuiInputTextFlags_ReadOnly);
-			ImGui::InputInt("Texture ID:", (int*)&resource->texture_id, 0, 100, ImGuiInputTextFlags_ReadOnly);
-			ImGui::Image((void*)resource->texture_id, ImVec2(128.f, 128.f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::InputInt("ID:", (int*)&resource->texture_id, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::Image((void*)resource->texture_id, ImVec2(200.f, 200.f), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else
 		{
@@ -62,6 +66,22 @@ void Material::DrawComponent()
 		}
 	}
 	ImGui::PopID();
+}
+
+void Material::ChangeTexture()
+{
+	ResourceTexture* new_text = (ResourceTexture*)App->editor->DrawResourceExplorer(RESOURCE_TEXTURE, "Texture Folder");
+
+	if (new_text)
+	{
+		if (resource != nullptr) {
+			resource->StopThis();
+		}
+		resource = new_text;
+		resource->UseThis();
+
+		changing_text = false;
+	}
 }
 
 void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)

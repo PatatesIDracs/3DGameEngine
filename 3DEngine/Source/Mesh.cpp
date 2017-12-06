@@ -34,14 +34,6 @@ const RenderData* Mesh::GetRenderData() const
 		return nullptr;
 }
 
-void Mesh::Update()
-{
-	if (draw_aabb)
-	{
-		parent->GetBoundaryBox().Draw(3.0f, float4(1.0f, 0.0f, 0.0f, 1.0f));
-	}
-}
-
 void Mesh::UpdateTransform()
 {
 	if (mesh_resource)
@@ -72,7 +64,6 @@ void Mesh::DrawComponent()
 			int faces = GetRenderData()->num_indices / 3;
 			ImGui::InputInt("Faces", &faces, 0, 100, ImGuiInputTextFlags_ReadOnly);
 		}
-		ImGui::Checkbox("Draw AABB", &draw_aabb);
 
 	}
 	ImGui::PopID();

@@ -15,7 +15,6 @@ public:
 
 	const RenderData* GetRenderData() const;
 
-	void Update();
 	void UpdateTransform();
 
 	void DrawComponent();
@@ -31,8 +30,6 @@ public:
 public:
 	ResourceMesh* mesh_resource = nullptr;
 	int resource_uid = 0;
-
-	bool draw_aabb = false;
 
 	bool changing_mesh = false;
 };

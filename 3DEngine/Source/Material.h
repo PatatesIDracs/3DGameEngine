@@ -17,6 +17,7 @@ public:
 
 	void DrawComponent();
 
+	void ChangeTexture();
 	void Save(const char* buffer_data, char* cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
@@ -25,6 +26,8 @@ private:
 
 	ResourceTexture* resource = nullptr;
 	int resource_id = 0;
+
+	bool changing_text = false;
 };
 
 #endif // !__MATERIAL_H__
