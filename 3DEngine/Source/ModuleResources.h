@@ -23,6 +23,8 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void LoadIcons();
+
 	void SearchForResources();						//Look at library for new resources
 	void LoadFromAssets();
 	void UpdateAssetsFiles();
@@ -38,11 +40,14 @@ public:
 	Importer* GetImporter() const;
 
 public:
-	std::vector<Resource*> resources_vec;
 	std::vector<Resource*> all_resources_vec;
 	std::vector<Resource*> scene_vec;
 	std::vector<Resource*> mesh_vec;
 	std::vector<Resource*> texture_vec;
+
+	uint mesh_icon_id = 0;
+	uint text_icon_id = 0;
+	uint scene_icon_id = 0;
 
 private:
 

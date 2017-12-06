@@ -14,6 +14,8 @@ public:
 	TextureImporter();
 	~TextureImporter();
 
+	int LoadToBuffer(const char* path);
+
 	void Import(ResourceTexture* resource, const char* full_path, const char* name, Config_Json& meta_file);
 	
 	void WriteTextureMeta(Config_Json& meta_file, const ResourceTexture* resource) const;

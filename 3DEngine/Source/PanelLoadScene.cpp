@@ -15,7 +15,7 @@ PanelLoadScene::~PanelLoadScene()
 
 void PanelLoadScene::Draw()
 {
-	std::vector<Resource*>* to_show = &App->resources->resources_vec;
+	std::vector<Resource*>* to_show = &App->resources->scene_vec;
 
 	ImGui::OpenPopup("Load File");
 	if (ImGui::BeginPopupModal("Load File", &active))

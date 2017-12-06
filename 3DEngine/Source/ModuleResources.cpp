@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleResources.h"
 #include "Importer.h"
+#include "TextureImporter.h"
 
 #include "Resource.h"
 #include "ResourceMesh.h"
@@ -9,6 +10,8 @@
 
 #include "parson.h"
 #include "ConfigJSON.h"
+
+#include "Glew\include\glew.h"
 
 #include <string>
 
@@ -31,6 +34,9 @@ bool ModuleResources::Init()
 
 bool ModuleResources::Start()
 {
+	// Load files icons
+	LoadIcons();
+
 	// Update Library
 	SearchForResources();
 
@@ -52,7 +58,14 @@ update_status ModuleResources::Update(float dt)
 bool ModuleResources::CleanUp()
 {
 	all_resources_vec.clear();
-	resources_vec.clear();
+	scene_vec.clear();
+	mesh_vec.clear();
+	texture_vec.clear();
+	
+	// Clear Icons Buffers
+	if (mesh_icon_id != 0) glDeleteTextures(1, &(GLuint)mesh_icon_id);
+	if (text_icon_id != 0) glDeleteTextures(1, &(GLuint)text_icon_id);
+	if (scene_icon_id != 0) glDeleteTextures(1, &(GLuint)scene_icon_id);
 
 	//Delete all resources
 	for (std::map<int, Resource*>::const_iterator it = resources_map.begin(); it != resources_map.end(); it++)
@@ -62,6 +75,13 @@ bool ModuleResources::CleanUp()
 
 	delete jope_importer;
 	return true;
+}
+
+void ModuleResources::LoadIcons()
+{
+	mesh_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "mesh_icon.png"));
+	text_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "text_icon.png"));
+	scene_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "scene_icon.png"));
 }
 
 void ModuleResources::SearchForResources()
@@ -204,7 +224,6 @@ void ModuleResources::UpdateAssetsFiles()
 	fs::recursive_directory_iterator it{ JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER };
 	fs::recursive_directory_iterator end{};
 
-	resources_vec.clear();
 	all_resources_vec.clear();
 	scene_vec.clear();
 	mesh_vec.clear();
@@ -253,7 +272,7 @@ void ModuleResources::UpdateAssetsFiles()
 				if (extension == MJOPE) {
 					mesh_vec.push_back(load_this);
 				}
-				else if (extension == TEXFORMAT) {
+				else if (extension == ".png" || extension == ".tga" || extension == ".jpg") {
 					texture_vec.push_back((ResourceTexture*)load_this);
 				}
 				else if (extension == SCENEFORMAT || extension == ".fbx") {

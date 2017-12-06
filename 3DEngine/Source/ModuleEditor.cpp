@@ -354,33 +354,59 @@ Panel * ModuleEditor::GetUIPanel(const char* panel_name) const
 Resource* ModuleEditor::DrawResourceExplorer(RESOURCE_TYPE type, const char* folder)
 {
 	Resource* ret = nullptr;
+	int icon_id = 0;
 
 	std::vector<Resource*>* to_show = nullptr;
 	switch (type)
 	{
 	case RESOURCE_MESH: to_show = &App->resources->mesh_vec;
+		icon_id = App->resources->mesh_icon_id;
 		break;
 	case RESOURCE_TEXTURE: to_show = &App->resources->texture_vec;
+		icon_id = App->resources->text_icon_id;
 		break;
 	case RESOURCE_SCENE: to_show = &App->resources->scene_vec;
+		icon_id = App->resources->scene_icon_id;
 		break;
 	default: return nullptr;
 	}
 
-	ImGui::SetNextWindowSize(ImVec2(330.f, 430.f));
+	ImGui::SetNextWindowSize(ImVec2(240.f, 385.f));
 	ImGui::Begin(folder, 0, ImGuiWindowFlags_NoResize);
-	ImGui::BeginChild("Files:", ImVec2(300.f, 400.f), true);
+	ImGui::BeginChild("Files:", ImVec2(225.f, 350.f), true);
 
+	int count = 0;
 	for (uint i = 0; i < to_show->size(); i++)
 	{
-		if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
-		{
+		count++;
+		std::string child = "child" + std::to_string(i);
+		ImGui::BeginChild(child.c_str(), ImVec2(90,90), false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+
+		if(ImGui::IsWindowFocused())
 			ret = (*to_show)[i];
+
+		ImGui::SetCursorPosX(17);
+		ImGui::Image((void*)(GLuint)icon_id, ImVec2(56.f, 63.f), ImVec2(0, 1), ImVec2(1, 0));
+				
+		ImGui::Text(("%.10s", (*to_show)[i]->GetAssetsPath()));
+		
+		ImGui::EndChild();
+		if (ImGui::IsItemHovered()) 
+			ImGui::SetTooltip(("%.s", (*to_show)[i]->GetAssetsPath()));
+
+		if (count != 2) {
+			ImGui::SameLine();
 		}
+		else count = 0;
+		//if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
+		{
+			//ret = (*to_show)[i];
+		}
+		//ImGui::End();
 	}
 
 	ImGui::EndChild();
 	ImGui::End();
-
+	
 	return ret;
 }

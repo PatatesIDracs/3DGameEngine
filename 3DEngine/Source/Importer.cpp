@@ -54,6 +54,11 @@ void Importer::Import(const char * full_path)
 	}
 }
 
+TextureImporter * Importer::GetTextureImporter()
+{
+	return text_importer;
+}
+
 void Importer::DividePath(char * full_path, std::string * path, std::string * filename, std::string * extension)
 {
 	if (full_path == nullptr) return;

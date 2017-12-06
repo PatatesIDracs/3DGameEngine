@@ -15,12 +15,13 @@ public:
 	~Importer();
 
 	void Import(const char* full_path);
+	TextureImporter*	GetTextureImporter();
 
 	void DividePath(char* full_path, std::string* path, std::string* filename, std::string* extension);
 	void NormalizePath(std::string& path);
 
 	void GetFileName(std::string& file_name);
-	int GetMjopeUID(const char* file_path);
+	int  GetMjopeUID(const char* file_path);
 	
 	void CheckDirectories();
 

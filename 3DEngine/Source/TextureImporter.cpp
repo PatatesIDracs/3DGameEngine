@@ -32,6 +32,13 @@ TextureImporter::~TextureImporter()
 	assets_path.clear();
 }
 
+int TextureImporter::LoadToBuffer(const char * path)
+{
+	if(path != nullptr)
+		return (int)ilutGLLoadImage((char*)path);
+	else return 0;
+}
+
 void TextureImporter::Import(ResourceTexture* resource, const char * path, const char* name, Config_Json& meta_file)
 {
 	// Get Full Path

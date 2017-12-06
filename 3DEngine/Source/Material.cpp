@@ -54,6 +54,7 @@ void Material::DrawComponent()
 			ImGui::InputInt("Depth:", (int*)&resource->depth, 0, 100, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Mips:", (int*)&resource->mips, 0, 100, ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputInt("Texture ID:", (int*)&resource->texture_id, 0, 100, ImGuiInputTextFlags_ReadOnly);
+			ImGui::Image((void*)resource->texture_id, ImVec2(128.f, 128.f), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else
 		{
