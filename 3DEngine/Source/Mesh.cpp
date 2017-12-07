@@ -109,14 +109,24 @@ void Mesh::ChangeMesh()
 
 	if (new_mesh)
 	{
-		if (mesh_resource != nullptr) {
-			mesh_resource->StopThis();
-		}
-		mesh_resource = new_mesh;
-		mesh_resource->UseThis();
+		SetMeshResource(new_mesh);
 
 		UpdateTransform();
 		changing_mesh = false;
+	}
+}
+
+void Mesh::SetMeshResource(ResourceMesh * new_mesh)
+{
+	if (mesh_resource != nullptr)
+		mesh_resource->StopThis();
+
+	mesh_resource = new_mesh;
+
+	if (mesh_resource != nullptr) {
+		mesh_resource->UseThis();
+		resource_uid = mesh_resource->GetUID();
+		UpdateTransform();
 	}
 }
 

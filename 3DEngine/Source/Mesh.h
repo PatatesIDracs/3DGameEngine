@@ -22,6 +22,7 @@ public:
 	bool CheckRayCollision(const LineSegment ray, float &dist, float3 &point)const;
 
 	void ChangeMesh();
+	void SetMeshResource(ResourceMesh* new_mesh);
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);

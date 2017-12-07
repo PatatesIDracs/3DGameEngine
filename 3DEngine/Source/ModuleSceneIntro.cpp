@@ -189,8 +189,7 @@ update_status ModuleSceneIntro::Update(float dt)
 void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 {
 	std::string name = "empty";
-	Mesh* mesh = (Mesh*)NewOrphanComponent(COMP_MESH);
-	mesh->mesh_resource = (ResourceMesh*)App->resources->GetFromUID(type);
+	ResourceMesh* resource = (ResourceMesh*)App->resources->GetFromUID(type);
 
 	switch (type)
 	{
@@ -204,24 +203,22 @@ void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 		break;
 	}
 
-	if (mesh->mesh_resource != nullptr) {
-		mesh->mesh_resource->UseThis();
-
+	if (resource != nullptr) {
+		
 		GameObject* new_primitive = nullptr;
 		if (current_object != nullptr) {
 			new_primitive = CreateNewGameObject(name.c_str(), current_object);
 		}
 		else new_primitive = CreateNewGameObject(name.c_str());
 
+		Mesh* mesh = (Mesh*)NewOrphanComponent(COMP_MESH);
 		new_primitive->AddComponent(mesh);
 		new_primitive->AddComponent(NewOrphanComponent(COMP_MATERIAL));
 		new_primitive->AddComponent(NewOrphanComponent(COMP_MESHRENDERER));
-
-		dynamic_gameobjects.push_back(new_primitive);
+		mesh->SetMeshResource(resource);
 	}
 	else {
 		LOGC("Load Failed: Primitive Resource not found");
-		delete mesh;
 	}
 }
 
@@ -229,7 +226,8 @@ void ModuleSceneIntro::LoadBasicGeometryResources()
 {
 	//Load mesh resource
 	for(uint i = 1; i < 5; i++){
-		ResourceMesh* new_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH, i);
+		ResourceMesh* new_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_MESH, i);
+		new_mesh->SetName("primitive" + std::to_string(i));
 		new_mesh->SetLibraryFile(JOPE_PRIMITIVE_FOLDER + std::to_string(i) + MJOPE);
 		new_mesh->LoadResource();
 	}
