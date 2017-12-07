@@ -22,11 +22,11 @@ GameObject::GameObject(GameObject* parent, bool isactive) : parent(parent), name
 
 	// Create default Transform
 	components.push_back(new Transform(this));
-
+	memcpy(new_name, name.c_str(), 50);
 	boundary_box.SetNegativeInfinity();
 }
 
-GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : parent(parent), name(name), isactive(isactive)
+GameObject::GameObject(GameObject * parent,const char * go_name, bool isactive) : parent(parent), name(go_name), isactive(isactive)
 {
 	UUID = App->GetIntUUID();
 	parent_active = true;
@@ -35,7 +35,7 @@ GameObject::GameObject(GameObject * parent,const char * name, bool isactive) : p
 
 	// Create default Transform, this way we know the first component will always be the transform
 	components.push_back(new Transform(this));
-
+	memcpy(new_name, name.c_str(), 50);
 	boundary_box.SetNegativeInfinity();
 }
 
@@ -258,7 +258,7 @@ void GameObject::DrawGameObject()
 {
 	ImGui::Checkbox("Active", &isactive);
 	ImGui::SameLine();
-	ImGui::InputText("", (char*)name.c_str(), name.size(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::InputText("", new_name, 50)) name = new_name;
 	if (ImGui::Checkbox("Static", &isstatic)) {
 		if(children.size() > 0) change_static = true;
 		else {

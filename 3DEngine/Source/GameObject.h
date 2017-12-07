@@ -14,7 +14,7 @@ class GameObject
 {
 public:
 	GameObject(GameObject* parent, bool isactive = true);
-	GameObject(GameObject* parent,const char* name, bool isactive = true);
+	GameObject(GameObject* parent,const char* go_name, bool isactive = true);
 	~GameObject();
 
 	void Update();
@@ -57,6 +57,7 @@ private:
 
 public:
 	std::string name;
+	char new_name[50];	//Temp array use when changing names
 	bool isactive = true;
 	bool parent_active = true;
 	bool isstatic = false;
