@@ -9,14 +9,10 @@
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, "Camera", start_enabled)
 {
-
-	X = vec(1.0f, 0.0f, 0.0f);
-	Y = vec(0.0f, 1.0f, 0.0f);
-	Z = vec(0.0f, 0.0f, 1.0f);
-
-	Position = vec(0.0f, 0.0f, 0.0f);
+	Position = vec(1.0f, 1.0f, 1.0f);
 	Reference = vec(0.0f, 0.0f, 0.0f);
 
+	LookAt(float3(0, 0, 0));
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -79,6 +75,12 @@ Camera * ModuleCamera3D::GetMainCamera() const
 {
 	if (main_camera != nullptr) return main_camera;
 	else return camera_editor;
+}
+
+bool ModuleCamera3D::Start()
+{
+	SetCameraEditor();
+	return true;
 }
 
 // -----------------------------------------------------------------

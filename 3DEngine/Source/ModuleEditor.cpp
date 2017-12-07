@@ -159,6 +159,10 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("GameObject"))
 	{
 		if (ImGui::MenuItem("Create Empty")) App->scene_intro->CreateNewGameObject("GameObject");
+		if (ImGui::MenuItem("Create Plane")) App->scene_intro->CreateBasicGeometry(Primitive_Plane);
+		if (ImGui::MenuItem("Create Cube")) App->scene_intro->CreateBasicGeometry(Primitive_Cube);
+		if (ImGui::MenuItem("Create Sphere")) App->scene_intro->CreateBasicGeometry(Primitive_Sphere);
+		if (ImGui::MenuItem("Create Cylinder")) App->scene_intro->CreateBasicGeometry(Primitive_Cylinder);
 		ImGui::EndMenu();
 	}
 
@@ -272,7 +276,7 @@ void ModuleEditor::LogToConsole(std::string * log_string)
 
 void ModuleEditor::DrawConsole()
 {
-	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
 	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 	
@@ -288,7 +292,7 @@ void ModuleEditor::DrawAssets()
 {
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
 
-	ImGui::Begin("Assets", &showassets, ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin("Assets", &showassets, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
 	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
 
@@ -379,8 +383,8 @@ Resource* ModuleEditor::DrawResourceExplorer(RESOURCE_TYPE type, const char* fol
 	for (uint i = 0; i < to_show->size(); i++)
 	{
 		count++;
-		std::string child = "child" + std::to_string(i);
-		ImGui::BeginChild(child.c_str(), ImVec2(90,90), false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+		const char* file_name = (*to_show)[i]->GetAssetsPath();
+		ImGui::BeginChild(file_name, ImVec2(90,90), false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 
 		if(ImGui::IsWindowFocused())
 			ret = (*to_show)[i];
@@ -388,21 +392,16 @@ Resource* ModuleEditor::DrawResourceExplorer(RESOURCE_TYPE type, const char* fol
 		ImGui::SetCursorPosX(17);
 		ImGui::Image((void*)(GLuint)icon_id, ImVec2(56.f, 63.f), ImVec2(0, 1), ImVec2(1, 0));
 				
-		ImGui::Text(("%.10s", (*to_show)[i]->GetAssetsPath()));
+		ImGui::Text(("%.10s", file_name));
 		
 		ImGui::EndChild();
 		if (ImGui::IsItemHovered()) 
-			ImGui::SetTooltip(("%.s", (*to_show)[i]->GetAssetsPath()));
+			ImGui::SetTooltip(("%.s", file_name));
 
 		if (count != 2) {
 			ImGui::SameLine();
 		}
 		else count = 0;
-		//if (ImGui::Button(("%s", (*to_show)[i]->GetAssetsPath())))
-		{
-			//ret = (*to_show)[i];
-		}
-		//ImGui::End();
 	}
 
 	ImGui::EndChild();

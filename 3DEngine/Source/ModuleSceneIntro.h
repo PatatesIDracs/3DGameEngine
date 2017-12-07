@@ -12,6 +12,7 @@ class MeshRenderer;
 class Camera;
 class Component;
 enum COMP_TYPE;
+enum PRIMITIVE_TYPES;
 
 class ModuleSceneIntro : public Module
 {
@@ -23,6 +24,9 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 	void Draw();
+
+	void CreateBasicGeometry(PRIMITIVE_TYPES type);
+	void LoadBasicGeometryResources();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
 	void LoadGameObjects(std::vector<GameObject*>* new_go_array, GameObject* array_root = nullptr, bool new_scene = false);

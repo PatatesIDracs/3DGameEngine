@@ -8,11 +8,11 @@
 
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(float4x4().identity), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
+Primitive::Primitive() : transform(float4x4().identity), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::Primitive_Point)
 {}
 
 // ------------------------------------------------------------
-PrimitiveTypes Primitive::GetType() const
+PRIMITIVE_TYPES Primitive::GetType() const
 {
 	return type;
 }
@@ -199,12 +199,12 @@ void Primitive::Scale(float x, float y, float z)
 // CUBE ============================================
 oldCube::oldCube() : Primitive(), size(1.0f, 1.0f, 1.0f)
 {
-	type = PrimitiveTypes::Primitive_Cube;
+	type = PRIMITIVE_TYPES::Primitive_Cube;
 }
 
 oldCube::oldCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, sizeY, sizeZ)
 {
-	type = PrimitiveTypes::Primitive_Cube;
+	type = PRIMITIVE_TYPES::Primitive_Cube;
 }
 
 void oldCube::InnerRender() const
@@ -257,12 +257,12 @@ void oldCube::InnerRender() const
 // SPHERE ============================================
 oldSphere::oldSphere() : Primitive(), radius(1.0f)
 {
-	type = PrimitiveTypes::Primitive_Sphere;
+	type = PRIMITIVE_TYPES::Primitive_Sphere;
 }
 
 oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
-	type = PrimitiveTypes::Primitive_Sphere;
+	type = PRIMITIVE_TYPES::Primitive_Sphere;
 
 	stacks = 20;
 	slices = 20;
@@ -430,12 +430,12 @@ void oldSphere::FaceNormalsRender() const
 // CYLINDER ============================================
 oldCylinder::oldCylinder() : Primitive(), radius(1.0f), height(1.0f)
 {
-	type = PrimitiveTypes::Primitive_Cylinder;
+	type = PRIMITIVE_TYPES::Primitive_Cylinder;
 }
 
 oldCylinder::oldCylinder(float radius, float height) : Primitive(), radius(radius), height(height)
 {
-	type = PrimitiveTypes::Primitive_Cylinder;
+	type = PRIMITIVE_TYPES::Primitive_Cylinder;
 }
 
 void oldCylinder::InnerRender() const
@@ -477,12 +477,12 @@ void oldCylinder::InnerRender() const
 // LINE ==================================================
 oldLine::oldLine() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 {
-	type = PrimitiveTypes::Primitive_Line;
+	type = PRIMITIVE_TYPES::Primitive_Line;
 }
 
 oldLine::oldLine(float x, float y, float z) : Primitive(), origin(0, 0, 0), destination(x, y, z)
 {
-	type = PrimitiveTypes::Primitive_Line;
+	type = PRIMITIVE_TYPES::Primitive_Line;
 }
 
 void oldLine::InnerRender() const
@@ -502,12 +502,12 @@ void oldLine::InnerRender() const
 // PLANE ==================================================
 oldPlane::oldPlane() : Primitive(), normal(0, 1, 0), constant(1)
 {
-	type = PrimitiveTypes::Primitive_Plane;
+	type = PRIMITIVE_TYPES::Primitive_Plane;
 }
 
 oldPlane::oldPlane(float x, float y, float z, float d) : Primitive(), normal(x, y, z), constant(d)
 {
-	type = PrimitiveTypes::Primitive_Plane;
+	type = PRIMITIVE_TYPES::Primitive_Plane;
 }
 
 void oldPlane::InnerRender() const
@@ -516,7 +516,7 @@ void oldPlane::InnerRender() const
 
 	glBegin(GL_LINES);
 
-	float d = 200.0f;
+	float d = 64.0f;
 
 	for(float i = -d; i <= d; i += 1.0f)
 	{

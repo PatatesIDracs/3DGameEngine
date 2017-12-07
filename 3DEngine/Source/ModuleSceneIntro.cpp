@@ -35,21 +35,13 @@ bool ModuleSceneIntro::Start()
 	octree_limit.SetFromCenterAndSize(float3(0.0f, -4.0f, 0.0f), float3(128.0f, 128.0f, 128.0f));
 	scene_octree.Create(octree_limit, 4);
 
-	App->camera->Move(vec(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(vec(0, 0, 0));
-	
 	//Create the root GameObject
 	root = new GameObject(nullptr, "Untitled Scene");
-
-	//Set Up current object to show its properties
 	current_object = root;
 
-	App->camera->SetCameraEditor();
-
-	GameObject* camera = CreateNewGameObject("Camera", nullptr);
-	Camera* camera_test = new Camera(camera, true);
-	camera_test->SetFrustumViewAngle();
-	camera->AddComponent(camera_test);
+	LoadBasicGeometryResources();
+	LoadDefaultScene();
+	
 	return ret;
 }
 
@@ -178,10 +170,69 @@ update_status ModuleSceneIntro::Update(float dt)
 		DeleteGameObject(current_object);
 		current_object = nullptr;
 	}
+	/*
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN && current_object != nullptr)
+	{
+		Mesh* mesh = (Mesh*)current_object->FindFirstComponent(COMP_MESH);
+		const RenderData* data = mesh->mesh_resource->GetRenderData();
+		ResourceMesh* r_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_MESH, Primitive_Cylinder);
+		r_mesh->SetRenderData((RenderData*)data);
+		r_mesh->SaveResource();
+	}*/
 
 	CollectCandidates();
 
 	return UPDATE_CONTINUE;
+}
+
+
+void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
+{
+	std::string name = "empty";
+	Mesh* mesh = (Mesh*)NewOrphanComponent(COMP_MESH);
+	mesh->mesh_resource = (ResourceMesh*)App->resources->GetFromUID(type);
+
+	switch (type)
+	{
+	case Primitive_Plane: name = "Plane";
+		break;
+	case Primitive_Cube: name = "Cube";
+		break;
+	case Primitive_Sphere: name = "Sphere";
+		break;
+	case Primitive_Cylinder: name = "Cylinder";
+		break;
+	}
+
+	if (mesh->mesh_resource != nullptr) {
+		mesh->mesh_resource->UseThis();
+
+		GameObject* new_primitive = nullptr;
+		if (current_object != nullptr) {
+			new_primitive = CreateNewGameObject(name.c_str(), current_object);
+		}
+		else new_primitive = CreateNewGameObject(name.c_str());
+
+		new_primitive->AddComponent(mesh);
+		new_primitive->AddComponent(NewOrphanComponent(COMP_MATERIAL));
+		new_primitive->AddComponent(NewOrphanComponent(COMP_MESHRENDERER));
+
+		dynamic_gameobjects.push_back(new_primitive);
+	}
+	else {
+		LOGC("Load Failed: Primitive Resource not found");
+		delete mesh;
+	}
+}
+
+void ModuleSceneIntro::LoadBasicGeometryResources()
+{
+	//Load mesh resource
+	for(uint i = 1; i < 5; i++){
+		ResourceMesh* new_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_MESH, i);
+		new_mesh->SetLibraryFile(JOPE_PRIMITIVE_FOLDER + std::to_string(i) + MJOPE);
+		new_mesh->LoadResource();
+	}
 }
 
 GameObject * ModuleSceneIntro::CreateNewGameObject(const char* name, GameObject* parent)
@@ -474,7 +525,7 @@ void ModuleSceneIntro::CheckRayCastCollision(LineSegment & camera_ray)
 		}
 		meshes.clear();
 	}
-
+	else current_object = nullptr;
 }
 
 void ModuleSceneIntro::LookAtScene() const

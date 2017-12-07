@@ -6,14 +6,14 @@
 #include <list>
 #include <vector>
 
-enum PrimitiveTypes
+enum PRIMITIVE_TYPES
 {
-	Primitive_Point,
-	Primitive_Line,
-	Primitive_Plane,
-	Primitive_Cube,
-	Primitive_Sphere,
-	Primitive_Cylinder
+	PRIM_POINT,
+	PRIM_LINE = 0,
+	PRIM_PLANE,
+	PRIM_CUBE,
+	PRIM_SPHERE,
+	PRIM_CYLINDER
 };
 
 struct Primitive_Data
@@ -45,7 +45,7 @@ public:
 	void			SetPos(float3 pos);
 	void			SetRotation(float angle, const vec &u);
 	void			Scale(float x, float y, float z);
-	PrimitiveTypes	GetType() const;
+	PRIMITIVE_TYPES	GetType() const;
 	vec				GetPosition() const;
 
 	uint			GenerateBBoxVertices(float* vertices);
@@ -57,7 +57,7 @@ public:
 	bool axis, wire;
 
 protected:
-	PrimitiveTypes type;
+	PRIMITIVE_TYPES type;
 
 	Primitive_Data render_data;
 	AABB bounding_box;
