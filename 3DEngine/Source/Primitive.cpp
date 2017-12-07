@@ -8,7 +8,7 @@
 
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(float4x4().identity), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::Primitive_Point)
+Primitive::Primitive() : transform(float4x4().identity), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::PRIM_POINT)
 {}
 
 // ------------------------------------------------------------
@@ -199,12 +199,12 @@ void Primitive::Scale(float x, float y, float z)
 // CUBE ============================================
 oldCube::oldCube() : Primitive(), size(1.0f, 1.0f, 1.0f)
 {
-	type = PRIMITIVE_TYPES::Primitive_Cube;
+	type = PRIMITIVE_TYPES::PRIM_CUBE;
 }
 
 oldCube::oldCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, sizeY, sizeZ)
 {
-	type = PRIMITIVE_TYPES::Primitive_Cube;
+	type = PRIMITIVE_TYPES::PRIM_CUBE;
 }
 
 void oldCube::InnerRender() const
@@ -257,12 +257,12 @@ void oldCube::InnerRender() const
 // SPHERE ============================================
 oldSphere::oldSphere() : Primitive(), radius(1.0f)
 {
-	type = PRIMITIVE_TYPES::Primitive_Sphere;
+	type = PRIMITIVE_TYPES::PRIM_SPHERE;
 }
 
 oldSphere::oldSphere(float radius) : Primitive(), radius(radius)
 {
-	type = PRIMITIVE_TYPES::Primitive_Sphere;
+	type = PRIMITIVE_TYPES::PRIM_SPHERE;
 
 	stacks = 20;
 	slices = 20;
@@ -430,12 +430,12 @@ void oldSphere::FaceNormalsRender() const
 // CYLINDER ============================================
 oldCylinder::oldCylinder() : Primitive(), radius(1.0f), height(1.0f)
 {
-	type = PRIMITIVE_TYPES::Primitive_Cylinder;
+	type = PRIMITIVE_TYPES::PRIM_CYLINDER;
 }
 
 oldCylinder::oldCylinder(float radius, float height) : Primitive(), radius(radius), height(height)
 {
-	type = PRIMITIVE_TYPES::Primitive_Cylinder;
+	type = PRIMITIVE_TYPES::PRIM_CYLINDER;
 }
 
 void oldCylinder::InnerRender() const
@@ -477,12 +477,12 @@ void oldCylinder::InnerRender() const
 // LINE ==================================================
 oldLine::oldLine() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 {
-	type = PRIMITIVE_TYPES::Primitive_Line;
+	type = PRIMITIVE_TYPES::PRIM_LINE;
 }
 
 oldLine::oldLine(float x, float y, float z) : Primitive(), origin(0, 0, 0), destination(x, y, z)
 {
-	type = PRIMITIVE_TYPES::Primitive_Line;
+	type = PRIMITIVE_TYPES::PRIM_LINE;
 }
 
 void oldLine::InnerRender() const
@@ -502,12 +502,12 @@ void oldLine::InnerRender() const
 // PLANE ==================================================
 oldPlane::oldPlane() : Primitive(), normal(0, 1, 0), constant(1)
 {
-	type = PRIMITIVE_TYPES::Primitive_Plane;
+	type = PRIMITIVE_TYPES::PRIM_PLANE;
 }
 
 oldPlane::oldPlane(float x, float y, float z, float d) : Primitive(), normal(x, y, z), constant(d)
 {
-	type = PRIMITIVE_TYPES::Primitive_Plane;
+	type = PRIMITIVE_TYPES::PRIM_PLANE;
 }
 
 void oldPlane::InnerRender() const

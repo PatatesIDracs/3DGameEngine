@@ -159,10 +159,10 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::BeginMenu("GameObject"))
 	{
 		if (ImGui::MenuItem("Create Empty")) App->scene_intro->CreateNewGameObject("GameObject");
-		if (ImGui::MenuItem("Create Plane")) App->scene_intro->CreateBasicGeometry(Primitive_Plane);
-		if (ImGui::MenuItem("Create Cube")) App->scene_intro->CreateBasicGeometry(Primitive_Cube);
-		if (ImGui::MenuItem("Create Sphere")) App->scene_intro->CreateBasicGeometry(Primitive_Sphere);
-		if (ImGui::MenuItem("Create Cylinder")) App->scene_intro->CreateBasicGeometry(Primitive_Cylinder);
+		if (ImGui::MenuItem("Create Plane")) App->scene_intro->CreateBasicGeometry(PRIM_PLANE);
+		if (ImGui::MenuItem("Create Cube")) App->scene_intro->CreateBasicGeometry(PRIM_CUBE);
+		if (ImGui::MenuItem("Create Sphere")) App->scene_intro->CreateBasicGeometry(PRIM_SPHERE);
+		if (ImGui::MenuItem("Create Cylinder")) App->scene_intro->CreateBasicGeometry(PRIM_CYLINDER);
 		ImGui::EndMenu();
 	}
 

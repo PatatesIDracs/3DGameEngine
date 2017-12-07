@@ -175,7 +175,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	{
 		Mesh* mesh = (Mesh*)current_object->FindFirstComponent(COMP_MESH);
 		const RenderData* data = mesh->mesh_resource->GetRenderData();
-		ResourceMesh* r_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_MESH, Primitive_Cylinder);
+		ResourceMesh* r_mesh = (ResourceMesh*)App->resources->CreateNewResource(RESOURCE_MESH, PRIM_CYLINDER);
 		r_mesh->SetRenderData((RenderData*)data);
 		r_mesh->SaveResource();
 	}*/
@@ -194,13 +194,13 @@ void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 
 	switch (type)
 	{
-	case Primitive_Plane: name = "Plane";
+	case PRIM_PLANE: name = "Plane";
 		break;
-	case Primitive_Cube: name = "Cube";
+	case PRIM_CUBE: name = "Cube";
 		break;
-	case Primitive_Sphere: name = "Sphere";
+	case PRIM_SPHERE: name = "Sphere";
 		break;
-	case Primitive_Cylinder: name = "Cylinder";
+	case PRIM_CYLINDER: name = "Cylinder";
 		break;
 	}
 
