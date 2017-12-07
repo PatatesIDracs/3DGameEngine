@@ -77,7 +77,6 @@ void ResourceScene::SaveResource(GameObject* scene_root_go)
 void ResourceScene::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
-	buffer_size += sizeof(bool);
 }
 
 void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)

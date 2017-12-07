@@ -77,7 +77,7 @@ void MeshImporter::ImportScene(const aiScene * scene, std::map<int, int>* id_map
 	std::string meta_filename = JOPE_DATA_DIRECTORY JOPE_ASSETS_FOLDER JOPE_ASSETS_FBX_FOLDER + file_name;
 	if (!jope_importer->FoundMetaFile((meta_filename + METAFORMAT).c_str())) {
 		jope_importer->CopyFileToFolder(full_path, meta_filename.c_str());
-		scene_resource = (ResourcePrefab*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_SCENE);
+		scene_resource = (ResourcePrefab*)App->resources->CreateNewResource(RESOURCE_TYPE::RESOURCE_PREFAB);
 	}
 	
 	Config_Json meta_file((meta_filename + METAFORMAT).c_str());

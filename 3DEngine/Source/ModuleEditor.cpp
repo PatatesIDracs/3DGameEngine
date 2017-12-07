@@ -322,10 +322,15 @@ void ModuleEditor::DrawAssets()
 
 			if(type == RESOURCE_SCENE)		
 				App->LoadScene(file_uid);
-			else if (type == RESOURCE_MESH) {
+			else if (type == RESOURCE_MESH) 
+			{
 				GameObject* object = App->scene_intro->CreateNewGameObject((load_this->GetName()+std::to_string(App->resources->all_resources_vec.size())).c_str());
 				Mesh* mesh = new Mesh(object, (ResourceMesh*)load_this);
 				MeshRenderer* mesh_render = new MeshRenderer(object);
+			}
+			else if (type == RESOURCE_PREFAB)
+			{
+				load_this->LoadResource();
 			}
 		}
 		else

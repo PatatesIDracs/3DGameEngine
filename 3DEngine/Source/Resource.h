@@ -43,6 +43,7 @@ public:
 	uint			GetTimesLoaded() const;
 	virtual void GetBufferSize(uint& buffer_size);
 	virtual void SaveResource();
+	virtual void SaveResourceToBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 	virtual void LoadResource();
 	virtual void LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 

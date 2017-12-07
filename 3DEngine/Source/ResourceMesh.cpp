@@ -102,79 +102,41 @@ void ResourceMesh::SaveResource()
 	library_file = JOPE_MESHES_FOLDER + std::to_string(uid);
 	library_file.append(MJOPE);
 
-	uint buffer_size = 0;
-	GetBufferSize(buffer_size);
+	Resource::SaveResource();
+}
+
+void ResourceMesh::SaveResourceToBuffer(char * cursor, int & bytes_copied, uint buffer_size)
+{
+
+	Resource::SaveResourceToBuffer(cursor, bytes_copied, buffer_size);
+	cursor += bytes_copied;
+
 	uint ranges[4] = { render_data->num_indices, render_data->num_vertices,render_data->num_tex_vertices,  render_data->num_normals };
 
-
-	char* buffer_data = new char[buffer_size];
-	char* cursor = buffer_data;
-
-	//Resource Copy
-	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
-	memcpy(cursor, &type, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	bytes_to_copy = sizeof(int);		//UID
-	memcpy(cursor, &uid, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	//Save name string
-	int str_size = name.size();
-	bytes_to_copy = sizeof(int); //Resource name
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-	bytes_to_copy = str_size; //Resource name
-	memcpy(cursor, name.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	//Save assets_file string
-	str_size = strlen(assets_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource name
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-	bytes_to_copy = str_size; //Assets file
-	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	//Save library_file string
-	str_size = strlen(library_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource name
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-	bytes_to_copy = str_size; //Library file
-	memcpy(cursor, library_file.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-
-
-	bytes_to_copy = sizeof(ranges);
+	uint bytes_to_copy = sizeof(ranges);
 	memcpy(cursor, ranges, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = (sizeof(uint) * render_data->num_indices);
 	memcpy(cursor, render_data->indices, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = (sizeof(float) * render_data->num_vertices * 3);
 	memcpy(cursor, render_data->vertices, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = (sizeof(float) * render_data->num_tex_vertices * 3);
 	memcpy(cursor, render_data->tex_vertices, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = (sizeof(float) * render_data->num_normals * 3);
 	memcpy(cursor, render_data->normals, bytes_to_copy);
 	cursor += bytes_to_copy;
-
-	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
-	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
-	new_file.write(buffer_data, buffer_size);
-
-	LOGC("Mesh Saved at: %s", library_file.c_str());
-
-	delete[] buffer_data;
+	bytes_copied += bytes_to_copy;
 }
 
 void ResourceMesh::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)

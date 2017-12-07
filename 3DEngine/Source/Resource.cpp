@@ -123,41 +123,64 @@ void Resource::SaveResource()
 
 	char* buffer_data = new char[buffer_size];
 	char* cursor = buffer_data;
+	int bytes_copied = 0;
 
+	SaveResourceToBuffer(cursor, bytes_copied, buffer_size);
+
+	std::string save_path = JOPE_DATA_DIRECTORY JOPE_LIBRARY_FOLDER;
+	std::ofstream new_file((save_path + library_file).c_str(), std::ofstream::binary);
+	new_file.write(buffer_data, buffer_size);
+
+	LOGC("Resource Saved at: %s", library_file.c_str());
+
+	delete[] buffer_data;
+}
+
+void Resource::SaveResourceToBuffer(char * cursor, int & bytes_copied, uint buffer_size)
+{
 	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
 	memcpy(cursor, &type, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = sizeof(int);		//UID
 	memcpy(cursor, &uid, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	//Save name string
 	int str_size = name.size();
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = str_size; //Resource name
 	memcpy(cursor, name.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	//Save assets_file string
 	str_size = strlen(assets_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = str_size; //Assets file
 	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 
 	//Save library_file string
 	str_size = strlen(library_file.c_str());
 	bytes_to_copy = sizeof(int); //Resource name
 	memcpy(cursor, &str_size, bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
 	bytes_to_copy = str_size; //Library file
 	memcpy(cursor, library_file.c_str(), bytes_to_copy);
 	cursor += bytes_to_copy; //Advance cursor
+	bytes_copied += bytes_to_copy;
+
 }
 
 //Load the library file to a buffer and pass it to the LoadResourceFromBuffer method

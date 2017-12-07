@@ -7,6 +7,7 @@
 
 ResourcePrefab::ResourcePrefab(int uid) : Resource(uid)
 {
+	type = RESOURCE_TYPE::RESOURCE_PREFAB;
 }
 
 ResourcePrefab::~ResourcePrefab()
@@ -76,7 +77,6 @@ void ResourcePrefab::SaveResource(GameObject * scene_root_go)
 void ResourcePrefab::GetBufferSize(uint & buffer_size)
 {
 	Resource::GetBufferSize(buffer_size);
-	buffer_size += sizeof(bool);
 }
 
 void ResourcePrefab::LoadResourceFromBuffer(char * cursor, int & bytes_copied, uint buffer_size)
@@ -127,7 +127,7 @@ void ResourcePrefab::LoadResourceFromBuffer(char * cursor, int & bytes_copied, u
 		}
 		break;
 		case ENDFILEIDENTIFIER:
-			LOGC("%s scene succesfully loaded", name.c_str());
+			LOGC("%s prefab succesfully loaded", name.c_str());
 			break;
 		default:
 			LOGC("File seems corrupted");
