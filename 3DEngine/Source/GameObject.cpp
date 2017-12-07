@@ -111,7 +111,7 @@ void GameObject::AddComponent(Component * new_component, bool overwrite)
 					new_component->ChangeParent(this);
 				}
 				else
-					LOGC("%s already has this component", name.c_str());
+					LOGC("%s already has a %s component", name.c_str(), new_component->TypeToString());
 				return;
 			}
 		}

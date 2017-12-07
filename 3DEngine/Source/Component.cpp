@@ -21,6 +21,45 @@ void Component::GetOwnBufferSize(uint & buffer_size)
 	buffer_size += sizeof(bool) * 2;	//active + unique
 }
 
+const char * Component::TypeToString()
+{
+	switch (type)
+	{
+	case COMP_UNKNOWN:
+		return "Unknown";
+		break;
+	case COMP_TRANSFORM:
+		return "Transform";
+		break;
+	case COMP_MESH:
+		return "Mesh";
+		break;
+	case COMP_MESHRENDERER:
+		return "Mesh Renderer";
+		break;
+	case COMP_CAMERA:
+		return "Camera";
+		break;
+	case END_UNIQUE_COMP:
+		break;
+	case COMP_MATERIAL:
+		return "Material";
+		break;
+	default:
+		break;
+	}
+
+	return "Unknown";
+}
+
+bool Component::IsUnique() const
+{
+	if (type < END_UNIQUE_COMP)
+		return true;
+	else
+		return false;
+}
+
 
 void Component::ReloadUUID()
 {

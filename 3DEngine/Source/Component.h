@@ -17,9 +17,12 @@ enum COMP_TYPE
 	COMP_UNKNOWN,
 	COMP_TRANSFORM,
 	COMP_MESH,
-	COMP_MATERIAL,
 	COMP_MESHRENDERER,
-	COMP_CAMERA
+	COMP_CAMERA,
+
+	END_UNIQUE_COMP,
+
+	COMP_MATERIAL
 };
 
 class Component
@@ -41,10 +44,10 @@ public:
 	virtual void Load(char* cursor, int& bytes_copied) {};
 	virtual void GetOwnBufferSize(uint& buffer_size);
 
-
+	const char* TypeToString();
 	COMP_TYPE GetType() const { return type; };
 	bool IsActive() const { return active; };
-	bool IsUnique() const { return unique; };
+	bool IsUnique() const;
 
 	virtual void ChangeParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->GetUUID(); };
 
