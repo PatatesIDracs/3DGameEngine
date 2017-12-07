@@ -26,40 +26,12 @@ void ResourcePrefab::SaveResource(GameObject * scene_root_go)
 
 	char* buffer_data = new char[buffer_size];
 	char* cursor = buffer_data;
-
-	uint bytes_to_copy = sizeof(RESOURCE_TYPE);
-	memcpy(cursor, &type, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	bytes_to_copy = sizeof(int);		//UID
-	memcpy(cursor, &uid, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	int str_size = strlen(name.c_str());
-	bytes_to_copy = sizeof(int); //Resource name
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-	bytes_to_copy = str_size; //Resource name
-	memcpy(cursor, name.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	str_size = strlen(assets_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource assets file
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_to_copy = str_size; //Assets file
-	memcpy(cursor, assets_file.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
-	str_size = strlen(library_file.c_str());
-	bytes_to_copy = sizeof(int); //Resource library file
-	memcpy(cursor, &str_size, bytes_to_copy);
-	cursor += bytes_to_copy;
-	bytes_to_copy = str_size; //Library file
-	memcpy(cursor, library_file.c_str(), bytes_to_copy);
-	cursor += bytes_to_copy; //Advance cursor
-
 	int bytes_copied = 0;
+
+	SaveResourceToBuffer(cursor, bytes_copied, buffer_size);
+	cursor += bytes_copied;
+
+	bytes_copied = 0;
 	scene_root_go->Save(buffer_data, cursor, bytes_copied);
 	cursor += bytes_copied;
 	int identifier = ENDFILEIDENTIFIER;

@@ -23,6 +23,7 @@ public:
 	void UnloadFromMemory();
 
 	void SaveResource();
+	void SaveResourceToBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 	void LoadResourceFromBuffer(char* cursor, int& bytes_copied, uint buffer_size);
 	void GetBufferSize(uint & buffer_size);
 
