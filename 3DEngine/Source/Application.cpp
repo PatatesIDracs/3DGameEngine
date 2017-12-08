@@ -19,6 +19,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
 	resources = new ModuleResources(this, true);
+	physics = new ModulePhysics(this, true);
 	scene_intro = new ModuleSceneIntro(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
@@ -34,6 +35,7 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 	AddModule(resources);	//Must be loaded before scene
+	AddModule(physics);
 
 	// Scenes
 	AddModule(scene_intro);

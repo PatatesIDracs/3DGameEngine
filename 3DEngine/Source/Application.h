@@ -14,6 +14,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
 #include "ModuleResources.h"
+#include "ModulePhysics.h"
 
 
 class Config_Json;
@@ -78,6 +79,7 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	ModuleEditor* editor;
+	ModulePhysics* physics;
 
 	ApplicationTime clock;
 	int fps = 60;

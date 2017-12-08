@@ -395,7 +395,7 @@ Resource* ModuleEditor::DrawResourceExplorer(RESOURCE_TYPE type, const char* fol
 			ret = (*to_show)[i];
 
 		ImGui::SetCursorPosX(17);
-		ImGui::Image((void*)(GLuint)icon_id, ImVec2(56.f, 63.f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)(GLuint)icon_id, ImVec2(56.f, 63.f), ImVec2(0, 1), ImVec2(1, 0));
 				
 		ImGui::Text(("%.10s", file_name));
 		
