@@ -121,6 +121,20 @@ void Transform::SetTransform(float4x4 &transf)
 	Update();
 }
 
+void Transform::SetPosition(float3 new_pos)
+{
+	position = new_pos;
+	update_transform = true;
+	Update();
+}
+
+void Transform::SetScale(float3 new_scale)
+{
+	scale = new_scale;
+	update_transform = true;
+	//Update();
+}
+
 void Transform::DrawComponent()
 {
 	ImGui::PushID(UUID);

@@ -137,6 +137,7 @@
     <ClCompile Include="Imgui\imgui_draw.cpp" />
     <ClCompile Include="Imgui\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="jpPhysicsWorld.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Imgui\stb_textedit.h" />
     <ClInclude Include="Imgui\stb_truetype.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="jpPhysicsWorld.h" />
     <ClInclude Include="MeshImporter.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="Light.h" />

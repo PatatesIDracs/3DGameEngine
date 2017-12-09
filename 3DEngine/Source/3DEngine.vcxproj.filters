@@ -111,6 +111,9 @@
     <Filter Include="3rd parties\PhysX\Task">
       <UniqueIdentifier>{264fef27-7d9e-41a7-b62d-3ba79198575f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools\jpPysics">
+      <UniqueIdentifier>{86d59cfc-3cbf-48dc-abb1-f9ac714ed98c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="j1PerfTimer.cpp">
@@ -369,6 +372,9 @@
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="jpPhysicsWorld.cpp">
+      <Filter>Tools\jpPysics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1475,6 +1481,9 @@
     </ClInclude>
     <ClInclude Include="PhysX\Include\filebuf\PxFileBuf.h">
       <Filter>3rd parties\PhysX\FileBuf</Filter>
+    </ClInclude>
+    <ClInclude Include="jpPhysicsWorld.h">
+      <Filter>Tools\jpPysics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

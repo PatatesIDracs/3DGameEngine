@@ -23,6 +23,8 @@ public:
 	void OnGuizmo();
 
 	void SetTransform(float4x4 &transf);
+	void SetPosition(float3 new_pos);
+	void SetScale(float3 new_scale);
 
 	void DrawComponent();
 
