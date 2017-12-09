@@ -376,6 +376,9 @@
     <ClCompile Include="jpPhysicsWorld.cpp">
       <Filter>Tools\jpPysics</Filter>
     </ClCompile>
+    <ClCompile Include="jpPhysicsRigidBody.cpp">
+      <Filter>Tools\jpPysics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -1483,6 +1486,9 @@
       <Filter>3rd parties\PhysX\FileBuf</Filter>
     </ClInclude>
     <ClInclude Include="jpPhysicsWorld.h">
+      <Filter>Tools\jpPysics</Filter>
+    </ClInclude>
+    <ClInclude Include="jpPhysicsRigidBody.h">
       <Filter>Tools\jpPysics</Filter>
     </ClInclude>
   </ItemGroup>
