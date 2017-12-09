@@ -2,11 +2,17 @@
 #define __MODULEPHYSICS_H__
 
 #include "Module.h" 
-#include "Camera.h"
+
+class jpPhysicsWorld;
 
 namespace physx {
 	class PxPhysics;
+	class PxScene;
+	class PxSceneDesc;
+	class PxRigidStatic;
+	class PxRigidDynamic;
 }
+class GameObject;
 
 class ModulePhysics : public Module
 {
@@ -26,9 +32,9 @@ public:
 
 public:
 	physx::PxPhysics* mPhysics = nullptr;
-
 private:
 
+	jpPhysicsWorld* physics_world = nullptr;
 
 };
 

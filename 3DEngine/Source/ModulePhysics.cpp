@@ -1,45 +1,73 @@
 #include "ModulePhysics.h"
 #include "Application.h"
+#include "ModuleSceneIntro.h"
 
+#include "GameObject.h"
+#include "Transform.h"
+
+#include "jpPhysicsWorld.h"
 #include "PhysX/Include/PxPhysicsAPI.h"
-
-#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3DEBUG_x86.lib")
-#pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
-#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
-#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
 
 ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app, "Physics", start_enabled)
 {
-	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
-	static physx::PxDefaultAllocator gDefaultAllocatorCallback;
-	
-	physx::PxFoundation* mFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gDefaultAllocatorCallback,
-		gDefaultErrorCallback);
-	
-	if (!mFoundation)
-		LOGC("PxCreateFoundation failed!");
-	
-	mPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *mFoundation, physx::PxTolerancesScale(), false, nullptr);
-	
-	if (!mPhysics)
-		LOGC("PxCreatePhysics failed!");
+	physics_world = new jpPhysicsWorld();
+
+	physics_world->CreateNewPhysicsWorld();
+	physics_world->CreateNewScene();
+
+	mPhysics = physics_world->GetPhysicsWorld();
 }
 
 ModulePhysics::~ModulePhysics()
 {
-	if (mPhysics != nullptr) {
-		mPhysics->getFoundation().release();
-		mPhysics->release();
-	}
+	delete physics_world;
 }
 
 bool ModulePhysics::Start()
 {
+	/*
+	//Creating material
+	physx::PxMaterial* mMaterial = mPhysics->createMaterial(0.5, 0.5, 0.5);	
+	
+	// Create Plane;
+	physx::PxTransform planePos = physx::PxTransform(physx::PxVec3(0.0f, 0, 0.0f), physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 0.0f, 1.0f)));
+	nplane = mPhysics->createRigidStatic(planePos);
+	nplane->createShape(physx::PxPlaneGeometry(), *mMaterial);
+	mScene->addActor(*nplane);
+
+	// Create cube
+	physx::PxTransform boxPos(physx::PxVec3(0.0f, 10.0f, 0.0f));
+	physx::PxBoxGeometry boxGeometry(physx::PxVec3(0.5f, 0.5f, 0.5f));
+	box = physx::PxCreateDynamic(*mPhysics, boxPos, boxGeometry, *mMaterial,
+		1.0f);
+	mScene->addActor(*box);
+	*/
 	return true;
 }
 
 update_status ModulePhysics::Update(float dt)
 {
+	/*
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN && !plane && !cube) {
+
+		App->scene_intro->current_object = nullptr;
+		plane = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_PLANE);
+		plane->GetTransform()->SetScale(float3(20, 1, 20));
+		
+		App->scene_intro->current_object = nullptr;
+		cube = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_CUBE);
+		pos = box->getGlobalPose().p;
+		float3 new_pos = float3(pos.x, pos.y, pos.z);
+		cube->GetTransform()->SetPosition(new_pos);
+		start_simulation = true;
+
+	}
+	*/
+
+	if (dt != 0) {
+		physics_world->Simulate(dt, 0);
+		// Do things
+	}
 	return UPDATE_CONTINUE;
 }
 
