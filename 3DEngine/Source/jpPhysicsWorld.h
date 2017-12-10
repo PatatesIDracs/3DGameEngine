@@ -11,13 +11,13 @@ public:
 	~jpPhysicsWorld();
 
 	bool CreateNewPhysicsWorld();
-	bool Simulate(float dt, unsigned int scene_index = 0);
+	bool Simulate(float dt);
 
 	physx::PxScene* CreateNewScene();
 
-
 	// Temporal functions
 	physx::PxPhysics* GetPhysicsWorld();
+	physx::PxCooking* GetCooking();
 
 	jpPhysicsRigidBody* CreateRigidBody();
 
@@ -25,6 +25,7 @@ private:
 	// World, only one can be created
 	physx::PxPhysics* jpWorld = nullptr;
 
+	physx::PxCooking* jpCooking = nullptr;
 	physx::PxDefaultErrorCallback gDefaultErrorCallback;
 	physx::PxDefaultAllocator gDefaultAllocatorCallback;
 };

@@ -6,6 +6,7 @@
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CookingDEBUG_x86.lib")
 
 jpPhysicsWorld::jpPhysicsWorld()
 {	
@@ -28,24 +29,21 @@ bool jpPhysicsWorld::CreateNewPhysicsWorld()
 		if (jpFoundation)
 			jpWorld = PxCreatePhysics(PX_PHYSICS_VERSION, *jpFoundation, physx::PxTolerancesScale(), false, nullptr);
 		
-		if (jpWorld)
+		if (jpWorld) {
+			jpCooking = PxCreateCooking(PX_PHYSICS_VERSION, *jpFoundation, jpWorld->getTolerancesScale());
 			return true;
+		}
 	}
 	else return false;
 }
 
-bool jpPhysicsWorld::Simulate(float dt,unsigned int scene_index)
+bool jpPhysicsWorld::Simulate(float dt)
 {
-	if (jpWorld) {
-		if (scene_index < jpWorld->getNbScenes())
-		{
-			physx::PxScene* scene[1];
-			jpWorld->getScenes(scene, 1, scene_index);
-			scene[0]->simulate(dt);
-			scene[0]->fetchResults();
-			return true;
-		}
-		else return false;
+	if (jpWorld && jpWorld->getNbScenes() > 0) {
+		physx::PxScene* scene;
+		jpWorld->getScenes(&scene, 1, 0);
+		scene->simulate(dt);
+		return scene->fetchResults(true);
 	}
 	return false;
 }
@@ -63,6 +61,11 @@ physx::PxScene * jpPhysicsWorld::CreateNewScene()
 physx::PxPhysics * jpPhysicsWorld::GetPhysicsWorld()
 {
 	return jpWorld;
+}
+
+physx::PxCooking * jpPhysicsWorld::GetCooking()
+{
+	return jpCooking;
 }
 
 jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody()

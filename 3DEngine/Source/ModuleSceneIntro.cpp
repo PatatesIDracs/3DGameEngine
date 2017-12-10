@@ -142,6 +142,10 @@ void ModuleSceneIntro::Draw()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	//Root should never be nullptr but check it just in case
+	if (root != nullptr) 
+		root->Update();
+
 	if (App->clock.state != APP_PLAY) {
 		Primitive a;
 		a.axis = true;
@@ -157,12 +161,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 			guizmo_op = ImGuizmo::OPERATION::SCALE;
 
-		//Root should never be nullptr but check it just in case
-		if (root != nullptr) {
-
-			root->Update();
-			
-		}
+		
 		if(App->renderer3D->show_octree)
 			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
@@ -171,6 +170,8 @@ update_status ModuleSceneIntro::Update(float dt)
 		DeleteGameObject(current_object);
 		current_object = nullptr;
 	}
+
+	// Generate Basic Geometry file
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN && current_object != nullptr)
 	{

@@ -50,7 +50,7 @@ float3 Transform::GetScale() const
 
 void Transform::Update()
 {
-	if (parent != nullptr && App->scene_intro->GetSelectedGameObject() == parent) {
+	if (parent != nullptr && App->clock.state != APP_PLAY && App->scene_intro->GetSelectedGameObject() == parent) {
 		OnGuizmo();
 	}
 
@@ -118,13 +118,12 @@ void Transform::SetTransform(float4x4 &transf)
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 
 	update_transform = true;
-	Update();
 }
 
 void Transform::SetTransform(float3 pos, Quat rot)
 {
 	position = pos;
-	rotation = rot;
+	angle = rot.ToEulerXYZ()*RADTODEG;
 
 	update_transform = true;
 }
@@ -132,15 +131,15 @@ void Transform::SetTransform(float3 pos, Quat rot)
 void Transform::SetPosition(float3 new_pos)
 {
 	position = new_pos;
+
 	update_transform = true;
-	Update();
 }
 
 void Transform::SetScale(float3 new_scale)
 {
 	scale = new_scale;
+
 	update_transform = true;
-	//Update();
 }
 
 void Transform::DrawComponent()

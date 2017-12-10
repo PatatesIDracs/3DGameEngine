@@ -9,7 +9,7 @@ jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 	//default material: 0.5 friction(static and dynamic) and 0.5 restitution
 	body_material = px_physics->createMaterial(0.5f, 0.5f, 0.5f);
 	body_shape = px_physics->createShape(physx::PxBoxGeometry(0.5f,0.5f,0.5f), *body_material);
-	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(), *body_shape, 1.0f);
+	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(physx::PxIDENTITY()), *body_shape, 1.0f);
 	
 	//Detach the shape by default,
 	//Shape must be activated using calling a diferent function
@@ -59,6 +59,7 @@ void jpPhysicsRigidBody::SetBoxGeometry(float x_scale, float y_scale, float z_sc
 	boxGeometry.halfExtents.x = x_scale/2;
 	boxGeometry.halfExtents.y = y_scale/2;
 	boxGeometry.halfExtents.z = z_scale/2;
+	body_shape->setGeometry(boxGeometry);
 }
 
 void jpPhysicsRigidBody::SetMaterial(float static_friction, float dynamic_friction, float restitution)
