@@ -7,10 +7,10 @@ jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 	//default transform == identity
 	//default geometry == box with 0.5 halfExtent
 	//default material: 0.5 friction(static and dynamic) and 0.5 restitution
-	physx::PxMaterial* default_material = px_physics->createMaterial(0.5f, 0.5f, 0.5f);
-	body_shape = px_physics->createShape(physx::PxBoxGeometry(0.5f,0.5f,0.5f), *default_material);
+	body_material = px_physics->createMaterial(0.5f, 0.5f, 0.5f);
+	body_shape = px_physics->createShape(physx::PxBoxGeometry(0.5f,0.5f,0.5f), *body_material);
 	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(), *body_shape, 1.0f);
-
+	
 	//Detach the shape by default,
 	//Shape must be activated using calling a diferent function
 	//Made like this to separet the rigidbody from the collider
@@ -23,12 +23,33 @@ jpPhysicsRigidBody::~jpPhysicsRigidBody()
 
 void jpPhysicsRigidBody::ActivateShape()
 {
-	px_body->attachShape(*body_shape);
+	if (body_shape != nullptr)
+		px_body->attachShape(*body_shape);
 }
 
-void jpPhysicsRigidBody::SetGeometry()
+void jpPhysicsRigidBody::SetDynamic(bool is_dynamic)
 {
-	
+	if (is_dynamic)
+	{
+		px_body->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false);
+	}
+	else
+	{
+		px_body->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
+	}
+}
+
+void jpPhysicsRigidBody::SetTransform(float * trans_mat)
+{
+	physx::PxMat44 mat = physx::PxMat44(trans_mat);
+	px_body->setGlobalPose(physx::PxTransform(mat));
+}
+
+void jpPhysicsRigidBody::SetGeometry(physx::PxGeometry new_geometry)
+{
+	px_body->detachShape(*body_shape);
+	body_shape = px_body->createShape(new_geometry, *body_material);
+	px_body->attachShape(*body_shape);
 }
 
 void jpPhysicsRigidBody::SetBoxGeometry(float x_scale, float y_scale, float z_scale)
@@ -54,4 +75,11 @@ void jpPhysicsRigidBody::SetShape(physx::PxShape * new_shape)
 	//Might not work
 	px_body->detachShape(*body_shape);
 	body_shape = new_shape;
+}
+
+void jpPhysicsRigidBody::GetTransform(physx::PxVec3& pos, physx::PxQuat& quat)
+{
+	physx::PxTransform transf = px_body->getGlobalPose();
+	pos = transf.p;
+	quat = transf.q;
 }
