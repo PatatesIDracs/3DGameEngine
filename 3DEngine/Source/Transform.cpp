@@ -121,6 +121,14 @@ void Transform::SetTransform(float4x4 &transf)
 	Update();
 }
 
+void Transform::SetTransform(float3 pos, Quat rot)
+{
+	position = pos;
+	rotation = rot;
+
+	update_transform = true;
+}
+
 void Transform::SetPosition(float3 new_pos)
 {
 	position = new_pos;

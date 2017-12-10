@@ -2,6 +2,7 @@
 #define __JP_PHYSICS_WORLD_H__
 
 #include "PhysX/Include/PxPhysicsAPI.h"
+#include "jpPhysicsRigidBody.h"
 
 class jpPhysicsWorld
 {
@@ -14,8 +15,11 @@ public:
 
 	physx::PxScene* CreateNewScene();
 
+
 	// Temporal functions
 	physx::PxPhysics* GetPhysicsWorld();
+
+	jpPhysicsRigidBody* CreateRigidBody();
 
 private:
 	// World, only one can be created

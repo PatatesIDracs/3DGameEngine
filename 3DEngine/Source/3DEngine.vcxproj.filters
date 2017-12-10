@@ -379,6 +379,9 @@
     <ClCompile Include="jpPhysicsRigidBody.cpp">
       <Filter>Tools\jpPysics</Filter>
     </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -1490,6 +1493,9 @@
     </ClInclude>
     <ClInclude Include="jpPhysicsRigidBody.h">
       <Filter>Tools\jpPysics</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>GameObject\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

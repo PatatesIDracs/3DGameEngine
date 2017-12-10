@@ -23,6 +23,7 @@ public:
 	void OnGuizmo();
 
 	void SetTransform(float4x4 &transf);
+	void SetTransform(float3 pos, Quat rot);
 	void SetPosition(float3 new_pos);
 	void SetScale(float3 new_scale);
 

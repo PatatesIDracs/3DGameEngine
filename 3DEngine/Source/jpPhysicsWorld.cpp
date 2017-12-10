@@ -64,3 +64,10 @@ physx::PxPhysics * jpPhysicsWorld::GetPhysicsWorld()
 {
 	return jpWorld;
 }
+
+jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody()
+{
+	if(jpWorld)
+		return new jpPhysicsRigidBody(jpWorld);
+	else return nullptr;
+}

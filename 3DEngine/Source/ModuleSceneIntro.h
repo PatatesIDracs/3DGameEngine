@@ -20,12 +20,13 @@ public:
 	ModuleSceneIntro(Application* app, bool start_enabled = true);
 	~ModuleSceneIntro();
 
+	//bool Init();
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
 	void Draw();
 
-	void CreateBasicGeometry(PRIMITIVE_TYPES type);
+	GameObject* CreateBasicGeometry(PRIMITIVE_TYPES type);
 	void LoadBasicGeometryResources();
 
 	GameObject* CreateNewGameObject(const char* name, GameObject* parent = nullptr);
@@ -66,9 +67,9 @@ public:
 	GameObject* root = nullptr;
 	
 	ImGuizmo::OPERATION guizmo_op = ImGuizmo::OPERATION::TRANSLATE;
+	GameObject* current_object = nullptr;
 
 private:
-	GameObject* current_object = nullptr;
 	int selected_go_uuid = -1;
 	
 	std::vector<GameObject*> static_gameobjects;

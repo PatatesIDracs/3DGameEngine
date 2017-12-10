@@ -9,6 +9,7 @@
 #include "ResourceMesh.h"
 #include "ResourceScene.h"
 #include "MeshRenderer.h"
+#include "RigidBody.h"
 #include "Material.h"
 #include "ConfigJSON.h"
 #include "parson.h"
@@ -186,7 +187,7 @@ update_status ModuleSceneIntro::Update(float dt)
 }
 
 
-void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
+GameObject* ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 {
 	std::string name = "empty";
 	ResourceMesh* resource = (ResourceMesh*)App->resources->GetFromUID(type);
@@ -216,9 +217,11 @@ void ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 		new_primitive->AddComponent(NewOrphanComponent(COMP_MATERIAL));
 		new_primitive->AddComponent(NewOrphanComponent(COMP_MESHRENDERER));
 		mesh->SetMeshResource(resource);
+		return new_primitive;
 	}
 	else {
 		LOGC("Load Failed: Primitive Resource not found");
+		return nullptr;
 	}
 }
 
@@ -679,6 +682,9 @@ Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
 		break;
 	case COMP_CAMERA:
 		ret = new Camera(nullptr);
+		break;
+	case COMP_RIGIDBODY:
+		ret = new RigidBody(nullptr);
 		break;
 	default:
 		break;
