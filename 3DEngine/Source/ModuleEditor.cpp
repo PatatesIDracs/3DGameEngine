@@ -199,7 +199,7 @@ update_status ModuleEditor::Update(float dt)
 	if (showtestwindow) ImGui::ShowTestWindow();
 
 	if (showassets || showconsole) {
-		ImGui::SetNextWindowPos(ImVec2(250.f, (float)App->window->height - 230), 0);
+		ImGui::SetNextWindowPos(ImVec2(250.f, (float)App->window->height - 210), 0);
 		ImGui::SetNextWindowSize(ImVec2((float)App->window->width - 500, 30.f), 0);
 		ImGui::Begin("Assets/Console Bar", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 		bool change = showassets;
@@ -277,8 +277,8 @@ void ModuleEditor::LogToConsole(std::string * log_string)
 void ModuleEditor::DrawConsole()
 {
 	ImGui::Begin("Console", &showconsole, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
-	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
+	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 180), 0);
+	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 180.f), 0);
 	
 	for (uint count = 0; count < console_string.size(); count++)
 	{
@@ -293,8 +293,8 @@ void ModuleEditor::DrawAssets()
 	std::vector<Resource*>* to_show = &App->resources->all_resources_vec;
 
 	ImGui::Begin("Assets", &showassets, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 200), 0);
-	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 200.f), 0);
+	ImGui::SetWindowPos(ImVec2(250.f, (float)App->window->height - 180), 0);
+	ImGui::SetWindowSize(ImVec2((float)App->window->width - 500, 180), 0);
 
 	static int file_uid = -1;
 	static std::string file_name;

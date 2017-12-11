@@ -42,24 +42,28 @@ struct ApplicationTime
 
 	// Current App State
 	APPSTATE state = APP_STOP;
+	APPSTATE change_to = APP_STOP;
 
 	void ChangeState(APPSTATE new_state) {
-		state = new_state;
+		change_to = new_state;
 		
-		if (state == APP_PLAY) game_time = 0.0f;
+		if (change_to == APP_PLAY) game_time = 0.0f;
 	};
 
 	void Updatedt(float& dt) {
+		state = change_to;
+		
+		if (change_to == APP_TICK) {
+			change_to = APP_PAUSE;
+
+		}
 
 		real_delta_time = dt;
 		frame_count++;
 
-		if (state != APP_PAUSE && state != APP_STOP) { 
+		if (state == APP_PLAY || state == APP_TICK) { 
 			dt = time_scale*dt; 
 			game_time += dt;
-
-			if (state == APP_TICK)
-				state = APP_PAUSE;
 		}
 		else dt = 0.0f;
 

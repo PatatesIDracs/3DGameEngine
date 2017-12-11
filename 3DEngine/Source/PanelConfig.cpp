@@ -26,17 +26,17 @@ PanelConfig::PanelConfig()
 	cpu_cores = SDL_GetCPUCount();
 	cpu_cache_size = SDL_GetCPUCacheLineSize();
 	ram = ((float)SDL_GetSystemRAM() / 1024.0f);
-	has_3Dnow = SDL_Has3DNow();
-	has_AVX = SDL_HasAVX();
-	has_AVX2 = SDL_HasAVX2();
-	has_AltiVec = SDL_HasAltiVec();
-	has_MMX = SDL_HasMMX();
-	has_RDTSC = SDL_HasRDTSC();
-	has_SSE = SDL_HasSSE();
-	has_SSE2 = SDL_HasSSE2();
-	has_SSE3 = SDL_HasSSE3();
-	has_SSE41 = SDL_HasSSE41();
-	has_SSE42 = SDL_HasSSE42();
+	has_3Dnow = SDL_Has3DNow() == SDL_TRUE;
+	has_AVX = SDL_HasAVX() == SDL_TRUE;
+	has_AVX2 = SDL_HasAVX2() == SDL_TRUE;
+	has_AltiVec = SDL_HasAltiVec() == SDL_TRUE;
+	has_MMX = SDL_HasMMX() == SDL_TRUE;
+	has_RDTSC = SDL_HasRDTSC() == SDL_TRUE;
+	has_SSE = SDL_HasSSE() == SDL_TRUE;
+	has_SSE2 = SDL_HasSSE2() == SDL_TRUE;
+	has_SSE3 = SDL_HasSSE3() == SDL_TRUE;
+	has_SSE41 = SDL_HasSSE41() == SDL_TRUE;
+	has_SSE42 = SDL_HasSSE42() == SDL_TRUE;
 }
 
 PanelConfig::~PanelConfig()

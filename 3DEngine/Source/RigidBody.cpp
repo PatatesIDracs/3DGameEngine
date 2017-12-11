@@ -16,7 +16,7 @@ RigidBody::~RigidBody()
 
 void RigidBody::Update()
 {
-	if (transform && rigid_body && App->clock.state == APP_PLAY)
+	if (transform && rigid_body && App->clock.delta_time > 0)
 	{
 		physx::PxVec3 pos;
 		physx::PxQuat rot;

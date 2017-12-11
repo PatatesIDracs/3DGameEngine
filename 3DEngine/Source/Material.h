@@ -25,7 +25,7 @@ public:
 private:
 
 	ResourceTexture* resource = nullptr;
-	int resource_id = 0;
+	int resource_uid = 0;
 
 	bool changing_text = false;
 };

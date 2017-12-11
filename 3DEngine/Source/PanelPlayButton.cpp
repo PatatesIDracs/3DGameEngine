@@ -44,11 +44,11 @@ void PanelPlayButton::Draw()
 	ImGui::SameLine();
 	if (ImGui::Button("Pause", ImVec2(56.f, 18.f))) {
 		if (app_state == APP_PAUSE) {
-			App->clock.state = APP_PLAY;
+			App->clock.ChangeState(APP_PLAY);
 			App->camera->ChangeCamera(false);
 		}
 		else if (app_state == APP_PLAY) {
-			App->clock.state = APP_PAUSE;
+			App->clock.ChangeState(APP_PAUSE);
 			App->camera->ChangeCamera(true);
 		}
 	}
@@ -73,7 +73,7 @@ void PanelPlayButton::DrawClock()
 {
 	if (App->clock.state == APP_PLAY)
 		ImGui::SetNextWindowPos(ImVec2((float)App->window->width - 300.0f, (float)App->window->height - 150.0f));
-	else ImGui::SetNextWindowPos(ImVec2((float)App->window->width - 550.0f, (float)App->window->height - 350.0f));
+	else ImGui::SetNextWindowPos(ImVec2((float)App->window->width - 550.0f, (float)App->window->height - 360.0f));
 
 	ImGui::SetNextWindowSize(ImVec2(300.f, 150.0f));
 

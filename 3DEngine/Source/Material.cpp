@@ -16,7 +16,7 @@ Material::Material(GameObject * parent, ResourceTexture* resource, bool isactive
 	if (resource != nullptr)
 	{
 		resource->UseThis();
-		resource_id = resource->GetUID();
+		resource_uid = resource->GetUID();
 	}
 }
 
@@ -79,7 +79,7 @@ void Material::ChangeTexture()
 		}
 		resource = new_text;
 		resource->UseThis();
-
+		resource_uid = resource->GetUID();
 		changing_text = false;
 	}
 }
@@ -120,7 +120,7 @@ void Material::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	bytes_to_copy = sizeof(int);
-	memcpy(cursor, &resource_id, bytes_to_copy);
+	memcpy(cursor, &resource_uid, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
@@ -149,11 +149,11 @@ void Material::Load(char * cursor, int & bytes_copied)
 	
 	//Texture id
 	bytes_to_copy = sizeof(int);
-	memcpy(&resource_id, cursor, bytes_to_copy);
+	memcpy(&resource_uid, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
-	resource = (ResourceTexture*)App->resources->GetFromUID(resource_id);
+	resource = (ResourceTexture*)App->resources->GetFromUID(resource_uid);
 	if (resource != nullptr)
 		resource->UseThis();
 }
