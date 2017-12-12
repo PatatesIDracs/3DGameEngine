@@ -137,6 +137,7 @@
     <ClCompile Include="Imgui\imgui_draw.cpp" />
     <ClCompile Include="Imgui\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="jpPhysicsShape.cpp" />
     <ClCompile Include="jpPhysicsRigidBody.cpp" />
     <ClCompile Include="jpPhysicsWorld.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="parson.c" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="RbCollider.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourcePrefab.cpp" />
@@ -278,6 +280,7 @@
     <ClInclude Include="Imgui\stb_textedit.h" />
     <ClInclude Include="Imgui\stb_truetype.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="jpPhysicsShape.h" />
     <ClInclude Include="jpPhysicsRigidBody.h" />
     <ClInclude Include="jpPhysicsWorld.h" />
     <ClInclude Include="MeshImporter.h" />
@@ -580,6 +583,7 @@
     <ClInclude Include="PhysX\Include\vehicle\PxVehicleWheels.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="RbCollider.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceMesh.h" />
     <ClInclude Include="ResourcePrefab.h" />

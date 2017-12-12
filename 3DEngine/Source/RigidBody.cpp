@@ -4,7 +4,7 @@
 #include "Transform.h"
 #include "jpPhysicsRigidBody.h"
 
-RigidBody::RigidBody(GameObject * parent, bool isactive)
+RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COMP_RIGIDBODY, true)
 {
 	if (parent != nullptr)
 		transform = parent->GetTransform();

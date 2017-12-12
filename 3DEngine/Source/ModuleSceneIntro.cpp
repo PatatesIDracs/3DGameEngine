@@ -10,6 +10,7 @@
 #include "ResourceScene.h"
 #include "MeshRenderer.h"
 #include "RigidBody.h"
+#include "RbCollider.h"
 #include "Material.h"
 #include "ConfigJSON.h"
 #include "parson.h"
@@ -687,6 +688,8 @@ Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
 	case COMP_RIGIDBODY:
 		ret = new RigidBody(nullptr);
 		break;
+	case COMP_RBSHAPE:
+		ret = new RbCollider(nullptr);
 	default:
 		break;
 	}

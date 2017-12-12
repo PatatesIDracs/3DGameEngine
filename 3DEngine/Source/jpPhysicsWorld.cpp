@@ -33,6 +33,7 @@ bool jpPhysicsWorld::CreateNewPhysicsWorld()
 			jpCooking = PxCreateCooking(PX_PHYSICS_VERSION, *jpFoundation, jpWorld->getTolerancesScale());
 			return true;
 		}
+		else return false;
 	}
 	else return false;
 }

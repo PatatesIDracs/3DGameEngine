@@ -382,6 +382,12 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>GameObject\Components</Filter>
     </ClCompile>
+    <ClCompile Include="RbCollider.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="jpPhysicsShape.cpp">
+      <Filter>Tools\jpPysics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -1496,6 +1502,12 @@
     </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RbCollider.h">
+      <Filter>GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="jpPhysicsShape.h">
+      <Filter>Tools\jpPysics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

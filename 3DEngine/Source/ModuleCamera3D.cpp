@@ -271,8 +271,8 @@ float* ModuleCamera3D::GetViewMatrix() const
 
 void ModuleCamera3D::CameraRayCast()
 {
-	float y = (-App->input->GetMouseY() + App->window->height*0.5) / (App->window->height*0.5);
-	float x = (App->input->GetMouseX() - App->window->width*0.5) / (App->window->width*0.5);
+	float y = (float)(-App->input->GetMouseY() + App->window->height*0.5f) / (App->window->height*0.5f);
+	float x = (float)(App->input->GetMouseX() - App->window->width*0.5f) / (App->window->width*0.5f);
 
 	// Camera Ray Cast
 	App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectLineSegment(x, y));
