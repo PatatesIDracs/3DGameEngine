@@ -12,6 +12,7 @@ public:
 
 	void ActivateShape();
 
+	////true == dynamic, fale == Kinematic(Static)
 	void SetDynamic(bool is_dynamic);
 	void SetTransform(float* trans_mat);
 	void SetGeometry(physx::PxGeometry new_geometry); //DO NOT USE, does nothing, will be later on defined to use with convexmesh

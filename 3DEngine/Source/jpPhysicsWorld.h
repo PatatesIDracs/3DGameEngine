@@ -14,12 +14,14 @@ public:
 	bool Simulate(float dt);
 
 	physx::PxScene* CreateNewScene();
+	physx::PxScene* GetScene(int scene_index) const;
 
 	// Temporal functions
 	physx::PxPhysics* GetPhysicsWorld();
 	physx::PxCooking* GetCooking();
 
-	jpPhysicsRigidBody* CreateRigidBody(physx::PxScene* curr_scene);
+	//No Scene passed creates a sceneless rigidBody
+	jpPhysicsRigidBody* CreateRigidBody(physx::PxScene* curr_scene = nullptr);
 
 private:
 	// World, only one can be created

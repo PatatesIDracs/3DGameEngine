@@ -58,6 +58,13 @@ physx::PxScene * jpPhysicsWorld::CreateNewScene()
 	return jpWorld->createScene(sceneDesc);
 }
 
+physx::PxScene * jpPhysicsWorld::GetScene(int scene_index) const
+{
+	physx::PxScene* ret = nullptr;
+	jpWorld->getScenes(&ret, 1, scene_index);
+	return ret;
+}
+
 physx::PxPhysics * jpPhysicsWorld::GetPhysicsWorld()
 {
 	return jpWorld;
@@ -73,7 +80,7 @@ jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody(physx::PxScene * curr_scene
 	jpPhysicsRigidBody* new_body = nullptr;
 	if (jpWorld) {
 		new_body = new jpPhysicsRigidBody(jpWorld);
-		if (curr_scene)
+		if (curr_scene != nullptr)
 			curr_scene->addActor(*new_body->px_body);
 	}
 	

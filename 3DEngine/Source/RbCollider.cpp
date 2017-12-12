@@ -1,11 +1,21 @@
 #include "RbCollider.h"
+#include "Application.h"
+#include "ModulePhysics.h"
 
-#include "jpPhysicsShape.h"
+#include "jpPhysicsRigidBody.h"
 
 #include "Glew\include\glew.h"
 
 RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, COMP_RBSHAPE, true)
 {
+	physics_body = App->physics->GetNewRigidBody(0);
+
+	//Set as Knimeatic(Static) by default
+	physics_body->SetDynamic(false);
+
+	//TODO: do it diferently
+	physics_body->SetSphereGeometry(1);
+	physics_body->ActivateShape();
 }
 
 RbCollider::~RbCollider()

@@ -26,6 +26,8 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	//Pass a -1 as argument to create a RigidBody not linked to anyScene
+	jpPhysicsRigidBody* GetNewRigidBody(int scene_to_load_it);
 
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json &config);

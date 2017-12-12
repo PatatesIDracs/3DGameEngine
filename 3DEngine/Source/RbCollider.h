@@ -4,7 +4,15 @@
 #include "Component.h"
 
 class Transform;
-class jpPhysicsShape;
+class RigidBody;
+class jpPhysicsRigidBody;
+
+enum PHYSCOLL_TYPE
+{
+	COLL_BOX,
+	COLL_SPHERE,
+
+};
 
 class RbCollider : public Component
 {
@@ -24,8 +32,8 @@ public:
 
 public:
 	Transform* transform = nullptr;
-
-	jpPhysicsShape* rigid_body = nullptr;
+	RigidBody* rigid_body_comp = nullptr;
+	jpPhysicsRigidBody* physics_body = nullptr;
 };
 
 #endif // !__RB_COLLIDER_H__

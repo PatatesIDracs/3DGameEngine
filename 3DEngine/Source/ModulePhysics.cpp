@@ -33,7 +33,8 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
 	//Creating material
-	physx::PxMaterial* mMaterial = mPhysics->createMaterial(0.5, 0.5, 0.5);		
+	physx::PxMaterial* mMaterial = mPhysics->createMaterial(0.5, 0.5, 0.5);
+		
 	// Create Plane;
 	physx::PxTransform planePos = physx::PxTransform(physx::PxVec3(0.0f, 0, 0.0f), physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 0.0f, 1.0f)));
 	nplane = mPhysics->createRigidStatic(planePos);
@@ -51,8 +52,7 @@ update_status ModulePhysics::Update(float dt)
 		App->scene_intro->current_object = nullptr;
 		plane = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_PLANE);
 		plane->GetTransform()->SetScale(float3(20, 1, 20));
-		
-		
+
 		App->scene_intro->current_object = nullptr;
 		cube = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_CUBE);
 
@@ -78,6 +78,14 @@ update_status ModulePhysics::Update(float dt)
 bool ModulePhysics::CleanUp()
 {
 	return true;
+}
+
+jpPhysicsRigidBody * ModulePhysics::GetNewRigidBody(int scene_to_load_it)
+{
+	if (scene_to_load_it == -1)
+		return physics_world->CreateRigidBody();
+	else
+		return physics_world->CreateRigidBody(physics_world->GetScene(scene_to_load_it));
 }
 
 void ModulePhysics::LoadModuleConfig(Config_Json & config)

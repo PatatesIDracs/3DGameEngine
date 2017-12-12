@@ -281,6 +281,10 @@ void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	//Add Main Camera Save
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &main_camera, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//near_plane, far_plane, aspect_ratio, field_of_view
 	bytes_to_copy = sizeof(float);
@@ -319,6 +323,10 @@ void Camera::Load(char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	//Load Main Camera
+	bytes_to_copy = sizeof(bool);
+	memcpy(&main_camera, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 
 	//near_plane, far_plane, aspect_ratio
 	bytes_to_copy = sizeof(float);
@@ -349,6 +357,7 @@ void Camera::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
 
+	buffer_size += sizeof(bool);		//is main camera
 	buffer_size += sizeof(float) * 3;	//near_plane, far_plane, aspect_ratio
 	buffer_size += sizeof(int);			//Field of view	
 }

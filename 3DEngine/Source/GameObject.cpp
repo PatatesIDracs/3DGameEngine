@@ -429,6 +429,8 @@ void GameObject::DrawAddComponentWindow()
 	if (ImGui::Button("Material")) new_comp_type = COMP_TYPE::COMP_MATERIAL;
 	if (ImGui::Button("Mesh Renderer")) new_comp_type = COMP_TYPE::COMP_MESHRENDERER;
 	if (ImGui::Button("Camera")) new_comp_type = COMP_TYPE::COMP_CAMERA;
+	if (ImGui::Button("Rigid Body")) new_comp_type = COMP_TYPE::COMP_RIGIDBODY;
+	if (ImGui::Button("Collider")) new_comp_type = COMP_TYPE::COMP_RBSHAPE;
 
 	ImGui::End();
 
