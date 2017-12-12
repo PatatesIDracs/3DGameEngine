@@ -44,6 +44,7 @@ void Mesh::UpdateTransform()
 void Mesh::DrawComponent()
 {
 	ImGui::PushID(UUID);
+	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
 		if (mesh_resource != nullptr)

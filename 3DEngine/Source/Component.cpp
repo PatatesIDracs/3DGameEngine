@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "Application.h"
+#include "Glew\include\glew.h"
 
 Component::Component() : parent(nullptr), type(COMP_UNKNOWN), active(false)
 {
@@ -12,6 +13,12 @@ Component::Component(GameObject * parent, COMP_TYPE type, bool isactive) : paren
 	UUID = UUIDGen.Int();
 	if (parent != nullptr)
 		parent_UUID = parent->GetUUID();
+}
+
+void Component::DrawComponent()
+{
+	ImGui::Checkbox("", &active);
+	ImGui::SameLine();
 }
 
 void Component::GetOwnBufferSize(uint & buffer_size)

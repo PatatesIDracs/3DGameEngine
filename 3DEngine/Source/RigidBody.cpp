@@ -40,6 +40,7 @@ void RigidBody::UpdateTransform()
 void RigidBody::DrawComponent()
 {
 	ImGui::PushID(UUID);
+	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("RigidBody"))
 	{
 		

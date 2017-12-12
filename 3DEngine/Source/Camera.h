@@ -50,7 +50,8 @@ public:
 private:
 	Frustum* cfrustum = nullptr;
 	Plane* frustum_planes = nullptr;
-	
+	bool main_camera = false;
+
 	float near_plane = 1.f;
 	float far_plane = 50.f;
 	float aspect_ratio = 0.f;

@@ -27,6 +27,7 @@ void MeshRenderer::PrepareRenderer()
 void MeshRenderer::DrawComponent()
 {
 	ImGui::PushID(UUID);
+	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("Mesh Renderer"))
 	{
 		if (mesh == nullptr)

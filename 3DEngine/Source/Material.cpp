@@ -28,7 +28,7 @@ Material::~Material()
 
 int Material::GetTextureID() const
 {
-	if(resource != nullptr)
+	if(resource != nullptr && active)
 		return resource->GetTextureID();
 	else return 0;
 }
@@ -44,6 +44,7 @@ int Material::GetResourceLoaded() const
 void Material::DrawComponent()
 {
 	ImGui::PushID(UUID);
+	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		if (ImGui::Button("Change")) changing_text = !changing_text;

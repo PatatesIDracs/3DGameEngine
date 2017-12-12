@@ -28,13 +28,13 @@ Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAME
 	frustum_planes = new Plane[6];
 	cfrustum->GetPlanes(frustum_planes);
 
-	if (active)
+	if (main_camera)
 		App->camera->SetMainCamera(this, true);
 }
 
 Camera::~Camera()
 {
-	if (active)
+	if (main_camera)
 		App->camera->SetMainCamera(this, false);
 
 	delete cfrustum;
@@ -75,10 +75,11 @@ void Camera::UpdateTransform()
 void Camera::DrawComponent()
 {
 	ImGui::PushID(UUID);
+	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		if (ImGui::Checkbox("Main Camera", &active)) {
-			App->camera->SetMainCamera(this, active);
+		if (ImGui::Checkbox("Main Camera", &main_camera)) {
+			App->camera->SetMainCamera(this, main_camera);
 		}
 		if (ImGui::InputFloat("Near Plane", &near_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue)
 			|| ImGui::InputFloat("Far Plane", &far_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -136,7 +137,7 @@ bool Camera::GetFrustumGameObjecs(std::vector<GameObject*>& dynamic_array, std::
 			if (contains_gobj_result == CONT_IN || contains_gobj_result == CONT_INTERSECTS) {
 				MeshRenderer* mesh = (MeshRenderer*)dynamic_array[curr_obj]->FindFirstComponent(COMP_MESHRENDERER);
 
-				if (mesh != nullptr) {
+				if (mesh != nullptr && mesh->IsActive()) {
 					mesh->ready_to_draw = false;
 					render_this.push_back(mesh);
 				}
@@ -279,6 +280,8 @@ void Camera::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//Add Main Camera Save
+
 	//near_plane, far_plane, aspect_ratio, field_of_view
 	bytes_to_copy = sizeof(float);
 	memcpy(cursor, &near_plane, bytes_to_copy);
@@ -315,6 +318,8 @@ void Camera::Load(char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//Load Main Camera
+
 	//near_plane, far_plane, aspect_ratio
 	bytes_to_copy = sizeof(float);
 	memcpy(&near_plane, cursor, bytes_to_copy);
@@ -336,7 +341,7 @@ void Camera::Load(char * cursor, int & bytes_copied)
 	SetFrustumPlanes();
 	SetFrustumViewAngle();
 
-	if (active)
+	if (main_camera)
 		App->camera->SetMainCamera(this, true);
 }
 

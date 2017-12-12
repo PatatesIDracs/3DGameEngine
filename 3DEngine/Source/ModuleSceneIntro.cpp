@@ -136,6 +136,7 @@ void ModuleSceneIntro::Draw()
 		glPopMatrix();
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
+
 	render_this.clear();
 }
 
@@ -214,11 +215,12 @@ GameObject* ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 		}
 		else new_primitive = CreateNewGameObject(name.c_str());
 
-		Mesh* mesh = (Mesh*)NewOrphanComponent(COMP_MESH);
-		new_primitive->AddComponent(mesh);
-		new_primitive->AddComponent(NewOrphanComponent(COMP_MATERIAL));
-		new_primitive->AddComponent(NewOrphanComponent(COMP_MESHRENDERER));
+		Mesh* mesh = (Mesh*)new Mesh(new_primitive);
 		mesh->SetMeshResource(resource);
+		Material* mat = new Material(new_primitive,nullptr);
+		mat->ReloadUUID();
+		MeshRenderer* render = new MeshRenderer(new_primitive);
+		render->ReloadUUID();
 		return new_primitive;
 	}
 	else {
@@ -345,7 +347,7 @@ void ModuleSceneIntro::CollectCandidates()
 		if (candidates[i]->IsActive()) {
 			MeshRenderer* mesh = (MeshRenderer*)(candidates[i]->FindFirstComponent(COMP_MESHRENDERER));
 		
-			if (mesh != nullptr) {
+			if (mesh != nullptr && mesh->IsActive()) {
 				mesh->ready_to_draw = false;
 				render_this.push_back(mesh);
 			}

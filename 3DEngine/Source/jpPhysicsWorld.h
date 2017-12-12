@@ -19,7 +19,7 @@ public:
 	physx::PxPhysics* GetPhysicsWorld();
 	physx::PxCooking* GetCooking();
 
-	jpPhysicsRigidBody* CreateRigidBody();
+	jpPhysicsRigidBody* CreateRigidBody(physx::PxScene* curr_scene);
 
 private:
 	// World, only one can be created

@@ -38,7 +38,7 @@ public:
 	virtual void Enable() { active = true; };
 	virtual void Update() {};
 	virtual void Disable() { active = false; };
-	virtual void DrawComponent() {};
+	virtual void DrawComponent();
 
 	virtual void UpdateTransform() {};
 

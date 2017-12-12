@@ -2,6 +2,8 @@
 
 #include "jpPhysicsShape.h"
 
+#include "Glew\include\glew.h"
+
 RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, COMP_RBSHAPE, true)
 {
 }
@@ -20,6 +22,13 @@ void RbCollider::UpdateTransform()
 
 void RbCollider::DrawComponent()
 {
+	ImGui::PushID(UUID);
+	Component::DrawComponent();
+	if (ImGui::CollapsingHeader("Rb Collider"))
+	{
+
+	}
+	ImGui::PopID();
 }
 
 void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copied)

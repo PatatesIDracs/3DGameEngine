@@ -6,7 +6,6 @@
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
-#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CookingDEBUG_x86.lib")
 
 jpPhysicsWorld::jpPhysicsWorld()
 {	
@@ -30,7 +29,7 @@ bool jpPhysicsWorld::CreateNewPhysicsWorld()
 			jpWorld = PxCreatePhysics(PX_PHYSICS_VERSION, *jpFoundation, physx::PxTolerancesScale(), false, nullptr);
 		
 		if (jpWorld) {
-			jpCooking = PxCreateCooking(PX_PHYSICS_VERSION, *jpFoundation, jpWorld->getTolerancesScale());
+			//jpCooking = PxCreateCooking(PX_PHYSICS_VERSION, *jpFoundation, jpWorld->getTolerancesScale());
 			return true;
 		}
 		else return false;
@@ -69,9 +68,14 @@ physx::PxCooking * jpPhysicsWorld::GetCooking()
 	return jpCooking;
 }
 
-jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody()
+jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody(physx::PxScene * curr_scene)
 {
-	if(jpWorld)
-		return new jpPhysicsRigidBody(jpWorld);
-	else return nullptr;
+	jpPhysicsRigidBody* new_body = nullptr;
+	if (jpWorld) {
+		new_body = new jpPhysicsRigidBody(jpWorld);
+		if (curr_scene)
+			curr_scene->addActor(*new_body->px_body);
+	}
+	
+	return new_body;
 }
