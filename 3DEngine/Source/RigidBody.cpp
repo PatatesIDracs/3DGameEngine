@@ -30,6 +30,8 @@ RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COM
 
 RigidBody::~RigidBody()
 {
+	if(rigid_body)
+		delete rigid_body;
 }
 
 void RigidBody::Update()

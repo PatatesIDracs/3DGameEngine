@@ -34,6 +34,9 @@ ModuleEditor::ModuleEditor(Application * app, bool start_enabled) : Module(app, 
 
 ModuleEditor::~ModuleEditor()
 {
+	for (uint i = 0; i < panel_array.size(); i++)
+		delete panel_array[i];
+	panel_array.clear();
 }
 
 bool ModuleEditor::Init()

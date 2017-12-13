@@ -19,12 +19,13 @@ enum COMP_TYPE
 	COMP_MESH,
 	COMP_MESHRENDERER,
 	COMP_CAMERA,
-	COMP_RIGIDBODY,
-	COMP_RBSHAPE,
 
 	END_UNIQUE_COMP,	//Component type above this line are considered unique
 
-	COMP_MATERIAL
+	COMP_MATERIAL,
+
+	COMP_RIGIDBODY,
+	COMP_RBSHAPE
 };
 
 class Component

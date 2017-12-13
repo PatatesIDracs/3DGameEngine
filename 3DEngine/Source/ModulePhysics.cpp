@@ -27,44 +27,15 @@ ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app
 
 ModulePhysics::~ModulePhysics()
 {
-	if(physics_world)
-		delete physics_world;
 }
 
 bool ModulePhysics::Start()
-{
-	//Creating material
-	physx::PxMaterial* mMaterial = mPhysics->createMaterial(0.5, 0.5, 0.5);
-		
-	// Create Plane;
-	physx::PxTransform planePos = physx::PxTransform(physx::PxVec3(0.0f, 0, 0.0f), physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 0.0f, 1.0f)));
-	nplane = mPhysics->createRigidStatic(planePos);
-	nplane->createShape(physx::PxPlaneGeometry(), *mMaterial);
-	mScene->addActor(*nplane);
-	
+{	
 	return true;
 }
 
 update_status ModulePhysics::Update(float dt)
 {
-	physx::PxVec3 pos;
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN && !plane && !cube) {
-
-		App->scene_intro->current_object = nullptr;
-		plane = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_PLANE);
-		plane->GetTransform()->SetScale(float3(20, 1, 20));
-
-		App->scene_intro->current_object = nullptr;
-		cube = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_CUBE);
-
-		RigidBody* planerbdy = (RigidBody*)App->scene_intro->NewOrphanComponent(COMP_RIGIDBODY);
-		cube->AddComponent(planerbdy);
-		jpPhysicsRigidBody* rbody = physics_world->CreateRigidBody(mScene);
-		rbody->SetGeometry(physx::PxVec3(1, 1, 1), 1, physx::PxGeometryType::Enum::eBOX);
-		planerbdy->SetRigidBody(rbody);
-	}
-	
-
 	// Update Physics World
 	if (dt > 0) {
 		physics_world->Simulate(dt);
@@ -75,6 +46,8 @@ update_status ModulePhysics::Update(float dt)
 
 bool ModulePhysics::CleanUp()
 {
+	if (physics_world)
+		delete physics_world;
 	return true;
 }
 

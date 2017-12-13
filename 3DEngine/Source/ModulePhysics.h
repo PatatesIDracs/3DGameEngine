@@ -40,14 +40,6 @@ public:
 private:
 
 	jpPhysicsWorld* physics_world = nullptr;
-
-	GameObject* plane = nullptr;
-	GameObject* cube = nullptr;
-
-
-	physx::PxRigidDynamic* box = nullptr;
-	physx::PxRigidStatic* nplane = nullptr;
-
 	physx::PxScene* mScene = nullptr;
 };
 

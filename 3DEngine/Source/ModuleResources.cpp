@@ -60,6 +60,7 @@ bool ModuleResources::CleanUp()
 {
 	all_resources_vec.clear();
 	scene_vec.clear();
+	prefab_vec.clear();
 	mesh_vec.clear();
 	texture_vec.clear();
 	

@@ -23,6 +23,8 @@ RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, C
 
 RbCollider::~RbCollider()
 {
+	if (physics_body)
+		delete physics_body;
 }
 
 void RbCollider::Update()

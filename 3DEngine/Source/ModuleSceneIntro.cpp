@@ -59,6 +59,9 @@ bool ModuleSceneIntro::CleanUp()
 
 	render_this.clear();
 
+	int selected_go_uuid = -1;
+
+	scene_octree.Clear();
 
 	return true;
 }
