@@ -19,6 +19,11 @@ jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 
 jpPhysicsRigidBody::~jpPhysicsRigidBody()
 {
+	default_material->release();
+	if(body_shape)
+		body_shape->release();
+	if(px_body)
+		px_body->release();
 }
 
 void jpPhysicsRigidBody::ActivateShape()
@@ -122,6 +127,48 @@ void jpPhysicsRigidBody::SetShape(physx::PxShape * new_shape)
 	body_shape = new_shape;
 }
 
+void jpPhysicsRigidBody::SetGeometry(physx::PxVec3 scale, float radius, physx::PxGeometryType::Enum type)
+{
+	if (radius < 0)
+		radius = -radius;
+	if(scale.isFinite())
+		scale = scale.abs();
+	else scale = physx::PxVec3(0.0, 0.0, 0.0);
+		
+	if (body_shape) {
+		px_body->detachShape(*body_shape);
+		body_shape = nullptr;
+	}
+	
+	switch (type)
+	{
+	case physx::PxGeometryType::eSPHERE:
+		body_shape = px_body->createShape(physx::PxSphereGeometry(radius), *default_material);
+		break;
+	case physx::PxGeometryType::ePLANE:
+		body_shape = px_body->createShape(physx::PxPlaneGeometry(), *default_material);
+		break;
+	case physx::PxGeometryType::eCAPSULE:
+		body_shape = px_body->createShape(physx::PxCapsuleGeometry(radius, scale.z), *default_material);
+		break;
+	case physx::PxGeometryType::eBOX: {
+		scale = scale*0.5;
+		body_shape = px_body->createShape(physx::PxBoxGeometry(0.5,0.5,0.5), *default_material);
+	}
+		break;
+	// TODO: add cooking to create convex mesh ----------
+	case physx::PxGeometryType::eCONVEXMESH:
+		break;
+	case physx::PxGeometryType::eTRIANGLEMESH:
+		break;
+	case physx::PxGeometryType::eHEIGHTFIELD:
+		break;
+	default:
+		break;
+	}
+	
+}
+
 void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius)
 {
 	if (body_shape) {
@@ -129,7 +176,9 @@ void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius)
 		if (radius < 0)
 			radius = -radius;
 
-		scale = scale.abs();
+		if (!scale.isFinite())
+			scale = scale.abs();
+		else scale = physx::PxVec3(0.0, 0.0, 0.0);
 
 		// Modify Geometry Scale
 		physx::PxGeometryType::Enum type = body_shape->getGeometryType();
@@ -143,7 +192,7 @@ void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius)
 											 break;
 		case physx::PxGeometryType::eCAPSULE: {
 			physx::PxCapsuleGeometry capsule = body_shape->getGeometry().capsule();
-			capsule.halfHeight = scale.z*0.5;
+			capsule.halfHeight = scale.z*0.5f;
 			capsule.radius = radius;
 			body_shape->setGeometry(capsule);
 		}

@@ -26,8 +26,9 @@ public:
 private:
 	// World, only one can be created
 	physx::PxPhysics* jpWorld = nullptr;
+	physx::PxFoundation* jpFoundation = nullptr;
 
-	physx::PxCooking* jpCooking = nullptr;
+	//physx::PxCooking* jpCooking = nullptr;
 	physx::PxDefaultErrorCallback gDefaultErrorCallback;
 	physx::PxDefaultAllocator gDefaultAllocatorCallback;
 };

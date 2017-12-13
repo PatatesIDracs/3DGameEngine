@@ -27,7 +27,8 @@ ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app
 
 ModulePhysics::~ModulePhysics()
 {
-	delete physics_world;
+	if(physics_world)
+		delete physics_world;
 }
 
 bool ModulePhysics::Start()
@@ -57,12 +58,9 @@ update_status ModulePhysics::Update(float dt)
 		cube = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_CUBE);
 
 		RigidBody* planerbdy = (RigidBody*)App->scene_intro->NewOrphanComponent(COMP_RIGIDBODY);
-		planerbdy->ChangeParent(cube);
 		cube->AddComponent(planerbdy);
-		jpPhysicsRigidBody* rbody = new jpPhysicsRigidBody(mPhysics);
-		rbody->SetBoxGeometry(1,1,1);
-		rbody->ActivateShape();
-		mScene->addActor(*rbody->px_body);
+		jpPhysicsRigidBody* rbody = physics_world->CreateRigidBody(mScene);
+		rbody->SetGeometry(physx::PxVec3(1, 1, 1), 1, physx::PxGeometryType::Enum::eBOX);
 		planerbdy->SetRigidBody(rbody);
 	}
 	

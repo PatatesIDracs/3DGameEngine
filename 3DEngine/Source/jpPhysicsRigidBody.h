@@ -23,6 +23,7 @@ public:
 
 	void SetShape(physx::PxShape* new_shape);
 
+	void SetGeometry(physx::PxVec3 pos, float radius, physx::PxGeometryType::Enum type);
 	void SetShapeScale(physx::PxVec3 scale, float radius);
 
 	void GetTransform(physx::PxVec3& pos, physx::PxQuat& quat);

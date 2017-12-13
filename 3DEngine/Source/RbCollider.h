@@ -9,9 +9,10 @@ class jpPhysicsRigidBody;
 
 enum PHYSCOLL_TYPE
 {
-	COLL_BOX,
 	COLL_SPHERE,
-	COLL_PLANE
+	COLL_PLANE,
+	COLL_BOX,
+	COLL_CAPSULE
 };
 
 class RbCollider : public Component

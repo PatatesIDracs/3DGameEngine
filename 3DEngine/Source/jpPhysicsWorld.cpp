@@ -14,15 +14,21 @@ jpPhysicsWorld::jpPhysicsWorld()
 jpPhysicsWorld::~jpPhysicsWorld()
 {
 	if (jpWorld) {
-		jpWorld->getFoundation().release();
-		jpWorld->release();
+		physx::PxScene* scene = nullptr;
+		for (unsigned int i = 0; i < jpWorld->getNbScenes(); i++) {
+			jpWorld->getScenes(&scene, 1, i);
+			scene->release();
+			scene = nullptr;
+		}
+		jpWorld->release();	
+		jpFoundation->release();
 	}
 }
 
 bool jpPhysicsWorld::CreateNewPhysicsWorld()
 {
 	if (!jpWorld) {
-		physx::PxFoundation* jpFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gDefaultAllocatorCallback,
+		jpFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gDefaultAllocatorCallback,
 			gDefaultErrorCallback);
 
 		if (jpFoundation)
@@ -72,7 +78,8 @@ physx::PxPhysics * jpPhysicsWorld::GetPhysicsWorld()
 
 physx::PxCooking * jpPhysicsWorld::GetCooking()
 {
-	return jpCooking;
+	return nullptr;
+	//return jpCooking;
 }
 
 jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody(physx::PxScene * curr_scene)
