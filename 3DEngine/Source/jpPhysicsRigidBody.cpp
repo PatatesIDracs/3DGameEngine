@@ -19,9 +19,6 @@ jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 
 jpPhysicsRigidBody::~jpPhysicsRigidBody()
 {
-	default_material->release();
-	if(body_shape)
-		body_shape->release();
 	if(px_body)
 		px_body->release();
 }

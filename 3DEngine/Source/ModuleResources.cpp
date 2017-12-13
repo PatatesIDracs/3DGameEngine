@@ -68,6 +68,7 @@ bool ModuleResources::CleanUp()
 	if (mesh_icon_id != 0) glDeleteTextures(1, &(GLuint)mesh_icon_id);
 	if (text_icon_id != 0) glDeleteTextures(1, &(GLuint)text_icon_id);
 	if (scene_icon_id != 0) glDeleteTextures(1, &(GLuint)scene_icon_id);
+	if (physX_icon_id != 0) glDeleteTextures(1, &(GLuint)physX_icon_id);
 
 	//Delete all resources
 	for (std::map<int, Resource*>::const_iterator it = resources_map.begin(); it != resources_map.end(); it++)
@@ -84,6 +85,7 @@ void ModuleResources::LoadIcons()
 	mesh_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "mesh_icon.png"));
 	text_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "text_icon.png"));
 	scene_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer((JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "scene_icon.png"));
+	physX_icon_id = jope_importer->GetTextureImporter()->LoadToBuffer(JOPE_DATA_DIRECTORY JOPE_ENGINE_FOLDER "nvidia_physX_logo.bmp");
 }
 
 void ModuleResources::SearchForResources()

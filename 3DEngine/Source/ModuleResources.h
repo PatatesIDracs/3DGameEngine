@@ -50,6 +50,7 @@ public:
 	uint mesh_icon_id = 0;
 	uint text_icon_id = 0;
 	uint scene_icon_id = 0;
+	uint physX_icon_id = 0;
 
 private:
 
