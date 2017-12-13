@@ -16,6 +16,7 @@ public:
 
 	void Update();
 	void UpdateTransform();
+	void ChangeParent(GameObject* new_parent);
 
 	void DrawComponent();
 
@@ -35,6 +36,7 @@ public:
 	RbCollider* collider_comp = nullptr;
 	jpPhysicsRigidBody* rigid_body = nullptr;
 
+	bool dynamic = true;
 	bool own_update = false;
 };
 

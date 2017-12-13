@@ -9,6 +9,23 @@ RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COM
 {
 	if (parent != nullptr)
 		transform = parent->GetTransform();
+
+	collider_comp = LookForCollider();
+
+	if (collider_comp != nullptr)
+	{
+		rigid_body = collider_comp->physics_body;
+		rigid_body->SetDynamic(true);
+		dynamic = true;
+	}
+	else
+	{
+		rigid_body = App->physics->GetNewRigidBody(0);
+		//Make sure is dynamic
+		rigid_body->SetDynamic(true);
+		dynamic = true;
+	}
+
 }
 
 RigidBody::~RigidBody()
@@ -38,13 +55,28 @@ void RigidBody::UpdateTransform()
 	}
 }
 
+void RigidBody::ChangeParent(GameObject * new_parent)
+{
+	Component::ChangeParent(new_parent);
+	transform = new_parent->GetTransform();
+
+	collider_comp = LookForCollider();
+
+	if (collider_comp != nullptr)
+	{
+		rigid_body = collider_comp->physics_body;
+		rigid_body->SetDynamic(true);
+		dynamic = true;
+	}
+}
+
 void RigidBody::DrawComponent()
 {
 	ImGui::PushID(UUID);
 	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("RigidBody"))
 	{
-		
+		if (ImGui::Checkbox("Dynamic", &dynamic)) rigid_body->SetDynamic(dynamic);
 	}
 	ImGui::PopID();
 }
@@ -54,7 +86,8 @@ void RigidBody::SetRigidBody(const jpPhysicsRigidBody * new_body)
 	if (rigid_body) {
 
 	}
-	else {
+	else 
+	{
 		rigid_body = (jpPhysicsRigidBody*)new_body;
 
 		if (transform == nullptr && parent)
