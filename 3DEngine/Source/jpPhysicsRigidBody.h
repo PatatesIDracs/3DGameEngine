@@ -11,6 +11,7 @@ public:
 	~jpPhysicsRigidBody();
 
 	void ActivateShape();
+	void DeActivateShape();
 
 	////true == dynamic, fale == Kinematic(Static)
 	void SetDynamic(bool is_dynamic);
@@ -22,6 +23,8 @@ public:
 
 	void SetShape(physx::PxShape* new_shape);
 
+	void SetShapeScale(physx::PxVec3 scale, float radius);
+
 	void GetTransform(physx::PxVec3& pos, physx::PxQuat& quat);
 
 public:
@@ -32,7 +35,7 @@ public:
 	physx::PxMaterial* default_material = nullptr;
 };
 
-//TODO: Optimitzation - For setGeometry methods don't recreate shape when geometryType is the same
+//TODO: Optimitzation - For setGeometry methods don't recreate shape when geometryType is the same //-- Done
 
 #endif // !__JP_PHYSICS_RIGIDBODY_H__
 

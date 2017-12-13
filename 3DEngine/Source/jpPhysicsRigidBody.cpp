@@ -4,18 +4,16 @@
 jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 {
 	//Create a default rigidbody 
-	//default transform == identity
-	//default geometry == box with 0.5 halfExtent
-	//default material: 0.5 friction(static and dynamic) and 0.5 restitution
 	default_material = px_physics->createMaterial(0.5f, 0.5f, 0.5f);
-//	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(physx::PxIDENTITY()), *body_shape, 1.0f);
 	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(physx::PxIDENTITY()), physx::PxBoxGeometry(0.5f, 0.5f, 0.5f), *default_material, 1.0f);
-	body_shape = px_body->createShape(physx::PxBoxGeometry(0.5f, 0.5f, 0.5f), *default_material);
-
+	
 	//Detach the shape by default,
+	px_body->getShapes(&body_shape, 1);
+
 	//Shape must be activated using calling a diferent function
 	//Made like this to separet the rigidbody from the collider
 	px_body->detachShape(*body_shape);
+	
 	body_shape = nullptr;
 }
 
@@ -27,6 +25,13 @@ void jpPhysicsRigidBody::ActivateShape()
 {
 	if (body_shape != nullptr)
 		px_body->attachShape(*body_shape);
+}
+
+void jpPhysicsRigidBody::DeActivateShape()
+{
+	if (body_shape != nullptr)
+		px_body->detachShape(*body_shape);
+	body_shape = nullptr;
 }
 
 void jpPhysicsRigidBody::SetDynamic(bool is_dynamic)
@@ -115,6 +120,62 @@ void jpPhysicsRigidBody::SetShape(physx::PxShape * new_shape)
 	//Might not work
 	px_body->detachShape(*body_shape);
 	body_shape = new_shape;
+}
+
+void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius)
+{
+	if (body_shape) {
+		// Get absolute values for scale and radius
+		if (radius < 0)
+			radius = -radius;
+
+		scale = scale.abs();
+
+		// Modify Geometry Scale
+		physx::PxGeometryType::Enum type = body_shape->getGeometryType();
+		switch (type)
+		{
+		case physx::PxGeometryType::eSPHERE: {
+			physx::PxSphereGeometry sphere = body_shape->getGeometry().sphere();
+			sphere.radius = radius;
+			body_shape->setGeometry(sphere);
+		}
+											 break;
+		case physx::PxGeometryType::eCAPSULE: {
+			physx::PxCapsuleGeometry capsule = body_shape->getGeometry().capsule();
+			capsule.halfHeight = scale.z*0.5;
+			capsule.radius = radius;
+			body_shape->setGeometry(capsule);
+		}
+											  break;
+		case physx::PxGeometryType::eBOX:{
+			physx::PxBoxGeometry box = body_shape->getGeometry().box();
+			box.halfExtents = scale*0.5;
+			body_shape->setGeometry(box);
+		}
+			break;
+		case physx::PxGeometryType::eCONVEXMESH: {
+			physx::PxConvexMeshGeometry convmesh = body_shape->getGeometry().convexMesh();
+			convmesh.scale = scale;
+			body_shape->setGeometry(convmesh);
+		}
+			break;
+		case physx::PxGeometryType::eTRIANGLEMESH: {
+			physx::PxTriangleMeshGeometry trimesh = body_shape->getGeometry().triangleMesh();
+			trimesh.scale = scale;
+			body_shape->setGeometry(trimesh);
+		}
+			break;
+		case physx::PxGeometryType::eHEIGHTFIELD: {
+			physx::PxHeightFieldGeometry heightfield = body_shape->getGeometry().heightField();
+			heightfield.heightScale = scale.z;
+			body_shape->setGeometry(heightfield);
+		}
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void jpPhysicsRigidBody::GetTransform(physx::PxVec3& pos, physx::PxQuat& quat)
