@@ -30,6 +30,9 @@ public:
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
+private:
+	RigidBody* LookForRigidBody();
+
 public:
 	Transform* transform = nullptr;
 	RigidBody* rigid_body_comp = nullptr;

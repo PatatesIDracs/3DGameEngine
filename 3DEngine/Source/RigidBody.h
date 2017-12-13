@@ -5,6 +5,7 @@
 
 class Transform;
 class jpPhysicsRigidBody;
+class RbCollider;
 
 class RigidBody : public Component
 {
@@ -25,9 +26,13 @@ public:
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
+private:
+
+	RbCollider* LookForCollider();
+
 public:
 	Transform* transform = nullptr;
-
+	RbCollider* collider_comp = nullptr;
 	jpPhysicsRigidBody* rigid_body = nullptr;
 
 	bool own_update = false;

@@ -1,4 +1,5 @@
 #include "RigidBody.h"
+#include "RbCollider.h"
 
 #include "Application.h"
 #include "Transform.h"
@@ -77,4 +78,19 @@ void RigidBody::Load(char * cursor, int & bytes_copied)
 
 void RigidBody::GetOwnBufferSize(uint & buffer_size)
 {
+}
+
+RbCollider * RigidBody::LookForCollider()
+{
+	if (parent != nullptr)
+	{
+		for (uint i = 0; i < parent->components.size(); i++)
+		{
+			if (parent->components[i]->GetType() == COMP_TYPE::COMP_RBSHAPE)
+			{
+				return (RbCollider*)parent->components[i];
+			}
+		}
+	}
+	return nullptr;
 }
