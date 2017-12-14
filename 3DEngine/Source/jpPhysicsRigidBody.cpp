@@ -65,51 +65,17 @@ void jpPhysicsRigidBody::SetGeometry(physx::PxGeometry new_geometry)
 	px_body->attachShape(*body_shape);
 }
 
-void jpPhysicsRigidBody::SetBoxGeometry(float x_scale, float y_scale, float z_scale)
+void jpPhysicsRigidBody::SetMaterial(float &static_friction, float &dynamic_friction, float &restitution)
 {
-	//Create tehe box geometry (sacale need to be divided by 2)
-	physx::PxBoxGeometry boxGeometry;
-	boxGeometry.halfExtents.x = x_scale / 2;
-	boxGeometry.halfExtents.y = y_scale / 2;
-	boxGeometry.halfExtents.z = z_scale / 2;
+	if (static_friction < 0) static_friction = 0;
+	else if (static_friction > PX_MAX_F32) static_friction = PX_MAX_F32-1;
 
-	//Get the current material for the new shape
-	physx::PxMaterial* body_material = nullptr;
-	if (body_shape != nullptr)
-	{
-		body_shape->getMaterials(&body_material, 1);
-		px_body->detachShape(*body_shape);
-		body_shape = nullptr;
-	}
-	else
-		body_material = default_material;
+	if (dynamic_friction < 0) dynamic_friction = 0;
+	else if (dynamic_friction > PX_MAX_F32) dynamic_friction = PX_MAX_F32-1;
 
-	//We are creating a new shape
-	//This is only needed when the previous shape isn't a boxGeometry, for now we will do it anyways 
-	body_shape = px_body->createShape(boxGeometry, *body_material);
-}
+	if (restitution < 0) restitution = 0;
+	else if (restitution > 1) restitution = 1;
 
-void jpPhysicsRigidBody::SetSphereGeometry(float radius)
-{
-	physx::PxSphereGeometry sphereGeometry;
-	sphereGeometry.radius = radius;
-
-	//Get the current material for the new shape
-	physx::PxMaterial* body_material = nullptr;
-	if (body_shape != nullptr)
-	{
-		body_shape->getMaterials(&body_material, 1);
-		px_body->detachShape(*body_shape);
-		body_shape = nullptr;
-	}
-	else 
-		body_material = default_material;
-
-	body_shape = px_body->createShape(sphereGeometry, *body_material);
-}
-
-void jpPhysicsRigidBody::SetMaterial(float static_friction, float dynamic_friction, float restitution)
-{
 	physx::PxMaterial* material;
 	body_shape->getMaterials(&material, 1);
 	material->setStaticFriction(static_friction);
@@ -222,6 +188,12 @@ void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius)
 			break;
 		}
 	}
+}
+
+void jpPhysicsRigidBody::SetMass(float & mass)
+{
+	if (px_body)
+		px_body->setMass(mass);
 }
 
 void jpPhysicsRigidBody::GetTransform(physx::PxVec3& pos, physx::PxQuat& quat)

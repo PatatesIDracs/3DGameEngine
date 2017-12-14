@@ -57,12 +57,17 @@ void RbCollider::DrawComponent()
 	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("Rb Collider"))
 	{
+		// Collider type
 		ImGui::Combo("Collider", (int*)&collider_type, "Sphere\0Plane\0Box\0Capsule\0", 4);
+
+		// Collider Position
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
 			physx::PxTransform transf =	physics_body->px_body->getGlobalPose();
 			transf.p = physx::PxVec3(position.x, position.y, position.z);
 			physics_body->px_body->setGlobalPose(transf);
 		}
+
+		// Collider
 		switch (collider_type)
 		{
 		case COLL_BOX:
@@ -77,7 +82,7 @@ void RbCollider::DrawComponent()
 			break;
 		case COLL_CAPSULE:
 			if ((ImGui::InputFloat("Half height", &size.z, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue))
-			|| (ImGui::InputFloat("Radius", &rad, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue)))
+				|| (ImGui::InputFloat("Radius", &rad, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue)))
 				UpdateCollider();
 			break;
 		default:
@@ -87,6 +92,16 @@ void RbCollider::DrawComponent()
 		if (curr_type != collider_type && ImGui::Button("Change Collider")) {
 			ChangeCollider();
 			curr_type = collider_type;
+		}
+
+		// Material
+		ImGui::Text("Friction: Static/Dynamic");
+		if (ImGui::InputFloat2("", &material.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
+			physics_body->SetMaterial(material.x, material.y, material.z);
+		}
+		ImGui::Text("Restitution");
+		if (ImGui::InputFloat("[0,1]", &material.z, 0.1f, 1.f, 3, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
+			physics_body->SetMaterial(material.x, material.y, material.z);
 		}
 	}
 	ImGui::PopID();
