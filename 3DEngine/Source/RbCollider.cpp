@@ -12,11 +12,22 @@
 
 RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, COMP_RBSHAPE, true)
 {
+	if (parent != nullptr)
+		transform = parent->GetTransform();
 
-	physics_body = App->physics->GetNewRigidBody(0);
-	//Set as Knimeatic(Static) by default
-	physics_body->SetDynamic(false);
+	rigid_body_comp = LookForRigidBody();
 
+	if (rigid_body_comp != nullptr)
+	{
+		physics_body = rigid_body_comp->rigid_body;
+		rigid_body_comp->SetColliderComp(this);
+	}
+	else
+	{
+		physics_body = App->physics->GetNewRigidBody(0);
+		//Set as Knimeatic(Static) by default
+		physics_body->SetDynamic(false);
+	}
 	// Set Default Gemoetry to Sphere
 	physics_body->SetGeometry(physx::PxVec3(size.x,size.y,size.z), rad, physx::PxGeometryType::Enum::eSPHERE);
 }
@@ -79,6 +90,11 @@ void RbCollider::DrawComponent()
 		}
 	}
 	ImGui::PopID();
+}
+
+void RbCollider::SetRigidBodyComp(RigidBody * new_rigid_body)
+{
+	rigid_body_comp = new_rigid_body;
 }
 
 void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copied)

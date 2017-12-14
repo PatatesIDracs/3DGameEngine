@@ -22,6 +22,7 @@ public:
 
 	// Set Body
 	void SetRigidBody(const jpPhysicsRigidBody* new_body = nullptr);
+	void SetColliderComp(RbCollider* new_collider);
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);

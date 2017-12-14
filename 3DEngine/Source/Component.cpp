@@ -9,8 +9,7 @@ Component::Component() : parent(nullptr), type(COMP_UNKNOWN), active(false)
 
 Component::Component(GameObject * parent, COMP_TYPE type, bool isactive) : parent(parent), type(type), active(isactive)
 {
-	LCG UUIDGen;
-	UUID = UUIDGen.Int();
+	UUID = App->GetIntUUID();
 	if (parent != nullptr)
 		parent_UUID = parent->GetUUID();
 }

@@ -27,6 +27,9 @@ public:
 
 	void DrawComponent();
 
+	void SetRigidBodyComp(RigidBody* new_rigid_body);
+
+
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);

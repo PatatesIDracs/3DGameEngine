@@ -14,15 +14,16 @@ RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COM
 
 	if (collider_comp != nullptr)
 	{
-		rigid_body = collider_comp->physics_body;
-		rigid_body->SetDynamic(true);
+		physics_body = collider_comp->physics_body;
+		collider_comp->SetRigidBodyComp(this);
+		physics_body->SetDynamic(true);
 		dynamic = true;
 	}
 	else
 	{
-		rigid_body = App->physics->GetNewRigidBody(0);
+		physics_body = App->physics->GetNewRigidBody(0);
 		//Make sure is dynamic
-		rigid_body->SetDynamic(true);
+		physics_body->SetDynamic(true);
 		dynamic = true;
 	}
 
@@ -30,18 +31,18 @@ RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COM
 
 RigidBody::~RigidBody()
 {
-	if(rigid_body)
-		delete rigid_body;
+	if(physics_body)
+		delete physics_body;
 }
 
 void RigidBody::Update()
 {
-	if (transform && rigid_body && App->clock.delta_time > 0)
+	if (transform && physics_body && App->clock.delta_time > 0)
 	{
 		physx::PxVec3 pos;
 		physx::PxQuat rot;
-		rigid_body->GetTransform(pos, rot);
-		rigid_body->SetDynamic(true);
+		physics_body->GetTransform(pos, rot);
+		physics_body->SetDynamic(true);
 		transform->SetTransform(float3(pos.x, pos.y, pos.z), Quat(rot.x, rot.y, rot.z, rot.w));
 		own_update = true;
 	}
@@ -51,10 +52,10 @@ void RigidBody::Update()
 
 void RigidBody::UpdateTransform()
 {
-	if(rigid_body && !own_update) {
+	if(physics_body && !own_update) {
 		float3 fpos = transform->GetPosition();
 		Quat quat = transform->GetRotQuat();
-		rigid_body->px_body->setGlobalPose(physx::PxTransform(physx::PxVec3(fpos.x, fpos.y, fpos.z),physx::PxQuat(quat.x,quat.y,quat.z,quat.w)));
+		physics_body->px_body->setGlobalPose(physx::PxTransform(physx::PxVec3(fpos.x, fpos.y, fpos.z),physx::PxQuat(quat.x,quat.y,quat.z,quat.w)));
 	}
 }
 
@@ -68,10 +69,10 @@ void RigidBody::ChangeParent(GameObject * new_parent)
 	if (collider_comp != nullptr)
 	{
 		collider_comp->rigid_body_comp = this;
-		if (rigid_body)
-			delete rigid_body;
-		rigid_body = collider_comp->physics_body;
-		rigid_body->SetDynamic(true);
+		if (physics_body)
+			delete physics_body;
+		physics_body = collider_comp->physics_body;
+		physics_body->SetDynamic(true);
 		dynamic = true;
 	}
 	
@@ -84,34 +85,39 @@ void RigidBody::DrawComponent()
 	Component::DrawComponent();
 	if (ImGui::CollapsingHeader("RigidBody"))
 	{
-		if (ImGui::Checkbox("Dynamic", &dynamic)) rigid_body->SetDynamic(dynamic);
+		if (ImGui::Checkbox("Dynamic", &dynamic)) physics_body->SetDynamic(dynamic);
 	}
 	ImGui::PopID();
 }
 
 void RigidBody::SetRigidBody(const jpPhysicsRigidBody * new_body)
 {
-	if (rigid_body)
-		delete rigid_body;
+	if (physics_body)
+		delete physics_body;
 
 	if (new_body) {
-		rigid_body = (jpPhysicsRigidBody*)new_body;
+		physics_body = (jpPhysicsRigidBody*)new_body;
 
 		if (transform == nullptr && parent)
 			transform = parent->GetTransform();
 
 		physx::PxVec3 pos;
 		physx::PxQuat rot;
-		rigid_body->GetTransform(pos, rot);
+		physics_body->GetTransform(pos, rot);
 		transform->SetTransform(float3(pos.x, pos.y, pos.z), Quat(rot.x, rot.y, rot.z, rot.w));
 		own_update = true;
 	}
-	else rigid_body = nullptr;
+	else physics_body = nullptr;
 
 	if (collider_comp) {
-		collider_comp->physics_body = rigid_body;
+		collider_comp->physics_body = physics_body;
 		collider_comp->rigid_body_comp = this;
 	}
+}
+
+void RigidBody::SetColliderComp(RbCollider * new_collider)
+{
+	collider_comp = new_collider;
 }
 
 void RigidBody::Save(const char * buffer_data, char * cursor, int & bytes_copied)
