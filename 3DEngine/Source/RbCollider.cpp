@@ -19,7 +19,7 @@ RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, C
 
 	if (rigid_body_comp != nullptr)
 	{
-		physics_body = rigid_body_comp->rigid_body;
+		physics_body = rigid_body_comp->physics_body;
 		rigid_body_comp->SetColliderComp(this);
 	}
 	else

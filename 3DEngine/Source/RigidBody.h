@@ -35,7 +35,7 @@ private:
 public:
 	Transform* transform = nullptr;
 	RbCollider* collider_comp = nullptr;
-	jpPhysicsRigidBody* rigid_body = nullptr;
+	jpPhysicsRigidBody* physics_body = nullptr;
 
 	bool dynamic = true;
 	bool own_update = false;
