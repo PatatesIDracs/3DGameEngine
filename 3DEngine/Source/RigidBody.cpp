@@ -33,6 +33,9 @@ RigidBody::~RigidBody()
 {
 	if(physics_body)
 		delete physics_body;
+
+	if (collider_comp != nullptr)
+		collider_comp->SetRigidBodyComp(nullptr);
 }
 
 void RigidBody::Update()
@@ -122,14 +125,90 @@ void RigidBody::SetColliderComp(RbCollider * new_collider)
 
 void RigidBody::Save(const char * buffer_data, char * cursor, int & bytes_copied)
 {
+	//identifier and type
+	int identifier = COMPONENTIDENTIFIER;
+	uint bytes_to_copy = sizeof(identifier);
+	memcpy(cursor, &identifier, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	bytes_to_copy = sizeof(type);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//UUID and parent UUID
+	bytes_to_copy = sizeof(UUID);
+	memcpy(cursor, &UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	bytes_to_copy = sizeof(parent_UUID);
+	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+
+	///RigidBody comp
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &dynamic, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &own_update, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void RigidBody::Load(char * cursor, int & bytes_copied)
 {
+	//UUID and parentUUID
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+
+	///RigidBody comp
+	bytes_to_copy = sizeof(bool);
+	memcpy(&dynamic, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&own_update, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Reload all physics components
+	if (collider_comp == nullptr)
+	{
+		collider_comp = LookForCollider();
+		if (collider_comp != nullptr)
+			collider_comp->SetRigidBodyComp(this);
+	}
 }
 
 void RigidBody::GetOwnBufferSize(uint & buffer_size)
 {
+	Component::GetOwnBufferSize(buffer_size);
+	buffer_size += sizeof(bool) * 2;
 }
 
 RbCollider * RigidBody::LookForCollider()

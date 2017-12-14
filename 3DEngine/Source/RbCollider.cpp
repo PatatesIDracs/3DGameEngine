@@ -36,6 +36,9 @@ RbCollider::~RbCollider()
 {
 	if (physics_body && !rigid_body_comp)
 		delete physics_body;
+	
+	if (rigid_body_comp != nullptr)
+		rigid_body_comp->SetColliderComp(nullptr);
 }
 
 void RbCollider::Update()
@@ -114,14 +117,169 @@ void RbCollider::SetRigidBodyComp(RigidBody * new_rigid_body)
 
 void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copied)
 {
+	//identifier and type
+	int identifier = COMPONENTIDENTIFIER;
+	uint bytes_to_copy = sizeof(identifier);
+	memcpy(cursor, &identifier, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	bytes_to_copy = sizeof(type);
+	memcpy(cursor, &type, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//UUID and parent UUID
+	bytes_to_copy = sizeof(UUID);
+	memcpy(cursor, &UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	bytes_to_copy = sizeof(parent_UUID);
+	memcpy(cursor, &parent_UUID, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(cursor, &active, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &unique, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+
+	///Collider comp
+	bytes_to_copy = sizeof(PHYSCOLL_TYPE);
+	memcpy(cursor, &collider_type, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &curr_type, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//material
+	bytes_to_copy = sizeof(float);
+	memcpy(cursor, &material.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &material.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &material.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//position
+	memcpy(cursor, &position.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &position.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &position.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//size
+	memcpy(cursor, &size.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &size.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &size.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//rad
+	memcpy(cursor, &rad, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void RbCollider::Load(char * cursor, int & bytes_copied)
 {
+	//UUID and parentUUID
+	uint bytes_to_copy = sizeof(int);
+	memcpy(&UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&parent_UUID, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//active and unique
+	bytes_to_copy = sizeof(bool);
+	memcpy(&active, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&unique, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	///Collider comp
+	bytes_to_copy = sizeof(PHYSCOLL_TYPE);
+	memcpy(&collider_type, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&curr_type, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//material
+	bytes_to_copy = sizeof(float);
+	memcpy(&material.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&material.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&material.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//position
+	memcpy(&position.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&position.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&position.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//size
+	memcpy(&size.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&size.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&size.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//rad
+	memcpy(&rad, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Reload all physics componentsç
+	if (rigid_body_comp == nullptr)
+	{
+		rigid_body_comp = LookForRigidBody();
+		if (rigid_body_comp != nullptr)
+			rigid_body_comp->SetColliderComp(this);
+	}
 }
 
 void RbCollider::GetOwnBufferSize(uint & buffer_size)
 {
+	Component::GetOwnBufferSize(buffer_size);
+	buffer_size += sizeof(PHYSCOLL_TYPE) * 2;
+	buffer_size += sizeof(float) * 3 * 3; //3 float 3: material, pos and size
+	buffer_size += sizeof(float); //rad
 }
 
 void RbCollider::ChangeParent(GameObject * new_parent)
