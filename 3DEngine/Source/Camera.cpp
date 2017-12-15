@@ -6,8 +6,6 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
 
-#include "Glew\include\glew.h"
-
 Camera::Camera(GameObject * parent, bool isactive) : Component(parent, COMP_CAMERA, isactive)
 {
 	cfrustum = new Frustum();
@@ -39,37 +37,25 @@ Camera::~Camera()
 
 	delete cfrustum;
 	delete[] frustum_planes;
-
-	if (fvertices_id != 0) glDeleteBuffers(1, &fvertices_id);
-	if (findices_id != 0) glDeleteBuffers(1, &findices_id);
 }
 
 void Camera::Update()
 {
 	if (active)
 	{
-		glLineWidth(2.0f);
-
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, fvertices_id);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, findices_id);
-		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, NULL);
-
-		glLineWidth(1.0f);
+		cfrustum->Draw(3.0, float4(1.f, 1.f, 1.f, 1.f));
 	}
-	UpdateTransform();
 }
 
 void Camera::UpdateTransform()
 {
-	Transform* transf = parent->GetTransform();
+	if (!own_transf) {
+		Transform* transf = parent->GetTransform();
 
-	float4x4 mat = transf->GetLocalTransform();
-	cfrustum->SetFrame(transf->GetPosition(), mat.Col3(2), mat.Col3(1));
-
-	//Temporal
-	GenerateFrostumDraw();
+		float4x4 mat = transf->GetLocalTransform();
+		cfrustum->SetFrame(transf->GetPosition(), mat.Col3(2), mat.Col3(1));
+	}
+	else own_transf = false;
 }
 
 void Camera::DrawComponent()
@@ -85,11 +71,9 @@ void Camera::DrawComponent()
 			|| ImGui::InputFloat("Far Plane", &far_plane, 0, 100, 2, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
 			SetFrustumPlanes();
-			GenerateFrostumDraw();
 		}
 		if (ImGui::SliderInt("Field of View", &field_of_view, 45, 100, "%.2f")) {
 			SetFrustumViewAngle();
-			GenerateFrostumDraw();
 		}
 		ImGui::InputFloat("Aspect Ratio", &aspect_ratio, 0, 100, 3, ImGuiInputTextFlags_ReadOnly);
 	}
@@ -115,7 +99,7 @@ float* Camera::GetViewMatrix() const
 void Camera::GetCameraVectors(float3 & position, float3 & front, float3 & up) const
 {
 	position = cfrustum->Pos();
-	front = -cfrustum->Front();
+	front = cfrustum->Front();
 	up = cfrustum->Up();
 }
 
@@ -181,30 +165,6 @@ int Camera::ContainsAABB(const AABB &box) const
 	return CONT_INTERSECTS;
 }
 
-void Camera::GenerateFrostumDraw()
-{
-	if (fvertices_id != 0) glDeleteBuffers(1, &fvertices_id);
-
-	float n_vertices[] =
-	{
-		cfrustum->CornerPoint(0).x,cfrustum->CornerPoint(0).y,cfrustum->CornerPoint(0).z,
-		cfrustum->CornerPoint(1).x,cfrustum->CornerPoint(1).y,cfrustum->CornerPoint(1).z,
-		cfrustum->CornerPoint(2).x,cfrustum->CornerPoint(2).y,cfrustum->CornerPoint(2).z,
-		cfrustum->CornerPoint(3).x,cfrustum->CornerPoint(3).y,cfrustum->CornerPoint(3).z,
-		cfrustum->CornerPoint(4).x,cfrustum->CornerPoint(4).y,cfrustum->CornerPoint(4).z,
-		cfrustum->CornerPoint(5).x,cfrustum->CornerPoint(5).y,cfrustum->CornerPoint(5).z,
-		cfrustum->CornerPoint(6).x,cfrustum->CornerPoint(6).y,cfrustum->CornerPoint(6).z,
-		cfrustum->CornerPoint(7).x,cfrustum->CornerPoint(7).y,cfrustum->CornerPoint(7).z
-	};
-	Primitive x;
-	fvertices_id = x.GenerateBBoxVertices(n_vertices);
-
-	if (findices_id == 0)
-	{
-		findices_id = x.GenerateBBoxIndices();
-	}
-}
-
 void Camera::SetFrustumPlanes()
 {
 	if (near_plane < MIN_NEARP_DIST) near_plane = MIN_NEARP_DIST;
@@ -238,6 +198,12 @@ void Camera::SetFOVRatio(uint width, uint height)
 void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 {
 	cfrustum->SetFrame(pos, front, up);
+
+	if (parent != nullptr) {
+		float3 angle = cfrustum->WorldMatrix().ToEulerXYZ();
+		parent->GetTransform()->SetTransform(pos, Quat::FromEulerXYZ(angle.x, angle.y, angle.z));
+		own_transf = true;
+	}
 }
 
 void Camera::ChangeParent(GameObject * new_parent)

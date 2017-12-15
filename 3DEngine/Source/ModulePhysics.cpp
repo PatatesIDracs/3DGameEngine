@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Transform.h"
+#include "RbCollider.h"
 #include "RigidBody.h"
 
 #include "jpPhysicsWorld.h"
@@ -31,11 +32,47 @@ ModulePhysics::~ModulePhysics()
 
 bool ModulePhysics::Start()
 {	
+	shot_balls.reserve(20);
+
 	return true;
 }
 
 update_status ModulePhysics::Update(float dt)
 {
+	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && App->scene_intro->current_object) {
+		RigidBody* rbody =(RigidBody*) App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
+		if (rbody) {
+			rbody->physics_body->ApplyImpulse(physx::PxVec3(2, 0, 0));
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN && App->scene_intro->current_object) {
+		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
+		if (rbody) {
+			rbody->physics_body->ApplyForce(physx::PxVec3(2, 0, 0));
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN && App->scene_intro->current_object) {
+		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
+		if (rbody) {
+			rbody->physics_body->ApplyTorqueForce(physx::PxVec3(0, 10, 0));
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->scene_intro->current_object) {
+		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
+		if (rbody) {
+			rbody->physics_body->ApplyTorqueImpulse(physx::PxVec3(0, -2, 0));
+		}
+	}
+
+	if (App->clock.state == APP_PLAY && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
+		ShotBalls();
+	}
+	if (App->clock.state != APP_PLAY && shot_balls.size() > 0) {
+		shot_balls.clear();
+		curr_ball = 0;
+	}
+
+
 	// Update Physics World
 	if (dt > 0) {
 		physics_world->Simulate(dt);
@@ -69,4 +106,37 @@ void ModulePhysics::SaveModuleConfig(Config_Json & config)
 
 void ModulePhysics::DrawConfig()
 {
+}
+
+void ModulePhysics::ShotBalls()
+{
+	App->scene_intro->current_object = nullptr;
+
+	// Create Ball and set position to camera pos
+	GameObject* new_ball = App->scene_intro->CreateBasicGeometry(PRIMITIVE_TYPES::PRIM_SPHERE);
+	
+	GameObject* camera = App->camera->GetMainCamera()->GetParent();
+	if (camera != nullptr) {
+		new_ball->SetTransform((float4x4)camera->GetTransform()->GetGlobalTransform().Transposed());
+	}
+	// Create Physics Components, default values will be enough
+	RbCollider* collider = new RbCollider(new_ball);
+	RigidBody* rigid_body = new RigidBody(new_ball);
+
+	// Get Shot Direction from camera raycast and apply force
+	float3 dir = App->camera->CameraShotBall()* 1000;
+	rigid_body->physics_body->ApplyForce(physx::PxVec3(dir.x, dir.y, dir.z));
+
+	// Add Last Shot to Vector
+	if (curr_ball < 20) {
+		shot_balls.push_back(new_ball);
+	}
+	else {
+		int place = curr_ball%shot_balls.size();
+		GameObject* remove_this = shot_balls[place];
+		// might crush;
+		App->scene_intro->DeleteGameObject(remove_this);
+		shot_balls[place] = new_ball;
+	}
+	curr_ball++;
 }

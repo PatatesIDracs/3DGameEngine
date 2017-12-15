@@ -13,23 +13,8 @@
 RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, COMP_RBSHAPE, true)
 {
 	if (parent != nullptr)
-		transform = parent->GetTransform();
+		parent->AddComponent(this);
 
-	rigid_body_comp = LookForRigidBody();
-
-	if (rigid_body_comp != nullptr)
-	{
-		physics_body = rigid_body_comp->physics_body;
-		rigid_body_comp->SetColliderComp(this);
-	}
-	else
-	{
-		physics_body = App->physics->GetNewRigidBody(0);
-		//Set as Knimeatic(Static) by default
-		physics_body->SetDynamic(false);
-	}
-	// Set Default Gemoetry to Sphere
-	physics_body->SetGeometry(physx::PxVec3(size.x,size.y,size.z), rad, physx::PxGeometryType::Enum::eSPHERE);
 }
 
 RbCollider::~RbCollider()
@@ -61,7 +46,10 @@ void RbCollider::DrawComponent()
 	if (ImGui::CollapsingHeader("Rb Collider"))
 	{
 		// Collider type
-		ImGui::Combo("Collider", (int*)&collider_type, "Sphere\0Plane\0Box\0Capsule\0", 4);
+		if (ImGui::Combo("Collider", (int*)&collider_type, "Sphere\0Plane\0Capsule\0Box\0", 4) && curr_type != collider_type) {
+			curr_type = collider_type;
+			ChangeCollider();
+		}
 
 		// Collider Position
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
@@ -82,6 +70,8 @@ void RbCollider::DrawComponent()
 				UpdateCollider();
 			break;
 		case COLL_PLANE:
+			if (ImGui::InputFloat3("Size", &size.x, 2, ImGuiInputTextFlags_EnterReturnsTrue))
+				UpdateCollider();
 			break;
 		case COLL_CAPSULE:
 			if ((ImGui::InputFloat("Half height", &size.z, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -90,11 +80,6 @@ void RbCollider::DrawComponent()
 			break;
 		default:
 			break;
-		}
-
-		if (curr_type != collider_type && ImGui::Button("Change Collider")) {
-			ChangeCollider();
-			curr_type = collider_type;
 		}
 
 		// Material
@@ -286,6 +271,20 @@ void RbCollider::ChangeParent(GameObject * new_parent)
 {
 	Component::ChangeParent(new_parent);
 	rigid_body_comp = LookForRigidBody();
+
+	if (rigid_body_comp != nullptr)
+	{
+		physics_body = rigid_body_comp->physics_body;
+		rigid_body_comp->SetColliderComp(this);
+	}
+	else
+	{
+		physics_body = App->physics->GetNewRigidBody(0);
+		//Set as Knimeatic(Static) by default
+		physics_body->SetDynamic(false);
+	}
+	// Set Default Gemoetry to Sphere
+	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, physx::PxGeometryType::Enum::eSPHERE);
 
 	transform = parent->GetTransform();
 	UpdateTransform();

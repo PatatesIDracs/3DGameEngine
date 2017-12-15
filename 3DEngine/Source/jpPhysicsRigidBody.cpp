@@ -13,7 +13,6 @@ jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 	//Shape must be activated using calling a diferent function
 	//Made like this to separet the rigidbody from the collider
 	px_body->detachShape(*body_shape);
-	
 	body_shape = nullptr;
 }
 
@@ -108,15 +107,17 @@ void jpPhysicsRigidBody::SetGeometry(physx::PxVec3 scale, float radius, physx::P
 	case physx::PxGeometryType::eSPHERE:
 		body_shape = px_body->createShape(physx::PxSphereGeometry(radius), *default_material);
 		break;
-	case physx::PxGeometryType::ePLANE:
-		body_shape = px_body->createShape(physx::PxPlaneGeometry(), *default_material);
+	case physx::PxGeometryType::ePLANE: {
+		scale = scale*0.5;
+		body_shape = px_body->createShape(physx::PxBoxGeometry(scale.x, 0.1, scale.z), *default_material);
+	}
 		break;
 	case physx::PxGeometryType::eCAPSULE:
 		body_shape = px_body->createShape(physx::PxCapsuleGeometry(radius, scale.z), *default_material);
 		break;
 	case physx::PxGeometryType::eBOX: {
 		scale = scale*0.5;
-		body_shape = px_body->createShape(physx::PxBoxGeometry(0.5,0.5,0.5), *default_material);
+		body_shape = px_body->createShape(physx::PxBoxGeometry(scale), *default_material);
 	}
 		break;
 	// TODO: add cooking to create convex mesh ----------
@@ -201,4 +202,28 @@ void jpPhysicsRigidBody::GetTransform(physx::PxVec3& pos, physx::PxQuat& quat)
 	physx::PxTransform transf = px_body->getGlobalPose();
 	pos = transf.p;
 	quat = transf.q;
+}
+
+void jpPhysicsRigidBody::ApplyForce(physx::PxVec3 force)
+{
+	if (px_body && force.isFinite())
+		px_body->addForce(force);
+}
+
+void jpPhysicsRigidBody::ApplyImpulse(physx::PxVec3 impulse)
+{
+	if (px_body && impulse.isFinite())
+		px_body->addForce(impulse, physx::PxForceMode::Enum::eIMPULSE);
+}
+
+void jpPhysicsRigidBody::ApplyTorqueForce(physx::PxVec3 force)
+{
+	if (px_body && force.isFinite())
+		px_body->addTorque(force);
+}
+
+void jpPhysicsRigidBody::ApplyTorqueImpulse(physx::PxVec3 impulse)
+{
+	if (px_body && impulse.isFinite())
+		px_body->addTorque(impulse, physx::PxForceMode::Enum::eIMPULSE);
 }

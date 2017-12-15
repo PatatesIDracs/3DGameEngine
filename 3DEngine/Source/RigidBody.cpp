@@ -8,25 +8,7 @@
 RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COMP_RIGIDBODY, true)
 {
 	if (parent != nullptr)
-		transform = parent->GetTransform();
-
-	collider_comp = LookForCollider();
-
-	if (collider_comp != nullptr)
-	{
-		physics_body = collider_comp->physics_body;
-		collider_comp->SetRigidBodyComp(this);
-		physics_body->SetDynamic(true);
-		dynamic = true;
-	}
-	else
-	{
-		physics_body = App->physics->GetNewRigidBody(0);
-		//Make sure is dynamic
-		physics_body->SetDynamic(true);
-		dynamic = true;
-	}
-
+		parent->AddComponent(this);
 }
 
 RigidBody::~RigidBody()
@@ -75,10 +57,14 @@ void RigidBody::ChangeParent(GameObject * new_parent)
 		if (physics_body)
 			delete physics_body;
 		physics_body = collider_comp->physics_body;
-		physics_body->SetDynamic(true);
-		dynamic = true;
 	}
-	
+	else {
+		physics_body = App->physics->GetNewRigidBody(0);
+	}
+	//Make sure is dynamic
+	physics_body->SetDynamic(true);
+	dynamic = true;
+
 	UpdateTransform();
 }
 
@@ -125,6 +111,7 @@ void RigidBody::SetColliderComp(RbCollider * new_collider)
 
 void RigidBody::Save(const char * buffer_data, char * cursor, int & bytes_copied)
 {
+	
 	//identifier and type
 	int identifier = COMPONENTIDENTIFIER;
 	uint bytes_to_copy = sizeof(identifier);

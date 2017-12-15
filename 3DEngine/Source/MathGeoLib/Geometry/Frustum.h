@@ -367,6 +367,8 @@ public:
 			of this Frustum. This pointer may not be null. */
 	void GetCornerPoints(vec *outPointArray) const;
 
+	void Draw(float width, float4 color) const;
+
 	/// Quickly returns an arbitrary point inside this Frustum. Used in GJK intersection test.
 	inline vec AnyPointFast() const { return CornerPoint(0); }
 

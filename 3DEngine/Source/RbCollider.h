@@ -11,8 +11,8 @@ enum PHYSCOLL_TYPE
 {
 	COLL_SPHERE,
 	COLL_PLANE,
-	COLL_BOX,
-	COLL_CAPSULE
+	COLL_CAPSULE,
+	COLL_BOX
 };
 
 class RbCollider : public Component

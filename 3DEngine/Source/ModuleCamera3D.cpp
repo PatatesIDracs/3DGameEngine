@@ -33,8 +33,7 @@ void ModuleCamera3D::SetCameraEditor()
 	camera_editor = new Camera(nullptr, true);
 	camera_editor->SetFrustumPlanes(0.5, 512);
 	camera_editor->SetFrustumViewAngle();
-	camera_editor->GenerateFrostumDraw();
-	camera_editor->SetNewFrame(Position, -Z, Y);
+	camera_editor->SetNewFrame(Position, Z, Y);
 }
 
 void ModuleCamera3D::SetMainCamera(Camera* comp_camera, bool active)
@@ -83,12 +82,26 @@ bool ModuleCamera3D::Start()
 	return true;
 }
 
+update_status ModuleCamera3D::PreUpdate(float dt)
+{
+	// Recalculate matrix -------------
+	if (update_camera) {
+		if (mode_editor) {
+			camera_editor->SetNewFrame(Position, Z, Y);
+		}
+		else GetMainCamera()->SetNewFrame(Position, Z, Y);
+
+		update_camera = false;
+	}
+
+	return UPDATE_CONTINUE;
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {	
 	//If ImGui is using inputs don't use the camera
 	if (App->input->IsImGuiUsingInput() || (ImGui::GetIO().WantCaptureMouse && ImGuizmo::IsOver())) return UPDATE_CONTINUE;
-	update_camera = false;
 
 	last_dt = App->clock.real_delta_time;
 	
@@ -114,21 +127,13 @@ update_status ModuleCamera3D::Update(float dt)
 	int wheelmotion = App->input->GetMouseZ();
 	if (wheelmotion != 0)
 	{
-		Position -= Z*(float)wheelmotion;
+		Position += Z*(float)wheelmotion;
 		update_camera = true;
 	}
 
-	else if (!update_camera && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	if (!update_camera && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->clock.state != APPSTATE::APP_PLAY)
 	{
 		CameraRayCast();
-	}
-
-	// Recalculate matrix -------------
-	if (update_camera) {
-		if (mode_editor) {
-			camera_editor->SetNewFrame(Position, -Z, Y);
-		}
-		else GetMainCamera()->SetNewFrame(Position, -Z, Y);
 	}
 
 	return UPDATE_CONTINUE;
@@ -158,7 +163,7 @@ void ModuleCamera3D::LookAt(const vec &Spot)
 {
 	Reference = Spot;
 
-	Z = (Position - Reference).Normalized();
+	Z = -(Position - Reference).Normalized();
 	X = vec(0.0f,1.0f,0.0f).Cross(Z).Normalized();
 	Y = Z.Cross(X);
 
@@ -189,7 +194,7 @@ void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 {
 
 	int dx = -App->input->GetMouseXMotion();
-	int dy = -App->input->GetMouseYMotion();
+	int dy = App->input->GetMouseYMotion();
 
 	float Sensitivity = 0.25f;
 
@@ -232,10 +237,10 @@ void ModuleCamera3D::MoveCamera()
 {
 	float dx = 0;
 	float dy = 0;
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = speed;
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = -speed;
 
 	if (dx != 0)
 	{
@@ -276,6 +281,18 @@ void ModuleCamera3D::CameraRayCast()
 
 	// Camera Ray Cast
 	App->scene_intro->CheckRayCastCollision(camera_editor->GetFrustum().UnProjectLineSegment(x, y));
+}
+
+float3 ModuleCamera3D::CameraShotBall()
+{
+	float y = (float)(-App->input->GetMouseY() + App->window->height*0.5f) / (App->window->height*0.5f);
+	float x = (float)(App->input->GetMouseX() - App->window->width*0.5f) / (App->window->width*0.5f);
+
+	// Camera Ray Cast
+	LineSegment dir = GetMainCamera()->GetFrustum().UnProjectLineSegment(x, y);
+	if(dir.IsFinite())
+		return dir.Dir();
+	else return float3(0.f, 0.f, 1.f);
 }
 
 // ----------------------------------------------

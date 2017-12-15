@@ -39,6 +39,8 @@
 #include "../Algorithm/Random/LCG.h"
 #include "../Algorithm/GJK.h"
 
+#include "../../Glew/include/glew.h"
+
 #ifdef MATH_ENABLE_STL_SUPPORT
 #include <iostream>
 #endif
@@ -836,6 +838,47 @@ void Frustum::GetCornerPoints(vec *outPointArray) const
 		outPointArray[6] = farCenter - halfWidth + halfHeight;
 		outPointArray[7] = farCenter + halfWidth + halfHeight;
 	}
+}
+
+void Frustum::Draw(float width, float4 color) const
+{
+	float3 vertices[8];
+	GetCornerPoints(vertices);
+
+	glBegin(GL_LINES);
+	glLineWidth(width);
+	glColor4f(color.x, color.y, color.z, color.w);
+
+	// Left to Right Plane lines ----------
+	for (int i = 0; i <= 2; i += 2)
+	{
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 4].x, vertices[i + 4].y, vertices[i + 4].z);
+
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+		glVertex3f(vertices[i + 5].x, vertices[i + 5].y, vertices[i + 5].z);
+	}
+
+	// Left and Right Planes ----------
+	for (int i = 0; i <= 4; i += 4)
+	{
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+
+		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+		glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+
+		glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+		glVertex3f(vertices[i + 3].x, vertices[i + 3].y, vertices[i + 3].z);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glLineWidth(1.0f);
+	glEnd();
+
 }
 
 LineSegment Frustum::Edge(int edgeIndex) const

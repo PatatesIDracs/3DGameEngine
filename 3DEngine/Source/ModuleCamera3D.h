@@ -11,6 +11,7 @@ public:
 	~ModuleCamera3D();
 
 	bool Start();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();
 
@@ -32,6 +33,7 @@ public:
 	float* GetViewMatrix() const;
 
 	void CameraRayCast();
+	float3 CameraShotBall();
 
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json &config);
@@ -46,7 +48,7 @@ public:
 	bool mode_editor = true;
 	bool update_camera = false;
 
-private:
+public:
 
 	float distance = 0.5f;
 	float speed = 10.0f;

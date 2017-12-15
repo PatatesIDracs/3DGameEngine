@@ -424,7 +424,7 @@ void ModuleSceneIntro::AddGameObjectToDynamic(const GameObject * object)
 void ModuleSceneIntro::CheckDynamicGameObjectsState()
 {
 	GameObject* object = nullptr;
-	for (uint i = dynamic_gameobjects.size() - 1; i > 0; i--)
+	for (int i = dynamic_gameobjects.size()-1; i >= 0; i--)
 	{
 		object = dynamic_gameobjects[i];
 		if (object->isstatic) {
@@ -441,7 +441,7 @@ void ModuleSceneIntro::CheckStaticGameObjectsState()
 {
 	bool reset_octree = false;
 	GameObject* object = nullptr;
-	for (uint i = static_gameobjects.size() - 1; i > 0; i--) 
+	for (int i = static_gameobjects.size() - 1; i >= 0; i--) 
 	{
 		object = static_gameobjects[i];
 		if (!object->isstatic) {

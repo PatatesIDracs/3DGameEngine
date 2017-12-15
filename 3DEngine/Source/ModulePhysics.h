@@ -35,12 +35,19 @@ public:
 
 	void DrawConfig();
 
+	// Rigid Body Test, shot balls
+	void ShotBalls();
+
 public:
 	physx::PxPhysics* mPhysics = nullptr;
 private:
 
 	jpPhysicsWorld* physics_world = nullptr;
 	physx::PxScene* mScene = nullptr;
+
+	// Shot Balls
+	std::vector<GameObject*> shot_balls;
+	uint curr_ball = 0;
 };
 
 #endif // !__MODULEPHYSICS_H__

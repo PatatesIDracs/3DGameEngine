@@ -30,6 +30,13 @@ public:
 	// Get Methods
 	void GetTransform(physx::PxVec3& pos, physx::PxQuat& quat);
 
+
+	// Simulation Methods
+	void ApplyForce(physx::PxVec3 force);
+	void ApplyImpulse(physx::PxVec3 impulse);
+	void ApplyTorqueForce(physx::PxVec3 force);
+	void ApplyTorqueImpulse(physx::PxVec3 impulse);
+
 public:
 	physx::PxRigidDynamic* px_body = nullptr;
 	physx::PxShape* body_shape = nullptr;

@@ -33,8 +33,6 @@ public:
 	bool GetFrustumGameObjecs(std::vector<GameObject*> &dynamic_array, std::vector<MeshRenderer*> &render_this) const;
 	int ContainsAABB(const AABB &refBox) const;
 
-	void GenerateFrostumDraw();
-
 	// Set Methods
 	void SetFrustumPlanes();
 	void SetFrustumPlanes(float nearp, float farp);
@@ -56,10 +54,8 @@ private:
 	float far_plane = 50.f;
 	float aspect_ratio = 0.f;
 	int field_of_view = 60;
-
-	uint findices_id = 0;
-	uint fvertices_id = 0;
 	
+	bool own_transf = false;
 };
 
 #endif // !__CAMERA_H__
