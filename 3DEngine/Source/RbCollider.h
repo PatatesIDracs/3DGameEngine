@@ -7,13 +7,7 @@ class Transform;
 class RigidBody;
 class jpPhysicsRigidBody;
 
-enum PHYSCOLL_TYPE
-{
-	COLL_SPHERE,
-	COLL_PLANE,
-	COLL_CAPSULE,
-	COLL_BOX
-};
+enum JP_COLLIDER_TYPE;
 
 class RbCollider : public Component
 {
@@ -22,35 +16,35 @@ public:
 	RbCollider(GameObject* parent, bool isactive = true);
 	~RbCollider();
 
-	void Update();
 	void UpdateTransform();
 
 	void DrawComponent();
 
 	void SetRigidBodyComp(RigidBody* new_rigid_body);
+	void SetPhysicsBody(jpPhysicsRigidBody* new_physics_body);
 
+	jpPhysicsRigidBody* GetPhysicsBody();
+
+	void ChangeCollider();
+	void UpdateCollider();
+
+	void ChangeParent(GameObject* new_parent);
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);
 	void GetOwnBufferSize(uint& buffer_size);
 
-	void ChangeParent(GameObject* new_parent);
-
-	void ChangeCollider();
-	void UpdateCollider();
-
 private:
 	RigidBody* LookForRigidBody();
 
-public:
+private:
 	Transform* transform = nullptr;
 	RigidBody* rigid_body_comp = nullptr;
 	jpPhysicsRigidBody* physics_body = nullptr;
 
-private:
 	// Collider_type defines which shape to use
-	PHYSCOLL_TYPE		collider_type = COLL_SPHERE;
-	PHYSCOLL_TYPE		curr_type = COLL_SPHERE;
+	JP_COLLIDER_TYPE	collider_type = (JP_COLLIDER_TYPE)0;
+	JP_COLLIDER_TYPE	curr_type = (JP_COLLIDER_TYPE)0;
 
 	// Collider Data
 	float3				material = float3(0.5f, 0.5f, 0.5f);

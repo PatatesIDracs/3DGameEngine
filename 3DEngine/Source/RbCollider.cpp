@@ -14,20 +14,19 @@ RbCollider::RbCollider(GameObject * parent, bool isactive) : Component(parent, C
 {
 	if (parent != nullptr)
 		parent->AddComponent(this);
-
 }
 
 RbCollider::~RbCollider()
 {
-	if (physics_body && !rigid_body_comp)
+	if (physics_body && !rigid_body_comp) {
 		delete physics_body;
+		physics_body = nullptr;
+	}
 	
-	if (rigid_body_comp != nullptr)
+	if (rigid_body_comp != nullptr) {
 		rigid_body_comp->SetColliderComp(nullptr);
-}
-
-void RbCollider::Update()
-{
+		rigid_body_comp->SetPhysicsBody(physics_body);
+	}
 }
 
 void RbCollider::UpdateTransform()
@@ -100,6 +99,54 @@ void RbCollider::SetRigidBodyComp(RigidBody * new_rigid_body)
 	rigid_body_comp = new_rigid_body;
 }
 
+void RbCollider::SetPhysicsBody(jpPhysicsRigidBody * new_physics_body)
+{
+	if (physics_body && physics_body != new_physics_body)
+		delete physics_body;
+
+	physics_body = new_physics_body;
+}
+
+jpPhysicsRigidBody * RbCollider::GetPhysicsBody()
+{
+	return physics_body;
+}
+
+void RbCollider::ChangeCollider()
+{
+	if (physics_body)
+		physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
+}
+
+void RbCollider::UpdateCollider()
+{
+	if (physics_body)
+		physics_body->SetShapeScale(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
+}
+
+void RbCollider::ChangeParent(GameObject * new_parent)
+{
+	Component::ChangeParent(new_parent);
+	rigid_body_comp = LookForRigidBody();
+
+	if (rigid_body_comp != nullptr)
+	{
+		rigid_body_comp->SetColliderComp(this);
+		physics_body = rigid_body_comp->GetPhysicsBody();
+	}
+	else
+	{
+		physics_body = App->physics->GetNewRigidBody(0);
+		//Set as Knimeatic(Static) by default
+		physics_body->SetDynamic(false);
+	}
+	// Set Default Gemoetry to Sphere
+	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
+
+	transform = parent->GetTransform();
+	UpdateTransform();
+}
+
 void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copied)
 {
 	//identifier and type
@@ -134,7 +181,7 @@ void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copie
 
 
 	///Collider comp
-	bytes_to_copy = sizeof(PHYSCOLL_TYPE);
+	bytes_to_copy = sizeof(JP_COLLIDER_TYPE);
 	memcpy(cursor, &collider_type, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
@@ -203,7 +250,7 @@ void RbCollider::Load(char * cursor, int & bytes_copied)
 	bytes_copied += bytes_to_copy;
 
 	///Collider comp
-	bytes_to_copy = sizeof(PHYSCOLL_TYPE);
+	bytes_to_copy = sizeof(JP_COLLIDER_TYPE);
 	memcpy(&collider_type, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
@@ -249,57 +296,14 @@ void RbCollider::Load(char * cursor, int & bytes_copied)
 	memcpy(&rad, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
-
-	//Reload all physics componentsç
-	if (rigid_body_comp == nullptr)
-	{
-		rigid_body_comp = LookForRigidBody();
-		if (rigid_body_comp != nullptr)
-			rigid_body_comp->SetColliderComp(this);
-	}
 }
 
 void RbCollider::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
-	buffer_size += sizeof(PHYSCOLL_TYPE) * 2;
+	buffer_size += sizeof(JP_COLLIDER_TYPE) * 2;
 	buffer_size += sizeof(float) * 3 * 3; //3 float 3: material, pos and size
 	buffer_size += sizeof(float); //rad
-}
-
-void RbCollider::ChangeParent(GameObject * new_parent)
-{
-	Component::ChangeParent(new_parent);
-	rigid_body_comp = LookForRigidBody();
-
-	if (rigid_body_comp != nullptr)
-	{
-		physics_body = rigid_body_comp->physics_body;
-		rigid_body_comp->SetColliderComp(this);
-	}
-	else
-	{
-		physics_body = App->physics->GetNewRigidBody(0);
-		//Set as Knimeatic(Static) by default
-		physics_body->SetDynamic(false);
-	}
-	// Set Default Gemoetry to Sphere
-	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, physx::PxGeometryType::Enum::eSPHERE);
-
-	transform = parent->GetTransform();
-	UpdateTransform();
-}
-
-void RbCollider::ChangeCollider()
-{
-	if (physics_body)
-		physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, (physx::PxGeometryType::Enum)curr_type);
-}
-
-void RbCollider::UpdateCollider()
-{
-	if(physics_body)
-		physics_body->SetShapeScale(physx::PxVec3(size.x, size.y, size.z), rad);
 }
 
 RigidBody * RbCollider::LookForRigidBody()

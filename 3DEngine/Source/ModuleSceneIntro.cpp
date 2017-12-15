@@ -221,9 +221,7 @@ GameObject* ModuleSceneIntro::CreateBasicGeometry(PRIMITIVE_TYPES type)
 		Mesh* mesh = (Mesh*)new Mesh(new_primitive);
 		mesh->SetMeshResource(resource);
 		Material* mat = new Material(new_primitive,nullptr);
-		mat->ReloadUUID();
 		MeshRenderer* render = new MeshRenderer(new_primitive);
-		render->ReloadUUID();
 		return new_primitive;
 	}
 	else {

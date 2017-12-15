@@ -21,8 +21,11 @@ public:
 	void DrawComponent();
 
 	// Set Body
-	void SetRigidBody(const jpPhysicsRigidBody* new_body = nullptr);
+	void SetPhysicsBody(jpPhysicsRigidBody* new_physics_body);
+	void SetPhysicsBodyMass();
 	void SetColliderComp(RbCollider* new_collider);
+
+	jpPhysicsRigidBody* GetPhysicsBody();
 
 	void Save(const char * buffer_data, char * cursor, int& bytes_copied);
 	void Load(char* cursor, int& bytes_copied);
@@ -32,13 +35,15 @@ private:
 
 	RbCollider* LookForCollider();
 
-public:
+private:
 	Transform* transform = nullptr;
 	RbCollider* collider_comp = nullptr;
 	jpPhysicsRigidBody* physics_body = nullptr;
 
 	bool dynamic = true;
 	bool own_update = false;
+
+	float mass = 1.f;
 };
 
 

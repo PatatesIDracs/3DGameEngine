@@ -3,6 +3,14 @@
 
 #include "PhysX/Include/PxPhysicsAPI.h"
 
+enum JP_COLLIDER_TYPE
+{
+	COLL_SPHERE,
+	COLL_PLANE,
+	COLL_CAPSULE,
+	COLL_BOX
+};
+
 //Simple abstraction of the physX rigiddynamic class for an easier implementation with component system
 class jpPhysicsRigidBody
 {
@@ -22,8 +30,8 @@ public:
 	void SetMaterial(float &static_friction, float &dynamic_friction, float &restitution);
 	void SetShape(physx::PxShape* new_shape);
 
-	void SetGeometry(physx::PxVec3 pos, float radius, physx::PxGeometryType::Enum type);
-	void SetShapeScale(physx::PxVec3 scale, float radius);
+	void SetGeometry(physx::PxVec3 pos, float radius, JP_COLLIDER_TYPE type);
+	void SetShapeScale(physx::PxVec3 scale, float radius, JP_COLLIDER_TYPE type);
 
 	void SetMass(float &mass);
 

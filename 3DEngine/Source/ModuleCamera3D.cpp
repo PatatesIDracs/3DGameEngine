@@ -199,7 +199,7 @@ void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 	float Sensitivity = 0.25f;
 
 	if (RotateAroundReference)
-		Position -= Reference;
+		Position = -(Position - Reference);
 
 	if (dx != 0)
 	{

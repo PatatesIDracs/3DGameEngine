@@ -45,25 +45,25 @@ update_status ModulePhysics::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && App->scene_intro->current_object) {
 		RigidBody* rbody =(RigidBody*) App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
 		if (rbody) {
-			rbody->physics_body->ApplyImpulse(physx::PxVec3(2, 0, 0));
+			rbody->GetPhysicsBody()->ApplyImpulse(physx::PxVec3(2, 0, 0));
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN && App->scene_intro->current_object) {
 		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
 		if (rbody) {
-			rbody->physics_body->ApplyForce(physx::PxVec3(2, 0, 0));
+			rbody->GetPhysicsBody()->ApplyForce(physx::PxVec3(2, 0, 0));
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN && App->scene_intro->current_object) {
 		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
 		if (rbody) {
-			rbody->physics_body->ApplyTorqueForce(physx::PxVec3(0, 10, 0));
+			rbody->GetPhysicsBody()->ApplyTorqueForce(physx::PxVec3(0, 10, 0));
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->scene_intro->current_object) {
 		RigidBody* rbody = (RigidBody*)App->scene_intro->current_object->FindFirstComponent(COMP_RIGIDBODY);
 		if (rbody) {
-			rbody->physics_body->ApplyTorqueImpulse(physx::PxVec3(0, -2, 0));
+			rbody->GetPhysicsBody()->ApplyTorqueImpulse(physx::PxVec3(0, -2, 0));
 		}
 	}
 
@@ -130,7 +130,7 @@ void ModulePhysics::ShotBalls()
 
 	// Get Shot Direction from camera raycast and apply force
 	float3 dir = App->camera->CameraShotBall()* 1000;
-	rigid_body->physics_body->ApplyForce(physx::PxVec3(dir.x, dir.y, dir.z));
+	rigid_body->GetPhysicsBody()->ApplyForce(physx::PxVec3(dir.x, dir.y, dir.z));
 
 	// Add Last Shot to Vector
 	if (curr_ball < 20) {
@@ -151,7 +151,7 @@ void ModulePhysics::DrawPhysics()
 	if (App->clock.state == APP_STOP)
 	{
 		mScene->simulate(VERY_LITTLE_NUMBER);
-		mScene->fetchResults();
+		mScene->fetchResults(true);
 	}
 	const physx::PxRenderBuffer& rb = mScene->getRenderBuffer();
 

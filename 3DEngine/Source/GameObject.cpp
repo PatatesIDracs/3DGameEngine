@@ -44,8 +44,9 @@ GameObject::~GameObject()
 	if (parent != nullptr)
 		parent->RemoveChildren(this);
 
-	for (uint i = 0; i < children.size(); i++)
+	for (uint i = children.size(); i > 0;)
 	{
+		i--;
 		delete	children[i];
 	}
 	children.clear();
