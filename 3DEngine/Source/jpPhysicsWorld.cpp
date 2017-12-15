@@ -6,6 +6,7 @@
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PxPvdSDKDEBUG_x86.lib")
 
 jpPhysicsWorld::jpPhysicsWorld()
 {	
@@ -21,6 +22,7 @@ jpPhysicsWorld::~jpPhysicsWorld()
 			scene = nullptr;
 		}
 		jpWorld->release();	
+		//pvd->release();
 		jpFoundation->release();
 	}
 }
@@ -32,8 +34,13 @@ bool jpPhysicsWorld::CreateNewPhysicsWorld()
 			gDefaultErrorCallback);
 
 		if (jpFoundation)
-			jpWorld = PxCreatePhysics(PX_PHYSICS_VERSION, *jpFoundation, physx::PxTolerancesScale(), false, nullptr);
-		
+		{
+			//pvd = physx::PxCreatePvd(*jpFoundation);
+			//physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+			//pvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
+			jpWorld = PxCreatePhysics(PX_PHYSICS_VERSION, *jpFoundation, physx::PxTolerancesScale(), true, nullptr);
+		}
+
 		if (jpWorld) {
 			//jpCooking = PxCreateCooking(PX_PHYSICS_VERSION, *jpFoundation, jpWorld->getTolerancesScale());
 			return true;
@@ -61,6 +68,7 @@ physx::PxScene * jpPhysicsWorld::CreateNewScene()
 	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
 	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+
 	return jpWorld->createScene(sceneDesc);
 }
 

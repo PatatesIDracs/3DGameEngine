@@ -25,6 +25,7 @@ public:
 
 private:
 	// World, only one can be created
+	//physx::PxPvd* pvd = nullptr;
 	physx::PxPhysics* jpWorld = nullptr;
 	physx::PxFoundation* jpFoundation = nullptr;
 

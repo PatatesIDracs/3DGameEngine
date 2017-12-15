@@ -148,6 +148,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->scene_intro->Draw();
 	glDisable(GL_LIGHTING);
 
+	App->physics->DrawPhysics();
 	App->editor->Draw();
 
 	SDL_GL_SwapWindow(App->window->window);

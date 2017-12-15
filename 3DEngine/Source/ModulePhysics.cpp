@@ -10,6 +10,7 @@
 
 #include "jpPhysicsWorld.h"
 #include "PhysX/Include/PxPhysicsAPI.h"
+#include "Glew\include\glew.h"
 
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3DEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
@@ -22,6 +23,9 @@ ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app
 
 	physics_world->CreateNewPhysicsWorld();
 	mScene = physics_world->CreateNewScene();
+	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
+	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
 
 	mPhysics = physics_world->GetPhysicsWorld();
 }
@@ -64,7 +68,7 @@ update_status ModulePhysics::Update(float dt)
 		}
 	}
 
-	if (App->clock.state == APP_PLAY && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	if (App->clock.state == APP_PLAY && App->input->GetMouseButton(SDL_SCANCODE_SPACE) == KEY_DOWN) {
 		ShotBalls();
 	}
 	if (App->clock.state != APP_PLAY && shot_balls.size() > 0) {
@@ -77,6 +81,8 @@ update_status ModulePhysics::Update(float dt)
 	if (dt > 0) {
 		physics_world->Simulate(dt);
 	}
+
+
 
 	return UPDATE_CONTINUE;
 }
@@ -139,4 +145,23 @@ void ModulePhysics::ShotBalls()
 		shot_balls[place] = new_ball;
 	}
 	curr_ball++;
+}
+
+void ModulePhysics::DrawPhysics()
+{
+	const physx::PxRenderBuffer& rb = mScene->getRenderBuffer();
+	int test = rb.getNbLines();
+
+	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	for (uint i = 0; i < test; i++)
+	{
+		const physx::PxDebugLine& line = rb.getLines()[i];
+
+		glVertex3f(line.pos0.x, line.pos0.y, line.pos0.z);
+		glVertex3f(line.pos1.x, line.pos1.y, line.pos1.z);
+	}
+	glEnd();
+	glLineWidth(1.0f);
 }

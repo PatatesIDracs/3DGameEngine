@@ -38,6 +38,8 @@ public:
 	// Rigid Body Test, shot balls
 	void ShotBalls();
 
+	void DrawPhysics();
+
 public:
 	physx::PxPhysics* mPhysics = nullptr;
 private:
