@@ -3,6 +3,8 @@
 
 #include "Module.h" 
 
+#define	VERY_LITTLE_NUMBER 0.00000000000000000000000000001
+
 class jpPhysicsWorld;
 class jpPhysicsRigidBody;
 class GameObject;

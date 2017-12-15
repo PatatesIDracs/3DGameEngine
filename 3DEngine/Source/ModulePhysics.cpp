@@ -24,7 +24,6 @@ ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app
 	physics_world->CreateNewPhysicsWorld();
 	mScene = physics_world->CreateNewScene();
 	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
-	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
 	mScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
 
 	mPhysics = physics_world->GetPhysicsWorld();
@@ -68,7 +67,7 @@ update_status ModulePhysics::Update(float dt)
 		}
 	}
 
-	if (App->clock.state == APP_PLAY && App->input->GetMouseButton(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+	if (App->clock.state == APP_PLAY && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
 		ShotBalls();
 	}
 	if (App->clock.state != APP_PLAY && shot_balls.size() > 0) {
@@ -149,13 +148,17 @@ void ModulePhysics::ShotBalls()
 
 void ModulePhysics::DrawPhysics()
 {
+	if (App->clock.state == APP_STOP)
+	{
+		mScene->simulate(VERY_LITTLE_NUMBER);
+		mScene->fetchResults();
+	}
 	const physx::PxRenderBuffer& rb = mScene->getRenderBuffer();
-	int test = rb.getNbLines();
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
 	glLineWidth(2.0f);
 	glBegin(GL_LINES);
-	for (uint i = 0; i < test; i++)
+	for (uint i = 0; i < rb.getNbLines(); i++)
 	{
 		const physx::PxDebugLine& line = rb.getLines()[i];
 
@@ -164,4 +167,6 @@ void ModulePhysics::DrawPhysics()
 	}
 	glEnd();
 	glLineWidth(1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 }
