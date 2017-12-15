@@ -10,7 +10,7 @@
 
 #include "jpPhysicsWorld.h"
 #include "PhysX/Include/PxPhysicsAPI.h"
-#include "Glew\include\glew.h"
+#include "Glew/include/glew.h"
 
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3DEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
@@ -36,6 +36,11 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {	
 	shot_balls.reserve(20);
+
+	// Create Frustum Culling Limits for Debug Draw physics colliders
+	culling_box = new physx::PxBounds3(physx::PxVec3(-128.0f, 0.f, 128.0f), physx::PxVec3(128.f, 128.f, 128.f));
+	if (mScene)
+		mScene->setVisualizationCullingBox(*culling_box);
 
 	return true;
 }
@@ -101,6 +106,15 @@ jpPhysicsRigidBody * ModulePhysics::GetNewRigidBody(int scene_to_load_it)
 		return physics_world->CreateRigidBody(physics_world->GetScene(scene_to_load_it));
 }
 
+void ModulePhysics::SetDebugCullingLimits(AABB & box)
+{
+	if (box.IsFinite()) {
+		culling_box->minimum = physx::PxVec3(box.MinX(), box.MinY(), box.MinZ());
+		culling_box->maximum = physx::PxVec3(box.MaxX(), box.MaxY(), box.MaxZ());
+		mScene->setVisualizationCullingBox(*culling_box);
+	}
+}
+
 void ModulePhysics::LoadModuleConfig(Config_Json & config)
 {
 }
@@ -128,9 +142,16 @@ void ModulePhysics::ShotBalls()
 	RbCollider* collider = new RbCollider(new_ball);
 	RigidBody* rigid_body = new RigidBody(new_ball);
 
-	// Get Shot Direction from camera raycast and apply force
-	float3 dir = App->camera->CameraShotBall()* 1000;
+	// Get Shot Direction from camera raycast
+	float3 dir = App->camera->CameraShotBall();
+
+	// Set the ball out of camera collider
+	new_ball->GetTransform()->SetPosition(new_ball->GetTransform()->GetPosition() + 2 * dir);
+
+	// Apply Force to the ball
+	dir *= 1000;
 	rigid_body->GetPhysicsBody()->ApplyForce(physx::PxVec3(dir.x, dir.y, dir.z));
+
 
 	// Add Last Shot to Vector
 	if (curr_ball < 20) {
@@ -148,9 +169,11 @@ void ModulePhysics::ShotBalls()
 
 void ModulePhysics::DrawPhysics()
 {
+	if (App->clock.state == APP_PLAY) return;
+
 	if (App->clock.state == APP_STOP)
 	{
-		mScene->simulate(VERY_LITTLE_NUMBER);
+		mScene->simulate((physx::PxReal)VERY_LITTLE_NUMBER);
 		mScene->fetchResults(true);
 	}
 	const physx::PxRenderBuffer& rb = mScene->getRenderBuffer();

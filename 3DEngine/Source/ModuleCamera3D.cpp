@@ -82,21 +82,6 @@ bool ModuleCamera3D::Start()
 	return true;
 }
 
-update_status ModuleCamera3D::PreUpdate(float dt)
-{
-	// Recalculate matrix -------------
-	if (update_camera) {
-		if (mode_editor) {
-			camera_editor->SetNewFrame(Position, Z, Y);
-		}
-		else GetMainCamera()->SetNewFrame(Position, Z, Y);
-
-		update_camera = false;
-	}
-
-	return UPDATE_CONTINUE;
-}
-
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {	
@@ -139,13 +124,31 @@ update_status ModuleCamera3D::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleCamera3D::PostUpdate(float dt)
+{
+	// Recalculate matrix -------------
+	if (update_camera) {
+		if (mode_editor) {
+			camera_editor->SetNewFrame(Position, Z, Y);
+		}
+		else GetMainCamera()->SetNewFrame(Position, Z, Y);
+
+		if (App->clock.state != APP_PLAY)
+			App->physics->SetDebugCullingLimits(GetMainCamera()->GetFrustum().MinimalEnclosingAABB());
+
+		update_camera = false;
+	}
+
+	return UPDATE_CONTINUE;
+}
+
 // -----------------------------------------------------------------
 void ModuleCamera3D::Look(const vec &Position, const vec &Reference, bool RotateAroundReference)
 {
 	this->Position = Position;
 	this->Reference = Reference;
 
-	Z = (Position - Reference).Normalized();
+	Z = -(Position - Reference).Normalized();
 	X = vec(0.0f, 1.0f, 0.0f).Cross(Z).Normalized();
 	Y = Z.Cross(X);
 
@@ -163,7 +166,7 @@ void ModuleCamera3D::LookAt(const vec &Spot)
 {
 	Reference = Spot;
 
-	Z = -(Position - Reference).Normalized();
+	Z = (Reference - Position).Normalized();
 	X = vec(0.0f,1.0f,0.0f).Cross(Z).Normalized();
 	Y = Z.Cross(X);
 

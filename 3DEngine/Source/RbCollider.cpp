@@ -25,7 +25,7 @@ RbCollider::~RbCollider()
 	
 	if (rigid_body_comp != nullptr) {
 		rigid_body_comp->SetColliderComp(nullptr);
-		rigid_body_comp->SetPhysicsBody(physics_body);
+		rigid_body_comp->SetPhysicsBody(nullptr);
 	}
 }
 
@@ -101,7 +101,7 @@ void RbCollider::SetRigidBodyComp(RigidBody * new_rigid_body)
 
 void RbCollider::SetPhysicsBody(jpPhysicsRigidBody * new_physics_body)
 {
-	if (physics_body && physics_body != new_physics_body)
+	if (physics_body && physics_body != new_physics_body && new_physics_body != nullptr)
 		delete physics_body;
 
 	physics_body = new_physics_body;

@@ -15,8 +15,8 @@ namespace physx {
 	class PxSceneDesc;
 	class PxRigidStatic;
 	class PxRigidDynamic;
+	class PxBounds3;
 }
-class GameObject;
 
 class ModulePhysics : public Module
 {
@@ -30,6 +30,9 @@ public:
 
 	//Pass a -1 as argument to create a RigidBody not linked to anyScene
 	jpPhysicsRigidBody* GetNewRigidBody(int scene_to_load_it);
+
+	// Set Culling for Debug Draw, uses current camera frustum as limits
+	void SetDebugCullingLimits(AABB& cull_box);
 
 	// JSON Save/Load Configuration
 	void LoadModuleConfig(Config_Json &config);
@@ -49,6 +52,9 @@ private:
 	jpPhysicsWorld* physics_world = nullptr;
 	physx::PxScene* mScene = nullptr;
 
+	// Physics Frustum Culling;
+	physx::PxBounds3* culling_box = nullptr;
+	
 	// Shot Balls
 	std::vector<GameObject*> shot_balls;
 	uint curr_ball = 0;

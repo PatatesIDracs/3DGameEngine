@@ -41,7 +41,7 @@ Camera::~Camera()
 
 void Camera::Update()
 {
-	if (active)
+	if (active && App->clock.state != APP_PLAY)
 	{
 		cfrustum->Draw(3.0, float4(1.f, 1.f, 1.f, 1.f));
 	}
@@ -201,7 +201,8 @@ void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 
 	if (parent != nullptr) {
 		float3 angle = cfrustum->WorldMatrix().ToEulerXYZ();
-		parent->GetTransform()->SetTransform(pos, Quat::FromEulerXYZ(angle.x, angle.y, angle.z));
+		angle.y = (180 * DEGTORAD) - angle.y;
+		parent->GetTransform()->SetTransform(pos, Quat::FromEulerXYZ(angle.x,angle.y, angle.z));
 		own_transf = true;
 	}
 }

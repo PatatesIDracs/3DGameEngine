@@ -20,7 +20,7 @@ RigidBody::~RigidBody()
 
 	if (collider_comp != nullptr) {
 		collider_comp->SetRigidBodyComp(nullptr);
-		collider_comp->SetPhysicsBody(physics_body);
+		collider_comp->SetPhysicsBody(nullptr);
 	}
 }
 
