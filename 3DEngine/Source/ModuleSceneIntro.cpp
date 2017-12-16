@@ -11,6 +11,7 @@
 #include "MeshRenderer.h"
 #include "RigidBody.h"
 #include "RbCollider.h"
+#include "DistanceJoint.h"
 #include "Material.h"
 #include "ConfigJSON.h"
 #include "parson.h"
@@ -693,6 +694,10 @@ Component * ModuleSceneIntro::NewOrphanComponent(COMP_TYPE new_comp_type)
 		break;
 	case COMP_RBSHAPE:
 		ret = new RbCollider(nullptr);
+		break;
+	case COMP_DISTANCEJOINT:
+		ret = new DistanceJoint(nullptr);
+			break;
 	default:
 		break;
 	}

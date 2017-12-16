@@ -37,7 +37,7 @@ public:
 
 	// Get Methods
 	void GetTransform(physx::PxVec3& pos, physx::PxQuat& quat);
-
+	physx::PxRigidBody* GetPxBody();
 
 	// Simulation Methods
 	void ApplyForce(physx::PxVec3 force);

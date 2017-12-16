@@ -214,6 +214,11 @@ void jpPhysicsRigidBody::GetTransform(physx::PxVec3& pos, physx::PxQuat& quat)
 	quat = transf.q;
 }
 
+physx::PxRigidBody * jpPhysicsRigidBody::GetPxBody()
+{
+	return px_body;
+}
+
 void jpPhysicsRigidBody::ApplyForce(physx::PxVec3 force)
 {
 	if (px_body && force.isFinite())

@@ -432,6 +432,7 @@ void GameObject::DrawAddComponentWindow()
 	if (ImGui::Button("Camera")) new_comp_type = COMP_TYPE::COMP_CAMERA;
 	if (ImGui::Button("Rigid Body")) new_comp_type = COMP_TYPE::COMP_RIGIDBODY;
 	if (ImGui::Button("Collider")) new_comp_type = COMP_TYPE::COMP_RBSHAPE;
+	if (ImGui::Button("Distance joint")) new_comp_type = COMP_TYPE::COMP_DISTANCEJOINT;
 
 	ImGui::End();
 

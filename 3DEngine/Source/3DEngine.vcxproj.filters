@@ -388,6 +388,9 @@
     <ClCompile Include="jpPhysicsShape.cpp">
       <Filter>Tools\jpPysics</Filter>
     </ClCompile>
+    <ClCompile Include="DistanceJoint.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
@@ -1508,6 +1511,9 @@
     </ClInclude>
     <ClInclude Include="jpPhysicsShape.h">
       <Filter>Tools\jpPysics</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceJoint.h">
+      <Filter>GameObject\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
