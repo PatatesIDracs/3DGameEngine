@@ -6,6 +6,8 @@
 
 #include "PhysX\Include\PxPhysicsAPI.h"
 
+class RigidBody;
+
 class DistanceJoint : public Component
 {
 public:
@@ -15,8 +17,12 @@ public:
 	void Update();
 	void DrawComponent();
 
+	void StopUsing(int comp_id);
+
 private:
 	void CreateJoint();
+
+	void CheckDistaces();
 
 private:
 	bool listening_to_scene = false;
@@ -24,7 +30,7 @@ private:
 	//Joint bodies
 	//Components must always be linked to gameObjects with a RigidBody component
 	//parent acts as physics_body0
-	GameObject* physics_body1 = nullptr;
+	RigidBody* physics_body1 = nullptr;
 	std::string pb1_name;
 
 	//Joint data

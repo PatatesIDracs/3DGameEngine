@@ -25,7 +25,6 @@ RbCollider::~RbCollider()
 	
 	if (rigid_body_comp != nullptr) {
 		rigid_body_comp->SetColliderComp(nullptr);
-		rigid_body_comp->SetPhysicsBody(nullptr);
 	}
 }
 

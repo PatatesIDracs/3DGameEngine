@@ -1,5 +1,6 @@
 #include "RigidBody.h"
 #include "RbCollider.h"
+#include "DistanceJoint.h"
 
 #include "Application.h"
 #include "Transform.h"
@@ -7,6 +8,7 @@
 
 RigidBody::RigidBody(GameObject * parent, bool isactive) : Component(parent, COMP_RIGIDBODY, true)
 {
+	joint_ptr = nullptr;
 	if (parent != nullptr)
 		parent->AddComponent(this);
 }
@@ -22,6 +24,12 @@ RigidBody::~RigidBody()
 		collider_comp->SetRigidBodyComp(nullptr);
 		collider_comp->SetPhysicsBody(nullptr);
 	}
+
+	if (joint_ptr != nullptr)
+	{
+		joint_ptr->StopUsing(UUID);
+	}
+
 }
 
 void RigidBody::Update()

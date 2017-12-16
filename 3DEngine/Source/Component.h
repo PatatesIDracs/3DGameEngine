@@ -55,6 +55,7 @@ public:
 
 	virtual void ChangeParent(GameObject* new_parent) { parent = new_parent; parent_UUID = new_parent->GetUUID(); };
 
+	int GetUUID() const { return UUID; };
 	int GetParentUUID() const { return parent_UUID; };
 	GameObject* GetParent() const { return parent; };
 	void ReloadUUID();

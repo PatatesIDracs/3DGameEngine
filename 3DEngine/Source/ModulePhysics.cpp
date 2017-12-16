@@ -37,11 +37,6 @@ bool ModulePhysics::Start()
 {	
 	shot_balls.reserve(20);
 
-	// Create Frustum Culling Limits for Debug Draw physics colliders
-	culling_box = new physx::PxBounds3(physx::PxVec3(-128.0f, 0.f, 128.0f), physx::PxVec3(128.f, 128.f, 128.f));
-	if (mScene)
-		mScene->setVisualizationCullingBox(*culling_box);
-
 	return true;
 }
 
@@ -109,9 +104,7 @@ jpPhysicsRigidBody * ModulePhysics::GetNewRigidBody(int scene_to_load_it)
 void ModulePhysics::SetDebugCullingLimits(AABB & box)
 {
 	if (box.IsFinite()) {
-		culling_box->minimum = physx::PxVec3(box.MinX(), box.MinY(), box.MinZ());
-		culling_box->maximum = physx::PxVec3(box.MaxX(), box.MaxY(), box.MaxZ());
-		mScene->setVisualizationCullingBox(*culling_box);
+		mScene->setVisualizationCullingBox(physx::PxBounds3(physx::PxVec3(box.MinX(), box.MinY(), box.MinZ()), physx::PxVec3(box.MaxX(), box.MaxY(), box.MaxZ())));
 	}
 }
 

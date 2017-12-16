@@ -572,7 +572,8 @@ const char * ModuleSceneIntro::GetRootName() const
 
 bool ModuleSceneIntro::ImSelected(int go_uuid) const
 {
-	if (go_uuid == selected_go_uuid)
+
+	if (current_object != nullptr && go_uuid == current_object->GetUUID())
 		return true;
 	else
 		return false;

@@ -51,9 +51,6 @@ private:
 
 	jpPhysicsWorld* physics_world = nullptr;
 	physx::PxScene* mScene = nullptr;
-
-	// Physics Frustum Culling;
-	physx::PxBounds3* culling_box = nullptr;
 	
 	// Shot Balls
 	std::vector<GameObject*> shot_balls;

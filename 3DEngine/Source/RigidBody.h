@@ -6,6 +6,7 @@
 class Transform;
 class jpPhysicsRigidBody;
 class RbCollider;
+class DistanceJoint;
 
 class RigidBody : public Component
 {
@@ -34,6 +35,10 @@ public:
 private:
 
 	RbCollider* LookForCollider();
+
+public:
+	//In case the rigidbody is used for a joint this id will be diferent than -1
+	DistanceJoint* joint_ptr = nullptr;
 
 private:
 	Transform* transform = nullptr;
