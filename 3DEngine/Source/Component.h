@@ -46,6 +46,7 @@ public:
 	//Save and Load methods
 	virtual void Save(const char* buffer_data, char* cursor, int& bytes_copied) {};
 	virtual void Load(char* cursor, int& bytes_copied) {};
+	virtual void OnLoad(std::vector<GameObject*> gameobjects, std::vector<Component*> components) {};
 	virtual void GetOwnBufferSize(uint& buffer_size);
 
 	const char* TypeToString();

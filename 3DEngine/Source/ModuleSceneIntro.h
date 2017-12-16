@@ -49,6 +49,7 @@ public:
 	const char* GetRootName() const;
 	bool ImSelected(int go_uuid) const;
 	GameObject* GetSelectedGameObject() const;
+	GameObject* LookForGameObject(int go_UUID) const;
 
 	void SetProperties(GameObject* show_this);
 	void DrawProperties() const;

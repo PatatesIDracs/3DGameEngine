@@ -128,5 +128,9 @@ void ResourcePrefab::LoadResourceFromBuffer(char * cursor, int & bytes_copied, u
 		}
 	}
 
+	for (uint i = 0; i < loaded_components.size(); i++)
+	{
+		loaded_components[i]->OnLoad(loaded_gameobjects, loaded_components);
+	}
 	App->scene_intro->LoadGameObjects(&loaded_gameobjects, nullptr, false);
 }

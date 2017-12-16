@@ -584,6 +584,22 @@ GameObject * ModuleSceneIntro::GetSelectedGameObject() const
 	return current_object;
 }
 
+GameObject * ModuleSceneIntro::LookForGameObject(int go_UUID) const
+{
+	for (uint i = 0; i < dynamic_gameobjects.size(); i++)
+	{
+		if (dynamic_gameobjects[i]->GetUUID() == go_UUID)
+			return dynamic_gameobjects[i];
+	}
+	for (uint i = 0; i < static_gameobjects.size(); i++)
+	{
+		if (static_gameobjects[i]->GetUUID() == go_UUID)
+			return static_gameobjects[i];
+	}
+
+	return nullptr;
+}
+
 void ModuleSceneIntro::SetProperties(GameObject * show_this)
 {
 	current_object = show_this;
