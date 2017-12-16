@@ -166,6 +166,11 @@ void RigidBody::Save(const char * buffer_data, char * cursor, int & bytes_copied
 	memcpy(cursor, &own_update, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = sizeof(float);
+	memcpy(cursor, &mass, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void RigidBody::Load(char * cursor, int & bytes_copied)
@@ -197,12 +202,18 @@ void RigidBody::Load(char * cursor, int & bytes_copied)
 	memcpy(&own_update, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	bytes_to_copy = sizeof(float);
+	memcpy(&mass, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
 }
 
 void RigidBody::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
 	buffer_size += sizeof(bool) * 2;
+	buffer_size += sizeof(float);
 }
 
 RbCollider * RigidBody::LookForCollider()
