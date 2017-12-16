@@ -25,7 +25,7 @@ RigidBody::~RigidBody()
 		collider_comp->SetPhysicsBody(nullptr);
 	}
 
-	if (joint_ptr != nullptr)
+	if (joint_ptr != nullptr && joint_ptr->GetParentUUID() != parent_UUID)//UUID cheked since we don't want to call it if its a sibling component
 	{
 		joint_ptr->StopUsing(UUID);
 	}

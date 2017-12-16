@@ -86,7 +86,10 @@ void DistanceJoint::Save(const char * buffer_data, char * cursor, int & bytes_co
 	///DistanceJoint
 	//Set the id to the current physic object here
 	//Since we only use the id for save an load we don't need to set it anywhere else on the code
-	pb1_go_id = physics_body1->GetUUID();
+	if (physics_body1 != nullptr)
+		pb1_go_id = physics_body1->GetUUID();
+	else
+		pb1_go_id = -1;
 	bytes_to_copy = sizeof(int);
 	memcpy(cursor, &pb1_go_id, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -211,7 +214,7 @@ void DistanceJoint::DrawComponent()
 
 void DistanceJoint::StopUsing(int comp_id)
 {
-	if (physics_body1->GetUUID() == comp_id)
+	if (physics_body1 != nullptr && physics_body1->GetUUID() == comp_id)
 	{
 		distance_joint->release();
 		distance_joint = nullptr;
