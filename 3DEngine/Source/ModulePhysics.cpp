@@ -131,15 +131,16 @@ void ModulePhysics::ShotBalls()
 	if (camera != nullptr) {
 		new_ball->SetTransform((float4x4)camera->GetTransform()->GetGlobalTransform().Transposed());
 	}
-	// Create Physics Components, default values will be enough
-	RbCollider* collider = new RbCollider(new_ball);
-	RigidBody* rigid_body = new RigidBody(new_ball);
-
 	// Get Shot Direction from camera raycast
 	float3 dir = App->camera->CameraShotBall();
 
 	// Set the ball out of camera collider
 	new_ball->GetTransform()->SetPosition(new_ball->GetTransform()->GetPosition() + 2 * dir);
+	new_ball->GetTransform()->SetScale(float3(0.5f, 0.5f, 0.5));
+
+	// Create Physics Components, default values will be enough
+	RbCollider* collider = new RbCollider(new_ball);
+	RigidBody* rigid_body = new RigidBody(new_ball);
 
 	// Apply Force to the ball
 	dir *= 1000;
