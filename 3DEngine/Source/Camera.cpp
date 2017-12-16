@@ -99,7 +99,7 @@ float* Camera::GetViewMatrix() const
 void Camera::GetCameraVectors(float3 & position, float3 & front, float3 & up) const
 {
 	position = cfrustum->Pos();
-	front = cfrustum->Front();
+	front = -cfrustum->Front();
 	up = cfrustum->Up();
 }
 
@@ -201,7 +201,7 @@ void Camera::SetNewFrame(vec& pos, vec& front, vec& up)
 
 	if (parent != nullptr) {
 		float3 angle = cfrustum->WorldMatrix().ToEulerXYZ();
-		angle.y = (180 * DEGTORAD) - angle.y;
+		angle.y = (180 * DEGTORAD) + angle.y;
 		parent->GetTransform()->SetTransform(pos, Quat::FromEulerXYZ(angle.x,angle.y, angle.z));
 		own_transf = true;
 	}

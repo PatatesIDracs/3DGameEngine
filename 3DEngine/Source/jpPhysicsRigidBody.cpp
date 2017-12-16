@@ -219,6 +219,13 @@ physx::PxRigidBody * jpPhysicsRigidBody::GetPxBody()
 	return px_body;
 }
 
+bool jpPhysicsRigidBody::Sleeping()
+{
+	if (px_body && px_body->isSleeping())
+		return true;
+	return false;
+}
+
 void jpPhysicsRigidBody::ApplyForce(physx::PxVec3 force)
 {
 	if (px_body && force.isFinite())
@@ -241,4 +248,10 @@ void jpPhysicsRigidBody::ApplyTorqueImpulse(physx::PxVec3 impulse)
 {
 	if (px_body && impulse.isFinite())
 		px_body->addTorque(impulse, physx::PxForceMode::Enum::eIMPULSE);
+}
+
+void jpPhysicsRigidBody::MoveKinematic(physx::PxTransform dest)
+{
+	if (px_body)
+		px_body->setKinematicTarget(dest);
 }

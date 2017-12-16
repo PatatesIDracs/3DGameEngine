@@ -34,12 +34,12 @@ RigidBody::~RigidBody()
 
 void RigidBody::Update()
 {
+	physics_body->px_body->wakeUp();
 	if (transform && physics_body && App->clock.delta_time > 0)
 	{
 		physx::PxVec3 pos;
 		physx::PxQuat rot;
 		physics_body->GetTransform(pos, rot);
-		physics_body->SetDynamic(true);
 		transform->SetTransform(float3(pos.x, pos.y, pos.z), Quat(rot.x, rot.y, rot.z, rot.w));
 		own_update = true;
 	}

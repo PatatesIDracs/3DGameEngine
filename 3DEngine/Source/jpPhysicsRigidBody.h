@@ -39,11 +39,17 @@ public:
 	void GetTransform(physx::PxVec3& pos, physx::PxQuat& quat);
 	physx::PxRigidBody* GetPxBody();
 
+	// Check Methods
+	bool Sleeping();
+
 	// Simulation Methods
 	void ApplyForce(physx::PxVec3 force);
 	void ApplyImpulse(physx::PxVec3 impulse);
 	void ApplyTorqueForce(physx::PxVec3 force);
 	void ApplyTorqueImpulse(physx::PxVec3 impulse);
+
+	// Move Kinematic
+	void MoveKinematic(physx::PxTransform dest);
 
 public:
 	physx::PxRigidDynamic* px_body = nullptr;

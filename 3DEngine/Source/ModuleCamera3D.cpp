@@ -33,7 +33,7 @@ void ModuleCamera3D::SetCameraEditor()
 	camera_editor = new Camera(nullptr, true);
 	camera_editor->SetFrustumPlanes(0.5, 512);
 	camera_editor->SetFrustumViewAngle();
-	camera_editor->SetNewFrame(Position, Z, Y);
+	camera_editor->SetNewFrame(Position, -Z, Y);
 }
 
 void ModuleCamera3D::SetMainCamera(Camera* comp_camera, bool active)
@@ -112,7 +112,8 @@ update_status ModuleCamera3D::Update(float dt)
 	int wheelmotion = App->input->GetMouseZ();
 	if (wheelmotion != 0)
 	{
-		Position += Z*(float)wheelmotion;
+		Position -= Z*(float)wheelmotion;
+		Reference -= Z*(float)(wheelmotion);
 		update_camera = true;
 	}
 
@@ -129,9 +130,9 @@ update_status ModuleCamera3D::PostUpdate(float dt)
 	// Recalculate matrix -------------
 	if (update_camera) {
 		if (mode_editor) {
-			camera_editor->SetNewFrame(Position, Z, Y);
+			camera_editor->SetNewFrame(Position, -Z, Y);
 		}
-		else GetMainCamera()->SetNewFrame(Position, Z, Y);
+		else GetMainCamera()->SetNewFrame(Position, -Z, Y);
 
 		if (App->clock.state != APP_PLAY)
 			App->physics->SetDebugCullingLimits(GetMainCamera()->GetFrustum().MinimalEnclosingAABB());
@@ -148,7 +149,7 @@ void ModuleCamera3D::Look(const vec &Position, const vec &Reference, bool Rotate
 	this->Position = Position;
 	this->Reference = Reference;
 
-	Z = -(Position - Reference).Normalized();
+	Z = (Position - Reference).Normalized();
 	X = vec(0.0f, 1.0f, 0.0f).Cross(Z).Normalized();
 	Y = Z.Cross(X);
 
@@ -166,7 +167,7 @@ void ModuleCamera3D::LookAt(const vec &Spot)
 {
 	Reference = Spot;
 
-	Z = (Reference - Position).Normalized();
+	Z = (Position - Reference).Normalized();
 	X = vec(0.0f,1.0f,0.0f).Cross(Z).Normalized();
 	Y = Z.Cross(X);
 
@@ -197,12 +198,12 @@ void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 {
 
 	int dx = -App->input->GetMouseXMotion();
-	int dy = App->input->GetMouseYMotion();
+	int dy = -App->input->GetMouseYMotion();
 
 	float Sensitivity = 0.25f;
 
 	if (RotateAroundReference)
-		Position = -(Position - Reference);
+		Position = (Position - Reference);
 
 	if (dx != 0)
 	{
@@ -235,15 +236,15 @@ void ModuleCamera3D::RotateCamera(bool RotateAroundReference)
 
 	update_camera = true;
 }
-
+	
 void ModuleCamera3D::MoveCamera()
 {
 	float dx = 0;
 	float dy = 0;
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = -speed;
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = speed;
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) dx = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) dx = speed;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) dy = -speed;
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) dy = speed;
 
 	if (dx != 0)
 	{
