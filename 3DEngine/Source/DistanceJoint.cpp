@@ -51,7 +51,7 @@ void DistanceJoint::Update()
 				return;
 			}
 
-			if (new_rigid_body->GetUUID() != physics_body1->GetUUID())
+			if (physics_body1 != nullptr && new_rigid_body->GetUUID() != physics_body1->GetUUID())
 				physics_body1->joint_ptr = nullptr;
 
 			physics_body1 = new_rigid_body;
@@ -214,8 +214,11 @@ void DistanceJoint::CreateJoint()
 
 void DistanceJoint::CheckDistaces()
 {
-	distance_joint->setMinDistance(min_dist);
-	distance_joint->setMaxDistance(max_dist);
+	if (distance_joint != nullptr)
+	{
+		distance_joint->setMinDistance(min_dist);
+		distance_joint->setMaxDistance(max_dist);
+	}
 }
 
 void DistanceJoint::DrawComponent()
@@ -232,8 +235,18 @@ void DistanceJoint::DrawComponent()
 		
 		if(ImGui::Button("Select target")) listening_to_scene = !listening_to_scene;
 
-		if( ImGui::InputFloat("Min distance", (float*)&min_dist, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue)) 		CheckDistaces();
-		if (ImGui::InputFloat("Max distance", (float*)&max_dist, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue))		CheckDistaces();
+		if (ImGui::InputFloat("Min distance", (float*)&min_dist, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			if (min_dist > max_dist)
+				min_dist = max_dist;
+			CheckDistaces();
+		}
+		if (ImGui::InputFloat("Max distance", (float*)&max_dist, 0.1f, 1.f, 2, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			if (max_dist < min_dist)
+				max_dist = min_dist;
+			CheckDistaces();
+		}
 
 	}
 	ImGui::PopID();
