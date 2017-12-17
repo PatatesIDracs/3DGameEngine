@@ -20,6 +20,8 @@ DistanceJoint::~DistanceJoint()
 {
 	if (distance_joint != nullptr)
 		distance_joint->release();
+	if (parent != nullptr)
+		((RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY))->joint_ptr = nullptr;
 	if (physics_body1 != nullptr)
 		physics_body1->joint_ptr = nullptr;
 }
@@ -168,7 +170,16 @@ void DistanceJoint::GetOwnBufferSize(uint & buffer_size)
 void DistanceJoint::ChangeParent(GameObject * new_parent)
 {
 	Component::ChangeParent(new_parent);
-	((RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY))->joint_ptr = this;
+
+	RigidBody* parent_rb = (RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
+	if(parent_rb != nullptr)
+		parent_rb->joint_ptr = this;
+	else
+	{
+		//We create a rigid body, not possible to create a joint without a RigidBody
+		parent_rb = new RigidBody(new_parent);
+		parent_rb->joint_ptr = this;
+	}
 }
 
 void DistanceJoint::CreateJoint()
