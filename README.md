@@ -34,12 +34,16 @@ Click on File->Load_default_scene to clean the scene
 [A] move left   
 [S] move backwards   
 [D] move right   
+[SPACE] shoot balls
 
 **Game mode**
 During game mode the camera selected as main camera will be the one used to render the scene, if there is no main camera selected the editor ghost camera will be used.
 In game mode objects can't be edited and almost all UI will be hidden.
+PhysX simulation will take place during game mode
 
 **Innovation**
+Render uses texture order to render
+Using PhysX libraries
 Scene is serialized in own binary format      
 Guizmos added to edit GameObjects      
 
@@ -65,7 +69,8 @@ We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.ne
 [Devil](http://openil.sourceforge.net/) was used to read texture files.     
 [MMGR](http://www.paulnettle.com/) memory manager was used to monitor memory usage in runtime.    
 [ImGui](https://github.com/ocornut/imgui) used for all UI elements       
-[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) used to create the guizmos     
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) used to create the guizmos    
+[PhysX](http://www.nvidia.es/object/nvidia-physx-es.html) used for physics.
 
   
 **Tools**    
@@ -73,6 +78,15 @@ We used [OpenGL](https://www.opengl.org/) with [GLEW](http://glew.sourceforge.ne
 
 
 ## Changelog
+### v0.3 - Assigment 3
+* Implemented PhysX
+* Added component RigidBody
+* Added component Collider
+* Added component Distance joint
+* Able to shoot balls
+* Bug fixing
+
+
 ### v0.2.1 - Assigment 2
 * Added simple assets window to Load scenes and meshes        
 * Added an octree render option in the render config        
