@@ -33,14 +33,44 @@ const float * Transform::GetGlobalTransposed() const
 	return global_transform.Transposed().ptr();
 }
 
-const Quat Transform::GetRotQuat() const
+Quat Transform::GetRotQuat() const
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+}
+
+Quat Transform::GetGlobalQuat() const
+{
+	float3 angle = global_transform.ToEulerXYZ();
+	return Quat::FromEulerXYZ(angle.x,angle.y,angle.z);
+}
+
+Quat Transform::GetParentQuat() const
+{
+	Quat ret = Quat(0.f, 0.f, 0.f, 1);
+	if (parent->parent != nullptr) {
+		float3 angle = parent->parent->GetTransform()->GetGlobalTransform().ToEulerXYZ();
+		ret = ret.FromEulerXYZ(angle.x, angle.y, angle.z);
+	}
+	return ret;
 }
 
 float3 Transform::GetPosition() const
 {
 	return position;
+}
+
+float3 Transform::GetGlobalPos() const
+{
+	return global_transform.Col3(3);
+}
+
+float3 Transform::GetParentPos() const
+{
+	if (parent->parent != nullptr)
+	{
+		return parent->parent->GetTransform()->GetPosition();
+	}
+	return float3(0.f,0.f,0.f);
 }
 
 float3 Transform::GetScale() const

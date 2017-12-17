@@ -22,8 +22,11 @@ public:
 
 	void SetRigidBodyComp(RigidBody* new_rigid_body);
 	void SetPhysicsBody(jpPhysicsRigidBody* new_physics_body);
+	void SetSizeFromBoundingBox();
 
 	jpPhysicsRigidBody* GetPhysicsBody();
+	float3 GetPosition() const;
+	Quat GetLocalQuat() const;
 
 	void ChangeCollider();
 	void UpdateCollider();
@@ -47,10 +50,15 @@ private:
 	JP_COLLIDER_TYPE	curr_type = (JP_COLLIDER_TYPE)0;
 
 	// Collider Data
-	float3				material = float3(0.5f, 0.5f, 0.5f);
+	Quat				local_quat = Quat(0, 0, 0, 1);
 	float3				position = float3(0.f, 0.f, 0.f);
+	float3				angle = float3(0.f, 0.f, 0.0f);
+
+	float3				material = float3(0.5f, 0.5f, 0.5f);
 	float3				size = float3(1.f, 1.f, 1.f);
 	float				rad = 0.5f;
+
+
 };
 
 #endif // !__RB_COLLIDER_H__

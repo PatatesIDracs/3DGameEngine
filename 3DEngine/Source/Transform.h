@@ -13,8 +13,12 @@ public:
 	const float4x4 GetLocalTransform() const;
 	const float4x4 GetGlobalTransform()const;
 	const float* GetGlobalTransposed()const;
-	const Quat GetRotQuat() const;
+	Quat GetRotQuat() const;
+	Quat GetGlobalQuat() const;
+	Quat GetParentQuat() const;
 	float3 GetPosition() const;
+	float3 GetGlobalPos() const;
+	float3 GetParentPos() const;
 	float3 GetScale() const;
 	
 	void Update();

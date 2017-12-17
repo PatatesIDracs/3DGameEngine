@@ -31,8 +31,9 @@ RbCollider::~RbCollider()
 void RbCollider::UpdateTransform()
 {
 	if (!rigid_body_comp && physics_body) {
-		float3 fpos = transform->GetPosition();
-		Quat quat = transform->GetRotQuat();
+		Quat quat = transform->GetGlobalQuat();
+		float3 fpos = transform->GetGlobalPos() + quat*position;
+		quat = quat*local_quat;
 		physics_body->px_body->setGlobalPose(physx::PxTransform(physx::PxVec3(fpos.x, fpos.y, fpos.z), physx::PxQuat(quat.x, quat.y, quat.z, quat.w)));
 	}
 }
@@ -51,8 +52,23 @@ void RbCollider::DrawComponent()
 
 		// Collider Position
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
-			physx::PxTransform transf =	physics_body->px_body->getGlobalPose();
-			transf.p = physx::PxVec3(position.x, position.y, position.z);
+			// Set Position
+			float3 new_pos = transform->GetGlobalTransform().Col3(3) + transform->GetGlobalQuat()*position;
+
+			physx::PxTransform transf = physics_body->px_body->getGlobalPose();
+			transf.p = physx::PxVec3(new_pos.x, new_pos.y, new_pos.z);
+			physics_body->px_body->setGlobalPose(transf);
+		}
+
+		// Collider Angle
+		if (ImGui::InputFloat3("Angle", &angle.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
+
+			// Set Good Rotation
+			local_quat = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+			Quat Qg = transform->GetGlobalQuat()*local_quat;
+
+			physx::PxTransform transf = physics_body->px_body->getGlobalPose();
+			transf.q = physx::PxQuat(Qg.x, Qg.y, Qg.z, Qg.w);
 			physics_body->px_body->setGlobalPose(transf);
 		}
 
@@ -78,6 +94,10 @@ void RbCollider::DrawComponent()
 			break;
 		default:
 			break;
+		}
+
+		if (ImGui::Button("Size From AABB", ImVec2(100,20))) {
+			SetSizeFromBoundingBox();
 		}
 
 		// Material
@@ -106,9 +126,32 @@ void RbCollider::SetPhysicsBody(jpPhysicsRigidBody * new_physics_body)
 	physics_body = new_physics_body;
 }
 
+void RbCollider::SetSizeFromBoundingBox()
+{
+	AABB box = parent->GetBoundaryBox();
+	if (box.IsFinite()) {
+		size = float3(box.MaxX() - box.MinX(), box.MaxY() - box.MinY(), box.MaxZ() - box.MinZ());
+		rad = size.x*0.5f;
+		UpdateCollider();
+	}
+	else {
+		size = float3(1.f, 1.f, 1.f);
+		rad = 0.5;
+	}
+}
+
 jpPhysicsRigidBody * RbCollider::GetPhysicsBody()
 {
 	return physics_body;
+}
+
+float3 RbCollider::GetPosition() const
+{
+	return position;
+}
+Quat RbCollider::GetLocalQuat() const
+{
+	return local_quat;
 }
 
 void RbCollider::ChangeCollider()
