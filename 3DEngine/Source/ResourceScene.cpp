@@ -108,6 +108,15 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 
 	}
 
+	for (uint i = 0; i < loaded_gameobjects.size(); i++)
+	{
+		for (uint j = 0; j < loaded_gameobjects.size(); j++)
+		{
+			if (loaded_gameobjects[j]->GetUUID() == loaded_gameobjects[i]->GetparentUUID())
+				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
+		}
+	}
+
 	for (uint i = 0; i < loaded_components.size(); i++)
 	{
 		for (uint j = 0; j < loaded_gameobjects.size(); j++)
@@ -116,15 +125,6 @@ void ResourceScene::LoadResourceFromBuffer(char * cursor, int & bytes_copied, ui
 			{
 				loaded_gameobjects[j]->AddComponent(loaded_components[i], true);
 			}
-		}
-	}
-
-	for (uint i = 0; i < loaded_gameobjects.size(); i++)
-	{
-		for (uint j = 0; j < loaded_gameobjects.size(); j++)
-		{
-			if (loaded_gameobjects[j]->GetUUID() == loaded_gameobjects[i]->GetparentUUID())
-				loaded_gameobjects[j]->AddChildren(loaded_gameobjects[i]);
 		}
 	}
 

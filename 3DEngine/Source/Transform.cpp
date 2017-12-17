@@ -63,7 +63,7 @@ float3 Transform::GetPosition() const
 
 float3 Transform::GetGlobalPos() const
 {
-	return global_transform.Col3(3);
+	return global_pos;
 }
 
 float3 Transform::GetParentPos() const
@@ -118,10 +118,11 @@ void Transform::UpdateGlobalTransform()
 {
 	if (parent->parent != nullptr) {
 		global_transform = parent->parent->GetTransform()->GetGlobalTransform()* transform;
-		global_transform.Decompose(float3(0,0,0), global_rotation,global_scale);
+		global_transform.Decompose(global_pos, global_rotation,global_scale);
 		global_rotation.Normalized();
 	}
 	else {
+		global_pos = position;
 		global_transform = transform;
 		global_rotation = rotation;
 	}
@@ -263,6 +264,44 @@ void Transform::Save(const char * buffer_data, char * cursor, int& bytes_copied)
 	memcpy(cursor, t, bytes_to_copy);
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
+
+	//Global scale
+	bytes_to_copy = sizeof(float);
+	memcpy(cursor, &global_scale.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_scale.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_scale.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Global pos
+	memcpy(cursor, &global_pos.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_pos.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_pos.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Global rotation
+	memcpy(cursor, &global_rotation.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_rotation.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_rotation.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &global_rotation.w, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 }
 
 void Transform::Load(char * cursor, int & bytes_copied)
@@ -313,6 +352,44 @@ void Transform::Load(char * cursor, int & bytes_copied)
 	angle = rotation.ToEulerXYZ()*RADTODEG;
 	update_transform = true;
 
+
+	//Global scale
+	bytes_to_copy = sizeof(float);
+	memcpy(&global_scale.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_scale.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_scale.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Global pos
+	memcpy(&global_pos.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_pos.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_pos.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
+	//Global rotation
+	memcpy(&global_rotation.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_rotation.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_rotation.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&global_rotation.w, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	LOGC("Component transform loaded");
 }
 
@@ -321,6 +398,9 @@ void Transform::GetOwnBufferSize(uint & buffer_size)
 	Component::GetOwnBufferSize(buffer_size);
 
 	buffer_size += sizeof(float) * 16;		//Transform
+	buffer_size += sizeof(float) * 3 * 2;	//Global scale and pos
+	buffer_size += sizeof(float) * 4;		//Global rotation
+
 }
 
 

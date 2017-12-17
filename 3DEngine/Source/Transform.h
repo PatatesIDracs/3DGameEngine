@@ -50,8 +50,9 @@ private:
 	float4x4 transform, global_transform;
 	Quat rotation = Quat::identity;
 
-	Quat global_rotation = Quat::identity;
+	float3 global_pos = float3(0, 0, 0);
 	float3 global_scale = float3(1, 1, 1);
+	Quat global_rotation = Quat::identity;
 
 	bool update_transform = false;
 

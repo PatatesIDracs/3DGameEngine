@@ -354,6 +354,8 @@ void GameObject::Load(char* cursor, int& bytes_copied)
 	bytes_copied += bytes_to_copy;
 	name_c_str[name_size] = 0x00;
 	name = name_c_str;
+	memcpy(new_name, name_c_str, name_size);
+	new_name[name_size] = 0x00;
 	delete[] name_c_str;
 
 	bytes_to_copy = sizeof(bool);
