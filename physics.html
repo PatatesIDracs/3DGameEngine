@@ -215,11 +215,13 @@
 						<p class="important"> RigidBody</p>
 						<p class="lead"> The RigidBody component is what will give the GameObject the possibility to act dynamically in the simulation, this component will take the collider defined in the Collider component and use it to simulate physics and move the GameObject accordingly, note that even though you don't need a collider component to use the RigidBody without it the RigidBody won't have a body to collide and will simply fall to the void.</p>
 						<p class="lead"> Right now this component is very simple and it only allow to change it's mass and to make it dynamic or kinematic, setting it as kinematic will make it act as a collider, other dynamic objects will collide with it but they will not affect the kinematic object state.</p>
-							
+						
+						<img class="img-responsive center-block" src="img/balls.gif">						
 						<p class="important"> Distance joint</p>
 						<p class="lead"> Distance joint components link two RigidBody between each other with a point to point constraint, note that a GameObject can't have a Distance joint without a RigidBody component, if you create a distance joint without a RigidBody the RigidBody will be automatically created.</p>
 						<p class="lead"> The first object the distance joint has is the parent of the component, to get the second object and create the joint click on the Select button and then click on the 2 object (using both hierarchy window or the scene itself). Once the joint is created you can modify both the max distance and the minimum distance, the constraint will pull the objects apart when they are closer than the minimum distance and pull them together if they are further apart than the max distance.</p>
 						
+						<img class="img-responsive center-block" src="img/pendul.gif">
                         <p class="page-header" align="left">
                             Find us on:
                         </p>
