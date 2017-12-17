@@ -316,6 +316,7 @@ void ModuleSceneIntro::LoadGameObjects(std::vector<GameObject*>* new_go_array, G
 
 	current_object = nullptr;
 
+	loaded_root->GetTransform()->update_transform = true;
 	loaded_root->Update();
 	CheckDynamicGameObjectsState();
 }

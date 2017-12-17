@@ -64,6 +64,12 @@ void GameObject::Update()
 
 	if (!IsActive()) return;
 
+	//for (uint i = (int)isstatic; i < components.size(); i++)
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->Update();
+	}
+
 	//Check if the GameObject has a gameobject list
 	if (children.size() != 0)
 	{
@@ -73,11 +79,6 @@ void GameObject::Update()
 		}
 	}
 	
-	//for (uint i = (int)isstatic; i < components.size(); i++)
-	for (uint i = 0; i < components.size(); i++)
-	{
-		components[i]->Update();
-	}
 }
 
 void GameObject::AddToScene() const

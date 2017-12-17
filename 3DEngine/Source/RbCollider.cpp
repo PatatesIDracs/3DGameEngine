@@ -185,7 +185,8 @@ void RbCollider::ChangeParent(GameObject * new_parent)
 	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
 
 	transform = parent->GetTransform();
-	UpdateTransform();
+	if (!transform->update_transform)
+		transform->update_transform = true;
 }
 
 void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copied)

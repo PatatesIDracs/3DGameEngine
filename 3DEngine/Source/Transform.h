@@ -44,6 +44,8 @@ private:
 
 	void NormalizeRotationAngle();
 
+public:
+	bool update_transform = false;
 
 private:
 
@@ -54,7 +56,6 @@ private:
 	float3 global_scale = float3(1, 1, 1);
 	Quat global_rotation = Quat::identity;
 
-	bool update_transform = false;
 
 	float3 position = {0.0f,0.0f,0.0f};
 	float3 angle = {0.0f, 0.0f, 0.0f};

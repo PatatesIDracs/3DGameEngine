@@ -48,13 +48,6 @@ void RigidBody::Update()
 		float3 position = float3(pos.x, pos.y, pos.z);
 		Quat rotation = Quat(rot.x, rot.y, rot.z, rot.w);
 	
-	
-		// Collider to local transform
-		if (collider_comp) {
-			Quat local_rot = collider_comp->GetLocalQuat().Conjugated();
-			position -= local_rot*collider_comp->GetPosition();
-			rotation = rotation*local_rot;
-		}
 		Quat global_rot = transform->GetParentQuat().Conjugated();
 
 		// Global to local transform
@@ -63,7 +56,13 @@ void RigidBody::Update()
 		rotation = global_rot*rotation;
 		position = global_rot*(position - transform->GetParentPos());
 		position = float3(position.x / p_scale.x, position.y / p_scale.y, position.z / p_scale.z);
-		
+
+		// Collider to local transform
+		if (collider_comp) {
+			Quat local_rot = collider_comp->GetLocalQuat().Conjugated();
+			position -= local_rot*collider_comp->GetPosition();
+			rotation = rotation*local_rot;
+		}
 
 		// GameObject local transform and position
 		transform->SetTransform(position, Quat(rotation.x, rotation.y, rotation.z, rotation.w));
@@ -75,9 +74,8 @@ void RigidBody::Update()
 void RigidBody::UpdateTransform()
 {
 	if(physics_body && !own_update) {
-		float3 fpos = transform->GetGlobalPos();
 		Quat quat = transform->GetParentQuat()*transform->CurrRotQuat();
-
+		float3 fpos = transform->GetGlobalPos();
 		// Get Local Transform if component have collider_comp assosiated
 		if (collider_comp) {
 			quat = quat*collider_comp->GetLocalQuat();
@@ -107,7 +105,8 @@ void RigidBody::ChangeParent(GameObject * new_parent)
 	physics_body->SetDynamic(dynamic);
 
 	transform = new_parent->GetTransform();
-	UpdateTransform();
+	if (!transform->update_transform)
+		transform->update_transform = true;
 }
 
 void RigidBody::DrawComponent()
