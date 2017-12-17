@@ -21,7 +21,11 @@ DistanceJoint::~DistanceJoint()
 	if (distance_joint != nullptr)
 		distance_joint->release();
 	if (parent != nullptr)
-		((RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY))->joint_ptr = nullptr;
+	{
+		RigidBody* parent_rb = (RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
+		if (parent_rb != nullptr)
+			parent_rb->joint_ptr = nullptr;
+	}
 	if (physics_body1 != nullptr)
 		physics_body1->joint_ptr = nullptr;
 }
@@ -37,16 +41,20 @@ void DistanceJoint::Update()
 				listening_to_scene = false;
 				return;
 			}
-
-			physics_body1 = (RigidBody*)App->scene_intro->GetSelectedGameObject()->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
+			
+			RigidBody* new_rigid_body = (RigidBody*)App->scene_intro->GetSelectedGameObject()->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
 			//A rigid body can only have on joint right now to avoid possible bugs
-			if (physics_body1 == nullptr || physics_body1->joint_ptr != nullptr)
+			if (new_rigid_body == nullptr || new_rigid_body->joint_ptr != nullptr)
 			{
 				LOGC("Unable to create a joint with this GameObject");
 				listening_to_scene = false;
 				return;
 			}
 
+			if (new_rigid_body->GetUUID() != physics_body1->GetUUID())
+				physics_body1->joint_ptr = nullptr;
+
+			physics_body1 = new_rigid_body;
 			listening_to_scene = false;
 			CreateJoint();
 		}
@@ -174,18 +182,26 @@ void DistanceJoint::ChangeParent(GameObject * new_parent)
 	RigidBody* parent_rb = (RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
 	if(parent_rb != nullptr)
 		parent_rb->joint_ptr = this;
-	else
-	{
-		//We create a rigid body, not possible to create a joint without a RigidBody
-		parent_rb = new RigidBody(new_parent);
-		parent_rb->joint_ptr = this;
-	}
 }
 
 void DistanceJoint::CreateJoint()
 {
+	if (distance_joint != nullptr)
+	{
+		distance_joint->release();
+		distance_joint = nullptr;
+	}
+
+	//Check if the parent has a RigidBody if it doesn't create one
+	RigidBody* parent_rb = (RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY);
+	if (parent_rb == nullptr)
+	{
+		parent_rb = new RigidBody(parent);
+		parent_rb->joint_ptr = this;
+	}
+
 	physx::PxVec3 offset = physx::PxVec3(0, 0, 0);
-	distance_joint = physx::PxDistanceJointCreate(*App->physics->mPhysics, ((RigidBody*)parent->FindFirstComponent(COMP_TYPE::COMP_RIGIDBODY))->GetPhysicsBody()->GetPxBody(),
+	distance_joint = physx::PxDistanceJointCreate(*App->physics->mPhysics, parent_rb->GetPhysicsBody()->GetPxBody(),
 		physx::PxTransform(offset), physics_body1->GetPhysicsBody()->GetPxBody(), physx::PxTransform(-offset));
 	
 	if (distance_joint != nullptr)
