@@ -172,10 +172,10 @@ update_status ModuleSceneIntro::Update(float dt)
 			scene_octree.Draw(3.0f, float4(0.25f, 1.00f, 0.00f, 1.00f));
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && current_object != root) {
+	/*if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && current_object != root) {
 		DeleteGameObject(current_object);
 		current_object = nullptr;
-	}
+	}*/
 
 	// Generate Basic Geometry file
 	/*
