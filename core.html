@@ -6,7 +6,17 @@
 
 <head>
 
+    <style>
+        p.lead {
+            color: white;
+            font-size:medium;
+        }
 
+        p.important {
+            color: lightsteelblue;
+            font-size:x-large;
+        }
+    </style>
 
     <meta charset="utf-8">
 
@@ -166,7 +176,7 @@
 
                         <h1 class="page-header">
 
-                            <p align="center">JoPe Engine Wiki</p>
+                            <p align="center">Core Engine</p>
 
                         </h1>
 
@@ -182,15 +192,77 @@
 
                     <div class="col-lg-12">
 
-                        <p class="lead">JoPe Engine is simple 3D Game engine made for learning purposes. The engine has been made for the Game Engine subject at the Game Development degree from the UPC university<br />JoPe Engine was developed by Pere Rifà Planellas and Joan Pareja Piñol  <br /> <br /> In the sections of this page you will find more information on how to use the engine</p>
+                        <p class="lead">In this section you will find a brief explanation of the core of the engine and how to use it, the core features all are implemented from the Assigment_2.x releases onwards. </br>If you want to see the code and how it is done we strongly recommend to download the lastest version since there will be bugfixes or improvements on the implementation.</p>
 
-                            <p class="page-header" align="left">
+						<h2 class="page-header">
+                            <p align="left"> Basic UI Layout</p>
+                        </h2>
+						
+						<p class="important"> Main menu:</p>
+						<p class="lead"> Here you will find diferent menus that will allow you to enable and disbale other windows, also in the file submenu you can Save and Load scenes, reset to te default scene and exit the app. In the Help submenu you will find info about the team, and also some links to diferent parts to of the github, such as this wiki. </p>
+						
+						<p class="important">Console/Assets window</p>
+						<p class="lead">In this hsared window at the bottom of the screen you can find a debug console that may help you see what's happening inside the engine and an assets window will allow you to load meshes scenes or prefabs. </br></br> In the assets window will be displayed a list of all the files that the engine can load, to load a file click on it so select it and the click on the Load button at the bottom-right of the window. You will know which file is selected since its name will show in the textbox next to the load button.</br></br>The console window will display different messages explaing what the engine is doing internaly, mostly it will display errors. When loading a file there might appear a lot of WARNING messages, don't worry this is perfectly normal during the loading process, but take care when it happens when you are using the edition tools since it shouldn't.</p>
+						
+						<p class="important"> Hierarchy</p>
+						<p class="lead">The hierachy window will show all the GameObjects in the current scene with a Tree node notation. </br> The GameObjects can be selected clicking on its name, the also can be expanding by clicking at the arrow next to the name to see the childs.</p>
+						
+						<p class="important"> Properties</p>
+						<p class="lead">The properties window will show the details of the currently selected GameObject, if there is no GameObject selected it will be empty. </br> Here you can modify it's name and also look at the components it has, add some components or modify the ones that it already has. </p>
+						
+						<p class="important">Play and pause buttons</p>
+						<p class="lead">This small group of buttons at the top of the screen manage the Game mode and Editor mode. When the PLay button is green it means that tha GameMode is activated and the display will change to the camera component that has activated their main camera state, also all other UI elements will disappear. </br>By clicking at the clock button the update time of the game mode will show, until the Assigment_3.x release this function is irrelevant since there are now elements that use the update time of the game. </p>
+						
+						<p class="important"> Configuration</p>
+						<p class="lead">This window will allow you the change the basic configuration of the diferent elements in the engine. </br> All the submenus are automaticly generated from the code but only a few of them have configuration options, currently you can manage the configuration of the Render, Window and the general Application, also in the Hardware and software tab you will find information about your current hardware and the libraries used in this Engine. </p>
+				
+				
+						<h2 class="page-header">
+                            <p align="left"> Loading and Importing files </p>
+                        </h2>
+							
+						<p class="lead"> The engine can load and import difrent files in its own format, currently the engine can only import .fbx, and .obj, files as meshes (it will not import elements that aren't meshes whit this files), and .png and .tga as textures. </br> In case the .fbx or .obj files uses some textures the engine will try to find them in the same directory as the .fbx file, if they are found the engine will import them as well.</p>
+						<p class="lead">Below there a quick list of the formats that the engine uses: </p>
+						<p class="lead"> .jope - For complete scenes, the ones that the player save whit the engine.</p>
+						<p class="lead"> .pjope - Prefabs, used for imported .fbx or obj.</p>
+						<p class="lead"> .mjope - Meshes, one is created for evey mesh inside the .fbx or .obj file.</p>
+						<p class="lead"> .dds - Used as default format for imported textures.</p>
+						
+						<h2 class="page-header">
+                        <p align="left"> GameObject edition </p>
+                        </h2>
+						
+						<p class="lead"> To edit a GameObject you must first select it, to do so you cna either click on it's name in the hierachy window or click on it's mesh(if it has one) on the screen. </br> When the object is selected a basic Guizmo will appear to allow you to edit the GameObject transform, use the keys below to change which element of the transform you will modify. </p>
+						<p class="lead"> [W] - Position</p>
+						<p class="lead"> [E] - Rotation</p>
+						<p class="lead"> [R] - Scale</p>
+						<p class="lead"> In the properties window you can also modify the values of it's components.</p>
+						
+						
+						<h2 class="page-header">
+                        <p align="left"> Basic components </p>
+                        </h2>
+						
+						<p class="lead">Here you will find a list of the basic components, the ones present in the Assimgent_2.x releases and a brief description of them. </p>
+						<p class="important"> Transform</p>
+						<p class="lead"> Basic component for all GameObjects, it's always loaded, it defines the position, rotation and scale of the GameObject.</p>
+						<p class="important"> Mesh (Geometry)</p>
+						<p class="lead"> Mesh selector, this will select the mesh that it's atach to the GameObject. Note that this component alone will not render the Mesh</p>
+						<p class="important"> Material (Texture)</p>
+						<p class="lead"> This will be used by the MeshRenderer to dispay the texture on top of the mesh if this last one has texture coords.</p>
+						<p class="important"> MeshRenderer</p>
+						<p class="lead"> Will search for a Geometry and Texture components in the GameObject and use them to render it in the world.</p>
+						<p class="important"> Camera</p>
+						<p class="lead"> Camera to render the scene in the game mode (activated with the play button on top), in editor mode a ghost camera will be used to render the scene (so we can see the game cameras). </br> The camera has a Main camera checkbox, if it is checked it will mean that this is the camera that will be used to redner in game mode, if no main camera is selected the ghost camera from the editor mode will be used as main camera.</p>
 
-                                Find us on:
+				
+                        <p class="page-header" align="left">
 
-                            </p>
+                            Find us on:
 
-                            <a target="_blank" href="https://github.com/PatatesIDracs/3DGameEngine"><img class="img-responsive center-block" src="img/github.png" align="left" width="200" height="155"></a>
+                        </p>
+
+                        <a target="_blank" href="https://github.com/PatatesIDracs/3DGameEngine"><img class="img-responsive center-block" src="img/github.png" align="left" width="200" height="155"></a>
 </div>
 
 
