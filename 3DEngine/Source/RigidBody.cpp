@@ -60,7 +60,7 @@ void RigidBody::Update()
 		// Collider to local transform
 		if (collider_comp) {
 			Quat local_rot = collider_comp->GetLocalQuat().Conjugated();
-			position -= local_rot*collider_comp->GetPosition();
+			position -= rotation*collider_comp->GetPosition();
 			rotation = rotation*local_rot;
 		}
 

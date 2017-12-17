@@ -184,6 +184,8 @@ void RbCollider::ChangeParent(GameObject * new_parent)
 	// Set Default Gemoetry to Sphere
 	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
 
+	local_quat = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
+
 	transform = parent->GetTransform();
 	if (!transform->update_transform)
 		transform->update_transform = true;
