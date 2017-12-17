@@ -55,6 +55,10 @@ private:
 	// Shot Balls
 	std::vector<GameObject*> shot_balls;
 	uint curr_ball = 0;
+
+	//Config data
+	bool render_physics = false;
+	bool render_on_play = false;
 };
 
 #endif // !__MODULEPHYSICS_H__

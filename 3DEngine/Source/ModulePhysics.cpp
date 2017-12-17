@@ -1,6 +1,7 @@
 #include "ModulePhysics.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
+#include "ConfigJSON.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -110,14 +111,25 @@ void ModulePhysics::SetDebugCullingLimits(AABB & box)
 
 void ModulePhysics::LoadModuleConfig(Config_Json & config)
 {
+	render_physics = config.GetBool("Render physics", render_physics);
+	render_on_play = config.GetBool("Render on play", render_on_play);
 }
 
 void ModulePhysics::SaveModuleConfig(Config_Json & config)
 {
+	Config_Json physics_config = config.AddJsonObject(this->GetName());
+	physics_config.SetBool("Render physics", render_physics);
+	physics_config.SetBool("Render on play", render_on_play);
 }
 
 void ModulePhysics::DrawConfig()
 {
+	if (ImGui::Checkbox("Render physics", &render_physics))
+	{
+		render_on_play = false;
+		mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
+	}
+	ImGui::Checkbox("Render on play", &render_on_play);
 }
 
 void ModulePhysics::ShotBalls()
@@ -163,7 +175,7 @@ void ModulePhysics::ShotBalls()
 
 void ModulePhysics::DrawPhysics()
 {
-	if (App->clock.state == APP_PLAY) return;
+	if ((!render_on_play && App->clock.state == APP_PLAY) || !render_physics) return;
 
 	if (App->clock.state == APP_STOP)
 	{
