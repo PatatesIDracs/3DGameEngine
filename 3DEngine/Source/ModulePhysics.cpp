@@ -126,8 +126,15 @@ void ModulePhysics::DrawConfig()
 {
 	if (ImGui::Checkbox("Render physics", &render_physics))
 	{
-		render_on_play = false;
-		mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
+		if (render_physics)
+		{
+			mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+		}
+		else
+		{
+			render_on_play = false;
+			mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
+		}
 	}
 	ImGui::Checkbox("Render on play", &render_on_play);
 }
