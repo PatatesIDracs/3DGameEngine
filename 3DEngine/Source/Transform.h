@@ -13,13 +13,16 @@ public:
 	const float4x4 GetLocalTransform() const;
 	const float4x4 GetGlobalTransform()const;
 	const float* GetGlobalTransposed()const;
-	Quat GetRotQuat() const;
-	Quat GetGlobalQuat() const;
-	Quat GetParentQuat() const;
+	const Quat GetRotQuat() const;
+	const Quat CurrRotQuat() const;
+	const Quat GetGlobalQuat() const;
+	const Quat GetParentQuat() const;
 	float3 GetPosition() const;
 	float3 GetGlobalPos() const;
 	float3 GetParentPos() const;
 	float3 GetScale() const;
+	float3 GetParentScale() const;
+	float3 GetGlobalScale() const;
 	
 	void Update();
 	void UpdateGlobalTransform();
@@ -46,6 +49,9 @@ private:
 
 	float4x4 transform, global_transform;
 	Quat rotation = Quat::identity;
+
+	Quat global_rotation = Quat::identity;
+	float3 global_scale = float3(1, 1, 1);
 
 	bool update_transform = false;
 

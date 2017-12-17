@@ -34,7 +34,7 @@ RigidBody::~RigidBody()
 
 void RigidBody::Update()
 {
-	if (transform && physics_body && App->clock.delta_time > 0)
+	if (transform && physics_body && App->clock.delta_time > 0.f)
 	{
 		if (dynamic)
 			physics_body->px_body->wakeUp();
@@ -47,18 +47,23 @@ void RigidBody::Update()
 		// Change variables to mathgeolib
 		float3 position = float3(pos.x, pos.y, pos.z);
 		Quat rotation = Quat(rot.x, rot.y, rot.z, rot.w);
-		Quat global_rot = transform->GetParentQuat().Conjugated();
-
-		// Global to local transform
-		rotation = global_rot*rotation;
-		position = global_rot*(position - transform->GetParentPos());
-
+	
+	
 		// Collider to local transform
 		if (collider_comp) {
 			Quat local_rot = collider_comp->GetLocalQuat().Conjugated();
 			position -= local_rot*collider_comp->GetPosition();
-			rotation = local_rot*rotation;
+			rotation = rotation*local_rot;
 		}
+		Quat global_rot = transform->GetParentQuat().Conjugated();
+
+		// Global to local transform
+		float3 p_pos = transform->GetParentPos();
+		float3 p_scale = transform->GetParentScale();
+		rotation = global_rot*rotation;
+		position = global_rot*(position - transform->GetParentPos());
+		position = float3(position.x / p_scale.x, position.y / p_scale.y, position.z / p_scale.z);
+		
 
 		// GameObject local transform and position
 		transform->SetTransform(position, Quat(rotation.x, rotation.y, rotation.z, rotation.w));
@@ -71,12 +76,12 @@ void RigidBody::UpdateTransform()
 {
 	if(physics_body && !own_update) {
 		float3 fpos = transform->GetGlobalPos();
-		Quat quat = transform->GetGlobalQuat();
+		Quat quat = transform->GetParentQuat()*transform->CurrRotQuat();
 
 		// Get Local Transform if component have collider_comp assosiated
 		if (collider_comp) {
-			fpos += quat*collider_comp->GetPosition();
 			quat = quat*collider_comp->GetLocalQuat();
+			fpos += quat*collider_comp->GetPosition();	
 		}
 		physics_body->px_body->setGlobalPose(physx::PxTransform(physx::PxVec3(fpos.x, fpos.y, fpos.z), physx::PxQuat(quat.x, quat.y, quat.z, quat.w)));
 	}

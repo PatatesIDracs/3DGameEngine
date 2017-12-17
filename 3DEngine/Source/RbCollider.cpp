@@ -31,9 +31,8 @@ RbCollider::~RbCollider()
 void RbCollider::UpdateTransform()
 {
 	if (!rigid_body_comp && physics_body) {
-		Quat quat = transform->GetGlobalQuat();
+		Quat quat = transform->GetParentQuat()*transform->CurrRotQuat()*local_quat;
 		float3 fpos = transform->GetGlobalPos() + quat*position;
-		quat = quat*local_quat;
 		physics_body->px_body->setGlobalPose(physx::PxTransform(physx::PxVec3(fpos.x, fpos.y, fpos.z), physx::PxQuat(quat.x, quat.y, quat.z, quat.w)));
 	}
 }
@@ -53,7 +52,7 @@ void RbCollider::DrawComponent()
 		// Collider Position
 		if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue) && physics_body) {
 			// Set Position
-			float3 new_pos = transform->GetGlobalTransform().Col3(3) + transform->GetGlobalQuat()*position;
+			float3 new_pos = transform->GetGlobalPos() + transform->GetGlobalQuat()*local_quat*position;
 
 			physx::PxTransform transf = physics_body->px_body->getGlobalPose();
 			transf.p = physx::PxVec3(new_pos.x, new_pos.y, new_pos.z);
@@ -65,8 +64,8 @@ void RbCollider::DrawComponent()
 
 			// Set Good Rotation
 			local_quat = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
-			Quat Qg = transform->GetGlobalQuat()*local_quat;
-
+			Quat Qg = transform->GetParentQuat()*transform->CurrRotQuat()*local_quat;
+			
 			physx::PxTransform transf = physics_body->px_body->getGlobalPose();
 			transf.q = physx::PxQuat(Qg.x, Qg.y, Qg.z, Qg.w);
 			physics_body->px_body->setGlobalPose(transf);
@@ -265,6 +264,17 @@ void RbCollider::Save(const char * buffer_data, char * cursor, int & bytes_copie
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//angle
+	memcpy(cursor, &angle.x, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &angle.y, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(cursor, &angle.z, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//rad
 	memcpy(cursor, &rad, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -334,6 +344,17 @@ void RbCollider::Load(char * cursor, int & bytes_copied)
 	cursor += bytes_to_copy;
 	bytes_copied += bytes_to_copy;
 
+	//angle
+	memcpy(&angle.x, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&angle.y, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+	memcpy(&angle.z, cursor, bytes_to_copy);
+	cursor += bytes_to_copy;
+	bytes_copied += bytes_to_copy;
+
 	//rad
 	memcpy(&rad, cursor, bytes_to_copy);
 	cursor += bytes_to_copy;
@@ -344,7 +365,7 @@ void RbCollider::GetOwnBufferSize(uint & buffer_size)
 {
 	Component::GetOwnBufferSize(buffer_size);
 	buffer_size += sizeof(JP_COLLIDER_TYPE) * 2;
-	buffer_size += sizeof(float) * 3 * 3; //3 float 3: material, pos and size
+	buffer_size += sizeof(float) * 3 * 4; //4 float 3: material, pos, size and angle
 	buffer_size += sizeof(float); //rad
 }
 

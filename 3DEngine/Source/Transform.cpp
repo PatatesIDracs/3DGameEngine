@@ -33,25 +33,27 @@ const float * Transform::GetGlobalTransposed() const
 	return global_transform.Transposed().ptr();
 }
 
-Quat Transform::GetRotQuat() const
+const Quat Transform::GetRotQuat() const
 {
 	return  Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
 }
 
-Quat Transform::GetGlobalQuat() const
+const Quat Transform::CurrRotQuat() const
 {
-	float3 angle = global_transform.ToEulerXYZ();
-	return Quat::FromEulerXYZ(angle.x,angle.y,angle.z);
+	return rotation;
 }
 
-Quat Transform::GetParentQuat() const
+const Quat Transform::GetGlobalQuat() const
 {
-	Quat ret = Quat(0.f, 0.f, 0.f, 1);
+	return global_rotation;
+}
+
+const Quat Transform::GetParentQuat() const
+{
 	if (parent->parent != nullptr) {
-		float3 angle = parent->parent->GetTransform()->GetGlobalTransform().ToEulerXYZ();
-		ret = ret.FromEulerXYZ(angle.x, angle.y, angle.z);
+		return parent->parent->GetTransform()->GetGlobalQuat();
 	}
-	return ret;
+	return Quat(0.f, 0.f, 0.f, 1);;
 }
 
 float3 Transform::GetPosition() const
@@ -78,6 +80,18 @@ float3 Transform::GetScale() const
 	return scale;
 }
 
+float3 Transform::GetParentScale() const
+{
+	if (parent->parent != nullptr)
+		return parent->parent->GetTransform()->GetGlobalScale();
+	return float3(1,1,1);
+}
+
+float3 Transform::GetGlobalScale() const
+{
+	return global_scale;
+}
+
 void Transform::Update()
 {
 	if (parent != nullptr && App->clock.state != APP_PLAY && App->scene_intro->GetSelectedGameObject() == parent) {
@@ -86,7 +100,7 @@ void Transform::Update()
 
 	if (update_transform) {
 		// Set Rotation Quaternion
-		rotation = GetRotQuat();
+		rotation = GetRotQuat().Normalized();
 
 		// Set Transform
 		transform = float4x4::FromTRS(position, rotation, scale);
@@ -104,8 +118,13 @@ void Transform::UpdateGlobalTransform()
 {
 	if (parent->parent != nullptr) {
 		global_transform = parent->parent->GetTransform()->GetGlobalTransform()* transform;
+		global_transform.Decompose(float3(0,0,0), global_rotation,global_scale);
+		global_rotation.Normalized();
 	}
-	else global_transform = transform;
+	else {
+		global_transform = transform;
+		global_rotation = rotation;
+	}
 
 	for (uint i = 0; i < parent->children.size(); i++)
 		parent->children[i]->GetTransform()->EnableUpdateTransform();
