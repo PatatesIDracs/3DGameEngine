@@ -53,9 +53,6 @@ bool jpPhysicsWorld::CreateNewPhysicsWorld()
 
 		if (jpFoundation)
 		{
-			//pvd = physx::PxCreatePvd(*jpFoundation);
-			//physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-			//pvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
 			jpWorld = PxCreatePhysics(PX_PHYSICS_VERSION, *jpFoundation, physx::PxTolerancesScale(), true, nullptr);
 		}
 
@@ -105,7 +102,6 @@ physx::PxPhysics * jpPhysicsWorld::GetPhysicsWorld()
 physx::PxCooking * jpPhysicsWorld::GetCooking()
 {
 	return nullptr;
-	//return jpCooking;
 }
 
 jpPhysicsRigidBody * jpPhysicsWorld::CreateRigidBody(physx::PxScene * curr_scene)

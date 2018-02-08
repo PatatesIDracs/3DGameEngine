@@ -36,9 +36,6 @@ void RigidBody::Update()
 {
 	if (transform && physics_body && App->clock.delta_time > 0.f)
 	{
-		if (dynamic)
-			physics_body->px_body->wakeUp();
-
 		// Get transform from physics
 		physx::PxVec3 pos;
 		physx::PxQuat rot;

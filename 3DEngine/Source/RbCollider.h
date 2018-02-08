@@ -54,7 +54,7 @@ private:
 	float3				position = float3(0.f, 0.f, 0.f);
 	float3				angle = float3(0.f, 0.f, 0.0f);
 
-	float3				material = float3(0.5f, 0.5f, 0.5f);
+	float3				material = float3(0.5f, 0.5f, 0.0f);
 	float3				size = float3(1.f, 1.f, 1.f);
 	float				rad = 0.5f;
 

@@ -131,6 +131,8 @@ void jpPhysicsRigidBody::SetGeometry(physx::PxVec3 scale, float radius, JP_COLLI
 	default: body_shape = px_body->createShape(physx::PxSphereGeometry(0.5), *default_material);
 		break;
 	}	
+	
+	body_shape->setRestOffset(0.0199);
 }
 
 void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius, JP_COLLIDER_TYPE shape_type)

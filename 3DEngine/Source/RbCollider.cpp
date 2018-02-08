@@ -183,6 +183,7 @@ void RbCollider::ChangeParent(GameObject * new_parent)
 	}
 	// Set Default Gemoetry to Sphere
 	physics_body->SetGeometry(physx::PxVec3(size.x, size.y, size.z), rad, curr_type);
+	physics_body->SetMaterial(material.x, material.y, material.z);
 
 	local_quat = Quat::FromEulerXYZ(angle.x*DEGTORAD, angle.y*DEGTORAD, angle.z*DEGTORAD);
 
