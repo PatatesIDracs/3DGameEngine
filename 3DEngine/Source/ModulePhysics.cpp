@@ -12,11 +12,11 @@
 #include "jpPhysicsWorld.h"
 #include "PhysX/Include/PxPhysicsAPI.h"
 #include "Glew/include/glew.h"
-
+/*
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3DEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
-#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")*/
 
 ModulePhysics::ModulePhysics(Application * app, bool start_enabled) : Module(app, "Physics", start_enabled)
 {

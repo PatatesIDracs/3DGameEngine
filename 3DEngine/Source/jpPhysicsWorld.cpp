@@ -2,11 +2,29 @@
 //#include "Globals.h"
 #include "Math.h"
 
+//PhysX libraries for debug builds
+#ifdef _DEBUG
+
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3DEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PxFoundationDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3ExtensionsDEBUG.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PhysX3CommonDEBUG_x86.lib")
 #pragma comment (lib, "PhysX/lib/vc14win32/PxPvdSDKDEBUG_x86.lib")
+
+#endif // _DEBUG
+
+//PhysX libraries for release builds
+#ifndef _DEBUG
+
+#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PxFoundation_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3Extensions.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PhysX3Common_x86.lib")
+#pragma comment (lib, "PhysX/lib/vc14win32/PxPvdSDK_x86.lib")
+
+#endif // _DEBUG
+
+
 
 jpPhysicsWorld::jpPhysicsWorld()
 {	
