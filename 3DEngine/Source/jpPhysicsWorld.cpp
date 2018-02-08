@@ -83,6 +83,7 @@ physx::PxScene * jpPhysicsWorld::CreateNewScene()
 	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
 	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
 
 	return jpWorld->createScene(sceneDesc);
 }

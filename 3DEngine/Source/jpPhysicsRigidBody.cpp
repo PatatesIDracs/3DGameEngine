@@ -4,9 +4,9 @@
 jpPhysicsRigidBody::jpPhysicsRigidBody(physx::PxPhysics* px_physics)
 {
 	//Create a default rigidbody 
-	default_material = px_physics->createMaterial(0.5f, 0.5f, 0.5f);
+	default_material = px_physics->createMaterial(0.5f, 0.5f, 0.0f);
 	px_body = physx::PxCreateDynamic(*px_physics, physx::PxTransform(physx::PxIDENTITY()), physx::PxBoxGeometry(0.5f, 0.5f, 0.5f), *default_material, 1.0f);
-	
+
 	//Detach the shape by default,
 	px_body->getShapes(&body_shape, 1);
 
@@ -131,8 +131,11 @@ void jpPhysicsRigidBody::SetGeometry(physx::PxVec3 scale, float radius, JP_COLLI
 	default: body_shape = px_body->createShape(physx::PxSphereGeometry(0.5), *default_material);
 		break;
 	}	
-	
-	body_shape->setRestOffset(0.0199);
+
+	if (body_shape) {
+		body_shape->setContactOffset(0.02);
+		body_shape->setRestOffset(0);
+	}
 }
 
 void jpPhysicsRigidBody::SetShapeScale(physx::PxVec3 scale, float radius, JP_COLLIDER_TYPE shape_type)

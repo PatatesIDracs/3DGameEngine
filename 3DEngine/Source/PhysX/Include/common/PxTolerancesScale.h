@@ -103,7 +103,7 @@ public:
 
 PX_INLINE PxTolerancesScale::PxTolerancesScale():
 	length(1),
-	mass(1000),
+	mass(1),
 	speed(10)
 	{
 	}
